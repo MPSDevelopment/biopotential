@@ -27,8 +27,8 @@ WAW_file;
 
 typedef struct _WAW_result
 {
-	double  avg;
-	double  diff;
+	float   avg;
+	float   diff;
 	int32_t lvl;
 }
 WAW_result;
@@ -104,7 +104,9 @@ static void waw_compare(const WAW_file* waw,
 
 	result->avg  = avg  / (double)waw->num_chunks;
 	result->diff = diff / (double)waw->num_chunks;
-	result->lvl  = *(uint32_t*)&result->diff; /* unreproducible */
+
+	double diff_64 = (double)result->diff;
+	result->lvl = *(int32_t*)&diff_64;
 }
 
 int32_t main(int32_t argc, const char* argv[])
@@ -115,6 +117,7 @@ int32_t main(int32_t argc, const char* argv[])
 
 	FILE* waw_1_stream = fopen(argv[1], "rb");
 	FILE* waw_2_stream = fopen(argv[2], "rb");
+
 	assert(waw_1_stream);
 	assert(waw_2_stream);
 
@@ -132,5 +135,5 @@ int32_t main(int32_t argc, const char* argv[])
 	WAW_result result;
 	waw_compare(&waw_1, &waw_2, &result);
 
-	printf("%-8f %-8f %d\n", result.avg, result.diff, result.lvl);
+	printf("%f %f %d\n", result.avg, result.diff, result.lvl);
 }
