@@ -105,8 +105,11 @@ static void waw_compare(const WAW_file* waw,
 	result->avg  = avg  / (double)waw->num_chunks;
 	result->diff = diff / (double)waw->num_chunks;
 
-	double diff_64 = (double)result->diff;
-	result->lvl = *(int32_t*)&diff_64;
+	/* double diff_64 = (double)result->diff;
+	result->lvl = *(int32_t*)&diff_64; */
+
+	/* this one works too */
+	result->lvl = *(int32_t*)&result->diff << 29;
 }
 
 int32_t main(int32_t argc, const char* argv[])
