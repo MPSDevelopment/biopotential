@@ -5,6 +5,7 @@ import javax.sound.sampled.AudioFormat.Encoding;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioFormat;
 
+// TODO: Checkout https://github.com/ddf/Minim
 public class Vis {
     public static double[][] getWaveForm(final AudioInputStream audioStream)
             throws IOException {
