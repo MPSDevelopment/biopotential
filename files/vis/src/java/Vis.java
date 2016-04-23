@@ -3,41 +3,65 @@ package vis;
 import java.io.IOException;
 import javax.sound.sampled.AudioFormat.Encoding;
 import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioFormat;
 
-// TODO: Replace with something better
+// TODO: Checkout https://github.com/ddf/Minim
 public class Vis {
     public static double[][] getWaveForm(final AudioInputStream audioStream)
             throws IOException {
-        // TODO?: Make it work with any encoding
-        if (audioStream.getFormat().getEncoding() != Encoding.PCM_UNSIGNED) {
-            throw new IOException("Bad sample rate");
-        }
+        AudioFormat format = audioStream.getFormat();
 
-        // TODO?: Make it work with any number of channels
-        if (audioStream.getFormat().getChannels() != 1) {
-            throw new IOException("Bad number of channels");
-        }
-
-        // TODO?: Make it work with any sample rate
-        if (audioStream.getFormat().getSampleSizeInBits() != 8) {
-            throw new IOException("Bad sample rate");
+        // TODO?: Make it work with more encodings
+        if (format.getEncoding() != Encoding.PCM_UNSIGNED) {
+            throw new IOException("Bad encoding");
         }
 
         final long frameLength = audioStream.getFrameLength();
-        final long frameSize   = audioStream.getFormat().getFrameSize();
+        final long frameSize   = format.getFrameSize();
 
         final byte[] rawData = new byte[(int)(frameLength * frameSize)];
         audioStream.read(rawData);
 
-        // FIXME: This only works with 8 bit samples
-        final double[][] peaks = new double[1][(int)frameLength];
-        int peak = 0;
+        final int channels = format.getChannels();
+        // resolution = max int value frame of its size can handle
+        final double frameRes = Math.pow(2.0, (double)frameSize * 8.0) / 2.0;
+        final boolean isBigEndian = format.isBigEndian();
 
-        for (int frame = 0; frame < (int)frameLength; frame += 1) {
-            peaks[0][peak] = (double)rawData[frame] / 127.0;
+        final double[][] peaks = new double[channels][(int)frameLength];
+        int peak   = 0;
+        int rawPtr = 0;
+        while (rawPtr < (int)frameLength) {
+            for (int chan = 0; chan < channels; chan += 1) {
+                // Performance note: highly biased branches are ok
+                final long frameData = isBigEndian
+                        ? readFrameBE(rawData, rawPtr, frameSize)
+                        : readFrameLE(rawData, rawPtr, frameSize);
+                rawPtr += frameSize;
+
+                peaks[chan][peak] = (double) frameData / frameRes;
+            }
             peak += 1;
         }
-
         return peaks;
+    }
+
+    // Hopefully, jit will inline these methods
+    private static long readFrameBE(byte[] rawData,
+                                    int  rawPtr,
+                                    long frameSize) {
+        long frameData = 0;
+        for (int i = 0; i < frameSize; i += 1) {
+            frameData |= rawData[rawPtr + i] << (frameSize - i - 1)*8;
+        }
+        return frameData;
+    }
+    private static long readFrameLE(byte[] rawData,
+                                    int  rawPtr,
+                                    long frameSize) {
+        long frameData = 0;
+        for (int i = 0; i < frameSize; i += 1) {
+            frameData |= rawData[rawPtr + i] << i*8;
+        }
+        return frameData;
     }
 }
