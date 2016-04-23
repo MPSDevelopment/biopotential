@@ -1,6 +1,8 @@
 package vis;
 
 import javafx.application.Application;
+
+import java.awt.*;
 import java.io.File;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
@@ -8,31 +10,51 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.imageio.ImageIO;
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 
 public class Main extends Application {
-    private BufferedImage plotWaveGraph(final double[][] peaks) {
-        final BufferedImage graph = new BufferedImage(peaks[0].length, 256,
+    private BufferedImage plotWaveGraph(final double[][] peaks,
+                                        Viewport view) {
+        // TODO: Test with multichannel audio, various sample rates, LE, BE
+
+        final BufferedImage graph = new BufferedImage(
+                view.getTargetW(),
+                view.getTargetH(),
                 BufferedImage.TYPE_BYTE_INDEXED);
 
         final Graphics2D gfx = graph.createGraphics();
-
+        gfx.setRenderingHints(
+                new RenderingHints(
+                        RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_ON));
         gfx.setColor(Color.GREEN);
-        int lastY = 0;
-        for (int i = 1; i < peaks[0].length; i += 1) {
-            // Each peak ranges from -1.0 to 1.0, upscale it to buffer size and
-            // offset a bit from edges of the buffer.
-            final int Y = (int)(peaks[0][i] * graph.getHeight() / 2.2)
-                    + (graph.getHeight() / 2);
-            gfx.drawLine(i - 1, lastY, i, Y);
-            lastY = Y;
+
+        final int w = graph.getWidth();
+        final int h = graph.getHeight();
+        final int precision = Math.max((view.getX1() - view.getX0()) / w, 1);
+
+        for (int chan = 0; chan < peaks.length; chan += 1) {
+            int prevX = 0;
+            int prevY = h / 2;
+            for (int i = view.getX0(); i < view.getX1(); i += precision) {
+                // Scale x and y to fit buffer
+                final int x = (int) (((double) (i - view.getX0())
+                        / (double) (view.getX1() - view.getX0())) * (double) w);
+                final int y = (h / 2) + (int) (peaks[chan][i]
+                        * (double) h / (2.0 * view.getPadding()));
+
+                // First vertex has no links going before it
+                if (i > view.getX0()) {
+                    gfx.drawLine(prevX, prevY, x, y);
+                }
+
+                prevX = x;
+                prevY = y;
+            }
         }
 
         gfx.dispose();
-
         return graph;
     }
 
@@ -52,7 +74,8 @@ public class Main extends Application {
 
         final double[][] peaks = Vis.getWaveForm(audioStream);
 
-        final BufferedImage waveGraph = plotWaveGraph(peaks);
+        final BufferedImage waveGraph = plotWaveGraph(peaks,
+                new Viewport(0, peaks[0].length, 1024, 256, 1.5));
 
         // TODO: REMOVEME
         ImageIO.write(waveGraph, "png", new File("graph.png"));
