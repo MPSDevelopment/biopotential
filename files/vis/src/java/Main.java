@@ -14,7 +14,6 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.imageio.ImageIO;
 
-// TODO: Checkout https://github.com/ddf/Minim
 import edu.emory.mathcs.jtransforms.fft.DoubleFFT_1D;
 
 
@@ -82,18 +81,16 @@ public class Main extends Application {
         for (int i = Math.max(view.getX0(), 0);
              i < Math.min(view.getX1(), peaks.length);
              i += (view.getX1() - view.getX0()) / w) {
-            double[] fft = new double[frameInterval * 2];
-            System.arraycopy(peaks, i,
-                    fft, 0,
-                    Math.min(frameInterval, peaks.length - i));
-            new DoubleFFT_1D(frameInterval).realForward(fft);
+//            double[] fft = new double[frameInterval * 2];
+//            System.arraycopy(peaks, i,
+//                    fft, 0,
+//                    Math.min(frameInterval, peaks.length - i));
+//            new DoubleFFT_1D(frameInterval).realForward(fft);
 
 //            for (int j = 0; j < fft.length; j += 2) {
 //                double real = fft[j];
 //                double im   = fft[j+1];
 //                double mag  = Math.sqrt(real*real + im*im);
-//
-//
 //            }
         }
 
@@ -115,7 +112,7 @@ public class Main extends Application {
         final AudioInputStream audioStream =
                 AudioSystem.getAudioInputStream(audioFile);
 
-        final double[][] peaks = Vis.getWaveForm(audioStream);
+        final double[][] peaks = SoundIO.readAllFrames(audioStream);
 
         final BufferedImage graph = plotGraph(peaks[0],
                 new Viewport(0, peaks[0].length, 1024, 256, 1.5));
