@@ -1,5 +1,7 @@
 package com.mps.analyzer;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -30,8 +32,8 @@ public class Analyzer {
                         + buffer[j*2 + 5] *  0.0352262918821;
             }
 
-            double meanDeviation = computeMeanDeviation(sum);
-            double dispersion    = computeDispersion(sum, meanDeviation);
+            final double meanDeviation = computeMeanDeviation(sum);
+            final double dispersion    = computeDispersion(sum, meanDeviation);
             summaries.add(new ChunkSummary(meanDeviation, dispersion));
 
             buffer = diff;
@@ -41,22 +43,21 @@ public class Analyzer {
                 new ChunkSummary[summaries.size()]);
     }
 
-    private static double computeMeanDeviation(double[] sum) {
-        double result = 0.0;
-        for (int i = 0; i < sum.length; i += 1) {
-            result += sum[i];
-        }
-        return result / (double) sum.length;
-    }
+    public static ChunkSummary[] readSummaryFromStream(InputStream file) {
+        final int total = readStreamLE(file, 2);
+        ChunkSummary[] summaries = new ChunkSummary[total];
+        for (int i = 0; i < total; i += 1) {
+            final int count = readStreamLE(file, 4);
+            double[] sum = new double[count];
+            for (int j = 0; j < count; j += 1) {
+                sum[j] = (double) Float.intBitsToFloat(readStreamLE(file, 4));
+            }
 
-    private static double computeDispersion(double[] sum,
-                                            double meanDeviation) {
-        double result = 0.0;
-        for (int i = 0; i < sum.length; i += 1) {
-            double delta = sum[i] - meanDeviation;
-            result += delta * delta;
+            final double meanDeviation = computeMeanDeviation(sum);
+            final double dispersion    = computeDispersion(sum, meanDeviation);
+            summaries[i] = new ChunkSummary(meanDeviation, dispersion);
         }
-        return Math.sqrt(result / (double) sum.length);
+        return summaries;
     }
 
     public static AnalysisSummary compare(ChunkSummary[] first,
@@ -82,6 +83,40 @@ public class Analyzer {
         dispersion    /= length;
 
         return new AnalysisSummary(meanDeviation, dispersion,
-                (int) (Double.doubleToLongBits(dispersion) & 0xffffffff));
+                (int) Double.doubleToLongBits(dispersion));
+    }
+
+    private static double computeMeanDeviation(double[] sum) {
+        double result = 0.0;
+        for (double num : sum) {
+            result += num;
+        }
+        return result / (double) sum.length;
+    }
+
+    private static double computeDispersion(double[] sum,
+                                            double meanDeviation) {
+        double result = 0.0;
+        for (double num : sum) {
+            double delta = num - meanDeviation;
+            result += delta * delta;
+        }
+        return Math.sqrt(result / (double) sum.length);
+    }
+
+    private static int readStreamLE(InputStream stream, int length) {
+        if (length <= 4) {
+            try {
+                int result = 0;
+                for (int i = 0; i < length; i += 1) {
+                    result |= (stream.read() & 0xff) << i * 8;
+                }
+                return result;
+            } catch (IOException e) {
+                return -1;
+            }
+        } else {
+            return -1;
+        }
     }
 }

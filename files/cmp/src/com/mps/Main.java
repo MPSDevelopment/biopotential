@@ -5,21 +5,26 @@ import com.mps.analyzer.ChunkSummary;
 import com.mps.analyzer.AnalysisSummary;
 
 import java.io.File;
+import java.io.FileInputStream;
 import javax.sound.sampled.AudioSystem;
 
 public class Main {
     public static void main(String[] args) {
         try {
-            final double[][] frames = SoundIO.readAllFrames(
+            final double[][] sample = SoundIO.readAllFrames(
                     AudioSystem.getAudioInputStream(new File("test.wav")));
 
-            final ChunkSummary[] t1 = Analyzer.summarize(frames[0]);
-            final AnalysisSummary t2 = Analyzer.compare(t1, t1);
+            final ChunkSummary[] sampleChunks = Analyzer.summarize(sample[0]);
+            final ChunkSummary[] strainChunks = Analyzer.readSummaryFromStream(
+                    new FileInputStream("test.waw"));
+
+            final AnalysisSummary summary =
+                    Analyzer.compare(sampleChunks, strainChunks);
 
             System.out.println(String.format("%f %f %d",
-                    t2.getMeanDeviation(),
-                    t2.getDispersion(),
-                    t2.getDegree()));
+                    summary.getMeanDeviation(),
+                    summary.getDispersion(),
+                    summary.getDegree()));
         } catch (Exception e) {
             e.printStackTrace();
         }
