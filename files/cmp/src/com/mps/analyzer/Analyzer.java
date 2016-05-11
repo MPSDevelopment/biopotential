@@ -11,11 +11,7 @@ public class Analyzer {
         List summaries = new ArrayList<ChunkSummary>();
 
         // Somewhat resembling wavelet transform
-        int i = 0;
         while (count > 0) {
-//        for (int i = 0;
-//             count > 0;
-//                i += 1, count = (count - 5) / 2) {
             double[] sum  = new double[count];
             double[] diff = new double[count];
             for (int j = 0; j < count; j += 1) {
@@ -26,15 +22,12 @@ public class Analyzer {
                        + buffer[j*2 + 4] *  0.80689150931334
                        + buffer[j*2 + 5] * -0.33267055295096;
 
-                System.out.println(buffer[j*2 + 1]);
-                { break; }
-
-//                diff[j] = buffer[j*2    ] *  0.33267055295096
-//                        + buffer[j*2 + 1] *  0.80689150931334
-//                        + buffer[j*2 + 2] *  0.45987750211933
-//                        + buffer[j*2 + 3] * -0.13501102001039
-//                        + buffer[j*2 + 4] * -0.08544127388224
-//                        + buffer[j*2 + 5] *  0.0352262918821;
+                diff[j] = buffer[j*2    ] *  0.33267055295096
+                        + buffer[j*2 + 1] *  0.80689150931334
+                        + buffer[j*2 + 2] *  0.45987750211933
+                        + buffer[j*2 + 3] * -0.13501102001039
+                        + buffer[j*2 + 4] * -0.08544127388224
+                        + buffer[j*2 + 5] *  0.0352262918821;
             }
 
             double meanDeviation = computeMeanDeviation(sum);
@@ -42,12 +35,10 @@ public class Analyzer {
             summaries.add(new ChunkSummary(meanDeviation, dispersion));
 
             buffer = diff;
-            count = (count - 5) / 2;
-            i += 1;
+            count  = (count - 5) / 2;
         }
-
-        return new ChunkSummary[1];
-        // return (ChunkSummary[]) summaries.toArray();
+        return (ChunkSummary[]) summaries.toArray(
+                new ChunkSummary[summaries.size()]);
     }
 
     private static double computeMeanDeviation(double[] sum) {
@@ -65,7 +56,7 @@ public class Analyzer {
             double delta = sum[i] - meanDeviation;
             result += delta * delta;
         }
-        return Math.sqrt(result) / (double) sum.length;
+        return Math.sqrt(result / (double) sum.length);
     }
 
     public static AnalysisSummary compare(ChunkSummary[] first,
