@@ -2,17 +2,18 @@ package com.mps.analyzer;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 
 public class Analyzer {
-    public static ChunkSummary[] summarize(double[] frames) {
-        int count = (frames.length - 5) / 2;
-        double[] buffer = frames.clone();
-
-        List summaries = new ArrayList<ChunkSummary>();
+    public static Collection<ChunkSummary> summarize(double[] frames) {
+        final List<ChunkSummary> summaries = new ArrayList<>();
 
         // Somewhat resembling wavelet transform
+        double[] buffer = frames.clone();
+        int count = (frames.length - 5) / 2;
         while (count > 0) {
             double[] sum  = new double[count];
             double[] diff = new double[count];
@@ -31,7 +32,6 @@ public class Analyzer {
                         + buffer[j*2 + 4] * -0.08544127388224
                         + buffer[j*2 + 5] *  0.0352262918821;
             }
-
             final double meanDeviation = computeMeanDeviation(sum);
             final double dispersion    = computeDispersion(sum, meanDeviation);
             summaries.add(new ChunkSummary(meanDeviation, dispersion));
@@ -39,13 +39,12 @@ public class Analyzer {
             buffer = diff;
             count  = (count - 5) / 2;
         }
-        return (ChunkSummary[]) summaries.toArray(
-                new ChunkSummary[summaries.size()]);
+        return summaries;
     }
 
-    public static ChunkSummary[] readSummaryFromStream(InputStream file) {
+    public static Collection<ChunkSummary> readSummaryFromStream(InputStream file) {
         final int total = readStreamLE(file, 2);
-        ChunkSummary[] summaries = new ChunkSummary[total];
+        final List<ChunkSummary> summaries = new ArrayList<>();
         for (int i = 0; i < total; i += 1) {
             final int count = readStreamLE(file, 4);
             double[] sum = new double[count];
@@ -55,32 +54,36 @@ public class Analyzer {
 
             final double meanDeviation = computeMeanDeviation(sum);
             final double dispersion    = computeDispersion(sum, meanDeviation);
-            summaries[i] = new ChunkSummary(meanDeviation, dispersion);
+            summaries.set(i, new ChunkSummary(meanDeviation, dispersion));
         }
         return summaries;
     }
 
-    public static AnalysisSummary compare(ChunkSummary[] first,
-                                          ChunkSummary[] second)
+    public static AnalysisSummary compare(Collection<ChunkSummary> first,
+                                          Collection<ChunkSummary> second)
             throws AnalyzerException {
-        if (first.length != second.length) {
-            throw new AnalyzerException("first.length != second.length");
+        if (first.size() != second.size()) {
+            throw new AnalyzerException("first.size() != second.size()");
         }
 
-        final int length = first.length;
+        final Iterator<ChunkSummary> firstI  = first.iterator();
+        final Iterator<ChunkSummary> secondI = second.iterator();
 
         double meanDeviation = 0.0;
         double dispersion    = 0.0;
 
-        for (int i = 0; i < length; i += 1) {
-            meanDeviation += Math.abs(first[i].getMeanDeviation()
-                    - second[i].getMeanDeviation());
-            dispersion += Math.abs(first[i].getDispersion()
-                    - second[i].getDispersion());
+        while (firstI.hasNext() && secondI.hasNext()) {
+            final ChunkSummary chunk1 = firstI.next();
+            final ChunkSummary chunk2 = secondI.next();
+
+            meanDeviation += Math.abs(
+                    chunk1.getMeanDeviation() - chunk2.getMeanDeviation());
+            dispersion += Math.abs(
+                    chunk1.getDispersion() - chunk2.getDispersion());
         }
 
-        meanDeviation /= length;
-        dispersion    /= length;
+        meanDeviation /= first.size();
+        dispersion    /= first.size();
 
         return new AnalysisSummary(meanDeviation, dispersion,
                 (int) Double.doubleToLongBits(dispersion));

@@ -29,6 +29,8 @@ public class Main {
 //                    summary.getMeanDeviation(),
 //                    summary.getDispersion(),
 //                    summary.getDegree()));
+            Machine machine = new Machine();
+            machine.scan();
         } catch (Exception e) {
             e.printStackTrace();
         }

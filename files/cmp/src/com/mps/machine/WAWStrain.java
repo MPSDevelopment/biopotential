@@ -5,6 +5,7 @@ import com.mps.analyzer.ChunkSummary;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Collection;
 
 // Implemented for legacy reasons
 public class WAWStrain implements Strain {
@@ -24,7 +25,7 @@ public class WAWStrain implements Strain {
         return name;
     }
 
-    public ChunkSummary[] getSummary() {
+    public Collection<ChunkSummary> getSummary() {
         return summary;
     }
 
@@ -34,5 +35,5 @@ public class WAWStrain implements Strain {
 
     private final String kind;
     private final String name;
-    private final ChunkSummary[] summary;
+    private final Collection<ChunkSummary> summary;
 }
