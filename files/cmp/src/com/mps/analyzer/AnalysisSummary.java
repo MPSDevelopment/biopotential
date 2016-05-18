@@ -12,15 +12,15 @@ public class AnalysisSummary {
     }
 
     public double getMeanDeviation() {
-        return meanDeviation;
+        return this.meanDeviation;
     }
 
     public double getDispersion() {
-        return dispersion;
+        return this.dispersion;
     }
 
     public int getDegree() {
-        return degree;
+        return this.degree;
     }
 
     private final double meanDeviation;

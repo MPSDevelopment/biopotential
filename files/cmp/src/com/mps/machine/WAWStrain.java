@@ -13,20 +13,20 @@ public class WAWStrain implements Strain {
             throws IOException {
         this.kind = kind;
         this.name = name;
-        this.summary = Analyzer.readSummaryFromStream(
+        this.summary = Analyzer.readSummaryFromWAW(
                 new FileInputStream(fileName));
     }
 
     public String getKind() {
-        return kind;
+        return this.kind;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public Collection<ChunkSummary> getSummary() {
-        return summary;
+        return this.summary;
     }
 
     public String getDescription() {

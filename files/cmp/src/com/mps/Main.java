@@ -6,6 +6,7 @@ import com.mps.analyzer.AnalysisSummary;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import javax.sound.sampled.AudioSystem;
 
 import com.mps.machine.Machine;
@@ -19,7 +20,7 @@ public class Main {
 //                    AudioSystem.getAudioInputStream(new File("test.wav")));
 //
 //            final ChunkSummary[] sampleChunks = Analyzer.summarize(sample[0]);
-//            final ChunkSummary[] strainChunks = Analyzer.readSummaryFromStream(
+//            final ChunkSummary[] strainChunks = Analyzer.readSummaryFromWAW(
 //                    new FileInputStream("test.waw"));
 //
 //            final AnalysisSummary summary =
@@ -29,8 +30,20 @@ public class Main {
 //                    summary.getMeanDeviation(),
 //                    summary.getDispersion(),
 //                    summary.getDegree()));
-            Machine machine = new Machine();
-            machine.scan();
+            final Machine machine = new Machine();
+            machine.setDiseaseStrains(
+                    new ArrayList<Strain>() {{
+                        add(new WAWStrain("g1", "n1", "ills/1.waw"));
+                        add(new WAWStrain("g1", "n2", "ills/2.waw"));
+                        add(new WAWStrain("g2", "n3", "ills/3.waw"));
+                        add(new WAWStrain("g2", "n4", "ills/4.waw"));
+                        add(new WAWStrain("g3", "n5", "ills/5.waw"));
+                        add(new WAWStrain("g3", "n6", "ills/6.waw"));
+                    }}
+            );
+            final double[][] sample = SoundIO.readAllFrames(
+                    AudioSystem.getAudioInputStream(new File("test.wav")));
+            machine.scan(Analyzer.summarize(sample[0]));
         } catch (Exception e) {
             e.printStackTrace();
         }

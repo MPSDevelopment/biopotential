@@ -8,11 +8,11 @@ public class ChunkSummary {
     }
 
     public double getMeanDeviation() {
-        return meanDeviation;
+        return this.meanDeviation;
     }
 
     public double getDispersion() {
-        return dispersion;
+        return this.dispersion;
     }
 
     private final double meanDeviation;

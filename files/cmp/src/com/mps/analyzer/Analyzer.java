@@ -42,7 +42,7 @@ public class Analyzer {
         return summaries;
     }
 
-    public static Collection<ChunkSummary> readSummaryFromStream(InputStream file) {
+    public static Collection<ChunkSummary> readSummaryFromWAW(InputStream file) {
         final int total = readStreamLE(file, 2);
         final List<ChunkSummary> summaries = new ArrayList<>();
         for (int i = 0; i < total; i += 1) {
@@ -54,7 +54,7 @@ public class Analyzer {
 
             final double meanDeviation = computeMeanDeviation(sum);
             final double dispersion    = computeDispersion(sum, meanDeviation);
-            summaries.set(i, new ChunkSummary(meanDeviation, dispersion));
+            summaries.add(new ChunkSummary(meanDeviation, dispersion));
         }
         return summaries;
     }
