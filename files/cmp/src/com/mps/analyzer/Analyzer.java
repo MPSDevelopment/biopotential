@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Analyzer {
+    // TODO: Make use of new sound API
     public static Collection<ChunkSummary> summarize(double[] frames) {
         final List<ChunkSummary> summaries = new ArrayList<>();
 
@@ -15,8 +16,8 @@ public class Analyzer {
         double[] buffer = frames.clone();
         int count = (frames.length - 5) / 2;
         while (count > 0) {
-            double[] sum = new double[count];
-            double[] diff = new double[count];
+            final double[] sum = new double[count];
+            final double[] diff = new double[count];
             for (int j = 0; j < count; j += 1) {
                 sum[j] = buffer[j * 2] * 0.0352262918821
                        + buffer[j * 2 + 1] * 0.08544127388224
@@ -47,7 +48,7 @@ public class Analyzer {
         final List<ChunkSummary> summaries = new ArrayList<>();
         for (int i = 0; i < total; i += 1) {
             final int count = readStreamLE(file, 4);
-            double[] sum = new double[count];
+            final double[] sum = new double[count];
             for (int j = 0; j < count; j += 1) {
                 sum[j] = (double) Float.intBitsToFloat(readStreamLE(file, 4));
             }

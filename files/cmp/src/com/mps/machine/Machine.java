@@ -8,14 +8,13 @@ import java.util.*;
 
 public class Machine {
     public static Map<Strain, AnalysisSummary> summarizeStrains(
-        SummaryCondition         condition,
-        Collection<ChunkSummary> sample_summary,
-        StrainDB                 strains) {
-
-        Map<Strain, AnalysisSummary> summaries = new HashMap<>();
+            SummaryCondition         condition,
+            Collection<ChunkSummary> sample_summary,
+            StrainDB                 strains) {
+        final Map<Strain, AnalysisSummary> summaries = new HashMap<>();
         while (strains.hasNext()) {
-            Strain strain = strains.next();
-            AnalysisSummary summary =
+            final Strain strain = strains.next();
+            final AnalysisSummary summary =
                 Analyzer.compare(sample_summary, strain.getSummary());
             if (condition.test(strain, summary)) {
                 summaries.put(strain, summary);
@@ -25,10 +24,9 @@ public class Machine {
     }
 
     public static Map<String, Integer> filterKinds(
-        KindCondition condition, Map<Strain, AnalysisSummary> summaries) {
-
-        Map<String, Integer> counters = new HashMap<>();
-        Map<String, Integer> result   = new HashMap<>();
+            KindCondition condition, Map<Strain, AnalysisSummary> summaries) {
+        final Map<String, Integer> counters = new HashMap<>();
+        final Map<String, Integer> result   = new HashMap<>();
         summaries.forEach((k, v) ->
             counters.put(k.getKind(),
                 counters.getOrDefault(k.getKind(), 0) + 1));

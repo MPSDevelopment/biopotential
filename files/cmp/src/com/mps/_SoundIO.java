@@ -5,7 +5,7 @@ import javax.sound.sampled.AudioFormat.Encoding;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioFormat;
 
-public class SoundIO {
+public class _SoundIO {
     public static double[][] readAllFrames(final AudioInputStream audioStream)
             throws IOException {
         final AudioFormat format = audioStream.getFormat();
@@ -30,7 +30,7 @@ public class SoundIO {
 //        final double frameRes = Math.pow(2.0, (double) frameSize * 8.0);
 //        final boolean isBigEndian = format.isBigEndian();
 
-        double[][] peaks = new double[1][(int) frameLength];
+        final double[][] peaks = new double[1][(int) frameLength];
         for (int i = 0; i < (int) frameLength; i += 1) {
             // Performance note: highly biased branches are ok
 //          final long frameData = isBigEndian
