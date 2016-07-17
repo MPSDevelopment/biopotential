@@ -1,0 +1,18 @@
+Notes: edx_support as orientir for edx functions, continue at ActualEDXReader
+
+2b EDXI magic
+4b EDXI version
+8b ".offs   " str
+4b section header size
+*  sections
+
+struct section {
+    char     name[8];
+    uint32_t offs;
+    uint32_t len; // ignoring additional 12 bytes in start of each section
+};
+
+section .orig    : original PCM data
+section .sqnlist : ?
+
+each section has 12 bytes of name(8) and len(4) at the beginning.

@@ -5,11 +5,10 @@ import javax.sound.sampled.AudioFormat.Encoding;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioFormat;
 
-// TODO: Checkout https://github.com/ddf/Minim
-public class Vis {
-    public static double[][] getWaveForm(final AudioInputStream audioStream)
+public class SoundIO {
+    public static double[][] readAllFrames(final AudioInputStream audioStream)
             throws IOException {
-        AudioFormat format = audioStream.getFormat();
+        final AudioFormat format = audioStream.getFormat();
 
         // TODO?: Make it work with more encodings
         if (format.getEncoding() != Encoding.PCM_UNSIGNED) {
@@ -23,7 +22,6 @@ public class Vis {
         audioStream.read(rawData);
 
         final int channels = format.getChannels();
-        // resolution = max int value frame of its size can handle
         final double frameRes = Math.pow(2.0, (double)frameSize * 8.0) / 2.0;
         final boolean isBigEndian = format.isBigEndian();
 
@@ -42,6 +40,7 @@ public class Vis {
             }
             peak += 1;
         }
+
         return peaks;
     }
 
@@ -53,8 +52,10 @@ public class Vis {
         for (int i = 0; i < frameSize; i += 1) {
             frameData |= rawData[rawPtr + i] << (frameSize - i - 1)*8;
         }
+
         return frameData;
     }
+
     private static long readFrameLE(byte[] rawData,
                                     int  rawPtr,
                                     long frameSize) {
@@ -62,6 +63,7 @@ public class Vis {
         for (int i = 0; i < frameSize; i += 1) {
             frameData |= rawData[rawPtr + i] << i*8;
         }
+
         return frameData;
     }
 }
