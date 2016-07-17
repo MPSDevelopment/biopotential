@@ -12,8 +12,8 @@ public class Machine {
             Collection<ChunkSummary> sample_summary,
             StrainDB                 strains) {
         final Map<Strain, AnalysisSummary> summaries = new HashMap<>();
-        while (strains.hasNext()) {
-            final Strain strain = strains.next();
+        Strain strain;
+        while ((strain = strains.next()) != null) {
             final AnalysisSummary summary =
                 Analyzer.compare(sample_summary, strain.getSummary());
             if (condition.test(strain, summary)) {

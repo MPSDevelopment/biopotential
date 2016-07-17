@@ -8,5 +8,6 @@ public interface Strain {
     String getKind();
     String getName();
     String getDescription();
+    Collection<Double> getPCMData();
     Collection<ChunkSummary> getSummary();
 }

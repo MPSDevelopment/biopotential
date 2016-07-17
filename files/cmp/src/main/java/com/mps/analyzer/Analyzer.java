@@ -9,12 +9,13 @@ import java.util.ArrayList;
 
 public class Analyzer {
     // TODO: Make use of new sound API
-    public static Collection<ChunkSummary> summarize(double[] frames) {
+    public static Collection<ChunkSummary> summarize(Collection<Double> frames) {
         final List<ChunkSummary> summaries = new ArrayList<>();
 
         // Somewhat resembling wavelet transform
-        double[] buffer = frames.clone();
-        int count = (frames.length - 5) / 2;
+        double[] buffer = frames.stream()
+            .mapToDouble(Double::doubleValue).toArray();
+        int count = (frames.size() - 5) / 2;
         while (count > 0) {
             final double[] sum = new double[count];
             final double[] diff = new double[count];

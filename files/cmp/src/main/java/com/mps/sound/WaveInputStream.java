@@ -16,7 +16,7 @@ public class WaveInputStream extends AudioInputStream implements SoundInput {
     }
 
     public WaveInputStream(File file)
-            throws Exception {
+            throws IOException, UnsupportedAudioFileException {
         this(new BufferedInputStream(new FileInputStream(file)));
     }
 

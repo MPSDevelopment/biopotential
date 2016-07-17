@@ -1,7 +1,8 @@
-package com.mps.machine;
+package com.mps.machine.strains;
 
 import com.mps.analyzer.Analyzer;
 import com.mps.analyzer.ChunkSummary;
+import com.mps.machine.Strain;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -27,6 +28,10 @@ public class WAWStrain implements Strain {
 
     public Collection<ChunkSummary> getSummary() {
         return this.summary;
+    }
+
+    public Collection<Double> getPCMData() {
+        return null;
     }
 
     public String getDescription() {
