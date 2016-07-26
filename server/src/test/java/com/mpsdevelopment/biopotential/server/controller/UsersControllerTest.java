@@ -9,6 +9,7 @@ import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
@@ -44,19 +45,31 @@ public class UsersControllerTest {
 	@Autowired
 	private UserDao userDao;
 
-	@Test
-	public void login() throws DaoException, InvalidKeyException, NoSuchAlgorithmException, IllegalStateException,
-			SignatureException, IOException, JWTVerifyException {
+	private MockHttpServletRequest request;
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
+	@Before
+	public void before() {
+		request = new MockHttpServletRequest();
 		// request.setServerName("www.example.com");
 		request.setRequestURI(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_POST_LOGIN);
 		// request.setQueryString("param1=value1&param");
 
-//		User newUser = new User().setLogin("login").setPassword("password");
-//
-//		ResponseEntity<String> loginResponse = usersController.login(request, JsonUtils.getJson(newUser));
-//		assertEquals(HttpStatus.UNAUTHORIZED, loginResponse.getStatusCode());
+	}
+
+	@Test
+	public void login() throws DaoException, InvalidKeyException, NoSuchAlgorithmException, IllegalStateException,
+			SignatureException, IOException, JWTVerifyException {
+
+		ResponseEntity<String> emptyResponse = usersController.login(request, "{}");
+		assertEquals(HttpStatus.UNAUTHORIZED, emptyResponse.getStatusCode());
+
+		ResponseEntity<String> nullResponse = usersController.login(request, null);
+		assertEquals(HttpStatus.BAD_REQUEST, nullResponse.getStatusCode());
+
+		User newUser = new User().setLogin("login").setPassword("password");
+
+		ResponseEntity<String> loginResponse = usersController.login(request, JsonUtils.getJson(newUser));
+		assertEquals(HttpStatus.UNAUTHORIZED, loginResponse.getStatusCode());
 
 		User adminUser = new User().setLogin(DatabaseCreator.ADMIN_LOGIN).setPassword(DatabaseCreator.ADMIN_PASSWORD);
 
@@ -72,7 +85,7 @@ public class UsersControllerTest {
 		User newUser = new User();
 		newUser.setSurname("surmane").setName("name").setLogin("login").setPassword("password");
 
-		ResponseEntity<String> createUserResponse = usersController.createUser(JsonUtils.getJson(newUser));
+		ResponseEntity<String> createUserResponse = usersController.createUser(request, JsonUtils.getJson(newUser));
 		assertEquals(HttpStatus.CREATED, createUserResponse.getStatusCode());
 
 		User userFromResponse = JsonUtils.fromJson(User.class, createUserResponse.getBody());
@@ -91,7 +104,7 @@ public class UsersControllerTest {
 
 		user.setSurname("newSurname");
 
-		ResponseEntity<String> updateUserResponse = usersController.updateUser(JsonUtils.getJson(user));
+		ResponseEntity<String> updateUserResponse = usersController.updateUser(request, JsonUtils.getJson(user));
 
 		assertEquals(HttpStatus.OK, updateUserResponse.getStatusCode());
 
@@ -112,7 +125,7 @@ public class UsersControllerTest {
 
 		assertNotNull(userDao.get(userId));
 
-		ResponseEntity<String> deleteUserResponse = usersController.deleteUser(userId);
+		ResponseEntity<String> deleteUserResponse = usersController.deleteUser(request, userId);
 
 		assertEquals(HttpStatus.OK, deleteUserResponse.getStatusCode());
 

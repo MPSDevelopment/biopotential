@@ -1,7 +1,0 @@
- INFO 2016-07-26 12:45:20,870 org.springframework.context.support.ClassPathXmlApplicationContext - Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@10bdf5e5: startup date [Tue Jul 26 12:45:20 EEST 2016]; root of context hierarchy
- INFO 2016-07-26 12:45:20,906 org.springframework.beans.factory.xml.XmlBeanDefinitionReader - Loading XML bean definitions from class path resource [webapp/app-context.xml]
- INFO 2016-07-26 12:45:21,086 org.eclipse.jetty.util.log - Logging initialized @816ms
- INFO 2016-07-26 12:45:21,173 com.mpsdevelopment.biopotential.server.JettyServer - Max content size will be changed from -1 to 500000000
- INFO 2016-07-26 12:45:21,234 com.mpsdevelopment.biopotential.server.JettyServer - Server started
- INFO 2016-07-26 12:45:21,234 com.mpsdevelopment.biopotential.server.gui.ServerApplication - Server started
- INFO 2016-07-26 12:45:21,235 com.mpsdevelopment.biopotential.server.gui.ServerApplication - Server stopped
