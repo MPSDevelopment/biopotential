@@ -1,12 +1,20 @@
 package com.mps;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import javax.sound.sampled.AudioFormat.Encoding;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioFormat;
 
 public class _SoundIO {
-    public static double[][] readAllFrames(final AudioInputStream audioStream)
+    public static Collection<Double> readAllFrames()
+            throws IOException {
+        return readAllFrames();
+    }
+
+    public static Collection<Double> readAllFrames(final AudioInputStream audioStream)
             throws IOException {
         final AudioFormat format = audioStream.getFormat();
 
@@ -30,13 +38,15 @@ public class _SoundIO {
 //        final double frameRes = Math.pow(2.0, (double) frameSize * 8.0);
 //        final boolean isBigEndian = format.isBigEndian();
 
-        final double[][] peaks = new double[1][(int) frameLength];
+        //final double[][] peaks = new double[(int) frameLength];
+        List<Double> peaks = new ArrayList<>();
         for (int i = 0; i < (int) frameLength; i += 1) {
             // Performance note: highly biased branches are ok
 //          final long frameData = isBigEndian
 //              ? readFrameBE(rawData, rawPtr, frameSize)
 //              : readFrameLE(rawData, rawPtr, frameSize);
-            peaks[0][i] = (double) (byte) (rawData[i] ^ 0x80) / 128.0;
+            //peaks[0][i] = (double) (byte) (rawData[i] ^ 0x80) / 128.0;
+            peaks.add((double) (byte) (rawData[i] ^ 0x80) / 128.0);
         }
 
         return peaks;
