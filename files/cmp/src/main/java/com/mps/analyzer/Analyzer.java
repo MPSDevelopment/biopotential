@@ -63,6 +63,10 @@ public class Analyzer {
 
     public static AnalysisSummary compare(Collection<ChunkSummary> first,
                                           Collection<ChunkSummary> second) {
+        if (first == null || second == null) {
+            return null;
+        }
+
         final Iterator<ChunkSummary> firstI = first.iterator();
         final Iterator<ChunkSummary> secondI = second.iterator();
         final int size = Math.min(first.size(), second.size());
