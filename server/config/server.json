@@ -1,0 +1,6 @@
+{
+  "host": "localhost",
+  "port": 8098,
+  "filesPath": "data/files",
+  "tempDirectory": "data/tmp/webapp"
+}
