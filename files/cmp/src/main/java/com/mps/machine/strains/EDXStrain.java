@@ -17,24 +17,27 @@ class EDXSection {
 }
 
 public class EDXStrain implements Strain {
+    public static final String subdir = "edxfiles/";
+
     public EDXStrain(String kind,
                      String name,
                      String desc,
                      String fileName) throws IOException {
+        System.out.println(subdir + fileName);
+
         this.kind = kind;
         this.name = name;
         this.desc = desc;
-        this.sects = new HashMap<String, EDXSection>();
+        this.sects = new HashMap<>();
 
-        try (BufferedInputStream in = new BufferedInputStream(
-                new FileInputStream(new File(fileName)))) {
+        try (RandomAccessFile in = new RandomAccessFile(
+                new File(subdir + fileName), "r")) {
             byte[] hdr = new byte[4];
             if (in.read(hdr) != 4 || !new String(hdr).equals("EDXI")) {
                 throw new IOException("not EDX");
             }
-
             // version number + .offs string
-            if (in.skip(4 + 8) != (4 + 8)) {
+            if (in.skipBytes(4 + 8) != (4 + 8)) {
                 throw new IOException("not EDX");
             }
 
@@ -49,8 +52,12 @@ public class EDXStrain implements Strain {
                 sect.name = new String(sect_name);
                 sect.offset = readi32le(in);
                 sect.length = readi32le(in);
-                in.skip(12); // Skip junk at the beginning
-                in.read(sect.contents, 0, sect.length);
+                sect.contents = new byte[sect.length];
+
+                long cur = in.getFilePointer();
+                in.seek(sect.offset + 12); // 12 bytes of useless junk
+                in.read(sect.contents, 0, sect.contents.length);
+                in.seek(cur);
 
                 this.sects.put(sect.name, sect);
             }
@@ -58,12 +65,16 @@ public class EDXStrain implements Strain {
             throw e;
         }
 
-        this.pcmData = new ArrayList<>();
-        for (byte b : this.sects.get(".orig   ").contents) {
-            this.pcmData.add((double) b / 255.0);
+        if (this.sects.containsKey(".orig   ")) {
+            this.pcmData = new ArrayList<>();
+            for (byte b : this.sects.get(".orig   ").contents) {
+                this.pcmData.add((double) b / 255.0);
+            }
+            this.summary = Analyzer.summarize(this.pcmData);
+        } else {
+            this.pcmData = null;
+            this.summary = null;
         }
-
-        this.summary = Analyzer.summarize(this.pcmData);
     }
 
     public String getKind() {
@@ -83,16 +94,19 @@ public class EDXStrain implements Strain {
     }
 
     public Collection<ChunkSummary> getSummary() {
-        return null;
+        return this.summary;
     }
 
-    private int readi32le(InputStream in) {
+    private int readi32le(RandomAccessFile in) {
         try {
-            return (in.read() & 0xff)
-                | ((in.read() & 0xff) << 8)
-                | ((in.read() & 0xff) << 16)
-                | ((in.read() & 0xff) << 24);
+            byte[] raw = new byte[4];
+            in.read(raw);
+            return (raw[0] & 0xff)
+                | ((raw[1] & 0xff) << 8)
+                | ((raw[2] & 0xff) << 16)
+                | ((raw[3] & 0xff) << 24);
         } catch (IOException e) {
+            e.printStackTrace();
             return 0;
         }
     }

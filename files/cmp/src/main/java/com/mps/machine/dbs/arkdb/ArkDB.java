@@ -1,14 +1,12 @@
 package com.mps.machine.dbs.arkdb;
 
-import com.mps.machine.StrainDB;
 import com.mps.machine.strains.EDXStrain;
 
-import java.io.IOException;
 import java.sql.*;
 import java.util.Arrays;
 import java.util.Collection;
 
-public class ArkDB implements StrainDB {
+public class ArkDB {
     public ArkDB(String url) throws ArkDBException {
         this.url = url;
 
@@ -26,47 +24,6 @@ public class ArkDB implements StrainDB {
         } catch (SQLException e) {
             throw new ArkDBException("SQLException: " + e.getMessage());
         }
-
-//        try (Connection db = DriverManager.getConnection("jdbc:sqlite:" + url)) {
-//            ResultSet pattern = db.createStatement().executeQuery(
-//                "SELECT * FROM patterns");
-//            while (pattern.getNext()) {
-//                PreparedStatement folder_link_st = db.prepareStatement(
-//                    "SELECT id_folder FROM link_patterns_to_folders " +
-//                    "WHERE id_pattern = ?");
-//                folder_link_st.setInt(1, pattern.getInt("id_pattern"));
-//
-//                PreparedStatement folder_st = db.prepareStatement(
-//                    "SELECT * FROM folders WHERE id_folder = ?");
-//                folder_st.setInt(1, folder_link_st.executeQuery().getInt(
-//                    "id_folder"));
-//                ResultSet folder = folder_st.executeQuery();
-//            }
-//        } catch (SQLException e) {
-//            throw new ArkDBException("SQLException: " + e.getMessage());
-//        }
-    }
-
-    public EDXStrain nextDiseaseStrain() {
-        try {
-            if (this.patterns.next()) {
-                // TODO: first argument should be folder id, not pattern id
-                return new EDXStrain(this.patterns.getString("id_pattern"),
-                    this.patterns.getString("pattern_name"),
-                    this.patterns.getString("pattern_description"),
-                    this.patterns.getString("pattern_uid"));
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            return null;
-        } catch (IOException e) {
-            return null;
-        }
-    }
-
-    public EDXStrain nextHealingStrain() {
-        return null;
     }
 
     public void setDiseaseFolders(String... diseaseFolders) {
@@ -77,9 +34,17 @@ public class ArkDB implements StrainDB {
         this.healingFolders = Arrays.asList(healingFolders);
     }
 
-    private String url;
-    private ResultSet patterns;
-    private Connection db;
-    private Collection<String> diseaseFolders;
-    private Collection<String> healingFolders;
+    public ArkDBIter getDiseases() {
+        return new ArkDBIter(this, StrainType.TYPE_ANY); //StrainType.TYPE_DISEASE);
+    }
+
+    public ArkDBIter getHealings() {
+        return new ArkDBIter(this, StrainType.TYPE_HEALING);
+    }
+
+    ResultSet patterns;
+    Collection<String> diseaseFolders;
+    Collection<String> healingFolders;
+    String url;
+    Connection db;
 }
