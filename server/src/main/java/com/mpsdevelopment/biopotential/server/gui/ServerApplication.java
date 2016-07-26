@@ -6,20 +6,23 @@ import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 
 public class ServerApplication {
 
-    private static final Logger LOGGER = LoggerUtil.getLogger(ServerApplication.class);
+	private static final Logger LOGGER = LoggerUtil.getLogger(ServerApplication.class);
 
-    public static void main(String args[]) throws Exception {
-        try {
+	public static void main(String args[]) throws Exception {
+		try {
 
-            JettyServer server = JettyServer.getInstance();
-            server.start();
-            LOGGER.info("Server started");
-            server.join();
-            LOGGER.info("Server stopped");
-        } catch (Exception e) {
-            LOGGER.error("Failed to start server. = %s", e);
-        }
+			JettyServer server = JettyServer.getInstance();
+			server.start();
+			LOGGER.info("Server started");
+			server.join();
 
-    }
+			// Thread.sleep(10000);
+
+			LOGGER.info("Server stopped");
+		} catch (Exception e) {
+			LOGGER.error("Failed to start server. = %s", e);
+		}
+
+	}
 
 }

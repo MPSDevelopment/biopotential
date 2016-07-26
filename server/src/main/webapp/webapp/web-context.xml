@@ -47,5 +47,7 @@
 		<property name="maxInMemorySize" value="500000000" />
 	</bean>
 	<mvc:annotation-driven />
+	
+	<import resource="spring-security.xml"/>
 
 </beans>
