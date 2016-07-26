@@ -18,25 +18,28 @@
         http://www.springframework.org/schema/websocket/spring-websocket.xsd">
 
 	<context:component-scan base-package="com.mpsdevelopment.biopotential.server.db" />
+	<context:component-scan base-package="com.mpsdevelopment.biopotential.server.db.dao" />
 
 	<bean id="persistUtils" class="com.mpsdevelopment.biopotential.server.db.PersistUtils" init-method="configureSessionFactory" autowire="byName" />
 	<bean id="sessionManager" class="com.mpsdevelopment.biopotential.server.db.SessionManager" autowire="byName" />
 
 	<bean id="springContextHolder" class="com.mpsdevelopment.biopotential.server.SpringContextHolder" />
-	
-	<bean id="sessionAdviceBean" class="com.mpsdevelopment.helicopter.db.advice.SessionAdvice" />
-	
 
-<!-- 	<bean id="flightControllerProxy" class="org.springframework.aop.framework.ProxyFactoryBean"> -->
-<!-- 		<property name="target"> -->
-<!-- 			<bean id="flightController" class="com.mpsdevelopment.helicopter.controller.FlightController" /> -->
-<!-- 		</property> -->
-<!-- 		<property name="interceptorNames"> -->
-<!-- 			<list> -->
-<!-- 				<value>sessionAdviceBean</value> -->
-<!-- 			</list> -->
-<!-- 		</property> -->
-<!-- 	</bean> -->
+	<bean id="sessionAdviceBean" class="com.mpsdevelopment.biopotential.server.db.advice.SessionAdvice" />
+
+
+	<bean id="userDao" class="com.mpsdevelopment.biopotential.server.db.dao.UserDao" />
+
+	<bean id="usersControllerProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target">
+			<bean id="usersController" class="com.mpsdevelopment.biopotential.server.controller.UsersController" />
+		</property>
+		<property name="interceptorNames">
+			<list>
+				<value>sessionAdviceBean</value>
+			</list>
+		</property>
+	</bean>
 
 
 	<!-- This bean we need for uploading file from http client -->
@@ -47,7 +50,7 @@
 		<property name="maxInMemorySize" value="500000000" />
 	</bean>
 	<mvc:annotation-driven />
-	
-	<import resource="spring-security.xml"/>
+
+	<import resource="spring-security.xml" />
 
 </beans>

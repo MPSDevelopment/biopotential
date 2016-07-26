@@ -17,6 +17,10 @@ public class SessionManager {
 
 	@Autowired
 	private PersistUtils persistUtils;
+	
+	public SessionManager(){
+		
+	}
 
 	public SessionManager(PersistUtils persistUtils) {
 		this.persistUtils = persistUtils;

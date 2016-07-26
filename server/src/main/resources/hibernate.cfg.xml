@@ -3,6 +3,7 @@
 "-//Hibernate/Hibernate Configuration DTD//EN"
 "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
-<!-- 		<mapping class="com.mpsdevelopment.helicopter.db.pojo.BeaconGroup" /> -->
+	<session-factory>
+		<mapping class="com.mpsdevelopment.biopotential.server.db.pojo.User" />
 	</session-factory>
 </hibernate-configuration>

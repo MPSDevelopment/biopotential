@@ -14,7 +14,7 @@ public abstract class BaseObject implements Serializable {
 
 	public static final String UUID_GENERATOR = "uuidGenerator";
 
-	public static final String GENERATOR_STRATEGY = "com.mpsdevelopment.helicopter.db.UuidGenerator";
+	public static final String GENERATOR_STRATEGY = "com.mpsdevelopment.biopotential.server.db.UuidGenerator";
 
 	public static final String TEXT_DEFINITION = "text";
 

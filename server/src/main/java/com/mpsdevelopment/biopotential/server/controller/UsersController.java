@@ -72,6 +72,23 @@ public class UsersController {
 		LOGGER.info(String.format("User %s has been logged in. with role = %s", user.getLogin(), role));
 		return new ResponseEntity<>(String.format("User %s has been logged in.", user.getLogin()), null, HttpStatus.CREATED);
 	}
+	
+	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_PUT_CREATE_USER, method = RequestMethod.PUT, produces = { "application/json; charset=UTF-8" })
+	public ResponseEntity<String> createUser(@RequestBody String json) {
+
+		User user = JsonUtils.fromJson(User.class, json);
+		if (user == null) {
+			return new ResponseEntity<String>(HttpStatus.BAD_REQUEST);
+		}
+		if (userDao.getByLogin(user.getLogin()) != null) {
+			return new ResponseEntity<String>(JsonUtils.getJson("User with such login already exist"), null, HttpStatus.CONFLICT);
+		}
+
+		userDao.save(user);
+
+		return new ResponseEntity<String>(JsonUtils.getJson(user), null, HttpStatus.CREATED);
+
+	}
 
 	private String authenticateInSpringSecurity(User user, HttpSession session) throws UsernameNotFoundException {
 		UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(user.getLogin(), user.getPassword());

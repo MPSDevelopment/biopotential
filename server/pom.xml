@@ -37,6 +37,7 @@
 		<junit.version>4.12</junit.version>
 		<mockito.version>1.10.19</mockito.version>
 		<powermock.version>1.6.2</powermock.version>
+		<springockito.version>1.0.9</springockito.version>
 		<gson.version>2.6.2</gson.version>
 		<mbassador.version>1.2.1</mbassador.version>
 		<cglib.version>3.1</cglib.version>
@@ -323,6 +324,12 @@
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
 			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+				<dependency>
+			<groupId>org.kubek2k</groupId>
+			<artifactId>springockito-annotations</artifactId>
+			<version>${springockito.version}</version>
 			<scope>test</scope>
 		</dependency>
 
