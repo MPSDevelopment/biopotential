@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -66,11 +67,13 @@ public class UsersController {
 		try {
 			role = authenticateInSpringSecurity(user, request.getSession());
 		} catch (UsernameNotFoundException e) {
+			return new ResponseEntity<>(String.format("No user with login(%s)", user.getLogin()), null, HttpStatus.UNAUTHORIZED);
+		} catch ( BadCredentialsException e) {
 			return new ResponseEntity<>(String.format("Incorrect login(%s)/password", user.getLogin()), null, HttpStatus.UNAUTHORIZED);
 		}
 
 		LOGGER.info(String.format("User %s has been logged in. with role = %s", user.getLogin(), role));
-		return new ResponseEntity<>(String.format("User %s has been logged in.", user.getLogin()), null, HttpStatus.CREATED);
+		return new ResponseEntity<>(String.format("User %s has been logged in.", user.getLogin()), null, HttpStatus.ACCEPTED);
 	}
 	
 	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_PUT_CREATE_USER, method = RequestMethod.PUT, produces = { "application/json; charset=UTF-8" })

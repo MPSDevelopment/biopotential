@@ -40,6 +40,8 @@
 			</list>
 		</property>
 	</bean>
+	
+	<bean id="databaseCreator" class="com.mpsdevelopment.biopotential.server.db.DatabaseCreator" init-method="initialization" />
 
 
 	<!-- This bean we need for uploading file from http client -->
