@@ -51,7 +51,7 @@ public class UsersControllerTest {
 	public void before() {
 		request = new MockHttpServletRequest();
 		// request.setServerName("www.example.com");
-		request.setRequestURI(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_POST_LOGIN);
+		request.setRequestURI(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_LOGIN);
 		// request.setQueryString("param1=value1&param");
 
 	}

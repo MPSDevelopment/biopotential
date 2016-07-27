@@ -20,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -51,7 +53,7 @@ public class UsersController {
 		this.userDao = userDao;
 	}
 
-	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_POST_LOGIN, method = RequestMethod.POST)
+	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_LOGIN, method = RequestMethod.POST)
 	public ResponseEntity<String> login(HttpServletRequest request, @RequestBody String json) {
 
 		User user = JsonUtils.fromJson(User.class, json);
@@ -61,6 +63,15 @@ public class UsersController {
 		}
 		return new ResponseEntity<>(String.format("User %s has been logged in.", user.getLogin()), null,
 				HttpStatus.ACCEPTED);
+	}
+	
+	@RequestMapping(value=ControllerAPI.USER_CONTROLLER_LOGOUT, method = RequestMethod.GET)
+	public String logoutPage (HttpServletRequest request, HttpServletResponse response) {
+	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    if (auth != null){    
+	        new SecurityContextLogoutHandler().logout(request, response, auth);
+	    }
+	    return "redirect:/login?logout";//You can redirect wherever you want, but generally it's a good practice to show login screen again.
 	}
 
 	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_PUT_CREATE_USER, method = RequestMethod.PUT, produces = {

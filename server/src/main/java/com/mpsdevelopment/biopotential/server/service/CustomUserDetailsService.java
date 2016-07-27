@@ -18,12 +18,12 @@ import java.util.List;
 public class CustomUserDetailsService implements UserDetailsService {
 
 	@Autowired
-	private UserDao userDAO;
+	private UserDao userDao;
 
 	@Override
 	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
 
-		com.mpsdevelopment.biopotential.server.db.pojo.User domainUser = userDAO.getByLogin(login);
+		com.mpsdevelopment.biopotential.server.db.pojo.User domainUser = userDao.getByLogin(login);
 
 		if (domainUser == null) {
 			throw new UsernameNotFoundException("User not found");
