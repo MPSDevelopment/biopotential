@@ -32,8 +32,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = SpringockitoContextLoader.class, locations = { "classpath:/webapp/app-context-test.xml",
-		"classpath:/webapp/web-context.xml" })
+@ContextConfiguration(loader = SpringockitoContextLoader.class, locations = { "classpath:/webapp/app-context-test.xml", "classpath:/webapp/web-context.xml" })
 @Configurable
 public class UsersControllerTest {
 
@@ -57,8 +56,7 @@ public class UsersControllerTest {
 	}
 
 	@Test
-	public void login() throws DaoException, InvalidKeyException, NoSuchAlgorithmException, IllegalStateException,
-			SignatureException, IOException, JWTVerifyException {
+	public void login() throws DaoException, InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException, IOException, JWTVerifyException {
 
 		ResponseEntity<String> emptyResponse = usersController.login(request, "{}");
 		assertEquals(HttpStatus.UNAUTHORIZED, emptyResponse.getStatusCode());
@@ -80,8 +78,7 @@ public class UsersControllerTest {
 	}
 
 	@Test
-	public void createUser() throws DaoException, InvalidKeyException, NoSuchAlgorithmException, IllegalStateException,
-			SignatureException, IOException, JWTVerifyException {
+	public void createUser() throws DaoException, InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException, IOException, JWTVerifyException {
 		User newUser = new User();
 		newUser.setSurname("surmane").setName("name").setLogin("login").setPassword("password");
 
@@ -96,8 +93,7 @@ public class UsersControllerTest {
 	}
 
 	@Test
-	public void updateUser() throws DaoException, InvalidKeyException, NoSuchAlgorithmException, IllegalStateException,
-			SignatureException, IOException, JWTVerifyException {
+	public void updateUser() throws DaoException, InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException, IOException, JWTVerifyException {
 		User user = new User();
 		user.setSurname("oldSurmane");
 		userDao.save(user);
@@ -116,8 +112,7 @@ public class UsersControllerTest {
 	}
 
 	@Test
-	public void deleteUser() throws InvalidKeyException, NoSuchAlgorithmException, IllegalStateException,
-			SignatureException, IOException, JWTVerifyException {
+	public void deleteUser() throws InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException, IOException, JWTVerifyException {
 
 		User user = new User();
 		userDao.save(user);
