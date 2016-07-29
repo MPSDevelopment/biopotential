@@ -71,4 +71,9 @@ public class SessionManager {
 	public static int getClosedSessions() {
 		return closedSessions;
 	}
+	
+	public void printStatistics() {
+		LOGGER.info("Session manager opened sessions count = %d", openedSessions);
+		LOGGER.info("Session manager closed sessions count = %d", closedSessions);
+	}
 }

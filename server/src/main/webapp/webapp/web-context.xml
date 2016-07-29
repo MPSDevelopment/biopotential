@@ -22,6 +22,7 @@
 
 	<context:component-scan base-package="com.mpsdevelopment.biopotential.server.db" />
 	<context:component-scan base-package="com.mpsdevelopment.biopotential.server.db.dao" />
+	<context:component-scan base-package="com.mpsdevelopment.biopotential.server.scheduler" />
 
 	<bean id="persistUtils" class="com.mpsdevelopment.biopotential.server.db.PersistUtils"
 		init-method="configureSessionFactory" autowire="byName" />
@@ -48,7 +49,18 @@
 		<property name="interceptorNames">
 			<list>
 				<value>sessionAdviceBean</value>
-				<value>annotationSessionAdviceBean</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="usersServiceProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target">
+			<bean id="usersService"
+				class="com.mpsdevelopment.biopotential.server.service.UsersService" />
+		</property>
+		<property name="interceptorNames">
+			<list>
+				<value>sessionAdviceBean</value>
 			</list>
 		</property>
 	</bean>
@@ -68,7 +80,13 @@
 	</bean>
 	<mvc:annotation-driven />
 
-<!-- 	<aop:aspectj-autoproxy /> -->
+	<!-- <aop:aspectj-autoproxy /> -->
+
+	<!-- тег для описания Расписаний (timer) -->
+	<task:annotation-driven executor="executor"
+		scheduler="scheduler" />
+	<task:executor id="executor" pool-size="5" />
+	<task:scheduler id="scheduler" pool-size="10" />
 
 	<import resource="spring-security.xml" />
 
