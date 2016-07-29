@@ -19,10 +19,8 @@ class EDXSection {
 public class EDXStrain implements Strain {
     public static final String subdir = "edxfiles/";
 
-    public EDXStrain(String kind,
-                     String name,
-                     String desc,
-                     String fileName) throws IOException {
+    public EDXStrain(String kind, String name,
+                     String desc, String fileName) throws IOException {
         System.out.println(subdir + fileName);
 
         this.kind = kind;
@@ -32,7 +30,7 @@ public class EDXStrain implements Strain {
 
         try (RandomAccessFile in = new RandomAccessFile(
                 new File(subdir + fileName), "r")) {
-            byte[] hdr = new byte[4];
+            final byte[] hdr = new byte[4];
             if (in.read(hdr) != 4 || !new String(hdr).equals("EDXI")) {
                 throw new IOException("not EDX");
             }
@@ -41,12 +39,12 @@ public class EDXStrain implements Strain {
                 throw new IOException("not EDX");
             }
 
-            int len = readi32le(in);
-            int count = len / 16; // 16 = name[8] + offs + len
+            final int len = readi32le(in);
+            final int count = len / 16; // 16 = name[8] + offs + len
             for (int i = 0; i < count; i += 1) {
                 EDXSection sect = new EDXSection();
 
-                byte[] sect_name = new byte[8];
+                final byte[] sect_name = new byte[8];
                 in.read(sect_name);
 
                 sect.name = new String(sect_name);
@@ -54,7 +52,7 @@ public class EDXStrain implements Strain {
                 sect.length = readi32le(in);
                 sect.contents = new byte[sect.length];
 
-                long cur = in.getFilePointer();
+                final long cur = in.getFilePointer();
                 in.seek(sect.offset + 12); // 12 bytes of useless junk
                 in.read(sect.contents, 0, sect.contents.length);
                 in.seek(cur);

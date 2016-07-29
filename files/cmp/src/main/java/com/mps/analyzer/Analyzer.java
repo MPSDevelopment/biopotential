@@ -16,7 +16,7 @@ public class Analyzer {
         double[] buffer = frames.stream()
             .mapToDouble(Double::doubleValue).toArray();
         int count = (frames.size() - 5) / 2;
-        while (count > 0) {
+        while (count > 0) {;
             final double[] sum = new double[count];
             final double[] diff = new double[count];
             for (int j = 0; j < count; j += 1) {
@@ -89,6 +89,19 @@ public class Analyzer {
 
         return new AnalysisSummary(meanDeviation, dispersion,
             Float.floatToIntBits((float) dispersion) << 29);
+    }
+
+    public static Collection<Double> fold(Collection<Double> input, int len) {
+        final List<Double> result = new ArrayList<>(len);
+        int i = 0;
+        for (Double frame : input) {
+            result.set(i % len, result.get(i % len) + frame);
+            i += 1;
+        }
+        for (int j = 0; j < len; j += 1) {
+            result.set(j, result.get(j) / (double) len);
+        }
+        return result;
     }
 
     private static double computeMeanDeviation(double[] sum) {

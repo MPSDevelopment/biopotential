@@ -69,8 +69,9 @@ public class Main {
             System.out.println("start");
 
             final Collection<ChunkSummary> sample =
-                Analyzer.summarize(_SoundIO.readAllFrames(
-                    AudioSystem.getAudioInputStream(new File("test.wav"))));
+                Analyzer.summarize(Analyzer.fold(_SoundIO.readAllFrames(
+                    AudioSystem.getAudioInputStream(new File("test.wav"))),
+                    0x10266));
 
             Map<Strain, AnalysisSummary> diseases = Machine.summarizeStrains(
                 (strain, summary) -> summary.getDegree() == 0,
