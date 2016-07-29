@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Method;
 
-public class SessionAdvice implements MethodBeforeAdvice, AfterReturningAdvice {
+public class AnnotationSessionAdvice implements MethodBeforeAdvice, AfterReturningAdvice {
 
-	private static final Logger LOGGER = LoggerUtil.getLogger(SessionAdvice.class);
+	private static final Logger LOGGER = LoggerUtil.getLogger(AnnotationSessionAdvice.class);
 
 	@Autowired
 	private SessionManager sessionManager;
@@ -19,14 +19,16 @@ public class SessionAdvice implements MethodBeforeAdvice, AfterReturningAdvice {
 	@Override
 	public void before(Method method, Object[] objects, Object o) throws Throwable {
 		if (method.isAnnotationPresent(Adviceable.class)) {
-			// LOGGER.info("Invoked before aop method");
-			sessionManager.openSession();
+			LOGGER.info("Method %s Invoked before aop method", method.getName());
+			// sessionManager.openSession();
 		}
 	}
 
 	@Override
 	public void afterReturning(Object o, Method method, Object[] objects, Object o2) throws Throwable {
-		// LOGGER.info("Invoked after aop method");
-		sessionManager.closeSession();
+		if (method.isAnnotationPresent(Adviceable.class)) {
+			LOGGER.info("Method %s Invoked after aop method", method.getName());
+			// sessionManager.closeSession();
+		}
 	}
 }

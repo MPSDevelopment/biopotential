@@ -1,6 +1,7 @@
 package com.mpsdevelopment.biopotential.server.controller;
 
 import com.auth0.jwt.JWTVerifyException;
+import com.mpsdevelopment.biopotential.server.db.advice.Adviceable;
 import com.mpsdevelopment.biopotential.server.db.dao.DaoException;
 import com.mpsdevelopment.biopotential.server.db.dao.UserDao;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
@@ -41,19 +42,20 @@ public class UsersController {
 
 	private static final Logger LOGGER = LoggerUtil.getLogger(UsersController.class);
 
+	@Autowired
 	private ServerSettings serverSettings;
+
+	@Autowired
 	private UserDao userDao;
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
-	@Autowired
-	public UsersController(ServerSettings serverSettings, UserDao userDao) {
-		this.serverSettings = serverSettings;
-		this.userDao = userDao;
+	public UsersController() {
 	}
 
 	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_LOGIN, method = RequestMethod.POST)
+	@Adviceable
 	public ResponseEntity<String> login(HttpServletRequest request, @RequestBody String json) {
 
 		User user = JsonUtils.fromJson(User.class, json);
@@ -61,21 +63,19 @@ public class UsersController {
 		if (response != null) {
 			return response;
 		}
-		return new ResponseEntity<>(String.format("User %s has been logged in.", user.getLogin()), null,
-				HttpStatus.ACCEPTED);
-	}
-	
-	@RequestMapping(value=ControllerAPI.USER_CONTROLLER_LOGOUT, method = RequestMethod.GET)
-	public String logoutPage (HttpServletRequest request, HttpServletResponse response) {
-	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-	    if (auth != null){    
-	        new SecurityContextLogoutHandler().logout(request, response, auth);
-	    }
-	    return "redirect:/login?logout";//You can redirect wherever you want, but generally it's a good practice to show login screen again.
+		return new ResponseEntity<>(String.format("User %s has been logged in.", user.getLogin()), null, HttpStatus.ACCEPTED);
 	}
 
-	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_PUT_CREATE_USER, method = RequestMethod.PUT, produces = {
-			ControllerAPI.PRODUCES_JSON })
+	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_LOGOUT, method = RequestMethod.GET)
+	public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null) {
+			new SecurityContextLogoutHandler().logout(request, response, auth);
+		}
+		return "redirect:/login?logout";// You can redirect wherever you want, but generally it's a good practice to show login screen again.
+	}
+
+	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_PUT_CREATE_USER, method = RequestMethod.PUT, produces = { ControllerAPI.PRODUCES_JSON })
 	public ResponseEntity<String> createUser(HttpServletRequest request, @RequestBody String json) {
 
 		User user = JsonUtils.fromJson(User.class, json);
@@ -86,8 +86,7 @@ public class UsersController {
 		}
 
 		if (userDao.getByLogin(user.getLogin()) != null) {
-			return new ResponseEntity<String>(JsonUtils.getJson("User with such login already exist"), null,
-					HttpStatus.CONFLICT);
+			return new ResponseEntity<String>(JsonUtils.getJson("User with such login already exist"), null, HttpStatus.CONFLICT);
 		}
 
 		userDao.save(user);
@@ -96,11 +95,9 @@ public class UsersController {
 
 	}
 
-	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_POST_UPDATE_USER, method = RequestMethod.POST, produces = {
-			ControllerAPI.PRODUCES_JSON })
+	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_POST_UPDATE_USER, method = RequestMethod.POST, produces = { ControllerAPI.PRODUCES_JSON })
 	public ResponseEntity<String> updateUser(HttpServletRequest request, @RequestBody String json)
-			throws InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException,
-			IOException, JWTVerifyException, DaoException {
+			throws InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException, IOException, JWTVerifyException, DaoException {
 
 		User user = JsonUtils.fromJson(User.class, json);
 		ResponseEntity<String> response = authenticateInSpringSecurity(user, request.getSession());
@@ -118,11 +115,9 @@ public class UsersController {
 
 	}
 
-	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_DELETE_USER, method = RequestMethod.DELETE, produces = {
-			ControllerAPI.PRODUCES_JSON })
+	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_DELETE_USER, method = RequestMethod.DELETE, produces = { ControllerAPI.PRODUCES_JSON })
 	public ResponseEntity<String> deleteUser(HttpServletRequest request, @PathVariable(value = "id") Long id)
-			throws InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException,
-			IOException, JWTVerifyException {
+			throws InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException, IOException, JWTVerifyException {
 
 		User user = userDao.get(id);
 
@@ -133,8 +128,7 @@ public class UsersController {
 
 		userDao.delete(user);
 
-		return new ResponseEntity<String>(JsonUtils.getJson(new String("User was successfully deleted")), null,
-				HttpStatus.OK);
+		return new ResponseEntity<String>(JsonUtils.getJson(new String("User was successfully deleted")), null, HttpStatus.OK);
 
 	}
 
@@ -143,11 +137,9 @@ public class UsersController {
 			String role = authenticateInSpringSecurityInner(user, session);
 			LOGGER.info(String.format("User %s has been logged in. with role = %s", user.getLogin(), role));
 		} catch (UsernameNotFoundException e) {
-			return new ResponseEntity<>(String.format("No user with login(%s)", user.getLogin()), null,
-					HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>(String.format("No user with login(%s)", user.getLogin()), null, HttpStatus.UNAUTHORIZED);
 		} catch (BadCredentialsException e) {
-			return new ResponseEntity<>(String.format("Incorrect login(%s)/password", user.getLogin()), null,
-					HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>(String.format("Incorrect login(%s)/password", user.getLogin()), null, HttpStatus.UNAUTHORIZED);
 		} catch (NullPointerException e) {
 			return new ResponseEntity<>("User is empty", null, HttpStatus.BAD_REQUEST);
 		}
@@ -160,8 +152,7 @@ public class UsersController {
 			throw new NullPointerException("User is null");
 		}
 
-		UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(user.getLogin(),
-				user.getPassword());
+		UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(user.getLogin(), user.getPassword());
 
 		// Authenticate the user
 		Authentication authentication = authenticationManager.authenticate(authRequest);

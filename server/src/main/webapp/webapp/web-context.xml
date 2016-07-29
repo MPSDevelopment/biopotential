@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
-	xmlns:sec="http://www.springframework.org/schema/security" xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:websocket="http://www.springframework.org/schema/websocket" xmlns:task="http://www.springframework.org/schema/task"
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
+	xmlns:sec="http://www.springframework.org/schema/security" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="http://www.springframework.org/schema/security/oauth2 http://www.springframework.org/schema/security/spring-security-oauth2-1.0.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
@@ -20,38 +23,52 @@
 	<context:component-scan base-package="com.mpsdevelopment.biopotential.server.db" />
 	<context:component-scan base-package="com.mpsdevelopment.biopotential.server.db.dao" />
 
-	<bean id="persistUtils" class="com.mpsdevelopment.biopotential.server.db.PersistUtils" init-method="configureSessionFactory" autowire="byName" />
-	<bean id="sessionManager" class="com.mpsdevelopment.biopotential.server.db.SessionManager" autowire="byName" />
+	<bean id="persistUtils" class="com.mpsdevelopment.biopotential.server.db.PersistUtils"
+		init-method="configureSessionFactory" autowire="byName" />
+	<bean id="sessionManager"
+		class="com.mpsdevelopment.biopotential.server.db.SessionManager"
+		autowire="byName" />
 
-	<bean id="springContextHolder" class="com.mpsdevelopment.biopotential.server.SpringContextHolder" />
+	<bean id="springContextHolder"
+		class="com.mpsdevelopment.biopotential.server.SpringContextHolder" />
 
-	<bean id="sessionAdviceBean" class="com.mpsdevelopment.biopotential.server.db.advice.SessionAdvice" />
+	<bean id="sessionAdviceBean"
+		class="com.mpsdevelopment.biopotential.server.db.advice.SessionAdvice" />
+	<bean id="annotationSessionAdviceBean"
+		class="com.mpsdevelopment.biopotential.server.db.advice.AnnotationSessionAdvice" />
 
 
 	<bean id="userDao" class="com.mpsdevelopment.biopotential.server.db.dao.UserDao" />
 
 	<bean id="usersControllerProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
 		<property name="target">
-			<bean id="usersController" class="com.mpsdevelopment.biopotential.server.controller.UsersController" />
+			<bean id="usersController"
+				class="com.mpsdevelopment.biopotential.server.controller.UsersController" />
 		</property>
 		<property name="interceptorNames">
 			<list>
 				<value>sessionAdviceBean</value>
+				<value>annotationSessionAdviceBean</value>
 			</list>
 		</property>
 	</bean>
-	
-	<bean id="databaseCreator" class="com.mpsdevelopment.biopotential.server.db.DatabaseCreator" init-method="initialization" />
+
+	<bean id="databaseCreator"
+		class="com.mpsdevelopment.biopotential.server.db.DatabaseCreator"
+		init-method="initialization" />
 
 
 	<!-- This bean we need for uploading file from http client -->
-	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<!-- max upload size in bytes -->
 		<property name="maxUploadSize" value="500000000" />
 		<!-- max size of file in memory (in bytes) -->
 		<property name="maxInMemorySize" value="500000000" />
 	</bean>
 	<mvc:annotation-driven />
+
+<!-- 	<aop:aspectj-autoproxy /> -->
 
 	<import resource="spring-security.xml" />
 
