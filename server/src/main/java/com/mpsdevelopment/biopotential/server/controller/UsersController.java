@@ -75,6 +75,7 @@ public class UsersController {
 		return "redirect:/login?logout";// You can redirect wherever you want, but generally it's a good practice to show login screen again.
 	}
 
+	@Adviceable
 	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_PUT_CREATE_USER, method = RequestMethod.PUT, produces = { ControllerAPI.PRODUCES_JSON })
 	public ResponseEntity<String> createUser(HttpServletRequest request, @RequestBody String json) {
 
@@ -95,6 +96,7 @@ public class UsersController {
 
 	}
 
+	@Adviceable
 	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_POST_UPDATE_USER, method = RequestMethod.POST, produces = { ControllerAPI.PRODUCES_JSON })
 	public ResponseEntity<String> updateUser(HttpServletRequest request, @RequestBody String json)
 			throws InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException, IOException, JWTVerifyException, DaoException {
@@ -115,6 +117,7 @@ public class UsersController {
 
 	}
 
+	@Adviceable
 	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_DELETE_USER, method = RequestMethod.DELETE, produces = { ControllerAPI.PRODUCES_JSON })
 	public ResponseEntity<String> deleteUser(HttpServletRequest request, @PathVariable(value = "id") Long id)
 			throws InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException, IOException, JWTVerifyException {

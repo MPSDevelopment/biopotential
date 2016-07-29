@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
 import com.mpsdevelopment.biopotential.server.controller.UsersController;
 import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
+import com.mpsdevelopment.biopotential.server.db.SessionManager;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 
@@ -24,6 +25,9 @@ public class AnnotationSessionAdviceTest {
 
 	@Autowired
 	private UsersController usersController;
+	
+	@Autowired
+	private SessionManager sessionManager;
 	
 	private MockHttpServletRequest request;
 
@@ -36,9 +40,10 @@ public class AnnotationSessionAdviceTest {
 
 	@Test
 	public void checkAnnotation() {
-		
 		User adminUser = new User().setLogin(DatabaseCreator.ADMIN_LOGIN).setPassword(DatabaseCreator.ADMIN_PASSWORD);
 		usersController.login(request, JsonUtils.getJson(adminUser));
+		
+		sessionManager.printStatistics();
 	}
 
 }

@@ -20,7 +20,7 @@ public class AnnotationSessionAdvice implements MethodBeforeAdvice, AfterReturni
 	public void before(Method method, Object[] objects, Object o) throws Throwable {
 		if (method.isAnnotationPresent(Adviceable.class)) {
 			LOGGER.info("Method %s Invoked before aop method", method.getName());
-			// sessionManager.openSession();
+			sessionManager.openSession();
 		}
 	}
 
@@ -28,7 +28,7 @@ public class AnnotationSessionAdvice implements MethodBeforeAdvice, AfterReturni
 	public void afterReturning(Object o, Method method, Object[] objects, Object o2) throws Throwable {
 		if (method.isAnnotationPresent(Adviceable.class)) {
 			LOGGER.info("Method %s Invoked after aop method", method.getName());
-			// sessionManager.closeSession();
+			sessionManager.closeSession();
 		}
 	}
 }

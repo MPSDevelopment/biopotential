@@ -48,7 +48,7 @@
 		</property>
 		<property name="interceptorNames">
 			<list>
-				<value>sessionAdviceBean</value>
+				<value>annotationSessionAdviceBean</value>
 			</list>
 		</property>
 	</bean>
@@ -60,7 +60,7 @@
 		</property>
 		<property name="interceptorNames">
 			<list>
-				<value>sessionAdviceBean</value>
+				<value>annotationSessionAdviceBean</value>
 			</list>
 		</property>
 	</bean>

@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import com.mpsdevelopment.biopotential.server.db.advice.Adviceable;
 import com.mpsdevelopment.biopotential.server.db.dao.UserDao;
 import com.mpsdevelopment.biopotential.server.db.pojo.Role;
 
@@ -21,6 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 	private UserDao userDao;
 
 	@Override
+	@Adviceable
 	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
 
 		com.mpsdevelopment.biopotential.server.db.pojo.User domainUser = userDao.getByLogin(login);
