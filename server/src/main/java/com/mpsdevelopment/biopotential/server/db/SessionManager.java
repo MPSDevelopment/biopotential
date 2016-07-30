@@ -17,9 +17,9 @@ public class SessionManager {
 
 	@Autowired
 	private PersistUtils persistUtils;
-	
-	public SessionManager(){
-		
+
+	public SessionManager() {
+
 	}
 
 	public SessionManager(PersistUtils persistUtils) {
@@ -64,14 +64,14 @@ public class SessionManager {
 		return threadLocalSession.get();
 	}
 
-	public static int getOpenedSessions() {
+	public int getOpenedSessions() {
 		return openedSessions;
 	}
 
-	public static int getClosedSessions() {
+	public int getClosedSessions() {
 		return closedSessions;
 	}
-	
+
 	public void printStatistics() {
 		LOGGER.info("Session manager opened sessions count = %d", openedSessions);
 		LOGGER.info("Session manager closed sessions count = %d", closedSessions);

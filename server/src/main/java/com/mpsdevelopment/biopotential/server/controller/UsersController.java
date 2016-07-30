@@ -67,12 +67,15 @@ public class UsersController {
 	}
 
 	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_LOGOUT, method = RequestMethod.GET)
-	public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
+	public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null) {
 			new SecurityContextLogoutHandler().logout(request, response, auth);
+		} else {
+			return new ResponseEntity<>("User was not logged in", null, HttpStatus.BAD_REQUEST);
 		}
-		return "redirect:/login?logout";// You can redirect wherever you want, but generally it's a good practice to show login screen again.
+		// return "redirect:/login?logout";// You can redirect wherever you want, but generally it's a good practice to show login screen again.
+		return new ResponseEntity<>("User has been logged out.", null, HttpStatus.ACCEPTED);
 	}
 
 	@Adviceable
@@ -151,14 +154,20 @@ public class UsersController {
 
 	private String authenticateInSpringSecurityInner(User user, HttpSession session) throws UsernameNotFoundException {
 
-		if (user == null) {
-			throw new NullPointerException("User is null");
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication == null) {
+			if (user == null) {
+				throw new NullPointerException("User is null");
+			}
+
+			UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(user.getLogin(), user.getPassword());
+
+			// Authenticate the user
+			authentication = authenticationManager.authenticate(authRequest);
+		} else {
+			LOGGER.info("User %s has been authentificated", authentication.getPrincipal());
 		}
 
-		UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(user.getLogin(), user.getPassword());
-
-		// Authenticate the user
-		Authentication authentication = authenticationManager.authenticate(authRequest);
 		SecurityContext securityContext = SecurityContextHolder.getContext();
 		securityContext.setAuthentication(authentication);
 
