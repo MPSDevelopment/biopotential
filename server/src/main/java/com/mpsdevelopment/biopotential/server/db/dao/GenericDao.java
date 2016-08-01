@@ -33,6 +33,7 @@ public abstract class GenericDao<T, ID extends Serializable> {
 	}
 
 	protected Session getSession() {
+		LOGGER.info("sessionManager %s", sessionManager);
 		return sessionManager.getSession();
 	}
 

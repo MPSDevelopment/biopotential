@@ -40,6 +40,7 @@
 
 
 	<bean id="userDao" class="com.mpsdevelopment.biopotential.server.db.dao.UserDao" />
+	<bean id="foldersDao" class="com.mpsdevelopment.biopotential.server.db.dao.FoldersDao" />
 
 	<bean id="usersControllerProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
 		<property name="target">
