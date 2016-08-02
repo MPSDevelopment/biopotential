@@ -7,6 +7,7 @@ import com.mpsdevelopment.biopotential.server.db.dao.UserDao;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
+import com.mpsdevelopment.biopotential.server.utils.SecurityUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import org.springframework.beans.BeanUtils;
@@ -49,7 +50,7 @@ public class UsersController {
 	private UserDao userDao;
 
 	@Autowired
-	private AuthenticationManager authenticationManager;
+	private SecurityUtils securityUtils;
 
 	public UsersController() {
 	}
@@ -59,7 +60,7 @@ public class UsersController {
 	public ResponseEntity<String> login(HttpServletRequest request, @RequestBody String json) {
 
 		User user = JsonUtils.fromJson(User.class, json);
-		ResponseEntity<String> response = authenticateInSpringSecurity(user, request.getSession());
+		ResponseEntity<String> response = securityUtils.authenticateInSpringSecurity(user, request.getSession());
 		if (response != null) {
 			return response;
 		}
@@ -84,7 +85,7 @@ public class UsersController {
 
 		User user = JsonUtils.fromJson(User.class, json);
 
-		ResponseEntity<String> response = authenticateInSpringSecurity(user, request.getSession());
+		ResponseEntity<String> response = securityUtils.authenticateInSpringSecurity(user, request.getSession());
 		if (response != null) {
 			return response;
 		}
@@ -105,7 +106,7 @@ public class UsersController {
 			throws InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException, IOException, JWTVerifyException, DaoException {
 
 		User user = JsonUtils.fromJson(User.class, json);
-		ResponseEntity<String> response = authenticateInSpringSecurity(user, request.getSession());
+		ResponseEntity<String> response = securityUtils.authenticateInSpringSecurity(user, request.getSession());
 		if (response != null) {
 			return response;
 		}
@@ -127,7 +128,7 @@ public class UsersController {
 
 		User user = userDao.get(id);
 
-		ResponseEntity<String> response = authenticateInSpringSecurity(user, request.getSession());
+		ResponseEntity<String> response = securityUtils.authenticateInSpringSecurity(user, request.getSession());
 		if (response != null) {
 			return response;
 		}
@@ -136,43 +137,5 @@ public class UsersController {
 
 		return new ResponseEntity<String>(JsonUtils.getJson(new String("User was successfully deleted")), null, HttpStatus.OK);
 
-	}
-
-	private ResponseEntity<String> authenticateInSpringSecurity(User user, HttpSession session) {
-		try {
-			String role = authenticateInSpringSecurityInner(user, session);
-			LOGGER.info(String.format("User %s has been logged in. with role = %s", user.getLogin(), role));
-		} catch (UsernameNotFoundException e) {
-			return new ResponseEntity<>(String.format("No user with login(%s)", user.getLogin()), null, HttpStatus.UNAUTHORIZED);
-		} catch (BadCredentialsException e) {
-			return new ResponseEntity<>(String.format("Incorrect login(%s)/password", user.getLogin()), null, HttpStatus.UNAUTHORIZED);
-		} catch (NullPointerException e) {
-			return new ResponseEntity<>("User is empty", null, HttpStatus.BAD_REQUEST);
-		}
-		return null;
-	}
-
-	private String authenticateInSpringSecurityInner(User user, HttpSession session) throws UsernameNotFoundException {
-
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication == null) {
-			if (user == null) {
-				throw new NullPointerException("User is null");
-			}
-
-			UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(user.getLogin(), user.getPassword());
-
-			// Authenticate the user
-			authentication = authenticationManager.authenticate(authRequest);
-		} else {
-			LOGGER.info("User %s has been authentificated", authentication.getPrincipal());
-		}
-
-		SecurityContext securityContext = SecurityContextHolder.getContext();
-		securityContext.setAuthentication(authentication);
-
-		// Create a new session and add the security context.
-		// session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
-		return authentication.getAuthorities().iterator().next().toString();
 	}
 }
