@@ -29,7 +29,7 @@
 
 	<bean id="sessionAdviceBean" class="com.mpsdevelopment.biopotential.server.db.advice.SessionAdvice" />
 	<bean id="annotationSessionAdviceBean" class="com.mpsdevelopment.biopotential.server.db.advice.AnnotationSessionAdvice" />
-
+	<bean id="protectedApiSessionAdvice" class="com.mpsdevelopment.biopotential.server.db.advice.ProtectedApiSessionAdvice" />
 
 	<bean id="userDao" class="com.mpsdevelopment.biopotential.server.db.dao.UserDao" />
 	<bean id="foldersDao" class="com.mpsdevelopment.biopotential.server.db.dao.FoldersDao" />
@@ -41,6 +41,7 @@
 		<property name="interceptorNames">
 			<list>
 				<value>annotationSessionAdviceBean</value>
+				<value>protectedApiSessionAdvice</value>
 			</list>
 		</property>
 	</bean>

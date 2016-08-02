@@ -2,6 +2,7 @@ package com.mpsdevelopment.biopotential.server.controller;
 
 import com.auth0.jwt.JWTVerifyException;
 import com.mpsdevelopment.biopotential.server.db.advice.Adviceable;
+import com.mpsdevelopment.biopotential.server.db.advice.ProtectedApi;
 import com.mpsdevelopment.biopotential.server.db.dao.DaoException;
 import com.mpsdevelopment.biopotential.server.db.dao.UserDao;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
@@ -57,6 +58,7 @@ public class UsersController {
 
 	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_LOGIN, method = RequestMethod.POST)
 	@Adviceable
+	@ProtectedApi
 	public ResponseEntity<String> login(HttpServletRequest request, @RequestBody String json) {
 
 		User user = JsonUtils.fromJson(User.class, json);
@@ -80,6 +82,7 @@ public class UsersController {
 	}
 
 	@Adviceable
+	@ProtectedApi
 	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_PUT_CREATE_USER, method = RequestMethod.PUT, produces = { ControllerAPI.PRODUCES_JSON })
 	public ResponseEntity<String> createUser(HttpServletRequest request, @RequestBody String json) {
 
@@ -101,6 +104,7 @@ public class UsersController {
 	}
 
 	@Adviceable
+	@ProtectedApi
 	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_POST_UPDATE_USER, method = RequestMethod.POST, produces = { ControllerAPI.PRODUCES_JSON })
 	public ResponseEntity<String> updateUser(HttpServletRequest request, @RequestBody String json)
 			throws InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException, IOException, JWTVerifyException, DaoException {
@@ -122,6 +126,7 @@ public class UsersController {
 	}
 
 	@Adviceable
+	@ProtectedApi
 	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_DELETE_USER, method = RequestMethod.DELETE, produces = { ControllerAPI.PRODUCES_JSON })
 	public ResponseEntity<String> deleteUser(HttpServletRequest request, @PathVariable(value = "id") Long id)
 			throws InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException, IOException, JWTVerifyException {
