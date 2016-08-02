@@ -28,6 +28,10 @@ public class DatabaseCreator {
 	public static final String ADMIN_LOGIN = "admin";
 	
 	public static final String ADMIN_PASSWORD = "234sgfweyewsgsf";
+	
+	public static final String OPERATOR_LOGIN = "operator";
+	
+	public static final String OPERATOR_PASSWORD = "234sgfwesgsf";
 
 	@Autowired
 	private UserDao userDao;	
@@ -47,6 +51,7 @@ public class DatabaseCreator {
 
 	public void initialization() throws IOException, URISyntaxException, DaoException {
 		createUserIfNotExists(new User().setLogin(ADMIN_LOGIN).setPassword(passwordEncoder.encode(ADMIN_PASSWORD)).setRole(Role.ADMIN.name()));
+		createUserIfNotExists(new User().setLogin(OPERATOR_LOGIN).setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setRole(Role.OPERATOR.name()));
 	}
 
 	public User createUserIfNotExists(User user) {

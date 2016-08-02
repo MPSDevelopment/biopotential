@@ -58,7 +58,6 @@ public class UsersController {
 
 	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_LOGIN, method = RequestMethod.POST)
 	@Adviceable
-	@ProtectedApi
 	public ResponseEntity<String> login(HttpServletRequest request, @RequestBody String json) {
 
 		User user = JsonUtils.fromJson(User.class, json);

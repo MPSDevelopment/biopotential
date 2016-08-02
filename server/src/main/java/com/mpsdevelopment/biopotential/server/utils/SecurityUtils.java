@@ -68,13 +68,19 @@ public class SecurityUtils {
 	public ResponseEntity<String> checkAuthorization() {
 		Authentication authentication = null;
 		try {
-			 authentication = SecurityContextHolder.getContext().getAuthentication();
+			authentication = SecurityContextHolder.getContext().getAuthentication();
+			if (authentication==null){
+				return new ResponseEntity<>("Not authorized", null, HttpStatus.UNAUTHORIZED);
+			}
+			String role = authentication.getAuthorities().iterator().next().toString();
+			LOGGER.info("Role is %s", role);
 		} catch (UsernameNotFoundException e) {
-			return new ResponseEntity<>(String.format("No user with login(%s)", authentication == null ? null : authentication.getName()), null,
-					HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>(
+					String.format("No user with login(%s)", authentication == null ? null : authentication.getName()),
+					null, HttpStatus.UNAUTHORIZED);
 		} catch (BadCredentialsException e) {
-			return new ResponseEntity<>(String.format("Incorrect login(%s)/password", authentication == null ? null : authentication.getName()), null,
-					HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>(String.format("Incorrect login(%s)/password",
+					authentication == null ? null : authentication.getName()), null, HttpStatus.UNAUTHORIZED);
 		} catch (NullPointerException e) {
 			return new ResponseEntity<String>("User is empty", null, HttpStatus.BAD_REQUEST);
 		}

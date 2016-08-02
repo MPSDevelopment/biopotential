@@ -104,6 +104,10 @@ public class UsersControllerTest {
 
 		ResponseEntity<String> createUserResponse = usersController.createUser(request, JsonUtils.getJson(newUser));
 		assertEquals(HttpStatus.UNAUTHORIZED, createUserResponse.getStatusCode());
+		
+		operatorLogin();
+		createUserResponse = usersController.createUser(request, JsonUtils.getJson(newUser));
+		assertEquals(HttpStatus.UNAUTHORIZED, createUserResponse.getStatusCode());
 
 		adminLogin();
 		createUserResponse = usersController.createUser(request, JsonUtils.getJson(newUser));
@@ -168,6 +172,14 @@ public class UsersControllerTest {
 
 	public void adminLogin() {
 		User adminUser = new User().setLogin(DatabaseCreator.ADMIN_LOGIN).setPassword(DatabaseCreator.ADMIN_PASSWORD);
+
+		ResponseEntity<String> adminResponse = usersController.login(request, JsonUtils.getJson(adminUser));
+		LOGGER.info("Response is %s", adminResponse.getBody());
+		assertEquals(HttpStatus.ACCEPTED, adminResponse.getStatusCode());
+	}
+	
+	public void operatorLogin() {
+		User adminUser = new User().setLogin(DatabaseCreator.OPERATOR_LOGIN).setPassword(DatabaseCreator.OPERATOR_PASSWORD);
 
 		ResponseEntity<String> adminResponse = usersController.login(request, JsonUtils.getJson(adminUser));
 		LOGGER.info("Response is %s", adminResponse.getBody());
