@@ -3,6 +3,7 @@ package com.mpsdevelopment.biopotential.server.db;
 import com.mps.machine.dbs.arkdb.ArkDBException;
 import com.mpsdevelopment.biopotential.server.db.dao.FoldersDao;
 import com.mpsdevelopment.biopotential.server.db.pojo.Folders;
+import com.mpsdevelopment.biopotential.server.db.pojo.Patterns;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -12,7 +13,6 @@ import com.mpsdevelopment.biopotential.server.db.pojo.Role;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -39,9 +39,11 @@ public class DatabaseCreator {
 	private FoldersDao foldersDao;
 
 	private Folders folders;
+	private Patterns patterns;
 	Connection db;
-	ResultSet resultSet;
-	
+	ResultSet folders_db;
+	ResultSet patterns_db;
+
 
 	public void initialization() throws IOException, URISyntaxException, DaoException {
 		createUserIfNotExists(new User().setLogin(ADMIN_LOGIN).setPassword(passwordEncoder.encode(ADMIN_PASSWORD)).setRole(Role.ADMIN.name()));
@@ -66,28 +68,34 @@ public class DatabaseCreator {
 
 		try {
 			this.db = DriverManager.getConnection("jdbc:sqlite:" + url);
-			this.resultSet = this.db.createStatement().executeQuery(
+			this.folders_db = this.db.createStatement().executeQuery(
 					"SELECT * FROM folders");
-
+			patterns_db = db.createStatement().executeQuery(
+					"SELECT * FROM folders");
 
 		} catch (SQLException e) {
 			throw new ArkDBException("SQLException: " + e.getMessage());
 		}
 
-		return resultSet;
+		return folders_db;
 	}
 
 	public void convertToH2(String url) throws ArkDBException {
-		resultSet = connect(url);
-//		FoldersDao foldersDao = new FoldersDao();
+		folders_db = connect(url);
 		try {
-			while(resultSet.next()) {
-				folders = (Folders) new Folders().setId_folder(resultSet.getInt("id_folder")).setFolder_name(resultSet.getString("parent_folder_id")).setFolder_name(resultSet.getString("folder_name")).
-						setFolder_description(resultSet.getString("folder_description")).setDbdts_added(resultSet.getString("dbdts_added")).setSort_priority(resultSet.getString("sort_priority")).
-						setIs_in_use(resultSet.getInt("folder_description")).setFolder_type(resultSet.getString("folder_type"));
+			while(folders_db.next()) {
+				folders = (Folders) new Folders().setId_folder(folders_db.getInt("id_folder")).setFolder_name(folders_db.getString("parent_folder_id")).setFolder_name(folders_db.getString("folder_name")).
+						setFolder_description(folders_db.getString("folder_description")).setDbdts_added(folders_db.getString("dbdts_added")).setSort_priority(folders_db.getString("sort_priority")).
+						setIs_in_use(folders_db.getInt("folder_description")).setFolder_type(folders_db.getString("folder_type"));
 
 				LOGGER.info("foldersDao %s", folders);
 				foldersDao.save(folders);
+			}
+
+			while (patterns_db.next()){
+				patterns = (Patterns) new Patterns().setId_pattern(patterns_db.getInt("id_pattern")).setPattern_name(patterns_db.getString("pattern_name")).setPattern_description(patterns_db.getString("pattern_description")).
+						setPattern_uid(patterns_db.getString("pattern_uid")).setSrc_hash(patterns_db.getString("src_hash")).setEdx_hash(patterns_db.getString("edx_hash")).setDbdts_added(patterns_db.getString("dbdts_added"));
+
 			}
 
 		} catch (SQLException e) {

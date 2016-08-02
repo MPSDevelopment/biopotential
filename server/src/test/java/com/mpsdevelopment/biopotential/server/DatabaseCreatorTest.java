@@ -34,8 +34,6 @@ public class DatabaseCreatorTest {
     @Test
     public void convertToH2Test() throws ArkDBException {
 
-//        databaseCreator = new DatabaseCreator();
-
         LOGGER.info("databaseCreator %s", databaseCreator);
 
         try {
