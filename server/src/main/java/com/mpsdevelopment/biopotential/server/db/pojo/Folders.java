@@ -10,21 +10,21 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Folders")
 public class Folders extends BaseObject {
-    public static final String ID_FOLDER = "id_folder";
+    public static final String ID_FOLDER = "idFolder";
     public static final String ID_FOLDER_GS = "i";
-    public static final String PARENT_FOLDER_ID = "parent_folder_id";
+    public static final String PARENT_FOLDER_ID = "parentFolderId";
     public static final String PARENT_FOLDER_ID_GS = "p";
-    public static final String FOLDER_NAME = "folder_name";
+    public static final String FOLDER_NAME = "folderName";
     public static final String FOLDER_NAME_GS = "n";
-    public static final String FOLDER_DESCRIPTION = "folder_description";
+    public static final String FOLDER_DESCRIPTION = "folderDescription";
     public static final String FOLDER_DESCRIPTION_GS = "d";
-    public static final String DATABASE_ADDED = "dbdts_added";
-    public static final String DATABASE_ADDED_GS = "add";
-    public static final String SORT_PRIORITY = "sort_priority";
+    public static final String DATABASE_ADDED = "dbdtsAdded";
+    public static final String DATABASE_ADDED_GS = "a";
+    public static final String SORT_PRIORITY = "sortPriority";
     public static final String SORT_PRIORITY_GS = "s";
-    public static final String IS_IN_USE = "is_in_use";
-    public static final String IS_IN_USE_GS = "use";
-    public static final String FOLDER_TYPE = "folder_type";
+    public static final String IS_IN_USE = "isInUse";
+    public static final String IS_IN_USE_GS = "u";
+    public static final String FOLDER_TYPE = "folderType";
     public static final String FOLDER_TYPE_GS = "t";
 
     public Folders() {
@@ -34,112 +34,112 @@ public class Folders extends BaseObject {
     @Expose
     @Column(name = ID_FOLDER)
     @SerializedName(ID_FOLDER_GS)
-    private int id_folder;
+    private int idFolder;
 
     @Expose
     @Column(name = PARENT_FOLDER_ID)
     @SerializedName(PARENT_FOLDER_ID_GS)
-    private String parent_folder_id;
+    private String parentFolderId;
 
     @Expose
     @Column(name = FOLDER_NAME)
     @SerializedName(FOLDER_NAME_GS)
-    private String folder_name;
+    private String folderName;
 
     @Expose
     @Column(name = FOLDER_DESCRIPTION)
     @SerializedName(FOLDER_DESCRIPTION_GS)
-    private String folder_description;
+    private String folderDescription;
 
     @Expose
     @Column(name = DATABASE_ADDED)
     @SerializedName(DATABASE_ADDED_GS)
-    private String dbdts_added;
+    private String dbdtsAdded;
 
     @Expose
     @Column(name = SORT_PRIORITY)
     @SerializedName(SORT_PRIORITY_GS)
-    private String sort_priority;
+    private String sortPriority;
 
     @Expose
     @Column(name = IS_IN_USE)
     @SerializedName(IS_IN_USE_GS)
-    private Integer is_in_use;
+    private Integer isInUse;
 
     @Expose
     @Column(name = FOLDER_TYPE)
     @SerializedName(FOLDER_TYPE_GS)
-    private String folder_type;
+    private String folderType;
 
-    public int getId_folder() {
-        return id_folder;
+    public int getIdFolder() {
+        return idFolder;
     }
 
-    public Folders setId_folder(int id_folder) {
-        this.id_folder = id_folder;
+    public Folders setIdFolder(int idFolder) {
+        this.idFolder = idFolder;
         return this;
     }
 
-    public String getParent_folder_id() {
-        return parent_folder_id;
+    public String getParentFolderId() {
+        return parentFolderId;
     }
 
-    public Folders setParent_folder_id(String parent_folder_id) {
-        this.parent_folder_id = parent_folder_id;
+    public Folders setParentFolderId(String parentFolderId) {
+        this.parentFolderId = parentFolderId;
         return this;
     }
 
-    public String getFolder_name() {
-        return folder_name;
+    public String getFolderName() {
+        return folderName;
     }
 
-    public Folders setFolder_name(String folder_name) {
-        this.folder_name = folder_name;
+    public Folders setFolderName(String folderName) {
+        this.folderName = folderName;
         return this;
     }
 
-    public String getFolder_description() {
-        return folder_description;
+    public String getFolderDescription() {
+        return folderDescription;
     }
 
-    public Folders setFolder_description(String folder_description) {
-        this.folder_description = folder_description;
+    public Folders setFolderDescription(String folderDescription) {
+        this.folderDescription = folderDescription;
         return this;
     }
 
-    public String getDbdts_added() {
-        return dbdts_added;
+    public String getDbdtsAdded() {
+        return dbdtsAdded;
     }
 
-    public Folders setDbdts_added(String dbdts_added) {
-        this.dbdts_added = dbdts_added;
+    public Folders setDbdtsAdded(String dbdtsAdded) {
+        this.dbdtsAdded = dbdtsAdded;
         return this;
     }
 
-    public String getSort_priority() {
-        return sort_priority;
+    public String getSortPriority() {
+        return sortPriority;
     }
 
-    public Folders setSort_priority(String sort_priority) {
-        this.sort_priority = sort_priority;
+    public Folders setSortPriority(String sortPriority) {
+        this.sortPriority = sortPriority;
         return this;
     }
 
-    public Integer getIs_in_use() {
-        return is_in_use;
+    public Integer getIsInUse() {
+        return isInUse;
     }
 
-    public Folders setIs_in_use(Integer is_in_use) {
-        this.is_in_use = is_in_use;
+    public Folders setIsInUse(Integer isInUse) {
+        this.isInUse = isInUse;
         return this;
     }
 
-    public String getFolder_type() {
-        return folder_type;
+    public String getFolderType() {
+        return folderType;
     }
 
-    public Folders setFolder_type(String folder_type) {
-        this.folder_type = folder_type;
+    public Folders setFolderType(String folderType) {
+        this.folderType = folderType;
         return this;
     }
 }

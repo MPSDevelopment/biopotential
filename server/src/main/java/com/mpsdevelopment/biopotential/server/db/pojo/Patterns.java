@@ -10,44 +10,44 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Patterns")
 public class Patterns extends BaseObject {
-    public static final String ID_PATTERN = "id_pattern";
+    public static final String ID_PATTERN = "idPattern";
     public static final String ID_PATTERN_GS = "i";
-    public static final String PATTERN_NAME = "pattern_name";
+    public static final String PATTERN_NAME = "patternName";
     public static final String PATTERN_NAME_GS = "pn";
-    public static final String PATTERN_DESCRIPTION = "pattern_description";
+    public static final String PATTERN_DESCRIPTION = "patternDescription";
     public static final String PATTERN_DESCRIPTION_GS = "pd";
-    public static final String PATTERN_UID = "pattern_uid";
+    public static final String PATTERN_UID = "patternUid";
     public static final String PATTERN_UID_GS = "pu";
-    public static final String SRC_HASH = "src_hash";
+    public static final String SRC_HASH = "srcHash";
     public static final String SRC_HASH_GS = "sh";
-    public static final String EDX_HASH = "edx_hash";
+    public static final String EDX_HASH = "edxHash";
     public static final String EDX_HASH_GS = "eh";
-    public static final String DATABASE_ADDED = "dbdts_added";
-    public static final String DATABASE_ADDED_GS = "add";
-    public static final String IS_IN_USE = "is_in_use";
-    public static final String IS_IN_USE_GS = "use";
-    public static final String PATTERN_SHORT_DESC = "pattern_short_desc";
-    public static final String PATTERN_SHORT_DESC_GS = "patdesc";
-    public static final String PATTERN_SOURCE_FILE_NAME = "pattern_source_file_name";
-    public static final String PATTERN_SOURCE_FILE_NAME_GS = "pattern_source_file_name";
-    public static final String PATTERN_MAX_PLAYING_TIME = "pattern_max_playing_time";
-    public static final String PATTERN_MAX_PLAYING_TIME_GS = "patmaxplattime";
-    public static final String PATTERN_TYPE = "pattern_type";
-    public static final String PATTERN_TYPE_GS = "pattype";
-    public static final String IS_CAN_BE_REPRODUCED = "is_can_be_reproduced";
+    public static final String DATABASE_ADDED = "dbdtsAdded";
+    public static final String DATABASE_ADDED_GS = "a";
+    public static final String IS_IN_USE = "isInUse";
+    public static final String IS_IN_USE_GS = "u";
+    public static final String PATTERN_SHORT_DESC = "patternShortDesc";
+    public static final String PATTERN_SHORT_DESC_GS = "patDesc";
+    public static final String PATTERN_SOURCE_FILE_NAME = "patternSourceFileName";
+    public static final String PATTERN_SOURCE_FILE_NAME_GS = "patSourFileName";
+    public static final String PATTERN_MAX_PLAYING_TIME = "patternMaxPlayingTime";
+    public static final String PATTERN_MAX_PLAYING_TIME_GS = "patMaxPlayTime";
+    public static final String PATTERN_TYPE = "patternType";
+    public static final String PATTERN_TYPE_GS = "type";
+    public static final String IS_CAN_BE_REPRODUCED = "isCanBeReproduced";
     public static final String IS_CAN_BE_REPRODUCED_GS = "isrep";
     public static final String SMULS = "smuls";
     public static final String SMULS_GS = "s";
-    public static final String EDX_FILE_CREATION_DTS= "edx_file_creation_dts";
-    public static final String EDX_FILE_CREATION_DTS_GS = "edxfilecre";
-    public static final String EDX_FILE_CREATION_DTS_MSECS = "edx_file_creation_dts_msecs";
-    public static final String EDX_FILE_CREATION_DTS_MSECS_GS = "edxfilcrems";
-    public static final String EDX_FILE_LAST_MODIFIED_DTS= "edx_file_last_modified_dts";
-    public static final String EDX_FILE_LAST_MODIFIED_DTS_GS = "edxfilelastmod";
-    public static final String EDX_FILE_LAST_MODIFIED_DTS_MSEC = "edx_file_last_modified_dts_msecs";
-    public static final String EDX_FILE_LAST_MODIFIED_DTS_MSEC_GS = "edxfilelastmodms";
-    public static final String LINKED_FOLDER_ID = "linked_folder_id";
-    public static final String LINKED_FOLDER_ID_GS = "linfoldid";
+    public static final String EDX_FILE_CREATION_DTS= "edxFileCreationDts";
+    public static final String EDX_FILE_CREATION_DTS_GS = "eFileCre";
+    public static final String EDX_FILE_CREATION_DTS_MSECS = "edxFileCreationDtsMsecs";
+    public static final String EDX_FILE_CREATION_DTS_MSECS_GS = "eFilCreMs";
+    public static final String EDX_FILE_LAST_MODIFIED_DTS= "edxFileLastModifiedDts";
+    public static final String EDX_FILE_LAST_MODIFIED_DTS_GS = "eFileLastMod";
+    public static final String EDX_FILE_LAST_MODIFIED_DTS_MSEC = "edxFileLastModifiedDtsMsecs";
+    public static final String EDX_FILE_LAST_MODIFIED_DTS_MSEC_GS = "eFileLastModMs";
+    public static final String LINKED_FOLDER_ID = "linkedFolderId";
+    public static final String LINKED_FOLDER_ID_GS = "lFoldId";
 
     public Patterns() {
 
@@ -56,67 +56,67 @@ public class Patterns extends BaseObject {
     @Expose
     @Column(name = ID_PATTERN)
     @SerializedName(ID_PATTERN_GS)
-    private int id_pattern;
+    private int idPattern;
 
     @Expose
     @Column(name = PATTERN_NAME)
     @SerializedName(PATTERN_NAME_GS)
-    private String pattern_name;
+    private String patternName;
 
     @Expose
-    @Column(name = PATTERN_DESCRIPTION)
+    @Column(name = PATTERN_DESCRIPTION, length=5000)
     @SerializedName(PATTERN_DESCRIPTION_GS)
-    private String pattern_description;
+    private String patternDescription;
 
     @Expose
     @Column(name = PATTERN_UID)
     @SerializedName(PATTERN_UID_GS)
-    private String pattern_uid;
+    private String patternUid;
 
     @Expose
     @Column(name = SRC_HASH)
     @SerializedName(SRC_HASH_GS)
-    private String src_hash;
+    private String srcHash;
 
     @Expose
     @Column(name = EDX_HASH)
     @SerializedName(EDX_HASH_GS)
-    private String edx_hash;
+    private String edxHash;
 
     @Expose
     @Column(name = DATABASE_ADDED)
     @SerializedName(DATABASE_ADDED_GS)
-    private String dbdts_added;
+    private String dbdtsAdded;
 
     @Expose
     @Column(name = IS_IN_USE)
     @SerializedName(IS_IN_USE_GS)
-    private int is_in_use;
+    private int isInUse;
 
     @Expose
     @Column(name = PATTERN_SHORT_DESC)
     @SerializedName(PATTERN_SHORT_DESC_GS)
-    private String pattern_short_desc;
+    private String patternShortDesc;
 
     @Expose
     @Column(name = PATTERN_SOURCE_FILE_NAME)
     @SerializedName(PATTERN_SOURCE_FILE_NAME_GS)
-    private String pattern_source_file_name;
+    private String patternSourceFileName;
 
     @Expose
     @Column(name = PATTERN_MAX_PLAYING_TIME)
     @SerializedName(PATTERN_MAX_PLAYING_TIME_GS)
-    private float pattern_max_playing_time;
+    private float patternMaxPlayingTime;
 
     @Expose
     @Column(name = PATTERN_TYPE)
     @SerializedName(PATTERN_TYPE_GS)
-    private int pattern_type;
+    private int patternType;
 
     @Expose
     @Column(name = IS_CAN_BE_REPRODUCED)
     @SerializedName(IS_CAN_BE_REPRODUCED_GS)
-    private int is_can_be_reproduced;
+    private int isCanBeReproduced;
 
     @Expose
     @Column(name = SMULS)
@@ -126,142 +126,142 @@ public class Patterns extends BaseObject {
     @Expose
     @Column(name = EDX_FILE_CREATION_DTS)
     @SerializedName(EDX_FILE_CREATION_DTS_GS)
-    private String edx_file_creation_dts;
+    private String edxFileCreationDts;
 
     @Expose
     @Column(name = EDX_FILE_CREATION_DTS_MSECS)
     @SerializedName(EDX_FILE_CREATION_DTS_MSECS_GS)
-    private int edx_file_creation_dts_msecs;
+    private int edxFileCreationDtsMsecs;
 
     @Expose
     @Column(name = EDX_FILE_LAST_MODIFIED_DTS)
     @SerializedName(EDX_FILE_LAST_MODIFIED_DTS_GS)
-    private String edx_file_last_modified_dts;
+    private String edxFileLastModifiedDts;
 
     @Expose
     @Column(name = EDX_FILE_LAST_MODIFIED_DTS_MSEC)
     @SerializedName(EDX_FILE_LAST_MODIFIED_DTS_MSEC_GS)
-    private int edx_file_last_modified_dts_msecs;
+    private int edxFileLastModifiedDtsMsecs;
 
     @Expose
     @Column(name = LINKED_FOLDER_ID)
     @SerializedName(LINKED_FOLDER_ID_GS)
-    private int linked_folder_id;
+    private int linkedFolderId;
 
-    public int getId_pattern() {
-        return id_pattern;
+    public int getIdPattern() {
+        return idPattern;
     }
 
-    public Patterns setId_pattern(int id_pattern) {
-        this.id_pattern = id_pattern;
+    public Patterns setIdPattern(int idPattern) {
+        this.idPattern = idPattern;
         return this;
     }
 
-    public String getPattern_name() {
-        return pattern_name;
+    public String getPatternName() {
+        return patternName;
     }
 
-    public Patterns setPattern_name(String pattern_name) {
-        this.pattern_name = pattern_name;
+    public Patterns setPatternName(String patternName) {
+        this.patternName = patternName;
         return this;
     }
 
-    public String getPattern_description() {
-        return pattern_description;
+    public String getPatternDescription() {
+        return patternDescription;
     }
 
-    public Patterns setPattern_description(String pattern_description) {
-        this.pattern_description = pattern_description;
+    public Patterns setPatternDescription(String patternDescription) {
+        this.patternDescription = patternDescription;
         return this;
     }
 
-    public String getPattern_uid() {
-        return pattern_uid;
+    public String getPatternUid() {
+        return patternUid;
     }
 
-    public Patterns setPattern_uid(String pattern_uid) {
-        this.pattern_uid = pattern_uid;
+    public Patterns setPatternUid(String patternUid) {
+        this.patternUid = patternUid;
         return this;
     }
 
-    public String getSrc_hash() {
-        return src_hash;
+    public String getSrcHash() {
+        return srcHash;
     }
 
-    public Patterns setSrc_hash(String src_hash) {
-        this.src_hash = src_hash;
+    public Patterns setSrcHash(String srcHash) {
+        this.srcHash = srcHash;
         return this;
     }
 
-    public String getEdx_hash() {
-        return edx_hash;
+    public String getEdxHash() {
+        return edxHash;
     }
 
-    public Patterns setEdx_hash(String edx_hash) {
-        this.edx_hash = edx_hash;
+    public Patterns setEdxHash(String edxHash) {
+        this.edxHash = edxHash;
         return this;
     }
 
-    public String getDbdts_added() {
-        return dbdts_added;
+    public String getDbdtsAdded() {
+        return dbdtsAdded;
     }
 
-    public Patterns setDbdts_added(String dbdts_added) {
-        this.dbdts_added = dbdts_added;
+    public Patterns setDbdtsAdded(String dbdtsAdded) {
+        this.dbdtsAdded = dbdtsAdded;
         return this;
     }
 
-    public int getIs_in_use() {
-        return is_in_use;
+    public int getIsInUse() {
+        return isInUse;
     }
 
-    public Patterns setIs_in_use(int is_in_use) {
-        this.is_in_use = is_in_use;
+    public Patterns setIsInUse(int isInUse) {
+        this.isInUse = isInUse;
         return this;
     }
 
-    public String getPattern_short_desc() {
-        return pattern_short_desc;
+    public String getPatternShortDesc() {
+        return patternShortDesc;
     }
 
-    public Patterns setPattern_short_desc(String pattern_short_desc) {
-        this.pattern_short_desc = pattern_short_desc;
+    public Patterns setPatternShortDesc(String patternShortDesc) {
+        this.patternShortDesc = patternShortDesc;
         return this;
     }
 
-    public String getPattern_source_file_name() {
-        return pattern_source_file_name;
+    public String getPatternSourceFileName() {
+        return patternSourceFileName;
     }
 
-    public Patterns setPattern_source_file_name(String pattern_source_file_name) {
-        this.pattern_source_file_name = pattern_source_file_name;
+    public Patterns setPatternSourceFileName(String patternSourceFileName) {
+        this.patternSourceFileName = patternSourceFileName;
         return this;
     }
 
-    public float getPattern_max_playing_time() {
-        return pattern_max_playing_time;
+    public float getPatternMaxPlayingTime() {
+        return patternMaxPlayingTime;
     }
 
-    public Patterns setPattern_max_playing_time(int pattern_max_playing_time) {
-        this.pattern_max_playing_time = pattern_max_playing_time;
+    public Patterns setPatternMaxPlayingTime(float patternMaxPlayingTime) {
+        this.patternMaxPlayingTime = patternMaxPlayingTime;
         return this;
     }
 
-    public int getPattern_type() {
-        return pattern_type;
+    public int getPatternType() {
+        return patternType;
     }
 
-    public Patterns setPattern_type(int pattern_type) {
-        this.pattern_type = pattern_type;
+    public Patterns setPatternType(int patternType) {
+        this.patternType = patternType;
         return this;
     }
 
-    public int getIs_can_be_reproduced() {
-        return is_can_be_reproduced;
+    public int getIsCanBeReproduced() {
+        return isCanBeReproduced;
     }
 
-    public Patterns setIs_can_be_reproduced(int is_can_be_reproduced) {
-        this.is_can_be_reproduced = is_can_be_reproduced;
+    public Patterns setIsCanBeReproduced(int isCanBeReproduced) {
+        this.isCanBeReproduced = isCanBeReproduced;
         return this;
     }
 
@@ -274,48 +274,48 @@ public class Patterns extends BaseObject {
         return this;
     }
 
-    public String getEdx_file_creation_dts() {
-        return edx_file_creation_dts;
+    public String getEdxFileCreationDts() {
+        return edxFileCreationDts;
     }
 
-    public Patterns setEdx_file_creation_dts(String edx_file_creation_dts) {
-        this.edx_file_creation_dts = edx_file_creation_dts;
+    public Patterns setEdxFileCreationDts(String edxFileCreationDts) {
+        this.edxFileCreationDts = edxFileCreationDts;
         return this;
     }
 
-    public int getEdx_file_creation_dts_msecs() {
-        return edx_file_creation_dts_msecs;
+    public int getEdxFileCreationDtsMsecs() {
+        return edxFileCreationDtsMsecs;
     }
 
-    public Patterns setEdx_file_creation_dts_msecs(int edx_file_creation_dts_msecs) {
-        this.edx_file_creation_dts_msecs = edx_file_creation_dts_msecs;
+    public Patterns setEdxFileCreationDtsMsecs(int edxFileCreationDtsMsecs) {
+        this.edxFileCreationDtsMsecs = edxFileCreationDtsMsecs;
         return this;
     }
 
-    public String getEdx_file_last_modified_dts() {
-        return edx_file_last_modified_dts;
+    public String getEdxFileLastModifiedDts() {
+        return edxFileLastModifiedDts;
     }
 
-    public Patterns setEdx_file_last_modified_dts(String edx_file_last_modified_dts) {
-        this.edx_file_last_modified_dts = edx_file_last_modified_dts;
+    public Patterns setEdxFileLastModifiedDts(String edxFileLastModifiedDts) {
+        this.edxFileLastModifiedDts = edxFileLastModifiedDts;
         return this;
     }
 
-    public int getEdx_file_last_modified_dts_msecs() {
-        return edx_file_last_modified_dts_msecs;
+    public int getEdxFileLastModifiedDtsMsecs() {
+        return edxFileLastModifiedDtsMsecs;
     }
 
-    public Patterns setEdx_file_last_modified_dts_msecs(int edx_file_last_modified_dts_msecs) {
-        this.edx_file_last_modified_dts_msecs = edx_file_last_modified_dts_msecs;
+    public Patterns setEdxFileLastModifiedDtsMsecs(int edxFileLastModifiedDtsMsecs) {
+        this.edxFileLastModifiedDtsMsecs = edxFileLastModifiedDtsMsecs;
         return this;
     }
 
-    public int getLinked_folder_id() {
-        return linked_folder_id;
+    public int getLinkedFolderId() {
+        return linkedFolderId;
     }
 
-    public Patterns setLinked_folder_id(int linked_folder_id) {
-        this.linked_folder_id = linked_folder_id;
+    public Patterns setLinkedFolderId(int linkedFolderId) {
+        this.linkedFolderId = linkedFolderId;
         return this;
     }
 }

@@ -3,6 +3,7 @@ package com.mpsdevelopment.biopotential.server;
 import com.mps.machine.dbs.arkdb.ArkDBException;
 import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
 import com.mpsdevelopment.biopotential.server.db.dao.FoldersDao;
+import com.mpsdevelopment.biopotential.server.db.dao.PatternsDao;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import org.junit.Assert;
@@ -29,6 +30,8 @@ public class DatabaseCreatorTest {
 
     @Autowired
     public FoldersDao foldersDao;
+    @Autowired
+    private PatternsDao patternsDao;
 
 
     @Test
@@ -42,7 +45,9 @@ public class DatabaseCreatorTest {
             e.printStackTrace();
         }
 
+//        List list = foldersDao.findAll();
         List list = foldersDao.findAll();
+        list.addAll(patternsDao.findAll());
         Assert.assertTrue(list.size() > 0);
 
     }
