@@ -69,10 +69,12 @@ public class SecurityUtils {
 		Authentication authentication = null;
 		try {
 			authentication = SecurityContextHolder.getContext().getAuthentication();
-			if (authentication==null){
+			if (authentication == null) {
 				return new ResponseEntity<>("Not authorized", null, HttpStatus.UNAUTHORIZED);
 			}
+			
 			String role = authentication.getAuthorities().iterator().next().toString();
+			
 			LOGGER.info("Role is %s", role);
 		} catch (UsernameNotFoundException e) {
 			return new ResponseEntity<>(

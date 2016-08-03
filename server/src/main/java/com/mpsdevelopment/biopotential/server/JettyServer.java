@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
+import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import javax.servlet.DispatcherType;
@@ -98,6 +99,8 @@ public class JettyServer {
 
 			ServletHolder mvcServletHolder = new ServletHolder(MVC_SERVLET_NAME, new DispatcherServlet(WEB_CONTEXT));
 			contextHandler.addServlet(mvcServletHolder, "/");
+			
+		    // contextHandler.addFilter(new DelegatingFilterProxy(), "/api/*", DispatcherType.REQUEST);
 
 			contextHandler.setResourceBase(getBaseUrl());
 

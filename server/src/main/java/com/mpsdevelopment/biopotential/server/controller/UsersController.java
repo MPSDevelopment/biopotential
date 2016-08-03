@@ -87,11 +87,6 @@ public class UsersController {
 
 		User user = JsonUtils.fromJson(User.class, json);
 
-		ResponseEntity<String> response = securityUtils.authenticateInSpringSecurity(user, request.getSession());
-		if (response != null) {
-			return response;
-		}
-
 		if (userDao.getByLogin(user.getLogin()) != null) {
 			return new ResponseEntity<String>(JsonUtils.getJson("User with such login already exist"), null, HttpStatus.CONFLICT);
 		}
