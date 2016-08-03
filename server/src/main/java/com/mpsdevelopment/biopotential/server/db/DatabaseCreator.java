@@ -30,6 +30,10 @@ public class DatabaseCreator {
 	
 	public static final String ADMIN_PASSWORD = "234sgfweyewsgsf";
 
+    public static final String OPERATOR_LOGIN = "operator";
+
+    public static final String OPERATOR_PASSWORD = "234sgfwesgsf";
+
 	@Autowired
 	private UserDao userDao;	
 	
