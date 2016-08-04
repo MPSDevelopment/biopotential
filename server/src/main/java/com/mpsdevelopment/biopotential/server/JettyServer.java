@@ -9,6 +9,10 @@ import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.server.session.HashSessionIdManager;
+import org.eclipse.jetty.server.session.HashSessionManager;
+import org.eclipse.jetty.server.session.SessionHandler;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
@@ -16,6 +20,7 @@ import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainer
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.DispatcherServlet;
@@ -79,7 +84,7 @@ public class JettyServer {
 
 		WebSocketServerContainerInitializer.configureContext(getServletHandler());
 
-		LOGGER.info("Server started");
+		LOGGER.info("Server started at host %s and port %s", serverSettings.getHost(), serverSettings.getPort());
 	}
 
 	public ServletContextHandler getServletHandler() {
@@ -96,11 +101,24 @@ public class JettyServer {
 			WEB_CONTEXT = new XmlWebApplicationContext();
 			WEB_CONTEXT.setConfigLocations(SPRING_CONTEXT_FILENAME);
 			WEB_CONTEXT.setParent(APP_CONTEXT);
+			
+//			// Specify the Session ID Manager
+//	        HashSessionIdManager idmanager = new HashSessionIdManager();
+//	        server.setSessionIdManager(idmanager);
+//
+//	        // Create the SessionHandler (wrapper) to handle the sessions
+//	        HashSessionManager manager = new HashSessionManager();
+//	        SessionHandler sessions = new SessionHandler(manager);
+//	        contextHandler.setHandler(sessions);
+
+//	        // Put dump inside of SessionHandler 
+//	        sessions.setHandler(dump); 
 
 			ServletHolder mvcServletHolder = new ServletHolder(MVC_SERVLET_NAME, new DispatcherServlet(WEB_CONTEXT));
 			contextHandler.addServlet(mvcServletHolder, "/");
 			
-		    // contextHandler.addFilter(new DelegatingFilterProxy(), "/api/*", DispatcherType.REQUEST);
+			 // Add spring security      
+			contextHandler.addFilter(new FilterHolder( new DelegatingFilterProxy( AbstractSecurityWebApplicationInitializer.DEFAULT_FILTER_NAME ) ),"/*", EnumSet.allOf( DispatcherType.class ));
 
 			contextHandler.setResourceBase(getBaseUrl());
 

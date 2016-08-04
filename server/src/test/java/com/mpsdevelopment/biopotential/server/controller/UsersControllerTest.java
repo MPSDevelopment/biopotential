@@ -99,6 +99,7 @@ public class UsersControllerTest {
 
 	@Test
 	public void createUser() throws DaoException, InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException, IOException, JWTVerifyException {
+		
 		User newUser = new User();
 		newUser.setSurname("surmane").setName("name").setLogin("login").setPassword("password");
 

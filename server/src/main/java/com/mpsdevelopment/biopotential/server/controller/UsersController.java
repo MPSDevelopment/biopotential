@@ -38,7 +38,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 
-@MessageMapping("/api/users")
+@MessageMapping(ControllerAPI.USER_CONTROLLER)
 @Controller
 public class UsersController {
 

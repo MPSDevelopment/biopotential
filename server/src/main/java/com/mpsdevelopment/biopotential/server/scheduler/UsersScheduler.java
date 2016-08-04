@@ -16,7 +16,7 @@ public class UsersScheduler {
 	@Autowired
 	private UsersService usersService;
 
-    @Scheduled(cron = "*/1 * * * * *")
+//    @Scheduled(cron = "*/1 * * * * *")
     public void checkScripts() {
     	LOGGER.info("Users service started");
     	usersService.checkScripts();

@@ -16,7 +16,7 @@ public class ServerApplication {
 			LOGGER.info("Server started");
 			server.join();
 
-			// Thread.sleep(10000);
+//			Thread.sleep(100000);
 
 			LOGGER.info("Server stopped");
 		} catch (Exception e) {
