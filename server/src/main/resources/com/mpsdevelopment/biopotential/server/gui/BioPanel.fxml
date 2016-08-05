@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mpsdevelopment.biopotential.server.gui.BioPanelController">
+   <children>
+      <Accordion layoutX="73.0" layoutY="95.0" />
+      <Accordion layoutX="66.0" layoutY="72.0" />
+      <Accordion layoutX="39.0" layoutY="22.0" />
+      <AnchorPane>
+         <children>
+            <MenuBar>
+              <menus>
+                <Menu mnemonicParsing="false" text="Файл">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Новая" />
+                        <MenuItem mnemonicParsing="false" text="Открыть" />
+                        <MenuItem mnemonicParsing="false" text="Закрыть" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="База данных">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Просмотр" />
+                        <MenuItem mnemonicParsing="false" text="Редактор" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Система">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Запустить проигрыватель" />
+                        <MenuItem mnemonicParsing="false" text="Информация о БД" />
+                        <MenuItem mnemonicParsing="false" text="Переиндексировать БД" />
+                        <MenuItem mnemonicParsing="false" text="Экспорт БД" />
+                        <MenuItem mnemonicParsing="false" text="Словари" />
+                        <MenuItem mnemonicParsing="false" text="Настроить" />
+                  </items>
+                </Menu>
+                  <Menu mnemonicParsing="false" text="Окна">
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="Close" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Справка">
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="Справка" />
+                     </items>
+                  </Menu>
+              </menus>
+            </MenuBar>
+         </children>
+      </AnchorPane>
+      <Pane layoutY="25.0" prefHeight="38.0" prefWidth="600.0" style="-fx-background-color: #CED4F1;" />
+      <ToolBar layoutY="64.0" prefHeight="40.0" prefWidth="600.0" style="-fx-background-color: #F0F0F0;">
+        <items>
+          <Button mnemonicParsing="false" text="Button" />
+            <Button mnemonicParsing="false" text="Button" />
+            <Button mnemonicParsing="false" text="Button" />
+            <Button mnemonicParsing="false" text="Button" />
+            <Button mnemonicParsing="false" text="Button" />
+            <Button mnemonicParsing="false" text="Button" />
+            <Button mnemonicParsing="false" text="Button" />
+            <Button mnemonicParsing="false" text="Button" />
+        </items>
+      </ToolBar>
+      <Pane layoutX="10.0" layoutY="109.0" prefHeight="285.0" prefWidth="192.0" style="-fx-background-color: #FFFFFF; -fx-border-width: 1; -fx-border-style: solid;" />
+      <Pane layoutX="212.0" layoutY="109.0" prefHeight="285.0" prefWidth="380.0" style="-fx-background-color: #FFFFFF; -fx-border-width: 1; -fx-border-style: solid;" />
+   </children>
+</AnchorPane>

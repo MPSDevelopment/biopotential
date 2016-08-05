@@ -3,9 +3,10 @@ package com.mpsdevelopment.biopotential.server.db.pojo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "Folders")
@@ -27,10 +28,12 @@ public class Folders extends BaseObject {
     public static final String FOLDER_TYPE = "folderType";
     public static final String FOLDER_TYPE_GS = "t";
 
+    private Set<Patterns> patternses = new HashSet<>();
+
     public Folders() {
 
     }
-
+    @Id
     @Expose
     @Column(name = ID_FOLDER)
     @SerializedName(ID_FOLDER_GS)
@@ -64,12 +67,24 @@ public class Folders extends BaseObject {
     @Expose
     @Column(name = IS_IN_USE)
     @SerializedName(IS_IN_USE_GS)
-    private Integer isInUse;
+    private int isInUse;
 
     @Expose
     @Column(name = FOLDER_TYPE)
     @SerializedName(FOLDER_TYPE_GS)
     private String folderType;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name="linkFoldersToPatterns",
+            joinColumns={@JoinColumn(name="idFolder")},
+            inverseJoinColumns={@JoinColumn(name="idPattern")})
+    public Set<Patterns> getPatternses() {
+        return patternses;
+    }
+
+    public void setPatternses(Set<Patterns> patternses) {
+        this.patternses = patternses;
+    }
 
     public int getIdFolder() {
         return idFolder;

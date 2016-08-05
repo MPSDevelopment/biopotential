@@ -3,9 +3,10 @@ package com.mpsdevelopment.biopotential.server.db.pojo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "Patterns")
@@ -49,10 +50,12 @@ public class Patterns extends BaseObject {
     public static final String LINKED_FOLDER_ID = "linkedFolderId";
     public static final String LINKED_FOLDER_ID_GS = "lFoldId";
 
+    private Set<Folders> folderses = new HashSet<>();
+
     public Patterns() {
 
     }
-
+    @Id
     @Expose
     @Column(name = ID_PATTERN)
     @SerializedName(ID_PATTERN_GS)
@@ -147,6 +150,15 @@ public class Patterns extends BaseObject {
     @Column(name = LINKED_FOLDER_ID)
     @SerializedName(LINKED_FOLDER_ID_GS)
     private int linkedFolderId;
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy="patternses")
+    public Set<Folders> getFolderses() {
+        return folderses;
+    }
+
+    public void setFolderses(Set<Folders> folderses) {
+        this.folderses = folderses;
+    }
 
     public int getIdPattern() {
         return idPattern;

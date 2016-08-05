@@ -14,6 +14,7 @@ import com.mpsdevelopment.biopotential.server.db.pojo.Role;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -21,7 +22,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 public class DatabaseCreator {
 	
 	private static final Logger LOGGER = LoggerUtil.getLogger(DatabaseCreator.class);
@@ -35,7 +35,7 @@ public class DatabaseCreator {
     public static final String OPERATOR_PASSWORD = "234sgfwesgsf";
 
 	@Autowired
-	private UserDao userDao;	
+	private UserDao userDao;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -94,8 +94,9 @@ public class DatabaseCreator {
             while(foldersDb.next()) {
                 folders = (Folders) new Folders().setIdFolder(foldersDb.getInt("id_folder")).setFolderName(foldersDb.getString("parent_folder_id")).setFolderName(foldersDb.getString("folder_name")).
                         setFolderDescription(foldersDb.getString("folder_description")).setDbdtsAdded(foldersDb.getString("dbdts_added")).setSortPriority(foldersDb.getString("sort_priority")).
-                        setIsInUse(foldersDb.getInt("folder_description")).setFolderType(foldersDb.getString("folder_type"));
+                        setIsInUse(foldersDb.getInt("is_in_use")).setFolderType(foldersDb.getString("folder_type"));
 
+                LOGGER.info("id_folder %s", foldersDb.getInt("id_folder"));
                 LOGGER.info("foldersDao %s", folders);
                 foldersDao.save(folders);
             }
