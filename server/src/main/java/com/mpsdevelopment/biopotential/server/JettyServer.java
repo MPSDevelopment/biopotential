@@ -124,11 +124,11 @@ public class JettyServer {
 			ServletHolder mvcServletHolder = new ServletHolder(MVC_SERVLET_NAME, new DispatcherServlet(WEB_CONTEXT));
 			contextHandler.addServlet(mvcServletHolder, "/");
 
-			// Add spring security
-			contextHandler.addFilter(
-					new FilterHolder(
-							new DelegatingFilterProxy(AbstractSecurityWebApplicationInitializer.DEFAULT_FILTER_NAME)),
-					"/*", EnumSet.allOf(DispatcherType.class));
+			// // Add spring security
+			// contextHandler.addFilter(new FilterHolder( new
+			// DelegatingFilterProxy(
+			// AbstractSecurityWebApplicationInitializer.DEFAULT_FILTER_NAME )
+			// ),"/*", EnumSet.allOf( DispatcherType.class ));
 
 			contextHandler.setResourceBase(getBaseUrl());
 

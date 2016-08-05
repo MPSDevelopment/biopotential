@@ -8,7 +8,7 @@
 
 	<!--<global-method-security pre-post-annotations="enabled"/> -->
 
-	<http auto-config="true" use-expressions="true" create-session="stateless" entry-point-ref="restAuthenticationEntryPoint">
+	<http auto-config="true" use-expressions="true" entry-point-ref="restAuthenticationEntryPoint">
 		<intercept-url pattern="/api/users/login" access="permitAll()" />
 		<intercept-url pattern="/api/**" access="hasAuthority('ADMIN')" />
 		<csrf disabled="true" />
