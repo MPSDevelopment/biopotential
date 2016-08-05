@@ -39,6 +39,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 
 @MessageMapping(ControllerAPI.USER_CONTROLLER)
+@RequestMapping(ControllerAPI.USER_CONTROLLER)
 @Controller
 public class UsersController {
 
@@ -81,7 +82,6 @@ public class UsersController {
 	}
 
 	@Adviceable
-	@ProtectedApi
 	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_PUT_CREATE_USER, method = RequestMethod.PUT, produces = { ControllerAPI.PRODUCES_JSON })
 	public ResponseEntity<String> createUser(HttpServletRequest request, @RequestBody String json) {
 

@@ -15,6 +15,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.junit.After;
@@ -64,21 +65,21 @@ public class UsersControllerServerTest {
 
 	@BeforeClass
 	public static void beforeClass() throws ServletException, InterruptedException {
-//		JettyServer.getInstance().start();
-//		JettyServer.getInstance().join();
-		
+		JettyServer.getInstance().start();
+		// JettyServer.getInstance().join();
+
 		client = new HttpClient();
 		client.getParams().setParameter("http.useragent", "Test Client");
 
 	}
-	
+
 	@AfterClass
 	public static void afterClass() throws Exception {
-//		JettyServer.getInstance().stop();
+		JettyServer.getInstance().stop();
 
 	}
 
-	private int postObject(String url, Object object)
+	private HttpStatus postObject(String url, Object object)
 			throws URIException, UnsupportedEncodingException, IOException, HttpException {
 		String fullUrl = String.format("http://%s:%s%s", serverSettings.getHost(), serverSettings.getPort(), url);
 		LOGGER.info("Full url is %s", fullUrl);
@@ -86,7 +87,19 @@ public class UsersControllerServerTest {
 		method.setURI(new URI(fullUrl, false, ENCODING_NAME));
 		method.setRequestEntity(new StringRequestEntity(JsonUtils.getJson(object), CONTENT_TYPE_NAME, ENCODING_NAME));
 		try {
-			return client.executeMethod(method);
+			return HttpStatus.valueOf(client.executeMethod(method));
+		} finally {
+			method.releaseConnection();
+		}
+	}
+
+	private HttpStatus get(String url) throws URIException, UnsupportedEncodingException, IOException, HttpException {
+		String fullUrl = String.format("http://%s:%s%s", serverSettings.getHost(), serverSettings.getPort(), url);
+		LOGGER.info("Full url is %s", fullUrl);
+		GetMethod method = new GetMethod();
+		method.setURI(new URI(fullUrl, false, ENCODING_NAME));
+		try {
+			return HttpStatus.valueOf(client.executeMethod(method));
 		} finally {
 			method.releaseConnection();
 		}
@@ -97,7 +110,7 @@ public class UsersControllerServerTest {
 	}
 
 	@Test
-	public void login() throws DaoException, InvalidKeyException, NoSuchAlgorithmException, IllegalStateException,
+	public void checkLogin() throws DaoException, InvalidKeyException, NoSuchAlgorithmException, IllegalStateException,
 			SignatureException, IOException, JWTVerifyException {
 
 		assertEquals(HttpStatus.UNAUTHORIZED,
@@ -111,31 +124,32 @@ public class UsersControllerServerTest {
 		assertEquals(HttpStatus.UNAUTHORIZED,
 				postObject(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_LOGIN, newUser));
 
-		// adminLogin();
+		adminLogin();
 
 	}
 
-	// @Test
-	// public void logout() throws DaoException, InvalidKeyException,
-	// NoSuchAlgorithmException, IllegalStateException,
-	// SignatureException, IOException, JWTVerifyException {
-	//
-	// User adminUser = new
-	// User().setLogin(DatabaseCreator.ADMIN_LOGIN).setPassword(DatabaseCreator.ADMIN_PASSWORD);
-	//
-	// ResponseEntity<String> adminResponse = usersController.login(request,
-	// JsonUtils.getJson(adminUser));
-	// LOGGER.info("Response is %s", adminResponse.getBody());
-	// assertEquals(HttpStatus.ACCEPTED, adminResponse.getStatusCode());
-	//
-	// ResponseEntity<String> logoutResponse = userLogout();
-	// assertEquals(HttpStatus.ACCEPTED, logoutResponse.getStatusCode());
-	//
-	// // second attempt
-	// logoutResponse = userLogout();
-	// assertEquals(HttpStatus.BAD_REQUEST, logoutResponse.getStatusCode());
-	//
-	// }
+	public void adminLogin() throws URIException, UnsupportedEncodingException, HttpException, IOException {
+		User user = new User().setLogin(DatabaseCreator.ADMIN_LOGIN).setPassword(DatabaseCreator.ADMIN_PASSWORD);
+		assertEquals(HttpStatus.ACCEPTED,
+				postObject(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_LOGIN, user));
+	}
+
+	public HttpStatus logout() throws URIException, UnsupportedEncodingException, HttpException, IOException {
+		return get(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_LOGOUT);
+	}
+
+	@Test
+	public void checkLogout() throws DaoException, InvalidKeyException, NoSuchAlgorithmException, IllegalStateException,
+			SignatureException, IOException, JWTVerifyException {
+
+		adminLogin();
+
+		assertEquals(HttpStatus.ACCEPTED, logout());
+
+		// second attempt
+		assertEquals(HttpStatus.BAD_REQUEST, logout());
+
+	}
 
 	// @Test
 	// public void createUser() throws DaoException, InvalidKeyException,

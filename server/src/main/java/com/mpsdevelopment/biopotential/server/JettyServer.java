@@ -1,5 +1,6 @@
 package com.mpsdevelopment.biopotential.server;
 
+import com.mpsdevelopment.biopotential.server.handler.AuthorizationFilter;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
@@ -36,16 +37,17 @@ public class JettyServer {
 
 	private static final Logger LOGGER = LoggerUtil.getLogger(JettyServer.class);
 
-	public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/app-context.xml");
+	public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext(
+			"webapp/app-context.xml");
 
 	public static XmlWebApplicationContext WEB_CONTEXT;
 
-	public static final String SPRING_ROOT = "webapp"; // that folder contains Spring context
+	public static final String SPRING_ROOT = "webapp"; // that folder contains
+														// Spring context
 	public static final String MVC_SERVLET_NAME = "rest";
 	public static final String SPRING_CONTEXT_FILENAME = "web-context.xml";
 
 	private Server server;
-	// private static ServerSettings settings = SettingsFactory.getInstance();
 	private static JettyServer jettyServer;
 	private ServletContextHandler contextHandler;
 
@@ -71,7 +73,7 @@ public class JettyServer {
 		server.addConnector(connector);
 		ResourceHandler webResourceHandler = new ResourceHandler();
 		webResourceHandler.setDirectoriesListed(true);
-		webResourceHandler.setWelcomeFiles(new String[] { "index.html", "index2.html" });
+		webResourceHandler.setWelcomeFiles(new String[] { "index.html" });
 		webResourceHandler.setResourceBase("web");
 
 		ResourceHandler filesResourceHandler = new ResourceHandler();
@@ -84,7 +86,12 @@ public class JettyServer {
 
 		WebSocketServerContainerInitializer.configureContext(getServletHandler());
 
-		LOGGER.info("Server started at host %s and port %s", serverSettings.getHost(), serverSettings.getPort());
+		try {
+			server.start();
+			LOGGER.info("Server started at host %s and port %s", serverSettings.getHost(), serverSettings.getPort());
+		} catch (Exception e) {
+			LOGGER.printStackTrace(e);
+		}
 	}
 
 	public ServletContextHandler getServletHandler() {
@@ -101,24 +108,27 @@ public class JettyServer {
 			WEB_CONTEXT = new XmlWebApplicationContext();
 			WEB_CONTEXT.setConfigLocations(SPRING_CONTEXT_FILENAME);
 			WEB_CONTEXT.setParent(APP_CONTEXT);
-			
-//			// Specify the Session ID Manager
-//	        HashSessionIdManager idmanager = new HashSessionIdManager();
-//	        server.setSessionIdManager(idmanager);
-//
-//	        // Create the SessionHandler (wrapper) to handle the sessions
-//	        HashSessionManager manager = new HashSessionManager();
-//	        SessionHandler sessions = new SessionHandler(manager);
-//	        contextHandler.setHandler(sessions);
 
-//	        // Put dump inside of SessionHandler 
-//	        sessions.setHandler(dump); 
+			// // Specify the Session ID Manager
+			// HashSessionIdManager idmanager = new HashSessionIdManager();
+			// server.setSessionIdManager(idmanager);
+			//
+			// // Create the SessionHandler (wrapper) to handle the sessions
+			// HashSessionManager manager = new HashSessionManager();
+			// SessionHandler sessions = new SessionHandler(manager);
+			// contextHandler.setHandler(sessions);
+
+			// // Put dump inside of SessionHandler
+			// sessions.setHandler(dump);
 
 			ServletHolder mvcServletHolder = new ServletHolder(MVC_SERVLET_NAME, new DispatcherServlet(WEB_CONTEXT));
 			contextHandler.addServlet(mvcServletHolder, "/");
-			
-			 // Add spring security      
-			contextHandler.addFilter(new FilterHolder( new DelegatingFilterProxy( AbstractSecurityWebApplicationInitializer.DEFAULT_FILTER_NAME ) ),"/*", EnumSet.allOf( DispatcherType.class ));
+
+			// Add spring security
+			contextHandler.addFilter(
+					new FilterHolder(
+							new DelegatingFilterProxy(AbstractSecurityWebApplicationInitializer.DEFAULT_FILTER_NAME)),
+					"/*", EnumSet.allOf(DispatcherType.class));
 
 			contextHandler.setResourceBase(getBaseUrl());
 
@@ -132,6 +142,42 @@ public class JettyServer {
 		return contextHandler;
 	}
 
+	// public ServletContextHandler getServletHandler() {
+	// if (contextHandler == null) {
+	// File tempDirectory = new File(serverSettings.getTempDirectory());
+	// if (!tempDirectory.exists()) {
+	// tempDirectory.mkdirs();
+	// }
+	//
+	// contextHandler = new
+	// ServletContextHandler(ServletContextHandler.SESSIONS);
+	// contextHandler.setAttribute("javax.servlet.context.tempdir",
+	// tempDirectory);
+	// contextHandler.setClassLoader(Thread.currentThread().getContextClassLoader());
+	//
+	// WEB_CONTEXT = new XmlWebApplicationContext();
+	// WEB_CONTEXT.setConfigLocations(SPRING_CONTEXT_FILENAME);
+	// WEB_CONTEXT.setParent(APP_CONTEXT);
+	//
+	// ServletHolder mvcServletHolder = new ServletHolder(MVC_SERVLET_NAME, new
+	// DispatcherServlet(WEB_CONTEXT));
+	// contextHandler.addServlet(mvcServletHolder, "/");
+	//
+	// contextHandler.addFilter(AuthorizationFilter.class, "/*",
+	// EnumSet.of(DispatcherType.INCLUDE, DispatcherType.REQUEST));
+	// contextHandler.setResourceBase(getBaseUrl());
+	//
+	// int contentSize = contextHandler.getMaxFormContentSize();
+	// int maxContentSize = 500 * 1000 * 1000;
+	// contextHandler.setMaxFormContentSize(maxContentSize);
+	//
+	// LOGGER.info("Max content size will be changed from %s to %s",
+	// contentSize, maxContentSize);
+	//
+	// }
+	// return contextHandler;
+	// }
+
 	public void join() throws InterruptedException {
 		server.join();
 	}
@@ -140,7 +186,9 @@ public class JettyServer {
 
 		// TODO Check This - PersistUtils.openSessionsCounter
 		// if (PersistUtils.openSessionsCounter > 0) {
-		// throw new Exception(String.format("Two much open sessions exception!!! Open sessions count: %s", PersistUtils.openSessionsCounter));
+		// throw new Exception(String.format("Two much open sessions
+		// exception!!! Open sessions count: %s",
+		// PersistUtils.openSessionsCounter));
 		// }
 		server.stop();
 	}
