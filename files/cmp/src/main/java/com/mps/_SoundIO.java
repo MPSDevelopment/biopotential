@@ -9,12 +9,12 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioFormat;
 
 public class _SoundIO {
-    public static Collection<Double> readAllFrames()
-            throws IOException {
-        return readAllFrames();
-    }
+//    public static List<Double> readAllFrames()
+//            throws IOException {
+//        return readAllFrames();
+//    }
 
-    public static Collection<Double> readAllFrames(final AudioInputStream audioStream)
+    public static List<Double> readAllFrames(final AudioInputStream audioStream)
             throws IOException {
         final AudioFormat format = audioStream.getFormat();
 

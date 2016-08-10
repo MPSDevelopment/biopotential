@@ -1,7 +1,10 @@
 package com.mps;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import com.mps.analyzer.AnalysisSummary;
@@ -10,6 +13,7 @@ import com.mps.analyzer.ChunkSummary;
 import com.mps.machine.Machine;
 import com.mps.machine.Strain;
 import com.mps.machine.dbs.arkdb.ArkDB;
+import com.mps.pcm.PCM;
 import com.mps.sound.WaveInputStream;
 import javafx.application.Application;
 import javafx.stage.FileChooser;
@@ -55,6 +59,13 @@ public class Main {
 //                add(new WAWStrain("g2", "n0203", "ills/k210203.waw"));
 //            }};
 
+//            int i = 0;
+//            for (ChunkSummary cs : Analyzer.summarize(_SoundIO.readAllFrames(
+//                    AudioSystem.getAudioInputStream(new File("test3.wav"))))) {
+//                System.out.printf("%d %f %f\n", i, cs.getMeanDeviation(), cs.getDispersion());
+//                i += 1;
+//            }
+
             ArkDB db = new ArkDB("test.arkdb");
             db.setDiseaseFolders("4328", "490"); // TODO: Should take names, not ids
             db.setHealingFolders("");
@@ -68,9 +79,9 @@ public class Main {
 //            }
             System.out.println("start");
 
-            final Collection<ChunkSummary> sample =
-                Analyzer.summarize(Analyzer.fold(_SoundIO.readAllFrames(
-                    AudioSystem.getAudioInputStream(new File("test.wav"))),
+            final List<ChunkSummary> sample =
+                Analyzer.summarize(PCM.fold(_SoundIO.readAllFrames(
+                    AudioSystem.getAudioInputStream(new File("test3.wav"))),
                     0x10266));
 
             Map<Strain, AnalysisSummary> diseases = Machine.summarizeStrains(
@@ -80,18 +91,17 @@ public class Main {
 
             Map<String, Integer> probableKinds = Machine.filterKinds(
                 (kind, count) -> count > 0, diseases);
-//
-//            Map<Strain, AnalysisSummary> healings = Machine.summarizeStrains(
-//                (strain, summary) -> probableKinds.containsKey(strain.getKind())
-//                        && summary.getDegree() == 0,
-//                sample,
-//                db.getHealings());
+
+            Map<Strain, AnalysisSummary> healings = Machine.summarizeStrains(
+                (strain, summary) -> probableKinds.containsKey(strain.getKind())
+                        && summary.getDegree() == 0,
+                sample,
+                db.getHealings());
 
             diseases.forEach((k, v) ->
-                System.out.printf("%s\t%f\n", k.getName(), v.getDispersion()));
+                System.out.printf("%s\t%d\n", k.getName(), v.getDegree()));
 
-
-//          TODO: REMOVEME
+//            TODO: REMOVEME
 //            Map<Strain, AnalysisSummary> summaries = Machine.summarizeStrains(
 //                (strain, summary) -> summary.getDegree() == 0,
 //                sample,

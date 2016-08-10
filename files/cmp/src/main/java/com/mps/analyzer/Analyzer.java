@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class Analyzer {
     // TODO: Make use of new sound API
-    public static Collection<ChunkSummary> summarize(Collection<Double> frames) {
+    public static List<ChunkSummary> summarize(List<Double> frames) {
         final List<ChunkSummary> summaries = new ArrayList<>();
 
         // Somewhat resembling wavelet transform
@@ -44,7 +44,7 @@ public class Analyzer {
         return summaries;
     }
 
-    public static Collection<ChunkSummary> readSummaryFromWAW(InputStream file) {
+    public static List<ChunkSummary> readSummaryFromWAW(InputStream file) {
         final int total = readStreamLE(file, 2);
         final List<ChunkSummary> summaries = new ArrayList<>();
         for (int i = 0; i < total; i += 1) {
@@ -61,8 +61,8 @@ public class Analyzer {
         return summaries;
     }
 
-    public static AnalysisSummary compare(Collection<ChunkSummary> first,
-                                          Collection<ChunkSummary> second) {
+    public static AnalysisSummary compare(List<ChunkSummary> first,
+                                          List<ChunkSummary> second) {
         if (first == null || second == null) {
             return null;
         }
@@ -89,19 +89,6 @@ public class Analyzer {
 
         return new AnalysisSummary(meanDeviation, dispersion,
             Float.floatToIntBits((float) dispersion) << 29);
-    }
-
-    public static Collection<Double> fold(Collection<Double> input, int len) {
-        final List<Double> result = new ArrayList<>(len);
-        int i = 0;
-        for (Double frame : input) {
-            result.set(i % len, result.get(i % len) + frame);
-            i += 1;
-        }
-        for (int j = 0; j < len; j += 1) {
-            result.set(j, result.get(j) / (double) len);
-        }
-        return result;
     }
 
     private static double computeMeanDeviation(double[] sum) {

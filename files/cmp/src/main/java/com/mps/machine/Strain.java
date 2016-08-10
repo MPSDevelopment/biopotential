@@ -3,11 +3,12 @@ package com.mps.machine;
 import com.mps.analyzer.ChunkSummary;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface Strain {
     String getKind();
     String getName();
     String getDescription();
-    Collection<Double> getPCMData();
-    Collection<ChunkSummary> getSummary();
+    List<Double> getPCMData();
+    List<ChunkSummary> getSummary();
 }

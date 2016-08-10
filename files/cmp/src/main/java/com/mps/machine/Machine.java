@@ -8,9 +8,9 @@ import java.util.*;
 
 public class Machine {
     public static Map<Strain, AnalysisSummary> summarizeStrains(
-            SummaryCondition         condition,
-            Collection<ChunkSummary> sample_summary,
-            StrainDB                 strains) {
+            SummaryCondition   condition,
+            List<ChunkSummary> sample_summary,
+            StrainDB           strains) {
         final Map<Strain, AnalysisSummary> summaries = new HashMap<>();
         Strain strain;
         while ((strain = strains.next()) != null) {

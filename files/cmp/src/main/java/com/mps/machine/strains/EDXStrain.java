@@ -8,6 +8,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 class EDXSection {
     String name;
@@ -64,6 +65,9 @@ public class EDXStrain implements Strain {
         }
 
         if (this.sects.containsKey(".orig   ")) {
+            FileOutputStream fos = new FileOutputStream((subdir + fileName) + ".pcm");
+            fos.write(this.sects.get(".orig   ").contents);
+            fos.close();
             this.pcmData = new ArrayList<>();
             for (byte b : this.sects.get(".orig   ").contents) {
                 this.pcmData.add((double) b / 255.0);
@@ -87,11 +91,11 @@ public class EDXStrain implements Strain {
         return "";
     }
 
-    public Collection<Double> getPCMData() {
+    public List<Double> getPCMData() {
         return this.pcmData;
     }
 
-    public Collection<ChunkSummary> getSummary() {
+    public List<ChunkSummary> getSummary() {
         return this.summary;
     }
 
@@ -110,8 +114,8 @@ public class EDXStrain implements Strain {
     }
 
     private HashMap<String, EDXSection> sects;
-    private Collection<ChunkSummary> summary;
-    private Collection<Double> pcmData;
+    private List<ChunkSummary> summary;
+    private List<Double> pcmData;
     private String kind;
     private String name;
     private String desc;
