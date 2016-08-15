@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,7 +51,7 @@ public class Patterns extends BaseObject {
     public static final String LINKED_FOLDER_ID = "linkedFolderId";
     public static final String LINKED_FOLDER_ID_GS = "lFoldId";
 
-    private Set<Folders> folderses = new HashSet<>();
+    private ArrayList<Folders> folderses;// = new HashSet<>();
 
     public Patterns() {
 
@@ -152,11 +153,11 @@ public class Patterns extends BaseObject {
     private int linkedFolderId;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy="patternses")
-    public Set<Folders> getFolderses() {
+    public ArrayList<Folders> getFolderses() {
         return folderses;
     }
 
-    public void setFolderses(Set<Folders> folderses) {
+    public void setFolderses(ArrayList<Folders> folderses) {
         this.folderses = folderses;
     }
 

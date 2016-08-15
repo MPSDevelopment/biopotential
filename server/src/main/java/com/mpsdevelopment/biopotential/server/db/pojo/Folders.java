@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,14 +29,16 @@ public class Folders extends BaseObject {
     public static final String FOLDER_TYPE = "folderType";
     public static final String FOLDER_TYPE_GS = "t";
 
-    private Set<Patterns> patternses = new HashSet<>();
+
+    private ArrayList<Patterns> patternses;
 
     public Folders() {
 
     }
-    @Id
+
     @Expose
     @Column(name = ID_FOLDER)
+    @Id
     @SerializedName(ID_FOLDER_GS)
     private int idFolder;
 
@@ -74,15 +77,15 @@ public class Folders extends BaseObject {
     @SerializedName(FOLDER_TYPE_GS)
     private String folderType;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name="linkFoldersToPatterns",
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, targetEntity = Patterns.class)
+    @JoinTable(name="Folders_Patterns",
             joinColumns={@JoinColumn(name="idFolder")},
             inverseJoinColumns={@JoinColumn(name="idPattern")})
-    public Set<Patterns> getPatternses() {
+    public ArrayList<Patterns> getPatternses() {
         return patternses;
     }
 
-    public void setPatternses(Set<Patterns> patternses) {
+    public void setPatternses(ArrayList<Patterns> patternses) {
         this.patternses = patternses;
     }
 
