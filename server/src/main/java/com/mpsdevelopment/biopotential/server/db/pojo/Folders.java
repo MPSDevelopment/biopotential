@@ -76,8 +76,8 @@ public class Folders extends BaseObject {
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, targetEntity = Patterns.class)
     @JoinTable(name="Folders_Patterns",
-            joinColumns={@JoinColumn(name="idFolder")},
-            inverseJoinColumns={@JoinColumn(name="idPattern")})
+            joinColumns={@JoinColumn(name=Folders.ID_FIELD)},
+            inverseJoinColumns={@JoinColumn(name=Patterns.ID_FIELD)})
     public ArrayList<Patterns> getPatternses() {
         return patternses;
     }
