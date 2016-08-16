@@ -5,9 +5,6 @@ import com.google.gson.annotations.SerializedName;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "Patterns")
@@ -157,8 +154,9 @@ public class Patterns extends BaseObject {
         return folderses;
     }
 
-    public void setFolderses(ArrayList<Folders> folderses) {
+    public Patterns setFolderses(ArrayList<Folders> folderses) {
         this.folderses = folderses;
+        return this;
     }
 
     public int getIdPattern() {

@@ -5,9 +5,6 @@ import com.google.gson.annotations.SerializedName;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "Folders")
@@ -30,7 +27,7 @@ public class Folders extends BaseObject {
     public static final String FOLDER_TYPE_GS = "t";
 
 
-    private ArrayList<Patterns> patternses;
+    private ArrayList<Patterns> patternses= new ArrayList<>(0);
 
     public Folders() {
 
