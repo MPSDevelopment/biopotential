@@ -22,4 +22,10 @@ public class FoldersDao extends GenericDao<Folders, Long> {
         return (Folders) query.uniqueResult();
     }
 
+    /*public Folders getByName(String value) {
+        Criteria query = getSession().createCriteria(Folders.class).setCacheable(false);
+        query.add(Restrictions.eq(Folders.ID_FOLDER, value));
+        return (Folders) query.uniqueResult();
+    }*/
+
 }

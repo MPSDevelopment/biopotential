@@ -100,43 +100,48 @@ public class DatabaseCreator {
         try {
             while(foldersDb.next()) {
 
-                folders = (Folders) new Folders().setIdFolder(foldersDb.getInt("id_folder")).setFolderName(foldersDb.getString("parent_folder_id")).setFolderName(foldersDb.getString("folder_name")).
-                        setFolderDescription(foldersDb.getString("folder_description")).setDbdtsAdded(foldersDb.getString("dbdts_added")).setSortPriority(foldersDb.getString("sort_priority")).
-                        setIsInUse(foldersDb.getInt("is_in_use")).setFolderType(foldersDb.getString("folder_type"));
+                folders = foldersDao.getById(foldersDb.getInt("id_folder"));
+                if (folders == null) {
+                    folders = (Folders) new Folders().setIdFolder(foldersDb.getInt("id_folder")).setFolderName(foldersDb.getString("parent_folder_id")).setFolderName(foldersDb.getString("folder_name")).
+                            setFolderDescription(foldersDb.getString("folder_description")).setDbdtsAdded(foldersDb.getString("dbdts_added")).setSortPriority(foldersDb.getString("sort_priority")).
+                            setIsInUse(foldersDb.getInt("is_in_use")).setFolderType(foldersDb.getString("folder_type"));
 
-                LOGGER.info("id_folder %s", foldersDb.getInt("id_folder"));
-                LOGGER.info("foldersDao %s", folders);
-                foldersDao.save(folders);
+                    LOGGER.info("id_folder %s", foldersDb.getInt("id_folder"));
+                    LOGGER.info("foldersDao %s", folders);
+                    foldersDao.save(folders);
+                }
             }
 
             while (patternsDb.next()){
 
-               /* List<Folders> folderses = (List<Folders>) db.createStatement().executeQuery(
-                        "SELECT * FROM folders JOIN link_patterns_to_folders ON folders.id_folder = link_patterns_to_folders.id_folder WHERE link_patterns_to_folders.id_pattern = " + patternsDb.getInt("id_pattern"));*/
+                patterns = patternsDao.getById(patternsDb.getInt("id_pattern"));
+                if (patterns == null) {
+                    patterns = (Patterns) new Patterns().setIdPattern(patternsDb.getInt("id_pattern")).setPatternName(patternsDb.getString("pattern_name")).setPatternDescription(patternsDb.getString("pattern_description")).
+                            setPatternUid(patternsDb.getString("pattern_uid")).setSrcHash(patternsDb.getString("src_hash")).setEdxHash(patternsDb.getString("edx_hash")).setDbdtsAdded(patternsDb.getString("dbdts_added")).
+                            setIsInUse(patternsDb.getInt("is_in_use")).setPatternShortDesc(patternsDb.getString("pattern_short_desc")).setPatternSourceFileName(patternsDb.getString("pattern_source_file_name")).
+                            setPatternMaxPlayingTime(patternsDb.getFloat("pattern_max_playing_time")).setPatternType(patternsDb.getInt("pattern_type")).setIsCanBeReproduced(patternsDb.getInt("is_can_be_reproduced")).
+                            setSmuls(patternsDb.getString("smuls")).setEdxFileCreationDts(patternsDb.getString("edx_file_creation_dts")).setEdxFileCreationDtsMsecs(patternsDb.getInt("edx_file_creation_dts_msecs")).
+                            setEdxFileLastModifiedDts(patternsDb.getString("edx_file_last_modified_dts")).setEdxFileLastModifiedDtsMsecs(patternsDb.getInt("edx_file_last_modified_dts_msecs"))
+                            .setLinkedFolderId(patternsDb.getInt("linked_folder_id"));
 
-                patterns = (Patterns) new Patterns().setIdPattern(patternsDb.getInt("id_pattern")).setPatternName(patternsDb.getString("pattern_name")).setPatternDescription(patternsDb.getString("pattern_description")).
-                        setPatternUid(patternsDb.getString("pattern_uid")).setSrcHash(patternsDb.getString("src_hash")).setEdxHash(patternsDb.getString("edx_hash")).setDbdtsAdded(patternsDb.getString("dbdts_added")).
-                        setIsInUse(patternsDb.getInt("is_in_use")).setPatternShortDesc(patternsDb.getString("pattern_short_desc")).setPatternSourceFileName(patternsDb.getString("pattern_source_file_name")).
-                        setPatternMaxPlayingTime(patternsDb.getFloat("pattern_max_playing_time")).setPatternType(patternsDb.getInt("pattern_type")).setIsCanBeReproduced(patternsDb.getInt("is_can_be_reproduced")).
-                        setSmuls(patternsDb.getString("smuls")).setEdxFileCreationDts(patternsDb.getString("edx_file_creation_dts")).setEdxFileCreationDtsMsecs(patternsDb.getInt("edx_file_creation_dts_msecs")).
-                        setEdxFileLastModifiedDts(patternsDb.getString("edx_file_last_modified_dts")).setEdxFileLastModifiedDtsMsecs(patternsDb.getInt("edx_file_last_modified_dts_msecs"))
-                        .setLinkedFolderId(patternsDb.getInt("linked_folder_id"));
-
-                LOGGER.info("patternsDao %s", patterns);
-                patternsDao.save(patterns);
-
+                    LOGGER.info("patternsDao %s", patterns);
+                    patternsDao.save(patterns);
+                }
             }
 
             while (patternsFolders.next()){
                 Long id_folder = patternsFolders.getLong("id_folder");
                 LOGGER.info("id_folder %s", id_folder);
+                Long id_pattern = patternsFolders.getLong("id_pattern");
+                LOGGER.info("id_pattern %s", id_pattern);
 
                 Folders folders = foldersDao.getById(patternsFolders.getInt("id_folder"));
                 Patterns patterns = patternsDao.getById(patternsFolders.getInt("id_pattern"));
 
-//                Folders folders = foldersDao.load(patternsFolders.getLong("id_folder"));
+//                folders = foldersDao.load(patternsFolders.getLong("id_folder"));
 //                Patterns patterns = patternsDao.load(patternsFolders.getLong("id_pattern"));
                 folders.getPatternses().add(patterns);
+                patterns.getFolderses().add(folders);
             }
 
         } catch (SQLException e) {

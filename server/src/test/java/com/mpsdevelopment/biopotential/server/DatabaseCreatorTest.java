@@ -45,10 +45,13 @@ public class DatabaseCreatorTest {
             e.printStackTrace();
         }
 
-//        List list = foldersDao.findAll();
         List list = foldersDao.findAll();
-        list.addAll(patternsDao.findAll());
-        Assert.assertTrue(list.size() > 0);
+        Assert.assertTrue(list.size() == 5);
+        list.clear();
+        list = (patternsDao.findAll());
+        Assert.assertTrue(list.size() == 856);
+
+
 
     }
 

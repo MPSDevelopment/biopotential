@@ -48,7 +48,7 @@ public class Patterns extends BaseObject {
     public static final String LINKED_FOLDER_ID = "linkedFolderId";
     public static final String LINKED_FOLDER_ID_GS = "lFoldId";
 
-    private ArrayList<Folders> folderses;// = new HashSet<>();
+    private ArrayList<Folders> folderses = new ArrayList<>();
 
     public Patterns() {
 
