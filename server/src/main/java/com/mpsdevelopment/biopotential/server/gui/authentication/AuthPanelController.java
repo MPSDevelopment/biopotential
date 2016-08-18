@@ -5,8 +5,9 @@ import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -24,15 +25,12 @@ public class AuthPanelController {
 
     private User user;
 
-    /*StringProperty logString = new SimpleStringProperty();
-    StringProperty passString = new SimpleStringProperty();*/
-
-
     @FXML
     private TextField loginField;
-
+    private final StringProperty login = new SimpleStringProperty();
     @FXML
     private TextField passField;
+    private final StringProperty password = new SimpleStringProperty();
 
     @FXML
     private Button enterButton;
@@ -46,7 +44,12 @@ public class AuthPanelController {
 
         User user = new User();
         deviceBioHttpClient = APP_CONTEXT.getBean(BioHttpClient.class);
-        loginField.textProperty().addListener(new ChangeListener<String>() {
+        // #2 Use property bindings
+        Bindings.bindBidirectional(loginField.textProperty(), login);
+        Bindings.bindBidirectional(passField.textProperty(), password);
+
+        // #1 Use listeners to listen change of textproperty of textfield
+        /*loginField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 user.setLogin(newValue);
@@ -59,22 +62,17 @@ public class AuthPanelController {
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 user.setPassword(newValue);
             }
-        });
+        });*/
 
         enterButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
 
-                /*logString.bind(loginField.textProperty());
-                passString.bind(passField.textProperty());
+                user.setLogin(login.getValue());
+                user.setPassword(password.getValue());
 
-                logString.addListener(new ChangeListener<String>() {
-                    @Override
-                    public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                        user.setLogin(newValue);
-
-                    }
-                });*/
+                LOGGER.info("Login - %s",user.getLogin());
+                LOGGER.info("Password - %s",user.getPassword());
 
                 String body = JsonUtils.getJson(user);
                 LOGGER.info("User - %s",body);
