@@ -26,12 +26,12 @@ public class ArkDB {
         }
     }
 
-    public void setDiseaseFolders(String... diseaseFolders) {
-        this.diseaseFolders = Arrays.asList(diseaseFolders);
+    public void setDiseaseFolders(Collection<Integer> diseases) {
+        //this.diseaseFolders = Arrays.asList(diseaseFolders);
     }
 
-    public void setHealingFolders(String... healingFolders) {
-        this.healingFolders = Arrays.asList(healingFolders);
+    public void setHealingFolders(Collection<Integer> healings) {
+        //this.healingFolders = Arrays.asList(healingFolders);
     }
 
     public ArkDBIter getDiseases() {
@@ -43,8 +43,8 @@ public class ArkDB {
     }
 
     ResultSet patterns;
-    Collection<String> diseaseFolders;
-    Collection<String> healingFolders;
+//    Collection<String> diseaseFolders;
+//    Collection<String> healingFolders;
     String url;
     Connection db;
 }
