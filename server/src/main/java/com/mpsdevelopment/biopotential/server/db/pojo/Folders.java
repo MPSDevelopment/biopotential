@@ -35,7 +35,6 @@ public class Folders extends BaseObject {
 
     @Expose
     @Column(name = ID_FOLDER)
-    @Id
     @SerializedName(ID_FOLDER_GS)
     private int idFolder;
 
@@ -74,6 +73,7 @@ public class Folders extends BaseObject {
     @SerializedName(FOLDER_TYPE_GS)
     private String folderType;
 
+    @GeneratedValue
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, targetEntity = Patterns.class)
     @JoinTable(name="Folders_Patterns",
             joinColumns={@JoinColumn(name=Folders.ID_FIELD)},

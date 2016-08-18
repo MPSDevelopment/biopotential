@@ -1,5 +1,6 @@
-package com.mpsdevelopment.biopotential.server.gui;
+package com.mpsdevelopment.biopotential.server.gui.authentication;
 
+import com.mpsdevelopment.biopotential.server.gui.BioPanelController;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.fxml.FXMLLoader;
@@ -10,11 +11,11 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 
-public class BioPanel extends Group {
+public class AuthPanel extends Group {
 
-    private static final Logger LOGGER = LoggerUtil.getLogger(BioPanel.class);
+    private static final Logger LOGGER = LoggerUtil.getLogger(AuthPanel.class);
 
-    public BioPanel(Stage primaryStage) {
+    public AuthPanel(Stage primaryStage) {
         FXMLLoader fxmlLoader = new FXMLLoader();
         URL resource = getClass().getResource("AuthPanel.fxml");
         if(resource == null)
@@ -24,7 +25,7 @@ public class BioPanel extends Group {
 
         try {
             panel = (Pane) fxmlLoader.load(resource.openStream());
-            BioPanelController controller = fxmlLoader.getController();
+            AuthPanelController controller = fxmlLoader.getController();
             getChildren().add(panel);
 
         } catch (IOException e) {

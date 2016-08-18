@@ -1,5 +1,8 @@
 package com.mpsdevelopment.biopotential.server.gui;
 
+import com.mps.machine.dbs.arkdb.ArkDBException;
+import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
+import com.mpsdevelopment.biopotential.server.gui.authentication.AuthPanel;
 import com.mpsdevelopment.plasticine.commons.ClasspathResourceManager;
 import com.mpsdevelopment.plasticine.commons.LogbackConfigureLoader;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
@@ -8,9 +11,6 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-/**
- * Created by AurusD on 28-Jul-16.
- */
 public class BioApplication extends Application {
 
     private static ClasspathResourceManager resourceManager = ClasspathResourceManager.getResourceManager();
@@ -25,7 +25,7 @@ public class BioApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         stage.setTitle("Ноев Ковчег");
-        Scene scene = new Scene(new BioPanel(stage));
+        Scene scene = new Scene(new AuthPanel(stage));
         stage.setScene(scene);
         stage.show();
     }

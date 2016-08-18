@@ -53,7 +53,6 @@ public class Patterns extends BaseObject {
     public Patterns() {
 
     }
-    @Id
     @Expose
     @Column(name = ID_PATTERN)
     @SerializedName(ID_PATTERN_GS)
