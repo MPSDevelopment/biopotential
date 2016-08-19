@@ -16,7 +16,7 @@ public class Machine {
         while ((strain = strains.next()) != null) {
             final AnalysisSummary summary =
                 Analyzer.compare(sample_summary, strain.getSummary());
-            if (strain != null && summary != null && condition.test(strain, summary)) {
+            if (summary != null && condition.test(strain, summary)) {
                 summaries.put(strain, summary);
             }
         }

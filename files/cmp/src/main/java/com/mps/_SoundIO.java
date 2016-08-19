@@ -74,8 +74,9 @@ public class _SoundIO {
         outstream.write(int2le(4, frames.size()));
         for (Double v : frames) {
             // if (v > 1.0 || v < 0.0) {
+            //     throw ...
             // }
-            outstream.write((byte) (v * 255.0));
+            outstream.write((byte) (v * 128.0) ^ 0x80);
         }
     }
 

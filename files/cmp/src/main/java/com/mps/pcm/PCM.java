@@ -5,14 +5,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PCM {
+    // TODO: FIXME
     public static List<Double> fold(List<Double> input, int len) {
         final List<Double> result = new ArrayList<>(Collections.nCopies(len, 0.0));
-        for (int i = 0; i < input.size(); i += 1) {
-            result.set(i % len, result.get(i % len) + input.get(i));
-        }
-        for (int j = 0; j < len; j += 1) {
-            result.set(j, result.get(j) / (double) len);
-        }
+//        for (int i = 0; i < input.size(); i += 1) {
+//            result.set(i % len, result.get(i % len) + input.get(i));
+//        }
+//        for (int j = 0; j < len; j += 1) {
+//            result.set(j, result.get(j) / (double) len);
+//        }
         return result;
     }
 
