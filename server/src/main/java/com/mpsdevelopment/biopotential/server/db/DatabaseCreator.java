@@ -138,9 +138,15 @@ public class DatabaseCreator {
 							.setEdxFileLastModifiedDtsMsecs(patternsDb.getInt("edx_file_last_modified_dts_msecs"))
 							.setLinkedFolderId(patternsDb.getInt("linked_folder_id"));
 
+                    if (patternsDb.getString("pattern_name").contains("BAC ") ||  patternsDb.getString("pattern_name").contains("VIR ") || patternsDb.getString("pattern_name").contains("Muc ")) {
+                        patterns.getFolders().add(folders);
+//                        patterns.setLinkedFolderId(4328);
+                    }
+
 					LOGGER.info("patternsDao %s", patterns);
 					patternsDao.save(patterns);
-				}
+
+                }
 			}
 
 			while (patternsFolders.next()) {
@@ -149,20 +155,24 @@ public class DatabaseCreator {
 				Long id_pattern = patternsFolders.getLong("id_pattern");
 				LOGGER.info("id_pattern %s", id_pattern);
 
-				Folders folders = foldersDao.getById(patternsFolders.getInt("id_folder"));
-				Patterns patterns = patternsDao.getById(patternsFolders.getInt("id_pattern"));
+				folders = foldersDao.getById(patternsFolders.getInt("id_folder"));
+				patterns = patternsDao.getById(patternsFolders.getInt("id_pattern"));
 
-				// folders =
-				// foldersDao.load(patternsFolders.getLong("id_folder"));
-				// Patterns patterns =
-				// patternsDao.load(patternsFolders.getLong("id_pattern"));
-				folders.getPatternses().add(patterns);
+                folders.getPatternses().add(patterns);
 				patterns.getFolderses().add(folders);
+
+                /*if (patterns.getPatternName().contains("BAC ")) {
+                    folders.getPatternses().add(patterns);
+                    patterns.setLinkedFolderId(2483);
+                    patterns.getFolderses().add(folders);
+                }*/
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
+
 
 	}
 
