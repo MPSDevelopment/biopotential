@@ -27,8 +27,17 @@ public class Folders extends BaseObject {
     public static final String FOLDER_TYPE = "folderType";
     public static final String FOLDER_TYPE_GS = "t";
 
-    private ArrayList<Patterns> patternses= new ArrayList<>(0);
-    private ArrayList<Patterns> patterns= new ArrayList<>(0);
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, targetEntity = Patterns.class)
+    /*@JoinTable(name="Folders_Patterns",
+            joinColumns={@JoinColumn(name=Folders.ID_FIELD)},
+            inverseJoinColumns={@JoinColumn(name=Patterns.ID_FIELD)})*/
+    private List<Patterns> patternses= new ArrayList<>(0);
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, targetEntity = Patterns.class)
+    /*@JoinTable(name="Folders_Patterns_m",
+            joinColumns={@JoinColumn(name=Folders.ID_FIELD)},
+            inverseJoinColumns={@JoinColumn(name=Patterns.ID_FIELD)})*/
+    private List<Patterns> patterns= new ArrayList<>(0);
 
     public Folders() {
 
@@ -74,37 +83,20 @@ public class Folders extends BaseObject {
     @SerializedName(FOLDER_TYPE_GS)
     private String folderType;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, targetEntity = Patterns.class)
-    @JoinTable(name="Folders_Patterns",
-            joinColumns={@JoinColumn(name=Folders.ID_FIELD)},
-            inverseJoinColumns={@JoinColumn(name=Patterns.ID_FIELD)})
-    public ArrayList<Patterns> getPatternses() {
+
+    public List<Patterns> getPatternses() {
         return patternses;
     }
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, targetEntity = Patterns.class)
-    @JoinTable(name="Folders_Patterns_m",
-            joinColumns={@JoinColumn(name=Folders.ID_FIELD)},
-            inverseJoinColumns={@JoinColumn(name=Patterns.ID_FIELD)})
-    public ArrayList<Patterns> getPatterns() {
-        return patterns;
-    }
-
-    public void setPatterns(ArrayList<Patterns> patterns) {
-        this.patterns = patterns;
-    }
-
-    /*@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    public ArrayList<Patterns> getPatterns() {
-        return patterns;
-    }
-
-    public void setPatterns(ArrayList<Patterns> patterns) {
-        this.patterns = patterns;
-    }*/
-
-    public void setPatternses(ArrayList<Patterns> patternses) {
+    public void setPatternses(List<Patterns> patternses) {
         this.patternses = patternses;
+    }
+
+    public List<Patterns> getPatterns() {
+        return patterns;
+    }
+
+    public void setPatterns(List<Patterns> patterns) {
+        this.patterns = patterns;
     }
 
     public int getIdFolder() {

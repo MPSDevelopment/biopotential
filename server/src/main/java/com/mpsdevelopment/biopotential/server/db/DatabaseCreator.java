@@ -86,7 +86,8 @@ public class DatabaseCreator {
 			this.patternsDb = this.db.createStatement().executeQuery("SELECT * FROM patterns");
 			this.patternsFolders = this.db.createStatement().executeQuery("SELECT * FROM link_patterns_to_folders");
 
-		} catch (SQLException e) {
+
+        } catch (SQLException e) {
 			throw new ArkDBException("SQLException: " + e.getMessage());
 		}
 
@@ -139,13 +140,12 @@ public class DatabaseCreator {
 							.setLinkedFolderId(patternsDb.getInt("linked_folder_id"));
 
                     if (patternsDb.getString("pattern_name").contains("BAC ") ||  patternsDb.getString("pattern_name").contains("VIR ") || patternsDb.getString("pattern_name").contains("Muc ")) {
-                        patterns.getFolders().add(folders);
-//                        patterns.setLinkedFolderId(4328);
+                        /*folders = foldersDao.getById(4328);
+                        patterns.getFolders().add(folders);*/
                     }
 
 					LOGGER.info("patternsDao %s", patterns);
 					patternsDao.save(patterns);
-
                 }
 			}
 
@@ -155,25 +155,45 @@ public class DatabaseCreator {
 				Long id_pattern = patternsFolders.getLong("id_pattern");
 				LOGGER.info("id_pattern %s", id_pattern);
 
-				folders = foldersDao.getById(patternsFolders.getInt("id_folder"));
-				patterns = patternsDao.getById(patternsFolders.getInt("id_pattern"));
+				Folders folders = foldersDao.getById(patternsFolders.getInt("id_folder"));
+				Patterns patterns = patternsDao.getById(patternsFolders.getInt("id_pattern"));
 
                 folders.getPatternses().add(patterns);
-				patterns.getFolderses().add(folders);
+                patterns.getFolderses().add(folders);
 
-                /*if (patterns.getPatternName().contains("BAC ")) {
-                    folders.getPatternses().add(patterns);
-                    patterns.setLinkedFolderId(2483);
-                    patterns.getFolderses().add(folders);
-                }*/
+
+
+
 			}
+
+            for (int i = 0; i < patternsDao.findAll().size(); i++) {
+                patterns = patternsDao.findAll().get(i);
+                List<Folders> folderList = foldersDao.findAll();
+                for (int j = 0; j < folderList.size(); j++) {
+                    Folders folders = folderList.get(j);
+
+
+                if (patterns.getPatternName().contains("BAC ")) {
+                    folders.getPatternses().add(patterns);
+                    patterns.getFolderses().add(folders);
+                    LOGGER.info("BAC size %s", folders.getPatterns().size());
+                }
+            }
+            }
+
+            folders = foldersDao.getById(4328);
+            LOGGER.info("Flora dissection size %s", folders.getPatternses().size());
+            folders = foldersDao.getById(2483);
+            LOGGER.info("BAC size %s", folders.getPatternses().size());
+            folders = foldersDao.getById(2483);
+            LOGGER.info("BAC size %s", folders.getPatterns().size());
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
 
-
+        LOGGER.info("End ");
 	}
 
 }

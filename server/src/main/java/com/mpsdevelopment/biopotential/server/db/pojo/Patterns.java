@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Patterns")
@@ -48,14 +49,12 @@ public class Patterns extends BaseObject {
     public static final String LINKED_FOLDER_ID = "linkedFolderId";
     public static final String LINKED_FOLDER_ID_GS = "lFoldId";
 
-    private ArrayList<Folders> folderses = new ArrayList<>();
-    private ArrayList<Folders> folders = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy="patternses")
+    private List<Folders> folderses = new ArrayList<>();
 
-    /*public void setFolders(Folders folders) {
-        this.folders = folders;
-    }
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy="patterns")
+    private List<Folders> folders = new ArrayList<>();
 
-    private Folders folders;*/
     public Patterns() {
 
     }
@@ -154,27 +153,19 @@ public class Patterns extends BaseObject {
     @SerializedName(LINKED_FOLDER_ID_GS)
     private int linkedFolderId;
 
-    /*@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "linkedFolderId", nullable = false)
-    public Folders getFolders() {
-        return this.folders;
-    }*/
-
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy="patternses")
-    public ArrayList<Folders> getFolderses() {
+    public List<Folders> getFolderses() {
         return folderses;
     }
 
-    public void setFolderses(ArrayList<Folders> folderses) {
+    public void setFolderses(List<Folders> folderses) {
         this.folderses = folderses;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy="patterns")
-    public ArrayList<Folders> getFolders() {
+    public List<Folders> getFolders() {
         return folders;
     }
 
-    public void setFolders(ArrayList<Folders> folders) {
+    public void setFolders(List<Folders> folders) {
         this.folders = folders;
     }
 
