@@ -49,10 +49,7 @@ public class Patterns extends BaseObject {
     public static final String LINKED_FOLDER_ID = "linkedFolderId";
     public static final String LINKED_FOLDER_ID_GS = "lFoldId";
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy="patternses")
-    private List<Folders> folderses = new ArrayList<>();
-
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy="patterns")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy= "patterns")
     private List<Folders> folders = new ArrayList<>();
 
     public Patterns() {
@@ -153,20 +150,12 @@ public class Patterns extends BaseObject {
     @SerializedName(LINKED_FOLDER_ID_GS)
     private int linkedFolderId;
 
-    public List<Folders> getFolderses() {
-        return folderses;
-    }
-
-    public void setFolderses(List<Folders> folderses) {
-        this.folderses = folderses;
-    }
-
     public List<Folders> getFolders() {
         return folders;
     }
 
-    public void setFolders(List<Folders> folders) {
-        this.folders = folders;
+    public void setFolders(List<Folders> folderses) {
+        this.folders = folderses;
     }
 
     public int getIdPattern() {

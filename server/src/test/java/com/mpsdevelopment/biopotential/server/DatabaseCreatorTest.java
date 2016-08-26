@@ -6,7 +6,6 @@ import com.mpsdevelopment.biopotential.server.db.dao.FoldersDao;
 import com.mpsdevelopment.biopotential.server.db.dao.PatternsDao;
 import com.mpsdevelopment.biopotential.server.db.pojo.Folders;
 import com.mpsdevelopment.biopotential.server.db.pojo.Patterns;
-import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import org.junit.Assert;
@@ -50,7 +49,7 @@ public class DatabaseCreatorTest {
 		Assert.assertEquals(856, patternsDao.findAll().size());
 
 		Folders folders = foldersDao.getById(4328);
-		List<Patterns> patternses = folders.getPatternses();
+		List<Patterns> patternses = folders.getPatterns();
 
 		for (Patterns patterns : patternses) {
 			LOGGER.info("patterns %s", patterns);

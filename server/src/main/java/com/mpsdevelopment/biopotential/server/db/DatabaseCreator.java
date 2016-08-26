@@ -14,7 +14,6 @@ import com.mpsdevelopment.biopotential.server.db.pojo.Role;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -22,9 +21,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class DatabaseCreator {
 
@@ -110,7 +107,6 @@ public class DatabaseCreator {
 							.setIsInUse(foldersDb.getInt("is_in_use"))
 							.setFolderType(foldersDb.getString("folder_type"));
 
-					LOGGER.info("id_folder %s", foldersDb.getInt("id_folder"));
 					LOGGER.info("foldersDao %s", folders);
 					foldersDao.save(folders);
 				}
@@ -137,63 +133,71 @@ public class DatabaseCreator {
 							.setEdxFileCreationDtsMsecs(patternsDb.getInt("edx_file_creation_dts_msecs"))
 							.setEdxFileLastModifiedDts(patternsDb.getString("edx_file_last_modified_dts"))
 							.setEdxFileLastModifiedDtsMsecs(patternsDb.getInt("edx_file_last_modified_dts_msecs"))
-							.setLinkedFolderId(patternsDb.getInt("linked_folder_id"));
+                            .setLinkedFolderId(patternsDb.getInt("linked_folder_id"));
 
-                    if (patternsDb.getString("pattern_name").contains("BAC ") ||  patternsDb.getString("pattern_name").contains("VIR ") || patternsDb.getString("pattern_name").contains("Muc ")) {
-                        /*folders = foldersDao.getById(4328);
-                        patterns.getFolders().add(folders);*/
-                    }
-
-					LOGGER.info("patternsDao %s", patterns);
-					patternsDao.save(patterns);
+                    LOGGER.info("patternsDao %s", patterns);
+                    patternsDao.save(patterns);
                 }
-			}
+            }
 
-			while (patternsFolders.next()) {
-				Long id_folder = patternsFolders.getLong("id_folder");
+            while (patternsFolders.next()) {
+                /*Long id_folder = patternsFolders.getLong("id_folder");
 				LOGGER.info("id_folder %s", id_folder);
 				Long id_pattern = patternsFolders.getLong("id_pattern");
-				LOGGER.info("id_pattern %s", id_pattern);
+				LOGGER.info("id_pattern %s", id_pattern);*/
 
-				Folders folders = foldersDao.getById(patternsFolders.getInt("id_folder"));
-				Patterns patterns = patternsDao.getById(patternsFolders.getInt("id_pattern"));
+                folders = foldersDao.getById(patternsFolders.getInt("id_folder"));
+                patterns = patternsDao.getById(patternsFolders.getInt("id_pattern"));
 
-                folders.getPatternses().add(patterns);
-                patterns.getFolderses().add(folders);
-
-
-
-
-			}
+                folders.getPatterns().add(patterns);
+                patterns.getFolders().add(folders);
+                foldersDao.save(folders);
+                patternsDao.save(patterns);
+            }
 
             for (int i = 0; i < patternsDao.findAll().size(); i++) {
                 patterns = patternsDao.findAll().get(i);
                 List<Folders> folderList = foldersDao.findAll();
-                for (int j = 0; j < folderList.size(); j++) {
-                    Folders folders = folderList.get(j);
 
+                for (Folders folders : folderList) {
 
-                if (patterns.getPatternName().contains("BAC ")) {
-                    folders.getPatternses().add(patterns);
-                    patterns.getFolderses().add(folders);
-                    LOGGER.info("BAC size %s", folders.getPatterns().size());
+                    if (patterns.getPatternName().contains("BAC ") && (folders.getIdFolder() == 2483)) {
+                        folders.getPatterns().add(patterns);
+                        patterns.getFolders().add(folders);
+//                        LOGGER.info("BAC size %s", folders.getPatterns().size());
+                        foldersDao.save(folders);
+                        patternsDao.save(patterns);
+                    }
+
+                    if (patterns.getPatternName().contains("Muc ") && (folders.getIdFolder() == 959)) {
+                        folders.getPatterns().add(patterns);
+                        patterns.getFolders().add(folders);
+                        foldersDao.save(folders);
+                        patternsDao.save(patterns);
+                    }
+
+                    if (patterns.getPatternName().contains("VIR ") && (folders.getIdFolder() == 490)) {
+                        folders.getPatterns().add(patterns);
+                        patterns.getFolders().add(folders);
+                        foldersDao.save(folders);
+                        patternsDao.save(patterns);
+                    }
                 }
-            }
             }
 
             folders = foldersDao.getById(4328);
-            LOGGER.info("Flora dissection size %s", folders.getPatternses().size());
-            folders = foldersDao.getById(2483);
-            LOGGER.info("BAC size %s", folders.getPatternses().size());
+            LOGGER.info("Flora dissection size %s", folders.getPatterns().size());
             folders = foldersDao.getById(2483);
             LOGGER.info("BAC size %s", folders.getPatterns().size());
+            folders = foldersDao.getById(959);
+            LOGGER.info("Muc size %s", folders.getPatterns().size());
+            folders = foldersDao.getById(490);
+            LOGGER.info("VIR size %s", folders.getPatterns().size());
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-
-        LOGGER.info("End ");
 	}
 
 }
