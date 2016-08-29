@@ -90,7 +90,9 @@ public class BioHttpClient {
     }
 
     public String executeGetRequest(String uri) {
-        HttpGet request = new HttpGet(uri);
+        String url = String.format("%s%s", mainUrl, uri);
+//        HttpGet request = new HttpGet(uri);
+        HttpGet request = new HttpGet(url);
         String json = null;
         HttpResponse response = null;
         try {
@@ -206,7 +208,9 @@ public class BioHttpClient {
     }
 
     public String executePutRequest(String uri, String body) {
-        HttpPut request = new HttpPut(uri);
+        String url = String.format("%s%s", mainUrl, uri);
+        HttpPut request = new HttpPut(url);
+//        HttpPut request = new HttpPut(uri);
         String json = null;
         HttpResponse response = null;
         if (StringUtils.isNotBlank(body)) {

@@ -11,6 +11,7 @@ import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.biopotential.server.utils.SecurityUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,10 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,6 +35,7 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
+import java.util.List;
 
 @MessageMapping(ControllerAPI.USER_CONTROLLER)
 @RequestMapping(ControllerAPI.USER_CONTROLLER)
@@ -44,6 +43,7 @@ import java.security.SignatureException;
 public class UsersController {
 
 	private static final Logger LOGGER = LoggerUtil.getLogger(UsersController.class);
+    private static final String UNDEFINED_CLIENT_DATA = "undefined";
 
 	@Autowired
 	private ServerSettings serverSettings;
@@ -137,4 +137,37 @@ public class UsersController {
 		return new ResponseEntity<String>(JsonUtils.getJson(new String("User was successfully deleted")), null, HttpStatus.OK);
 
 	}
+
+    @RequestMapping(value = ControllerAPI.USER_CONTROLLER_GET_ALL, method = RequestMethod.GET, produces = "text/json;charset=UTF-8")
+    @ResponseBody
+    public ResponseEntity<String> getAllUsers() throws ParseException {
+        List<User> users = userDao.getUsers(null, null);
+        LOGGER.info("Has been loaded '%s' users", users.size());
+        return new ResponseEntity<>(JsonUtils.getJson(users),
+                null, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = ControllerAPI.USER_CONTROLLER_GET_ALL_USERS_BY_PAGE, method = RequestMethod.GET, produces = "text/json;charset=UTF-8")
+    @ResponseBody
+    public ResponseEntity<String> getAllUsersByPages(@PathVariable(value = "pageSize") String pageSize, @PathVariable(value = "pageNumber") String pageNumber) throws ParseException {
+        Integer pageSizeInt;
+        if (pageSize == null || pageSize.isEmpty() || pageSize.equals(UNDEFINED_CLIENT_DATA)) {
+            pageSizeInt = null;
+        } else {
+            pageSizeInt = Integer.parseInt(pageSize);
+        }
+        Integer pageNumberInt;
+        if (pageNumber == null || pageNumber.isEmpty() || pageNumber.equals(UNDEFINED_CLIENT_DATA)) {
+            pageNumberInt = null;
+        } else {
+            pageNumberInt = Integer.parseInt(pageNumber);
+        }
+
+        List<User> users = userDao.getUsers(pageSizeInt, pageNumberInt);
+        LOGGER.info("Has been loaded '%s' users", users.size());
+        return new ResponseEntity<>(JsonUtils.getJson(users),
+                null, HttpStatus.OK);
+    }
+
+
 }

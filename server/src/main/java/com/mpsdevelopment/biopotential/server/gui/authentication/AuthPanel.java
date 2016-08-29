@@ -17,7 +17,7 @@ public class AuthPanel extends Group {
 
     public AuthPanel(Stage primaryStage) {
         FXMLLoader fxmlLoader = new FXMLLoader();
-        URL resource = getClass().getResource("AuthPanel.fxml");
+        URL resource = getClass().getResource("DiagPanel.fxml");
         if(resource == null)
             LOGGER.info("Cant find *.fxml");
         Pane panel;

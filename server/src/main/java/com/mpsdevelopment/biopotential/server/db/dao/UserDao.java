@@ -6,9 +6,8 @@ import org.hibernate.criterion.Restrictions;
 
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
 
-/**
- * Created by Lena on 05.08.2015.
- */
+import java.util.List;
+
 public class UserDao extends GenericDao<User, Long> {
 
     public User getByLogin(String value) {
@@ -28,5 +27,16 @@ public class UserDao extends GenericDao<User, Long> {
         Criteria query = getSession().createCriteria(User.class).setCacheable(false);
         query.setProjection(Projections.rowCount());
         return (Long) query.uniqueResult();
+    }
+
+    public List<User> getUsers(Integer pageSize, Integer pageNumber) {
+        Criteria query = getSession().createCriteria(User.class).setCacheable(false);
+        if (pageSize != null && pageNumber != null) {
+            query.setFirstResult(pageNumber * pageSize);
+        }
+        if (pageSize != null) {
+            query.setMaxResults(pageSize);
+        }
+        return query.list();
     }
 }
