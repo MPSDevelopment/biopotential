@@ -9,6 +9,7 @@ import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,6 +20,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -49,12 +51,6 @@ public class DiagPanelController {
 
     @FXML
     private TableColumn<User, String> nameColumn;
-
-    @FXML
-    private TableColumn<User, String> surnameColumn;
-
-    @FXML
-    private TableColumn<User, String> patricColumn;
 
     @FXML
     private Button addButton;
@@ -94,10 +90,16 @@ public class DiagPanelController {
         deviceBioHttpClient.executePutRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_PUT_CREATE_USER,body);*/
 
         // устанавливаем тип и значение которое должно хранится в колонке
-//        idColumn.setCellValueFactory(new PropertyValueFactory<User, Integer>("id"));
-        nameColumn.setCellValueFactory(new PropertyValueFactory<User, String>("name"));
-        surnameColumn.setCellValueFactory(new PropertyValueFactory<User, String>("surname"));
-        patricColumn.setCellValueFactory(new PropertyValueFactory<User, String>("patronymic"));
+
+        nameColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<User, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<User, String> user) {
+                SimpleStringProperty property = new SimpleStringProperty();
+                    property.setValue(String.format("%-2s %10s %10s", user.getValue().getName(), user.getValue().getSurname(), user.getValue().getPatronymic()));
+                return property;
+            }
+        });
+
 
         String json = deviceBioHttpClient.executeGetRequest("/api/users/all");
         User[] users = JsonUtils.fromJson(User[].class, json);
@@ -110,10 +112,6 @@ public class DiagPanelController {
 
         // заполняем таблицу данными
         tableUsers.setItems(usersData);
-
-
-
-
 
         addButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
