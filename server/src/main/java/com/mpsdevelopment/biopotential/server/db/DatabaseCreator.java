@@ -1,17 +1,11 @@
 package com.mpsdevelopment.biopotential.server.db;
 
 import com.mps.machine.dbs.arkdb.ArkDBException;
-import com.mpsdevelopment.biopotential.server.db.dao.FoldersDao;
-import com.mpsdevelopment.biopotential.server.db.dao.PatternsDao;
-import com.mpsdevelopment.biopotential.server.db.pojo.Folders;
-import com.mpsdevelopment.biopotential.server.db.pojo.Patterns;
+import com.mpsdevelopment.biopotential.server.db.dao.*;
+import com.mpsdevelopment.biopotential.server.db.pojo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.mpsdevelopment.biopotential.server.db.dao.DaoException;
-import com.mpsdevelopment.biopotential.server.db.dao.UserDao;
-import com.mpsdevelopment.biopotential.server.db.pojo.Role;
-import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 
@@ -47,12 +41,16 @@ public class DatabaseCreator {
 	@Autowired
 	private PatternsDao patternsDao;
 
+    @Autowired
+    private PatternsFoldersDao patternsFoldersDao;
+
 	private Folders folders;
 	private Patterns patterns;
-	Connection db;
-	ResultSet foldersDb;
-	ResultSet patternsDb;
-	ResultSet patternsFolders;
+    private PatternsFolderses patternsFolderses;
+	private Connection db;
+	private ResultSet foldersDb;
+	private ResultSet patternsDb;
+	private ResultSet patternsFolders;
 
 	public void initialization() throws IOException, URISyntaxException, DaoException {
 		createUserIfNotExists(new User().setLogin(ADMIN_LOGIN).setPassword(passwordEncoder.encode(ADMIN_PASSWORD))
@@ -149,42 +147,43 @@ public class DatabaseCreator {
                 folders = foldersDao.getById(patternsFolders.getInt("id_folder"));
                 patterns = patternsDao.getById(patternsFolders.getInt("id_pattern"));
 
-                folders.getPatterns().add(patterns);
-                patterns.getFolders().add(folders);
-                foldersDao.save(folders);
-                patternsDao.save(patterns);
-            }
+                /*folders.getPatterns().add(patterns);
+				patterns.getFolders().add(folders);*/
 
-            for (int i = 0; i < patternsDao.findAll().size(); i++) {
-                patterns = patternsDao.findAll().get(i);
-                List<Folders> folderList = foldersDao.findAll();
+                patternsFolderses = new PatternsFolderses();
+                patternsFolderses.setFolders(folders);
+                patternsFolderses.setPatterns(patterns);
+                patternsFolderses.setPaternal(false);
+
+                patternsFoldersDao.save(patternsFolderses);
+
+            }
+            List<Folders> folderList = foldersDao.findAll();
+            List<Patterns> patternsList = patternsDao.findAll();
+
+            for (Patterns patterns: patternsList) {
 
                 for (Folders folders : folderList) {
 
-                    if (patterns.getPatternName().contains("BAC ") && (folders.getIdFolder() == 2483)) {
-                        folders.getPatterns().add(patterns);
-                        patterns.getFolders().add(folders);
-//                        LOGGER.info("BAC size %s", folders.getPatterns().size());
-                        foldersDao.save(folders);
-                        patternsDao.save(patterns);
+                    if ((patterns.getPatternName().contains("BAC ") && (folders.getIdFolder() == 2483)) ||
+                            (patterns.getPatternName().contains("Muc ") && (folders.getIdFolder() == 959)) ||
+                            (patterns.getPatternName().contains("VIR ") && (folders.getIdFolder() == 490))) {
+
+                        patternsFolderses = new PatternsFolderses();
+                        patternsFolderses.setFolders(folders);
+                        patternsFolderses.setPatterns(patterns);
+                        patternsFolderses.setPaternal(true);
+
+                        patternsFolderses.getFolders().getPatternseFolderses().add(patternsFolderses);
+                        patternsFolderses.getPatterns().getPatternseFolderses().add(patternsFolderses);
+
+                        patternsFoldersDao.save(patternsFolderses);
                     }
 
-                    if (patterns.getPatternName().contains("Muc ") && (folders.getIdFolder() == 959)) {
-                        folders.getPatterns().add(patterns);
-                        patterns.getFolders().add(folders);
-                        foldersDao.save(folders);
-                        patternsDao.save(patterns);
-                    }
-
-                    if (patterns.getPatternName().contains("VIR ") && (folders.getIdFolder() == 490)) {
-                        folders.getPatterns().add(patterns);
-                        patterns.getFolders().add(folders);
-                        foldersDao.save(folders);
-                        patternsDao.save(patterns);
-                    }
-                }
             }
-
+            }
+            LOGGER.info("End");
+           /*
             folders = foldersDao.getById(4328);
             LOGGER.info("Flora dissection size %s", folders.getPatterns().size());
             folders = foldersDao.getById(2483);
@@ -192,7 +191,7 @@ public class DatabaseCreator {
             folders = foldersDao.getById(959);
             LOGGER.info("Muc size %s", folders.getPatterns().size());
             folders = foldersDao.getById(490);
-            LOGGER.info("VIR size %s", folders.getPatterns().size());
+            LOGGER.info("VIR size %s", folders.getPatterns().size());*/
 
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -8,5 +8,6 @@
 		<mapping class="com.mpsdevelopment.biopotential.server.db.pojo.Folders" />
 		<mapping class="com.mpsdevelopment.biopotential.server.db.pojo.Patterns" />
 		<mapping class="com.mpsdevelopment.biopotential.server.db.pojo.Role" />
+		<mapping class="com.mpsdevelopment.biopotential.server.db.pojo.PatternsFolderses" />
 	</session-factory>
 </hibernate-configuration>

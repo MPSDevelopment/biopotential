@@ -27,11 +27,14 @@ public class Folders extends BaseObject {
     public static final String FOLDER_TYPE = "folderType";
     public static final String FOLDER_TYPE_GS = "t";
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, targetEntity = Patterns.class)
+    /*@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, targetEntity = Patterns.class)
+    private List<Patterns> patterns = new ArrayList<>(0);*/
     /*@JoinTable(name="Folders_Patterns",
             joinColumns={@JoinColumn(name=Folders.ID_FIELD)},
             inverseJoinColumns={@JoinColumn(name=Patterns.ID_FIELD)})*/
-    private List<Patterns> patterns = new ArrayList<>(0);
+    @OneToMany(mappedBy = "folders")
+    private List<PatternsFolderses> patternseFolderses = new ArrayList<>();
+
 
     public Folders() {
 
@@ -78,11 +81,19 @@ public class Folders extends BaseObject {
     private String folderType;
 
 
-    public List<Patterns> getPatterns() {
+    /*public List<Patterns> getPatterns() {
         return patterns;
     }
     public void setPatterns(List<Patterns> patternses) {
         this.patterns = patternses;
+    }*/
+
+    public List<PatternsFolderses> getPatternseFolderses() {
+        return patternseFolderses;
+    }
+
+    public void setPatternseFolderses(List<PatternsFolderses> patternseFolderses) {
+        this.patternseFolderses = patternseFolderses;
     }
 
     public int getIdFolder() {

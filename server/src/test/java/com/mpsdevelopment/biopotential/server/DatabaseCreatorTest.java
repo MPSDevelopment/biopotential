@@ -49,14 +49,11 @@ public class DatabaseCreatorTest {
 		Assert.assertEquals(856, patternsDao.findAll().size());
 
 		Folders folders = foldersDao.getById(4328);
-		List<Patterns> patternses = folders.getPatterns();
+		/*List<Patterns> patternses = folders.getPatterns();
 
 		for (Patterns patterns : patternses) {
 			LOGGER.info("patterns %s", patterns);
-		}
-
-
-
+		}*/
 	}
 
 }
