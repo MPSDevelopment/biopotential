@@ -59,7 +59,9 @@ public class SecurityUtils {
 
 		SecurityContext securityContext = SecurityContextHolder.getContext();
 		securityContext.setAuthentication(authentication);
-
+		
+		
+		
 		// Create a new session and add the security context.
 		// session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
 		return authentication.getAuthorities().iterator().next().toString();

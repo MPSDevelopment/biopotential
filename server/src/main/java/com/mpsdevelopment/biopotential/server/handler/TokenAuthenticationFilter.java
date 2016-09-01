@@ -12,7 +12,7 @@ import java.io.IOException;
 public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
 	public TokenAuthenticationFilter() {
-		super("/rest/**");
+		super("/api/**");
 		setAuthenticationSuccessHandler((request, response, authentication) -> {
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			request.getRequestDispatcher(request.getServletPath() + request.getPathInfo()).forward(request, response);
@@ -26,8 +26,9 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException, IOException, ServletException {
 		String token = request.getHeader("token");
-		if (token == null)
+		if (token == null) {
 			token = request.getParameter("token");
+		}
 		if (token == null) {
 			TokenAuthentication authentication = new TokenAuthentication(null);
 			authentication.setAuthenticated(false);

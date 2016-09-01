@@ -76,6 +76,12 @@ public class JettyServer {
 		webResourceHandler.setWelcomeFiles(new String[] { "index.html" });
 		webResourceHandler.setResourceBase("web");
 
+		// disable web content locking
+		webResourceHandler.setMinMemoryMappedContentLength(-1);
+
+		// webResourceHandler.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer",
+		// "false");
+
 		ResourceHandler filesResourceHandler = new ResourceHandler();
 		filesResourceHandler.setDirectoriesListed(true);
 		filesResourceHandler.setResourceBase(serverSettings.getFilesPath());
@@ -122,13 +128,14 @@ public class JettyServer {
 			// sessions.setHandler(dump);
 
 			ServletHolder mvcServletHolder = new ServletHolder(MVC_SERVLET_NAME, new DispatcherServlet(WEB_CONTEXT));
+			mvcServletHolder.setInitParameter("useFileMappedBuffer", "false");
 			contextHandler.addServlet(mvcServletHolder, "/");
 
 			// // Add spring security
-			// contextHandler.addFilter(new FilterHolder( new
-			// DelegatingFilterProxy(
-			// AbstractSecurityWebApplicationInitializer.DEFAULT_FILTER_NAME )
-			// ),"/*", EnumSet.allOf( DispatcherType.class ));
+//			contextHandler.addFilter(
+//					new FilterHolder(
+//							new DelegatingFilterProxy(AbstractSecurityWebApplicationInitializer.DEFAULT_FILTER_NAME)),
+//					"/*", EnumSet.allOf(DispatcherType.class));
 
 			contextHandler.setResourceBase(getBaseUrl());
 
