@@ -91,7 +91,7 @@ public class UsersController {
 			return new ResponseEntity<String>(JsonUtils.getJson("User with such login already exist"), null, HttpStatus.CONFLICT);
 		}
 
-		userDao.save(user);
+		userDao.saveOrUpdate(user);
 
 		return new ResponseEntity<String>(JsonUtils.getJson(user), null, HttpStatus.CREATED);
 

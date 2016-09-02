@@ -262,4 +262,12 @@ public class User extends BaseObject {
     public void setGender(Gender gender) {
         this.gender = gender;
     }
+
+    public List<Visit> getVisits() {
+        return visits;
+    }
+
+    public void setVisits(List<Visit> visits) {
+        this.visits = visits;
+    }
 }
