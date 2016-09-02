@@ -24,6 +24,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -84,6 +85,12 @@ public class DiagPanelController {
     @FXML
     private Button fileButton;
 
+    @FXML
+    private Button selectFromDbButton;
+
+    @FXML
+    private AnchorPane dbAnchorPane;
+
     StackPane tablePane = new StackPane();
     @FXML
     private StackPane stackpane;
@@ -100,38 +107,11 @@ public class DiagPanelController {
 
     @FXML
     public void initialize() throws NoSuchMethodException {
-
-        /*User user = new User();
-        user.setName("Dima");
-        user.setSurname("Nazarenko");
-        user.setPatronymic("Vladimirovich");*/
+        dbAnchorPane.setVisible(false);
         deviceBioHttpClient = APP_CONTEXT.getBean(BioHttpClient.class);
         Bindings.bindBidirectional(surnameField.textProperty(), surname);
         Bindings.bindBidirectional(nameField.textProperty(), name);
         Bindings.bindBidirectional(patronymicField.textProperty(), patronymic);
-
-        /*String body = JsonUtils.getJson(user);
-        deviceBioHttpClient.executePutRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_PUT_CREATE_USER,body);*/
-
-        usersData.addListener(new ListChangeListener<User>(){
-
-            @Override
-            public void onChanged(javafx.collections.ListChangeListener.Change<? extends User> pChange) {
-                while(pChange.next()) {
-                    // Do your changes here
-                }
-            }
-        });
-        // TableView , return selected item
-      /*  tableUsers.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<User>() {
-            @Override
-            public void changed(ObservableValue<? extends User> observableValue, User oldValue, User newValue) {
-                //Check whether item is selected and set value of selected item to Label
-                if (tableUsers.getSelectionModel().getSelectedItem() != null) {
-//                    usersData.addAll((Collection<? extends User>) tableUsers);
-                }
-            }
-        });*/
 
         // устанавливаем тип и значение которое должно хранится в колонке
 
@@ -143,7 +123,6 @@ public class DiagPanelController {
                 return property;
             }
         });
-
 
         getUser();
 
@@ -170,22 +149,12 @@ public class DiagPanelController {
             }
         });
 
-
-
-        /*pagination = new Pagination((usersData.size() / rowsPerPage() + 1), 0);
-//        pagination.setPageCount(5);
-//           pagination = new Pagination(20 , 0);
-        pagination.setStyle("-fx-border-color:red;");
-        pagination.setPageFactory(new Callback<Integer, Node>() {
+        selectFromDbButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public Node call(Integer pageIndex) {
-                if (pageIndex > usersData.size() / rowsPerPage() + 1) {
-                    return null;
-                } else {
-                    return createPage(pageIndex);
-                }
+            public void handle(ActionEvent event) {
+                dbAnchorPane.setVisible(true);
             }
-        });*/
+        });
 
         Pagination pagination = new Pagination((dataSize / rowsPerPage + 1), 0);
         progressIndicator.setMaxSize(200, 200);
@@ -269,68 +238,16 @@ public class DiagPanelController {
         System.out.println("Click");
 
         User selectedId = tableUsers.getSelectionModel().getSelectedItem();
-        surnameField.setText(selectedId.getSurname());
-        nameField.setText(selectedId.getName());
-        patronymicField.setText(selectedId.getPatronymic());
-    }
-
-
-
-
-    /*public int itemsPerPage() {
-        return 1;
-    }
-
-    public int rowsPerPage() {
-        return 5;
-    }
-
-    public VBox createPage(int pageIndex) {
-        int lastIndex = 0;
-        int displace = usersData.size() % rowsPerPage();
-        if (displace > 0) {
-            lastIndex = usersData.size() / rowsPerPage();
-        } else {
-            lastIndex = usersData.size() / rowsPerPage() - 1;
-
+        if (selectedId != null) {
+            surnameField.setText(selectedId.getSurname());
+            nameField.setText(selectedId.getName());
+            patronymicField.setText(selectedId.getPatronymic());
         }
-
-        VBox box = new VBox(5);
-        int page = pageIndex * itemsPerPage();
-
-        for (int i = page; i < page + itemsPerPage(); i++) {
-            TableView<User> table = new TableView<User>();
-            TableColumn numCol = new TableColumn("ID");
-            numCol.setCellValueFactory(
-                    new PropertyValueFactory<User, String>("num"));
-
-            numCol.setMinWidth(20);
-
-            TableColumn firstNameCol = new TableColumn("First Name");
-            firstNameCol.setCellValueFactory(
-                    new PropertyValueFactory<User, String>("firstName"));
+    }
 
 
-            firstNameCol.setMinWidth(160);
-
-            TableColumn lastNameCol = new TableColumn("Last Name");
-            lastNameCol.setCellValueFactory(
-                    new PropertyValueFactory<User, String>("lastName"));
-
-            lastNameCol.setMinWidth(160);
-
-//            table.getColumns().addAll(numCol, firstNameCol, lastNameCol);
-            if (lastIndex == pageIndex) {
-                table.setItems(FXCollections.observableArrayList(usersData.subList(pageIndex * rowsPerPage(), pageIndex * rowsPerPage() + displace)));
-            } else {
-                table.setItems(FXCollections.observableArrayList(usersData.subList(pageIndex * rowsPerPage(), pageIndex * rowsPerPage() + rowsPerPage())));
-            }
 
 
-            box.getChildren().add(table);
-        }
-        return box;
-    }*/
 
 
 

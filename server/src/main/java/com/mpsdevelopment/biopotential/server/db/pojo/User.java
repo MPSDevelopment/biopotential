@@ -2,8 +2,12 @@ package com.mpsdevelopment.biopotential.server.db.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.internal.bind.DateTypeAdapter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 @Entity
@@ -30,7 +34,21 @@ public class User extends BaseObject {
     public static final String CALL_FIELD_GS = "call";
     public static final String ADMIN_FIELD = "admin";
     public static final String ADMIN_FIELD_GS = "adm";
-    
+    public static final String TEL_FIELD = "tel";
+    public static final String TEL_FIELD_GS = "t";
+    public static final String EMAIL_FIELD = "email";
+    public static final String EMAIL_FIELD_GS = "e";
+    public static final String BORNPLACE_FIELD = "bornPlace";
+    public static final String BORNPLACE_FIELD_GS = "bp";
+    public static final String BORNDATE_FIELD = "bornDate";
+    public static final String BORNDATE_FIELD_GS = "bd";
+    public enum Gender{
+        Мужчина,
+        Женщина
+    };
+
+    @OneToMany(mappedBy = "user")
+    private List<Visit> visits = new ArrayList<>();
 
     @Expose
     @Column(name = LOGIN_FIELD)
@@ -82,6 +100,30 @@ public class User extends BaseObject {
     @Column(name = ADMIN_FIELD)
     @SerializedName(ADMIN_FIELD_GS)
     private Boolean admin;
+
+    @Expose
+    @Column(name = TEL_FIELD)
+    @SerializedName(TEL_FIELD_GS)
+    private String tel;
+
+    @Expose
+    @Column(name = EMAIL_FIELD)
+    @SerializedName(EMAIL_FIELD_GS)
+    private String email;
+
+    @Expose
+    @Column(name = BORNPLACE_FIELD)
+    @SerializedName(BORNPLACE_FIELD_GS)
+    private String bornPlace;
+
+    @Expose
+    @Column(name = BORNDATE_FIELD)
+    @SerializedName(BORNDATE_FIELD_GS)
+    private Date bornDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender")
+    private Gender gender;
 
     public String getLogin() {
         return login;
@@ -172,7 +214,52 @@ public class User extends BaseObject {
 		this.admin = admin;
 		return this;
 	}
-    
-    
 
+    public Boolean getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        this.admin = admin;
+    }
+
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getBornPlace() {
+        return bornPlace;
+    }
+
+    public void setBornPlace(String bornPlace) {
+        this.bornPlace = bornPlace;
+    }
+
+    public Date getBornDate() {
+        return bornDate;
+    }
+
+    public void setBornDate(Date bornDate) {
+        this.bornDate = bornDate;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
 }

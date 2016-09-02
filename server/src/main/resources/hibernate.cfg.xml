@@ -9,5 +9,7 @@
 		<mapping class="com.mpsdevelopment.biopotential.server.db.pojo.Patterns" />
 		<mapping class="com.mpsdevelopment.biopotential.server.db.pojo.Role" />
 		<mapping class="com.mpsdevelopment.biopotential.server.db.pojo.PatternsFolderses" />
+		<mapping class="com.mpsdevelopment.biopotential.server.db.pojo.Visit" />
+
 	</session-factory>
 </hibernate-configuration>
