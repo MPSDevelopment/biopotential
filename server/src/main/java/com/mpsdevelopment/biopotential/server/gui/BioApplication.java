@@ -4,6 +4,7 @@ import com.mps.machine.dbs.arkdb.ArkDBException;
 import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
 import com.mpsdevelopment.biopotential.server.gui.authentication.AuthPanel;
 import com.mpsdevelopment.biopotential.server.gui.diagnostics.DiagPanel;
+import com.mpsdevelopment.biopotential.server.gui.diagnostics.DiagPanelController;
 import com.mpsdevelopment.plasticine.commons.ClasspathResourceManager;
 import com.mpsdevelopment.plasticine.commons.LogbackConfigureLoader;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
@@ -11,12 +12,15 @@ import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.springframework.context.annotation.Bean;
 
 public class BioApplication extends Application {
 
     private static ClasspathResourceManager resourceManager = ClasspathResourceManager.getResourceManager();
 
     private static final Logger LOGGER = LoggerUtil.getLogger(BioApplication.class);
+
+
 
     public static void main(String[] args) {
         LogbackConfigureLoader.initializeLogging(resourceManager, "logback.xml", "jul.properties");
@@ -25,6 +29,7 @@ public class BioApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+
         stage.setTitle("Ноев Ковчег");
         Scene scene = new Scene(new DiagPanel(stage));
         stage.setScene(scene);

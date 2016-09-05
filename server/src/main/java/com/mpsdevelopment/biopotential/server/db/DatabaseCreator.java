@@ -29,6 +29,8 @@ public class DatabaseCreator {
 
 	public static final String OPERATOR_PASSWORD = "234sgfwesgsf";
 
+
+
 	@Autowired
 	private UserDao userDao;
 

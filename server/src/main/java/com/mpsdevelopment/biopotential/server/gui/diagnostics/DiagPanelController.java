@@ -1,9 +1,14 @@
 package com.mpsdevelopment.biopotential.server.gui.diagnostics;
 
 import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
+import com.mpsdevelopment.biopotential.server.db.dao.VisitDao;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
+import com.mpsdevelopment.biopotential.server.db.pojo.Visit;
+import com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.SelectFromDbPanel;
 import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
+import com.mpsdevelopment.biopotential.server.settings.StageSettings;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
+import com.mpsdevelopment.biopotential.server.utils.StageUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.application.Platform;
@@ -13,46 +18,43 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Popup;
+import javafx.stage.Stage;
 import javafx.util.Callback;
+import net.engio.mbassy.listener.Handler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.text.DateFormat;
-import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class DiagPanelController {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(DiagPanelController.class);
-    public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/app-context.xml");
+    public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/app-context.xml", "webapp/web-context.xml");
     private static final int LIMIT = 2;
 
     private BioHttpClient deviceBioHttpClient;
 
     private User user;
+
+    @Autowired
+    private VisitDao visitDao;
 
     @FXML
     private Pagination pagination;
@@ -65,6 +67,7 @@ public class DiagPanelController {
     private TextField nameField;
     private final StringProperty name = new SimpleStringProperty();
     private ObservableList<User> usersData = FXCollections.observableArrayList();
+    private ObservableList<User> historyUsersData = FXCollections.observableArrayList();
 
     @FXML
     private TextField patronymicField;
@@ -107,6 +110,12 @@ public class DiagPanelController {
     private TableColumn<User, String> emailColumn;
 
     @FXML
+    private TableView<User> historyTableUsers;
+
+    @FXML
+    private TableColumn<User, String> historyNameColumn;
+
+    @FXML
     private Button addButton;
 
     @FXML
@@ -123,6 +132,12 @@ public class DiagPanelController {
 
     @FXML
     private Button fileButton;
+
+    @FXML
+    private Button selectUserButton;
+
+    @FXML
+    private Button deleteButton;
 
     @FXML
     private Button selectFromDbButton;
@@ -216,15 +231,26 @@ public class DiagPanelController {
         telColumn.setCellValueFactory(new PropertyValueFactory<>("tel"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
 
+        historyNameColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<User, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<User, String> user) {
+                SimpleStringProperty property = new SimpleStringProperty();
+                property.setValue(String.format("%-2s %10s %10s", user.getValue().getName(), user.getValue().getSurname(), user.getValue().getPatronymic()));
+                return property;
+            }
+        });
+
         getUser();
 
         // заполняем таблицу данными
         tableUsers.setItems(usersData);
 
+
         addButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
 
+                Visit visit = new Visit();
 
                 user.setSurname(surname.getValue());
                 user.setName(name.getValue());
@@ -233,6 +259,10 @@ public class DiagPanelController {
                 user.setEmail(email.getValue());
                 user.setBornPlace(born.getValue());
                 user.setAdministrator(false);
+                visit.setUser(user);
+                user.getVisits().add(visit);
+//                visitDao.save(visit);
+
                 if (takeDate() != null) {
                     user.setBornDate(takeDate());
                 }
@@ -245,14 +275,77 @@ public class DiagPanelController {
             }
         });
 
-        selectFromDbButton.setOnAction(new EventHandler<ActionEvent>() {
+        deleteButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                ObservableList<User> usersData = getUserList();
+                Long Id = null;
+                for (User tempUsersData: usersData) {
+                    if (tempUsersData.getSurname() != null && tempUsersData.getSurname().equals(surnameField.getText())) {
+                        Id = tempUsersData.getId();
+                    }
+                }
+
+                LOGGER.info("%s", ControllerAPI.USER_CONTROLLER + "/remove/" + String.valueOf(Id));
+                deviceBioHttpClient.executeDeleteRequest(ControllerAPI.USER_CONTROLLER + "/remove/" + String.valueOf(Id));
+            }
+        });
+
+        selectUserButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                historyUsersData.clear();
+                ObservableList<User> usersData = getUserList();
+                Long Id = null;
+                for (User tempUsersData: usersData) {
+                    if (tempUsersData.getSurname() != null && tempUsersData.getSurname().equals(surnameField.getText())) {
+                        Id = tempUsersData.getId();
+                        historyUsersData.add(tempUsersData);
+                    }
+                }
+
+                LOGGER.info("%s", String.valueOf(Id));
+                historyTableUsers.setItems(historyUsersData);
+
+            }
+        });
+
+       /* selectFromDbButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 dbAnchorPane.setVisible(true);
             }
+        });*/
+
+        selectFromDbButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                LOGGER.info("  ACTION EDIT METEO in  Scenario");
+                Stage stage = new Stage();
+                SelectFromDbPanel panel = new SelectFromDbPanel(stage);
+                /*Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Метеообстановка").setClazz(panel.getClass()).setHeight(550d).setWidth(500d).setHeightPanel(550d).setWidthPanel(500d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+                panel.setPrimaryStage(stage);*/
+
+                Scene scene = new Scene(panel);
+                stage.setScene(scene);
+                stage.show();
+            }
         });
 
-        Pagination pagination = new Pagination((dataSize / rowsPerPage + 1), 0);
+
+
+
+        /*showHistoryButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                Stage stage = new Stage();
+                Scene scene = new Scene(new SelectFromDbPanel(stage));
+                stage.setScene(scene);
+                //Fill stage with content
+                stage.show();
+            }
+        });*/
+
+        /*Pagination pagination = new Pagination((dataSize / rowsPerPage + 1), 0);
         progressIndicator.setMaxSize(200, 200);
 
         // wrap table and progress indicator into a stackpane, progress indicator is on top of table
@@ -301,7 +394,7 @@ public class DiagPanelController {
 
         BorderPane borderPane = new BorderPane(pagination);
         stackpane.getChildren().add(borderPane);
-    }
+*/    }
 
     private Date takeDate() {
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -346,6 +439,18 @@ public class DiagPanelController {
         }
     }
 
+    private ObservableList<User> getUserList() {
+        String json = deviceBioHttpClient.executeGetRequest("/api/users/all");
+        users = JsonUtils.fromJson(User[].class, json);
+        usersData.clear();
+        for (User unit : users) {
+
+            LOGGER.info("User - %s", unit.getLogin() +unit.getName() +" " +unit.getSurname());
+            usersData.add(unit);
+        }
+        return usersData;
+    }
+
     private List<User> loadData(int fromIndex, int toIndex) {
         List<User> list = new ArrayList<>();
         try {
@@ -373,7 +478,7 @@ public class DiagPanelController {
             patronymicField.setText(selectedId.getPatronymic());
             telField.setText(selectedId.getTel());
             emailField.setText(selectedId.getEmail());
-            bornField.setText(selectedId.getBornPlace());
+           /* bornField.setText(selectedId.getBornPlace());
             dateField.setText(String.valueOf(selectedId.getBornDate().getDate()));
             if (selectedId.getBornDate().getMonth()< 10) {
                 formDate = "0" + String.valueOf(selectedId.getBornDate().getMonth());
@@ -383,12 +488,19 @@ public class DiagPanelController {
             if(selectedId.getGender().equals(User.Gender.Мужчина)) {
                 manRadioButton.setSelected(true);
             }
-            else womanRadioButton.setSelected(true);
+            else womanRadioButton.setSelected(true);*/
         }
     }
 
 
-
+    /*@Handler
+    public void handleMessage(UpdateTrainingParametersEvent event) throws Exception {
+        LOGGER.info("  GOT Updated Training id = %s   id2 = %s", event.getScenario().getId(), scenario.getId());
+        if (event.getScenario().getId().equals(scenario.getId())) {
+            LOGGER.info("  GOT Updated Training Meteo or Scenario parameters ");
+            refreshPanels(event.getScenario());
+        }
+    }*/
 
 
 

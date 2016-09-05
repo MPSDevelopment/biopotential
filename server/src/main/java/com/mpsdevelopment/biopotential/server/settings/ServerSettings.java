@@ -12,77 +12,77 @@ import java.util.List;
 
 public class ServerSettings {
 
-	private static final Logger LOGGER = LoggerUtil.getLogger(ServerSettings.class);
+    private static final Logger LOGGER = LoggerUtil.getLogger(ServerSettings.class);
 
-	private String path;
+    private String path;
 
-	@Expose
-	private String host = "localhost";
-	@Expose
-	private String cookieHost = "";
-	@Expose
-	private Integer port;
-	@Expose
-	private String tempDirectory = "data/tmp";
-	@Expose
-	private String filesPath;
+    @Expose
+    private String host = "localhost";
+    @Expose
+    private String cookieHost = "";
+    @Expose
+    private Integer port;
+    @Expose
+    private String tempDirectory = "data/tmp";
+    @Expose
+    private String filesPath;
 
-	private void init() {
-		ServerSettings fileSettings = (ServerSettings) JsonUtils.getJsonObjectFromFile(ServerSettings.class, path);
-		updateSettings(fileSettings);
-	}
+    private void init() {
+        ServerSettings fileSettings = (ServerSettings) JsonUtils.getJsonObjectFromFile(ServerSettings.class, path);
+        updateSettings(fileSettings);
+    }
 
-	public String getPath() {
-		return path;
-	}
+    public String getPath() {
+        return path;
+    }
 
-	public void setPath(String path) {
-		this.path = path;
-	}
+    public void setPath(String path) {
+        this.path = path;
+    }
 
-	public String getCookieHost() {
-		return cookieHost;
-	}
+    public String getCookieHost() {
+        return cookieHost;
+    }
 
-	public void setCookieHost(String cookieHost) {
-		this.cookieHost = cookieHost;
-	}
+    public void setCookieHost(String cookieHost) {
+        this.cookieHost = cookieHost;
+    }
 
-	public String getHost() {
-		return host;
-	}
+    public String getHost() {
+        return host;
+    }
 
-	public void setHost(String host) {
-		this.host = host;
-	}
+    public void setHost(String host) {
+        this.host = host;
+    }
 
-	public Integer getPort() {
-		return port;
-	}
+    public Integer getPort() {
+        return port;
+    }
 
-	public void setPort(Integer port) {
-		this.port = port;
-	}
+    public void setPort(Integer port) {
+        this.port = port;
+    }
 
-	public String getTempDirectory() {
-		return tempDirectory;
-	}
+    public String getTempDirectory() {
+        return tempDirectory;
+    }
 
-	public void setTempDirectory(String tempDirectory) {
-		this.tempDirectory = tempDirectory;
-	}
+    public void setTempDirectory(String tempDirectory) {
+        this.tempDirectory = tempDirectory;
+    }
 
-	public String getFilesPath() {
-		return filesPath;
-	}
+    public String getFilesPath() {
+        return filesPath;
+    }
 
-	public void setFilesPath(String filesPath) {
-		this.filesPath = filesPath;
-	}
+    public void setFilesPath(String filesPath) {
+        this.filesPath = filesPath;
+    }
 
-	public void updateSettings(ServerSettings newSettings) {
+    public void updateSettings(ServerSettings newSettings) {
 
-		BeanUtils.copyProperties(newSettings, this);
-	}
+        BeanUtils.copyProperties(newSettings, this);
+    }
 
 }

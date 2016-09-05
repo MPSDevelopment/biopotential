@@ -43,9 +43,9 @@
       <Label layoutX="48.0" layoutY="303.0" text="Выбрать источник" />
       <StackPane fx:id="stackpane1" layoutX="573.0" layoutY="66.0" prefHeight="178.0" prefWidth="400.0">
          <children>
-            <TableView fx:id="tableUsers1" onMouseClicked="#onTableClick" prefHeight="170.0" prefWidth="400.0">
+            <TableView fx:id="historyTableUsers" onMouseClicked="#onTableClick" prefHeight="170.0" prefWidth="400.0">
                <columns>
-                  <TableColumn fx:id="nameColumn1" prefWidth="189.0" text="ФИО" />
+                  <TableColumn fx:id="historyNameColumn" prefWidth="189.0" text="ФИО" />
                   <TableColumn fx:id="surnameColumn1" minWidth="0.0" prefWidth="122.0" text="Дата и Время" />
                   <TableColumn fx:id="patricColumn1" prefWidth="79.0" text="Описание" />
                </columns>
@@ -71,7 +71,7 @@
                   </TableView>
                </children>
             </StackPane>
-            <Button layoutX="163.0" layoutY="290.0" mnemonicParsing="false" text="Выбрать" />
+            <Button fx:id="selectUserButton" layoutX="163.0" layoutY="290.0" mnemonicParsing="false" text="Выбрать" />
             <Button layoutX="242.0" layoutY="290.0" mnemonicParsing="false" text="Отмена" />
          </children>
       </AnchorPane>
