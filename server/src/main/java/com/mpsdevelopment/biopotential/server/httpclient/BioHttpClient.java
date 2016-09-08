@@ -90,9 +90,7 @@ public class BioHttpClient {
     }
 
     public String executeGetRequest(String uri) {
-        String url = String.format("%s%s", mainUrl, uri);
-//        HttpGet request = new HttpGet(uri);
-        HttpGet request = new HttpGet(url);
+        HttpGet request = new HttpGet(uri);
         String json = null;
         HttpResponse response = null;
         try {

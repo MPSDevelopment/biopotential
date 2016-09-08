@@ -1,11 +1,16 @@
 package com.mpsdevelopment.biopotential.server.gui.diagnostics;
 
+import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
 import com.mpsdevelopment.biopotential.server.db.dao.VisitDao;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.biopotential.server.db.pojo.Visit;
+import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
+import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
+import com.mpsdevelopment.biopotential.server.eventbus.event.SelectUserEvent;
 import com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.SelectFromDbPanel;
 import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
+import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.biopotential.server.utils.StageUtils;
@@ -22,7 +27,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -32,26 +36,33 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import net.engio.mbassy.listener.Handler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class DiagPanelController {
+public class DiagPanelController extends AbstractController implements Subscribable {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(DiagPanelController.class);
-    public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/app-context.xml", "webapp/web-context.xml");
+//    public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/app-context.xml", "webapp/web-context.xml");
     private static final int LIMIT = 2;
 
+    @Autowired
     private BioHttpClient deviceBioHttpClient;
 
     private User user;
+    private Stage primaryStage;
+
+    @Autowired
+    private ServerSettings settings;
 
     @Autowired
     private VisitDao visitDao;
@@ -67,7 +78,7 @@ public class DiagPanelController {
     private TextField nameField;
     private final StringProperty name = new SimpleStringProperty();
     private ObservableList<User> usersData = FXCollections.observableArrayList();
-    private ObservableList<User> historyUsersData = FXCollections.observableArrayList();
+    private ObservableList<Visit> historyUsersData = FXCollections.observableArrayList();
 
     @FXML
     private TextField patronymicField;
@@ -110,10 +121,10 @@ public class DiagPanelController {
     private TableColumn<User, String> emailColumn;
 
     @FXML
-    private TableView<User> historyTableUsers;
+    private TableView<Visit> historyTableUsers;
 
     @FXML
-    private TableColumn<User, String> historyNameColumn;
+    private TableColumn<Visit, String> historyNameColumn;
 
     @FXML
     private Button addButton;
@@ -151,6 +162,10 @@ public class DiagPanelController {
     @FXML
     private RadioButton womanRadioButton;
 
+    @FXML
+    private Button automaticButton;
+
+
     StackPane tablePane = new StackPane();
     @FXML
     private StackPane stackpane;
@@ -158,8 +173,9 @@ public class DiagPanelController {
 
     private final static int dataSize = 100;
     private final static int rowsPerPage = 10;
-    ProgressIndicator progressIndicator = new ProgressIndicator();
+//    ProgressIndicator progressIndicator = new ProgressIndicator();
     private User[] users;
+    private Visit[] visits;
 
     public DiagPanelController() {
 
@@ -167,6 +183,12 @@ public class DiagPanelController {
 
     @FXML
     public void initialize() throws NoSuchMethodException {
+
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        EventBus.subscribe(this);
         User user = new User();
         manRadioButton.setToggleGroup(radioGroup);
         manRadioButton.setUserData("M");
@@ -174,7 +196,8 @@ public class DiagPanelController {
         manRadioButton.setUserData("W");
 
         dbAnchorPane.setVisible(false);
-        deviceBioHttpClient = APP_CONTEXT.getBean(BioHttpClient.class);
+        /*deviceBioHttpClient = APP_CONTEXT.getBean(BioHttpClient.class);
+        settings = APP_CONTEXT.getBean(ServerSettings.class);*/
         Bindings.bindBidirectional(surnameField.textProperty(), surname);
         Bindings.bindBidirectional(nameField.textProperty(), name);
         Bindings.bindBidirectional(patronymicField.textProperty(), patronymic);
@@ -231,16 +254,16 @@ public class DiagPanelController {
         telColumn.setCellValueFactory(new PropertyValueFactory<>("tel"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
 
-        historyNameColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<User, String>, ObservableValue<String>>() {
+        historyNameColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Visit, String>, ObservableValue<String>>() {
             @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<User, String> user) {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Visit, String> visit) {
                 SimpleStringProperty property = new SimpleStringProperty();
-                property.setValue(String.format("%-2s %10s %10s", user.getValue().getName(), user.getValue().getSurname(), user.getValue().getPatronymic()));
+                property.setValue(String.format("%-2s %10s %10s", visit.getValue().getUser().getName(), visit.getValue().getUser().getSurname(), visit.getValue().getUser().getPatronymic()));
                 return property;
             }
         });
 
-        getUser();
+        getUsers();
 
         // заполняем таблицу данными
         tableUsers.setItems(usersData);
@@ -270,8 +293,7 @@ public class DiagPanelController {
                 String body = JsonUtils.getJson(user);
                 LOGGER.info("User - %s", body);
                 deviceBioHttpClient.executePutRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_PUT_CREATE_USER, body);
-                getUser();
-                createPopup();
+                getUsers();
             }
         });
 
@@ -291,7 +313,7 @@ public class DiagPanelController {
             }
         });
 
-        selectUserButton.setOnAction(new EventHandler<ActionEvent>() {
+        /*selectUserButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 historyUsersData.clear();
@@ -308,6 +330,38 @@ public class DiagPanelController {
                 historyTableUsers.setItems(historyUsersData);
 
             }
+        });*/
+
+        showHistoryButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+               /* historyUsersData.clear();
+                ObservableList<User> usersData = getUserList();
+                Long Id = null;
+                for (User tempUsersData: usersData) {
+                    if (tempUsersData.getSurname() != null && tempUsersData.getSurname().equals(surnameField.getText())) {
+                        Id = tempUsersData.getId();
+                        historyUsersData.add(tempUsersData);
+                    }
+                }
+
+                LOGGER.info("%s", String.valueOf(Id));
+                historyTableUsers.setItems(historyUsersData);*/
+
+                String url = String.format("http://%s:%s%s", settings.getHost(), settings.getPort(), ControllerAPI.VISITS_CONTROLLER + ControllerAPI.VISITS_CONTROLLER_GET_ALL);
+                String json = deviceBioHttpClient.executeGetRequest(url);
+                visits = JsonUtils.fromJson(Visit[].class, json);
+                historyUsersData.clear();
+                for (Visit visit : visits) {
+                    if(visit.getUser().getName().equals(nameField.getText())) {
+                        LOGGER.info("User - %s", visit.getUser().getName());
+                        historyUsersData.add(visit);
+                    }
+
+                }
+                historyTableUsers.setItems(historyUsersData);
+
+            }
         });
 
        /* selectFromDbButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -321,19 +375,16 @@ public class DiagPanelController {
             @Override
             public void handle(ActionEvent event) {
                 LOGGER.info("  ACTION EDIT METEO in  Scenario");
-                Stage stage = new Stage();
-                SelectFromDbPanel panel = new SelectFromDbPanel(stage);
-                /*Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Метеообстановка").setClazz(panel.getClass()).setHeight(550d).setWidth(500d).setHeightPanel(550d).setWidthPanel(500d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
-                panel.setPrimaryStage(stage);*/
+                SelectFromDbPanel panel = new SelectFromDbPanel();
+                Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Выбрать из бд").setClazz(panel.getClass()).setHeight(500d).setWidth(650d).setHeightPanel(450d).setWidthPanel(650d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+//                Stage stage = new Stage();
+                panel.setPrimaryStage(stage);
 
-                Scene scene = new Scene(panel);
+                /*Scene scene = new Scene(panel);
                 stage.setScene(scene);
-                stage.show();
+                stage.show();*/
             }
         });
-
-
-
 
         /*showHistoryButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
@@ -345,56 +396,29 @@ public class DiagPanelController {
             }
         });*/
 
-        /*Pagination pagination = new Pagination((dataSize / rowsPerPage + 1), 0);
-        progressIndicator.setMaxSize(200, 200);
-
-        // wrap table and progress indicator into a stackpane, progress indicator is on top of table
-        tablePane.getChildren().add(tableUsers);
-        tablePane.getChildren().add(progressIndicator);
-
-        pagination.setPageFactory(new Callback<Integer, Node>() {
+        automaticButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public Node call(Integer pageIndex) {
-                progressIndicator.setVisible(true);
+            public void handle(ActionEvent event) {
+                Visit visit = new Visit();
 
-                usersData.clear();
+                user.setSurname(surname.getValue());
+                user.setName(name.getValue());
+                user.setPatronymic(patronymic.getValue());
+                user.setTel(tel.getValue());
+                user.setEmail(email.getValue());
+                user.setBornPlace(born.getValue());
+                user.setAdministrator(false);
+                visit.setUser(user);
+                user.getVisits().add(visit);
 
-                // long running background task
-                new Thread() {
-                    public void run() {
-                        try {
-                            int fromIndex = pageIndex * rowsPerPage;
-                            int toIndex = Math.min(fromIndex + rowsPerPage, dataSize);
+                String body = JsonUtils.getJson(visit);
+                LOGGER.info("User - Visit %s", body);
+                deviceBioHttpClient.executePutRequest(ControllerAPI.VISITS_CONTROLLER + ControllerAPI.VISITS_CONTROLLER_PUT_CREATE_VISIT, body);
 
-                            List<User> loadedList = loadData(fromIndex, toIndex);
-
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    usersData.setAll(loadedList);
-                                }
-                            });
-
-                        } finally {
-
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    progressIndicator.setVisible(false);
-                                }
-                            });
-
-                        }
-                    }
-                }.start();
-
-                return tablePane;
             }
         });
 
-        BorderPane borderPane = new BorderPane(pagination);
-        stackpane.getChildren().add(borderPane);
-*/    }
+    }
 
     private Date takeDate() {
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -412,24 +436,15 @@ public class DiagPanelController {
        /* Format formatter = new SimpleDateFormat("dd-MMM-yy");
         String s = formatter.format(date.getValue() + "-" + month.getValue() + "-" + year.getValue());
 */
-        System.out.println(currentDate.toString());
-    }
-            return currentDate;
+            System.out.println(currentDate.toString());
+        }
+        return currentDate;
 
     }
 
-    private Popup createPopup() {
-        final Popup popup = new Popup();
-        popup.setAutoHide(true);
-        popup.setX(300);
-        popup.setY(200);
-        popup.getContent().addAll(new Circle(25, 25, 50, Color.AQUAMARINE));
-        return popup;
-    }
-
-
-    private void getUser() {
-        String json = deviceBioHttpClient.executeGetRequest("/api/users/all");
+    /*public void getVisits() {
+        String url = String.format("http://%s:%s%s", settings.getHost(), settings.getPort(), ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_GET_ALL);
+        String json = deviceBioHttpClient.executeGetRequest(url);
         users = JsonUtils.fromJson(User[].class, json);
         usersData.clear();
         for (User unit : users) {
@@ -437,7 +452,7 @@ public class DiagPanelController {
             LOGGER.info("User - %s", unit.getLogin() +unit.getName() +" " +unit.getSurname());
             usersData.add(unit);
         }
-    }
+    }*/
 
     private ObservableList<User> getUserList() {
         String json = deviceBioHttpClient.executeGetRequest("/api/users/all");
@@ -451,7 +466,7 @@ public class DiagPanelController {
         return usersData;
     }
 
-    private List<User> loadData(int fromIndex, int toIndex) {
+    /*private List<User> loadData(int fromIndex, int toIndex) {
         List<User> list = new ArrayList<>();
         try {
             for (int i = fromIndex; i < users.length; i++) {
@@ -463,7 +478,7 @@ public class DiagPanelController {
             e.printStackTrace();
         }
         return list;
-    }
+    }*/
 
     @FXML
     private void onTableClick(MouseEvent event) {
@@ -492,15 +507,44 @@ public class DiagPanelController {
         }
     }
 
+    @Handler
+    public void handleMessage(SelectUserEvent event) throws Exception {
+        LOGGER.info("  GOT Updated Training Meteo or Scenario parameters ");
+        refreshTable(event.getUser());
+    }
 
-    /*@Handler
-    public void handleMessage(UpdateTrainingParametersEvent event) throws Exception {
-        LOGGER.info("  GOT Updated Training id = %s   id2 = %s", event.getScenario().getId(), scenario.getId());
-        if (event.getScenario().getId().equals(scenario.getId())) {
-            LOGGER.info("  GOT Updated Training Meteo or Scenario parameters ");
-            refreshPanels(event.getScenario());
-        }
-    }*/
+    private void refreshTable(User user) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                surnameField.setText(user.getSurname());
+                nameField.setText(user.getName());
+                patronymicField.setText(user.getPatronymic());
+                telField.setText(user.getTel());
+                emailField.setText(user.getEmail());
+            }
+        });
+    }
+
+
+    public void updatePanel(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                close();
+            }
+        });
+    }
+
+    public void close() {
+        LOGGER.info("  CLOSE  REQUEST");
+
+        EventBus.unsubscribe(this);
+
+        primaryStage.close();
+    }
 
 
 

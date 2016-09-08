@@ -75,5 +75,6 @@
             <Button layoutX="242.0" layoutY="290.0" mnemonicParsing="false" text="Отмена" />
          </children>
       </AnchorPane>
+      <Button fx:id="automaticButton" layoutX="655.0" layoutY="462.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Автомат" />
    </children>
 </AnchorPane>

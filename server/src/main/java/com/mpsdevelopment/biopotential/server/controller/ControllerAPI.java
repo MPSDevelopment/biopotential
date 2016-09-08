@@ -13,4 +13,7 @@ public class ControllerAPI {
 	public static final String USER_CONTROLLER_DELETE_USER = "/remove/{id}";
 	public static final String USER_CONTROLLER_POST_UPDATE_USER = "/update";
 
+	public static final String VISITS_CONTROLLER = "/api/visits";
+	public static final String VISITS_CONTROLLER_PUT_CREATE_VISIT = "/create";
+	public static final String VISITS_CONTROLLER_GET_ALL = "/all";
 }

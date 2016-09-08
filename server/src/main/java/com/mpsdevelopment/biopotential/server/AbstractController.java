@@ -24,4 +24,8 @@ public abstract class AbstractController implements Controller, Initializable {
 	public void unsubscribe() {
 	}
 
+	public void getUsers() {
+
+	}
+
 }

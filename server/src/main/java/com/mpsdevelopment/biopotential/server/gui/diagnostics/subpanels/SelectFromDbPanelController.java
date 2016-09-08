@@ -1,13 +1,19 @@
 package com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels;
 
 import com.mpsdevelopment.biopotential.server.AbstractController;
+import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
+import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
+import com.mpsdevelopment.biopotential.server.eventbus.event.SelectUserEvent;
 import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
+import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,32 +23,38 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
-import org.springframework.beans.BeanUtils;
+import net.engio.mbassy.listener.Handler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class SelectFromDbPanelController extends AbstractController {
+public class SelectFromDbPanelController extends AbstractController implements Subscribable {
 
 //    public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/app-context.xml", "webapp/web-context.xml");
+    private Stage primaryStage;
     StackPane tablePane = new StackPane();
     private final static int dataSize = 100;
     private final static int rowsPerPage = 10;
     private User[] users;
-    ProgressIndicator progressIndicator = new ProgressIndicator();
+
     private static final Logger LOGGER = LoggerUtil.getLogger(SelectFromDbPanelController.class);
     private ObservableList<User> usersData = FXCollections.observableArrayList();
 
+    @FXML
+    private ProgressIndicator progressIndicator;// = new ProgressIndicator(0);
+
     @Autowired
     private BioHttpClient deviceBioHttpClient;
+
+    @Autowired
+    private ServerSettings settings;
 
     @FXML
     private StackPane stackpane;
@@ -51,7 +63,11 @@ public class SelectFromDbPanelController extends AbstractController {
     private TableView<User> tableUsers;
 
     @FXML
+    private TableColumn<User, String> nameColumn;
+
+    @FXML
     private Button selectUserButton;
+    private User selectedId;
 
 
 
@@ -61,18 +77,26 @@ public class SelectFromDbPanelController extends AbstractController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-//        deviceBioHttpClient = APP_CONTEXT.getBean(BioHttpClient.class);
+
         selectUserButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
                 LOGGER.info("  ACTION SAVE METEO");
+                    EventBus.publishEvent(new SelectUserEvent(selectedId));
+                    close();
+                }
+        });
 
-                    /*EventBus.publishEvent(new User());
-                    close();*/
+        nameColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<User, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<User, String> user) {
+                SimpleStringProperty property = new SimpleStringProperty();
+                property.setValue(String.format("%-2s %10s %10s", user.getValue().getName(), user.getValue().getSurname(), user.getValue().getPatronymic()));
+                return property;
             }
         });
 
-        getUser();
+        getUsers();
         // заполняем таблицу данными
         tableUsers.setItems(usersData);
 
@@ -132,16 +156,16 @@ public class SelectFromDbPanelController extends AbstractController {
     private void onTableClick(MouseEvent event) {
         System.out.println("Click");
 
-   /*     User selectedId = tableUsers.getSelectionModel().getSelectedItem();
+        selectedId = tableUsers.getSelectionModel().getSelectedItem();
         String formDate = null;
-        if (selectedId != null) {
+        /*if (selectedId != null) {
 
             surnameField.setText(selectedId.getSurname());
             nameField.setText(selectedId.getName());
             patronymicField.setText(selectedId.getPatronymic());
             telField.setText(selectedId.getTel());
             emailField.setText(selectedId.getEmail());
-           *//* bornField.setText(selectedId.getBornPlace());
+            bornField.setText(selectedId.getBornPlace());
             dateField.setText(String.valueOf(selectedId.getBornDate().getDate()));
             if (selectedId.getBornDate().getMonth()< 10) {
                 formDate = "0" + String.valueOf(selectedId.getBornDate().getMonth());
@@ -151,7 +175,7 @@ public class SelectFromDbPanelController extends AbstractController {
             if(selectedId.getGender().equals(User.Gender.Мужчина)) {
                 manRadioButton.setSelected(true);
             }
-            else womanRadioButton.setSelected(true);*//*
+            else womanRadioButton.setSelected(true);
         }*/
     }
 
@@ -160,7 +184,6 @@ public class SelectFromDbPanelController extends AbstractController {
         try {
             for (int i = fromIndex; i < users.length; i++) {
                 list.add(users[i]);
-//                list.add(new User(i, "foo " + i, "bar " + i));
             }
             Thread.sleep(500);
         } catch( Exception e) {
@@ -169,8 +192,9 @@ public class SelectFromDbPanelController extends AbstractController {
         return list;
     }
 
-    private void getUser() {
-        String json = deviceBioHttpClient.executeGetRequest("/api/users/all");
+    public void getUsers() {
+        String url = String.format("http://%s:%s%s", settings.getHost(), settings.getPort(), ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_GET_ALL);
+        String json = deviceBioHttpClient.executeGetRequest(url);
         users = JsonUtils.fromJson(User[].class, json);
         usersData.clear();
         for (User unit : users) {
@@ -178,5 +202,28 @@ public class SelectFromDbPanelController extends AbstractController {
             LOGGER.info("User - %s", unit.getLogin() +unit.getName() +" " +unit.getSurname());
             usersData.add(unit);
         }
+    }
+    public void updatePanel(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                close();
+            }
+        });
+    }
+
+    public void close() {
+        LOGGER.info("  CLOSE  REQUEST");
+
+        EventBus.unsubscribe(this);
+
+        primaryStage.close();
+    }
+
+    @Override
+    public void subscribe() {
+        EventBus.subscribe(this);
     }
 }

@@ -1,6 +1,5 @@
 package com.mpsdevelopment.biopotential.server.gui.authentication;
 
-import com.mpsdevelopment.biopotential.server.gui.BioPanelController;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.fxml.FXMLLoader;

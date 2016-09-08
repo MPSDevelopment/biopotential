@@ -36,7 +36,9 @@
 	<bean id="patternsDao" class="com.mpsdevelopment.biopotential.server.db.dao.PatternsDao" />
 	<bean id="foldersPatternsDao" class="com.mpsdevelopment.biopotential.server.db.dao.PatternsFoldersDao" />
 	<bean id="visitDao" class="com.mpsdevelopment.biopotential.server.db.dao.VisitDao" />
-	<bean id="selectFromDbPanelController" class="com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.SelectFromDbPanelController" />
+    <bean id="selectFromDbPanelController" class="com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.SelectFromDbPanelController" />
+    <bean id="diagPanelController" class="com.mpsdevelopment.biopotential.server.gui.diagnostics.DiagPanelController" />
+    <bean id="visitsController" class="com.mpsdevelopment.biopotential.server.controller.VisitsController" />
 
 	<bean id="usersControllerProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
 		<property name="target">

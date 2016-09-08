@@ -22,26 +22,22 @@ public class SelectFromDbPanel extends Pane {
 
 	private SelectFromDbPanelController controller;
 
-    public SelectFromDbPanel(Stage primaryStage) {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        URL resource = getClass().getResource("SelectFromDbPanel.fxml");
-        if(resource == null)
-            LOGGER.info("Cant find *.fxml");
-        Pane panel;
-        primaryStage.setResizable(false);
+    public SelectFromDbPanel() {
 
-        try {
-            controller = (SelectFromDbPanelController) SpringLoaderFXML.load(APP_CONTEXT,SelectFromDbPanelController.class, "SelectFromDbPanel.fxml");
-            panel = controller.getView();
-            panel = (Pane) fxmlLoader.load(resource.openStream());
-            SelectFromDbPanelController controller = fxmlLoader.getController();
-            getChildren().add(panel);
 
-        } catch (IOException e) {
-            LOGGER.debug("Cannot load *.fxml Reason: %s", e.getMessage());
-            LOGGER.printStackTrace(e);
-        }
+        controller = (SelectFromDbPanelController) SpringLoaderFXML.load(APP_CONTEXT,SelectFromDbPanelController.class, "SelectFromDbPanel.fxml");
+        Pane panel = controller.getView();
+        getChildren().add(panel);
+        panel.getStyleClass().clear();
+//        controller.subscribe();
+//        controller.setScenario(scenario);
+
 
     }
 
+
+    public void setPrimaryStage(Stage primaryStage) {
+        controller.updatePanel(primaryStage);
+        primaryStage.show();
+    }
 }

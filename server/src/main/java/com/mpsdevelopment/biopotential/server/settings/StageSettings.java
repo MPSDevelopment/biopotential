@@ -32,7 +32,7 @@ public class StageSettings {
 	@Expose
 	private boolean modal = true;
 	@Expose
-	private Color color = Color.BLACK;
+	private Color color = Color.WHITE;
 	@Expose
 	private boolean show = false;
 

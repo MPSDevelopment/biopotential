@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -23,6 +24,7 @@
             </StackPane>
             <Button fx:id="selectUserButton" layoutX="163.0" layoutY="290.0" mnemonicParsing="false" text="Выбрать" />
             <Button layoutX="242.0" layoutY="290.0" mnemonicParsing="false" text="Отмена" />
+            <ProgressIndicator fx:id="progressIndicator" layoutX="63.0" layoutY="283.0" />
          </children>
       </AnchorPane>
    </children>
