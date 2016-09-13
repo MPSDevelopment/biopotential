@@ -21,6 +21,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
@@ -66,6 +67,12 @@ public class SelectFromDbPanelController extends AbstractController implements S
     private TableColumn<User, String> nameColumn;
 
     @FXML
+    private TableColumn<User, String> telColumn;
+
+    @FXML
+    private TableColumn<User, String> emailColumn;
+
+    @FXML
     private Button selectUserButton;
     private User selectedId;
 
@@ -87,6 +94,7 @@ public class SelectFromDbPanelController extends AbstractController implements S
                 }
         });
 
+        // устанавливаем тип и значение которое должно хранится в колонке
         nameColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<User, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<User, String> user) {
@@ -95,6 +103,9 @@ public class SelectFromDbPanelController extends AbstractController implements S
                 return property;
             }
         });
+
+        telColumn.setCellValueFactory(new PropertyValueFactory<>("tel"));
+        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
 
         getUsers();
         // заполняем таблицу данными

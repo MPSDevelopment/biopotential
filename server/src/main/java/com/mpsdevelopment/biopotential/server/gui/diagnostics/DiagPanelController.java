@@ -2,7 +2,6 @@ package com.mpsdevelopment.biopotential.server.gui.diagnostics;
 
 import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
-import com.mpsdevelopment.biopotential.server.db.dao.VisitDao;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.biopotential.server.db.pojo.Visit;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
@@ -27,48 +26,41 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import net.engio.mbassy.listener.Handler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.ResourceBundle;
 
 public class DiagPanelController extends AbstractController implements Subscribable {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(DiagPanelController.class);
-//    public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/app-context.xml", "webapp/web-context.xml");
-    private static final int LIMIT = 2;
 
     @Autowired
     private BioHttpClient deviceBioHttpClient;
 
-    private User user;
-    private Stage primaryStage;
-
     @Autowired
     private ServerSettings settings;
 
-    @Autowired
+    /*@Autowired
     private VisitDao visitDao;
+    @FXML
+    private Pagination pagination;*/
 
     @FXML
-    private Pagination pagination;
+    private TextField loginField;
+    private final StringProperty login = new SimpleStringProperty();
 
     @FXML
     private TextField surnameField;
@@ -108,20 +100,12 @@ public class DiagPanelController extends AbstractController implements Subscriba
     private TextField bornField;
     private final StringProperty born = new SimpleStringProperty();
 
-    @FXML
-    private TableView<User> tableUsers;
-
-    @FXML
-    private TableColumn<User, String> nameColumn;
-
-    @FXML
-    private TableColumn<User, String> telColumn;
-
-    @FXML
-    private TableColumn<User, String> emailColumn;
 
     @FXML
     private TableView<Visit> historyTableUsers;
+
+    @FXML
+    private TableColumn<Visit, String> dateColumn;
 
     @FXML
     private TableColumn<Visit, String> historyNameColumn;
@@ -145,16 +129,10 @@ public class DiagPanelController extends AbstractController implements Subscriba
     private Button fileButton;
 
     @FXML
-    private Button selectUserButton;
-
-    @FXML
     private Button deleteButton;
 
     @FXML
     private Button selectFromDbButton;
-
-    @FXML
-    private AnchorPane dbAnchorPane;
 
     @FXML
     private RadioButton manRadioButton;
@@ -165,17 +143,13 @@ public class DiagPanelController extends AbstractController implements Subscriba
     @FXML
     private Button automaticButton;
 
-
-    StackPane tablePane = new StackPane();
     @FXML
-    private StackPane stackpane;
-    final ToggleGroup radioGroup = new ToggleGroup();
+    private DatePicker datePicker;
 
-    private final static int dataSize = 100;
-    private final static int rowsPerPage = 10;
-//    ProgressIndicator progressIndicator = new ProgressIndicator();
     private User[] users;
     private Visit[] visits;
+    private Stage primaryStage;
+    final ToggleGroup radioGroup = new ToggleGroup();
 
     public DiagPanelController() {
 
@@ -195,9 +169,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
         womanRadioButton.setToggleGroup(radioGroup);
         manRadioButton.setUserData("W");
 
-        dbAnchorPane.setVisible(false);
-        /*deviceBioHttpClient = APP_CONTEXT.getBean(BioHttpClient.class);
-        settings = APP_CONTEXT.getBean(ServerSettings.class);*/
+        Bindings.bindBidirectional(loginField.textProperty(), login);
         Bindings.bindBidirectional(surnameField.textProperty(), surname);
         Bindings.bindBidirectional(nameField.textProperty(), name);
         Bindings.bindBidirectional(patronymicField.textProperty(), patronymic);
@@ -208,6 +180,73 @@ public class DiagPanelController extends AbstractController implements Subscriba
         Bindings.bindBidirectional(monthField.textProperty(), month);
         Bindings.bindBidirectional(yearField.textProperty(), year);
 
+        // внести в базу
+        addButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent t) {
+
+                Visit visit = new Visit();
+
+                user.setLogin(login.getValue());
+                user.setSurname(surname.getValue());
+                user.setName(name.getValue());
+                user.setPatronymic(patronymic.getValue());
+                user.setTel(tel.getValue());
+                user.setEmail(email.getValue());
+                user.setBornPlace(born.getValue());
+                user.setAdministrator(false);
+                visit.setUser(user);
+                visit.setDate(takeDate());
+
+                LocalDate localDate = datePicker.getValue();
+                if(datePicker.getValue() == null) {
+                    user.setBornDate(null);
+                }
+                else {
+                    Instant instant = localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
+                    Date res = Date.from(instant);
+
+                    user.setBornDate(res);
+                }
+
+                user.getVisits().add(visit);
+
+//                user.setBornDate(datePicker.getValue());
+
+                /*if (takeDate() != null) {
+                    user.setBornDate(takeDate());
+                }*/
+
+                String body = JsonUtils.getJson(user);
+                LOGGER.info("User - %s", body);
+                deviceBioHttpClient.executePutRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_PUT_CREATE_USER, body);
+                getUsers();
+            }
+        });
+
+        datePicker.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override
+            public void handle(ActionEvent event)
+            {
+                LocalDate localDate = datePicker.getValue();
+                Instant instant = localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
+                Date res = Date.from(instant);
+
+                user.setBornDate(res);
+
+                dateField.setText(String.valueOf(localDate.getDayOfMonth()));
+                if (localDate.getMonthValue() < 10) {
+                    monthField.setText(String.valueOf("0" + String.valueOf(localDate.getMonthValue())));
+                }
+                else monthField.setText(String.valueOf(String.valueOf(localDate.getMonthValue())));
+
+                yearField.setText(String.valueOf(localDate.getYear()));
+            }
+        });
+
+
+        // radiobutton's for choose gender
         radioGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
             public void changed(ObservableValue<? extends Toggle> ov,
                                 Toggle old_toggle, Toggle new_toggle) {
@@ -220,40 +259,6 @@ public class DiagPanelController extends AbstractController implements Subscriba
             }
         });
 
-        dateField.lengthProperty().addListener(new ChangeListener<Number>() {
-
-            @Override
-            public void changed(ObservableValue<? extends Number> observable,
-                                Number oldValue, Number newValue) {
-                if (newValue.intValue() > oldValue.intValue()) {
-                    // Check if the new character is greater than LIMIT
-                    if (dateField.getText().length() >= LIMIT) {
-
-                        // if it's 11th character then just setText to previous
-                        // one
-                        dateField.setText(dateField.getText().substring(0, LIMIT));
-                        if (Integer.parseInt(dateField.getText()) >= 31) {
-
-                        }
-                    }
-                }
-            }
-        });
-
-        // устанавливаем тип и значение которое должно хранится в колонке
-
-        nameColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<User, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<User, String> user) {
-                SimpleStringProperty property = new SimpleStringProperty();
-                property.setValue(String.format("%-2s %10s %10s", user.getValue().getName(), user.getValue().getSurname(), user.getValue().getPatronymic()));
-                return property;
-            }
-        });
-
-        telColumn.setCellValueFactory(new PropertyValueFactory<>("tel"));
-        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-
         historyNameColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Visit, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Visit, String> visit) {
@@ -263,39 +268,33 @@ public class DiagPanelController extends AbstractController implements Subscriba
             }
         });
 
-        getUsers();
-
-        // заполняем таблицу данными
-        tableUsers.setItems(usersData);
-
-
-        addButton.setOnAction(new EventHandler<ActionEvent>() {
+        dateColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Visit, String>, ObservableValue<String>>() {
             @Override
-            public void handle(ActionEvent t) {
-
-                Visit visit = new Visit();
-
-                user.setSurname(surname.getValue());
-                user.setName(name.getValue());
-                user.setPatronymic(patronymic.getValue());
-                user.setTel(tel.getValue());
-                user.setEmail(email.getValue());
-                user.setBornPlace(born.getValue());
-                user.setAdministrator(false);
-                visit.setUser(user);
-                user.getVisits().add(visit);
-//                visitDao.save(visit);
-
-                if (takeDate() != null) {
-                    user.setBornDate(takeDate());
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Visit, String> visit) {
+                SimpleStringProperty property = new SimpleStringProperty();
+                String month = null;
+                if (visit.getValue().getUser().getBornDate().getMonth() < 10) {
+                    month = (String.valueOf("0" + String.valueOf(visit.getValue().getUser().getBornDate().getMonth() + 1)));
                 }
+                else month = String.valueOf(String.valueOf(visit.getValue().getUser().getBornDate().getMonth() + 1));
 
-                String body = JsonUtils.getJson(user);
-                LOGGER.info("User - %s", body);
-                deviceBioHttpClient.executePutRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_PUT_CREATE_USER, body);
-                getUsers();
+                /*Date tempdate = visit.getValue().getDate();
+                Instant instant = Instant.ofEpochMilli(tempdate.getDate());
+                LocalDate res = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalDate();*/
+
+                property.setValue(String.format("%s-%s-%s", visit.getValue().getUser().getBornDate().getDate(), month , visit.getValue().getUser().getBornDate().getYear() + 1900));
+//                property.setValue(String.format("%s-%s-%s", res.getDayOfMonth(), res.getMonth().getValue(), res.getYear()));
+                return property;
             }
         });
+
+        getUsers();
+
+     /*   // заполняем таблицу данными
+        tableUsers.setItems(usersData);*/
+
+
+
 
         deleteButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -313,40 +312,10 @@ public class DiagPanelController extends AbstractController implements Subscriba
             }
         });
 
-        /*selectUserButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                historyUsersData.clear();
-                ObservableList<User> usersData = getUserList();
-                Long Id = null;
-                for (User tempUsersData: usersData) {
-                    if (tempUsersData.getSurname() != null && tempUsersData.getSurname().equals(surnameField.getText())) {
-                        Id = tempUsersData.getId();
-                        historyUsersData.add(tempUsersData);
-                    }
-                }
-
-                LOGGER.info("%s", String.valueOf(Id));
-                historyTableUsers.setItems(historyUsersData);
-
-            }
-        });*/
 
         showHistoryButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-               /* historyUsersData.clear();
-                ObservableList<User> usersData = getUserList();
-                Long Id = null;
-                for (User tempUsersData: usersData) {
-                    if (tempUsersData.getSurname() != null && tempUsersData.getSurname().equals(surnameField.getText())) {
-                        Id = tempUsersData.getId();
-                        historyUsersData.add(tempUsersData);
-                    }
-                }
-
-                LOGGER.info("%s", String.valueOf(Id));
-                historyTableUsers.setItems(historyUsersData);*/
 
                 String url = String.format("http://%s:%s%s", settings.getHost(), settings.getPort(), ControllerAPI.VISITS_CONTROLLER + ControllerAPI.VISITS_CONTROLLER_GET_ALL);
                 String json = deviceBioHttpClient.executeGetRequest(url);
@@ -364,13 +333,6 @@ public class DiagPanelController extends AbstractController implements Subscriba
             }
         });
 
-       /* selectFromDbButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                dbAnchorPane.setVisible(true);
-            }
-        });*/
-
         selectFromDbButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -386,16 +348,6 @@ public class DiagPanelController extends AbstractController implements Subscriba
             }
         });
 
-        /*showHistoryButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                Stage stage = new Stage();
-                Scene scene = new Scene(new SelectFromDbPanel(stage));
-                stage.setScene(scene);
-                //Fill stage with content
-                stage.show();
-            }
-        });*/
-
         automaticButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -409,6 +361,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
                 user.setBornPlace(born.getValue());
                 user.setAdministrator(false);
                 visit.setUser(user);
+                visit.setDate(takeDate());
                 user.getVisits().add(visit);
 
                 String body = JsonUtils.getJson(visit);
@@ -421,14 +374,16 @@ public class DiagPanelController extends AbstractController implements Subscriba
     }
 
     private Date takeDate() {
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+//        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
         Date currentDate = null;
         if (date.getValue() != null && month.getValue() != null && year.getValue() != null) {
             try {
-                String d = date.getValue() + "-" + month.getValue() + "-" + year.getValue();
+//                String d = date.getValue() + "-" + month.getValue() + "-" + year.getValue();
+                String d = date.getValue() + "." + month.getValue() + "." + year.getValue();
                 System.out.println(d);
 
-                currentDate = dateFormat.parse(date.getValue() + "-" + month.getValue() + "-" + year.getValue());
+                currentDate = dateFormat.parse(date.getValue() + "." + month.getValue() + "." + year.getValue());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -442,17 +397,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
 
     }
 
-    /*public void getVisits() {
-        String url = String.format("http://%s:%s%s", settings.getHost(), settings.getPort(), ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_GET_ALL);
-        String json = deviceBioHttpClient.executeGetRequest(url);
-        users = JsonUtils.fromJson(User[].class, json);
-        usersData.clear();
-        for (User unit : users) {
 
-            LOGGER.info("User - %s", unit.getLogin() +unit.getName() +" " +unit.getSurname());
-            usersData.add(unit);
-        }
-    }*/
 
     private ObservableList<User> getUserList() {
         String json = deviceBioHttpClient.executeGetRequest("/api/users/all");
@@ -466,21 +411,9 @@ public class DiagPanelController extends AbstractController implements Subscriba
         return usersData;
     }
 
-    /*private List<User> loadData(int fromIndex, int toIndex) {
-        List<User> list = new ArrayList<>();
-        try {
-            for (int i = fromIndex; i < users.length; i++) {
-                list.add(users[i]);
-//                list.add(new User(i, "foo " + i, "bar " + i));
-            }
-            Thread.sleep(500);
-        } catch( Exception e) {
-            e.printStackTrace();
-        }
-        return list;
-    }*/
 
-    @FXML
+
+    /*@FXML
     private void onTableClick(MouseEvent event) {
         System.out.println("Click");
 
@@ -493,7 +426,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
             patronymicField.setText(selectedId.getPatronymic());
             telField.setText(selectedId.getTel());
             emailField.setText(selectedId.getEmail());
-           /* bornField.setText(selectedId.getBornPlace());
+           *//* bornField.setText(selectedId.getBornPlace());
             dateField.setText(String.valueOf(selectedId.getBornDate().getDate()));
             if (selectedId.getBornDate().getMonth()< 10) {
                 formDate = "0" + String.valueOf(selectedId.getBornDate().getMonth());
@@ -503,9 +436,9 @@ public class DiagPanelController extends AbstractController implements Subscriba
             if(selectedId.getGender().equals(User.Gender.Мужчина)) {
                 manRadioButton.setSelected(true);
             }
-            else womanRadioButton.setSelected(true);*/
+            else womanRadioButton.setSelected(true);*//*
         }
-    }
+    }*/
 
     @Handler
     public void handleMessage(SelectUserEvent event) throws Exception {
@@ -517,11 +450,24 @@ public class DiagPanelController extends AbstractController implements Subscriba
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                surnameField.setText(user.getSurname());
-                nameField.setText(user.getName());
-                patronymicField.setText(user.getPatronymic());
-                telField.setText(user.getTel());
-                emailField.setText(user.getEmail());
+                try {
+                    loginField.setText(user.getLogin());
+                    surnameField.setText(user.getSurname());
+                    nameField.setText(user.getName());
+                    patronymicField.setText(user.getPatronymic());
+                    telField.setText(user.getTel());
+                    emailField.setText(user.getEmail());
+                    bornField.setText(user.getBornPlace());
+                    dateField.setText(String.valueOf(user.getBornDate().getDate()));
+                    if (user.getBornDate().getMonth() < 10) {
+                        monthField.setText(String.valueOf("0" + String.valueOf(user.getBornDate().getMonth() + 1)));
+                    }
+                    yearField.setText(String.valueOf(user.getBornDate().getYear() + 1900));
+                }
+                catch (NullPointerException e) {
+                    System.out.println("Date is null");
+                }
+
             }
         });
     }

@@ -9,7 +9,7 @@ public class App {
 
     private static final com.mpsdevelopment.plasticine.commons.logging.Logger LOGGER = LoggerUtil.getLogger(App.class);
 
-    public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/web-context.xml","webapp/app-context-test.xml");
+    public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/web-context.xml","webapp/app-context.xml");
 
     public static void main(String[] args) {
 

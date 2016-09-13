@@ -155,7 +155,7 @@ public class DatabaseCreator {
                 patternsFolderses = new PatternsFolderses();
                 patternsFolderses.setFolders(folders);
                 patternsFolderses.setPatterns(patterns);
-                patternsFolderses.setPaternal(false);
+                patternsFolderses.setCorrectors(null);
 
                 patternsFoldersDao.save(patternsFolderses);
 
@@ -174,7 +174,7 @@ public class DatabaseCreator {
                         patternsFolderses = new PatternsFolderses();
                         patternsFolderses.setFolders(folders);
                         patternsFolderses.setPatterns(patterns);
-                        patternsFolderses.setPaternal(true);
+                        patternsFolderses.setCorrectors(folders.getId());
 
                         patternsFolderses.getFolders().getPatternseFolderses().add(patternsFolderses);
                         patternsFolderses.getPatterns().getPatternseFolderses().add(patternsFolderses);
