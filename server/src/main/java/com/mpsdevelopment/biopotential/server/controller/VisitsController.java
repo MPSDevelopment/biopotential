@@ -1,7 +1,9 @@
 package com.mpsdevelopment.biopotential.server.controller;
 
 import com.mpsdevelopment.biopotential.server.db.advice.Adviceable;
+import com.mpsdevelopment.biopotential.server.db.dao.UserDao;
 import com.mpsdevelopment.biopotential.server.db.dao.VisitDao;
+import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.biopotential.server.db.pojo.Visit;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.biopotential.server.utils.SecurityUtils;
@@ -28,6 +30,9 @@ public class VisitsController {
 	private VisitDao visitDao;
 
 	@Autowired
+	private UserDao userDao;
+
+	@Autowired
 	private SecurityUtils securityUtils;
 
 	public VisitsController() {
@@ -45,7 +50,9 @@ public class VisitsController {
 		}*/
 
 
-		visitDao.saveOrUpdate(visit);
+		visitDao.save(visit);
+		List<User> users = userDao.getUsers(null, null);
+		LOGGER.info("Has been loaded '%s' users", users.size());
 
 		return new ResponseEntity<String>(JsonUtils.getJson(visit), null, HttpStatus.CREATED);
 

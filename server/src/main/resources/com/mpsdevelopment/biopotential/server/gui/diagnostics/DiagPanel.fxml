@@ -46,6 +46,9 @@
       <StackPane fx:id="stackpane" layoutX="573.0" layoutY="107.0" prefHeight="178.0" prefWidth="400.0">
          <children>
             <TableView fx:id="historyTableUsers" prefHeight="170.0" prefWidth="400.0">
+               <placeholder>
+                  <Label text="Нет данных для отображения"/>
+               </placeholder>
                <columns>
                   <TableColumn fx:id="historyNameColumn" prefWidth="189.0" text="ФИО" />
                   <TableColumn fx:id="dateColumn" minWidth="0.0" prefWidth="122.0" text="Дата и Время" />

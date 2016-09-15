@@ -30,6 +30,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 import net.engio.mbassy.listener.Handler;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -40,7 +41,9 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class DiagPanelController extends AbstractController implements Subscribable {
@@ -162,12 +165,18 @@ public class DiagPanelController extends AbstractController implements Subscriba
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // change localization to russain
+        Locale dLocale = new Locale.Builder().setLanguage("ru").setScript("Cyrl").build();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", dLocale);
+        Locale.setDefault(dLocale);
+
         EventBus.subscribe(this);
         User user = new User();
         manRadioButton.setToggleGroup(radioGroup);
         manRadioButton.setUserData("M");
         womanRadioButton.setToggleGroup(radioGroup);
         manRadioButton.setUserData("W");
+
 
         Bindings.bindBidirectional(loginField.textProperty(), login);
         Bindings.bindBidirectional(surnameField.textProperty(), surname);
@@ -198,6 +207,10 @@ public class DiagPanelController extends AbstractController implements Subscriba
                 visit.setUser(user);
                 visit.setDate(takeDate());
 
+
+
+//                Locale.setDefault(Locale.FRANCE);
+
                 LocalDate localDate = datePicker.getValue();
                 if(datePicker.getValue() == null) {
                     user.setBornDate(null);
@@ -218,7 +231,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
                 }*/
 
                 String body = JsonUtils.getJson(user);
-                LOGGER.info("User - %s", body);
+
                 deviceBioHttpClient.executePutRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_PUT_CREATE_USER, body);
                 getUsers();
             }
@@ -229,13 +242,30 @@ public class DiagPanelController extends AbstractController implements Subscriba
             @Override
             public void handle(ActionEvent event)
             {
+
+                datePicker.setConverter(new StringConverter<LocalDate>() {
+
+                    @Override
+                    public String toString(LocalDate object) {
+                        return object.format(formatter);
+                    }
+
+                    @Override
+                    public LocalDate fromString(String string) {
+                        return LocalDate.parse(string, formatter);
+                    }
+                });
+
                 LocalDate localDate = datePicker.getValue();
                 Instant instant = localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
                 Date res = Date.from(instant);
 
                 user.setBornDate(res);
 
-                dateField.setText(String.valueOf(localDate.getDayOfMonth()));
+                if (localDate.getDayOfMonth() < 10) {
+                    dateField.setText(String.valueOf("0" + String.valueOf(localDate.getDayOfMonth())));
+                }
+                else dateField.setText(String.valueOf(String.valueOf(localDate.getDayOfMonth())));
                 if (localDate.getMonthValue() < 10) {
                     monthField.setText(String.valueOf("0" + String.valueOf(localDate.getMonthValue())));
                 }
@@ -352,6 +382,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
             @Override
             public void handle(ActionEvent event) {
                 Visit visit = new Visit();
+                User user = new User();
 
                 user.setSurname(surname.getValue());
                 user.setName(name.getValue());
@@ -359,6 +390,18 @@ public class DiagPanelController extends AbstractController implements Subscriba
                 user.setTel(tel.getValue());
                 user.setEmail(email.getValue());
                 user.setBornPlace(born.getValue());
+
+                LocalDate localDate = datePicker.getValue();
+                if(datePicker.getValue() == null) {
+                    user.setBornDate(null);
+                }
+                else {
+                    Instant instant = localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
+                    Date res = Date.from(instant);
+
+                    user.setBornDate(res);
+                }
+
                 user.setAdministrator(false);
                 visit.setUser(user);
                 visit.setDate(takeDate());
