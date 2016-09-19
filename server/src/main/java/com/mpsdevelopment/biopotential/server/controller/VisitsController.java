@@ -43,12 +43,6 @@ public class VisitsController {
 	public ResponseEntity<String> createUser(HttpServletRequest request, @RequestBody String json) {
 
 		Visit visit = JsonUtils.fromJson(Visit.class, json);
-//		user.getVisits().
-
-		/*if (userDao.getByLogin(user.getLogin()) != null) {
-			return new ResponseEntity<String>(JsonUtils.getJson("User with such login already exist"), null, HttpStatus.CONFLICT);
-		}*/
-
 
 		visitDao.save(visit);
 		List<User> users = userDao.getUsers(null, null);

@@ -38,9 +38,8 @@ import java.util.ResourceBundle;
 
 public class SelectFromDbPanelController extends AbstractController implements Subscribable {
 
-//    public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/app-context.xml", "webapp/web-context.xml");
     private Stage primaryStage;
-    StackPane tablePane = new StackPane();
+    StackPane tablePane;
     private final static int dataSize = 100;
     private final static int rowsPerPage = 10;
     private User[] users;
@@ -49,7 +48,7 @@ public class SelectFromDbPanelController extends AbstractController implements S
     private ObservableList<User> usersData = FXCollections.observableArrayList();
 
     @FXML
-    private ProgressIndicator progressIndicator;// = new ProgressIndicator(0);
+    private ProgressIndicator progressIndicator;
 
     @Autowired
     private BioHttpClient deviceBioHttpClient;
@@ -76,14 +75,24 @@ public class SelectFromDbPanelController extends AbstractController implements S
     private Button selectUserButton;
     private User selectedId;
 
-
-
     public SelectFromDbPanelController() {
 
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        tablePane = new StackPane();
+        getUsers();
+
+        // заполняем таблицу данными
+        tableUsers.setItems(usersData);
+
+        Pagination pagination = new Pagination((dataSize / rowsPerPage + 1), 0);
+        progressIndicator.setMaxSize(200, 200);
+
+        // wrap table and progress indicator into a stackpane, progress indicator is on top of table
+        tablePane.getChildren().add(tableUsers);
+        tablePane.getChildren().add(progressIndicator);
 
         selectUserButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -94,7 +103,7 @@ public class SelectFromDbPanelController extends AbstractController implements S
                 }
         });
 
-        // устанавливаем тип и значение которое должно хранится в колонке
+        // устанавливаем тип и значение которое должно хранится в колонке ФИО
         nameColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<User, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<User, String> user) {
@@ -106,17 +115,6 @@ public class SelectFromDbPanelController extends AbstractController implements S
 
         telColumn.setCellValueFactory(new PropertyValueFactory<>("tel"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-
-        getUsers();
-        // заполняем таблицу данными
-        tableUsers.setItems(usersData);
-
-        Pagination pagination = new Pagination((dataSize / rowsPerPage + 1), 0);
-        progressIndicator.setMaxSize(200, 200);
-
-        // wrap table and progress indicator into a stackpane, progress indicator is on top of table
-        tablePane.getChildren().add(tableUsers);
-        tablePane.getChildren().add(progressIndicator);
 
         pagination.setPageFactory(new Callback<Integer, Node>() {
             @Override
@@ -165,29 +163,10 @@ public class SelectFromDbPanelController extends AbstractController implements S
 
     @FXML
     private void onTableClick(MouseEvent event) {
-        System.out.println("Click");
 
         selectedId = tableUsers.getSelectionModel().getSelectedItem();
-        String formDate = null;
-        /*if (selectedId != null) {
+        LOGGER.info("Selected user %s", tableUsers.getSelectionModel().getSelectedItem().getName());
 
-            surnameField.setText(selectedId.getSurname());
-            nameField.setText(selectedId.getName());
-            patronymicField.setText(selectedId.getPatronymic());
-            telField.setText(selectedId.getTel());
-            emailField.setText(selectedId.getEmail());
-            bornField.setText(selectedId.getBornPlace());
-            dateField.setText(String.valueOf(selectedId.getBornDate().getDate()));
-            if (selectedId.getBornDate().getMonth()< 10) {
-                formDate = "0" + String.valueOf(selectedId.getBornDate().getMonth());
-            }
-            monthField.setText(formDate);
-            yearField.setText(String.valueOf(selectedId.getBornDate().getYear()+1900));
-            if(selectedId.getGender().equals(User.Gender.Мужчина)) {
-                manRadioButton.setSelected(true);
-            }
-            else womanRadioButton.setSelected(true);
-        }*/
     }
 
     private List<User> loadData(int fromIndex, int toIndex) {

@@ -2,10 +2,8 @@ package com.mpsdevelopment.biopotential.server.db.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.internal.bind.DateTypeAdapter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,12 +41,15 @@ public class User extends BaseObject {
     public static final String BORNPLACE_FIELD_GS = "bp";
     public static final String BORNDATE_FIELD = "bornDate";
     public static final String BORNDATE_FIELD_GS = "bd";
+
+
+
     public enum Gender{
-        Мужчина,
-        Женщина
+        Man,
+        Woman
     };
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Visit> visits = new ArrayList<>();
 
     @Expose
@@ -122,9 +123,13 @@ public class User extends BaseObject {
     @SerializedName(BORNDATE_FIELD_GS)
     private Date bornDate;
 
-    @Enumerated(EnumType.STRING)
+    /*@Enumerated(EnumType.STRING)
     @Column(name = "gender")
-    private Gender gender;
+    private Gender gender;*/
+
+    @Expose
+    @Column(name = "gender")
+    private String gender;
 
     public String getLogin() {
         return login;
@@ -256,11 +261,11 @@ public class User extends BaseObject {
         this.bornDate = bornDate;
     }
 
-    public Gender getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(Gender gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 

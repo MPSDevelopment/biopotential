@@ -82,14 +82,17 @@ public class UsersController {
 		User user = JsonUtils.fromJson(User.class, json);
 
 		if (userDao.getByLogin(user.getLogin()) != null) {
+            User oldUser = userDao.get(user.getId());
+            BeanUtils.copyProperties(user, oldUser);
+			userDao.saveOrUpdate(oldUser);
+
+            LOGGER.info("User changed - Id %s", user.getId());
 			return new ResponseEntity<String>(JsonUtils.getJson("User with such login already exist"), null, HttpStatus.CONFLICT);
 		}
 		else {
-			LOGGER.info("User - %s", json);
-			userDao.saveOrUpdate(user);
+            userDao.save(user);
+            LOGGER.info("New user Id %s", user.getId());
 		}
-
-
 
 		return new ResponseEntity<String>(JsonUtils.getJson(user), null, HttpStatus.CREATED);
 

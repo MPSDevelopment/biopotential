@@ -12,7 +12,11 @@ import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
+import com.mpsdevelopment.biopotential.server.utils.LineChartUtil;
 import com.mpsdevelopment.biopotential.server.utils.StageUtils;
+import com.mpsdevelopment.biopotential.server.wave.WaveFile;
+import com.mpsdevelopment.biopotential.server.wave.WavFileException;
+import com.mpsdevelopment.biopotential.server.wave.WavFileExtractor;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.application.Platform;
@@ -26,7 +30,11 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
@@ -34,6 +42,9 @@ import javafx.util.StringConverter;
 import net.engio.mbassy.listener.Handler;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -55,11 +66,6 @@ public class DiagPanelController extends AbstractController implements Subscriba
 
     @Autowired
     private ServerSettings settings;
-
-    /*@Autowired
-    private VisitDao visitDao;
-    @FXML
-    private Pagination pagination;*/
 
     @FXML
     private TextField loginField;
@@ -103,7 +109,6 @@ public class DiagPanelController extends AbstractController implements Subscriba
     private TextField bornField;
     private final StringProperty born = new SimpleStringProperty();
 
-
     @FXML
     private TableView<Visit> historyTableUsers;
 
@@ -129,13 +134,16 @@ public class DiagPanelController extends AbstractController implements Subscriba
     private Button saveAsrButton;
 
     @FXML
-    private Button fileButton;
+    private Button openFileButton;
 
     @FXML
     private Button deleteButton;
 
     @FXML
     private Button selectFromDbButton;
+
+    @FXML
+    public ToggleGroup genderGroup;
 
     @FXML
     private RadioButton manRadioButton;
@@ -149,35 +157,36 @@ public class DiagPanelController extends AbstractController implements Subscriba
     @FXML
     private DatePicker datePicker;
 
+    @FXML
+    private LineChart<Number, Number> numberLineChart;
+
     private User[] users;
     private Visit[] visits;
     private Stage primaryStage;
-    final ToggleGroup radioGroup = new ToggleGroup();
+    private User user = new User();
+    public static final int RATE = 16;
 
     public DiagPanelController() {
 
     }
 
-    @FXML
-    public void initialize() throws NoSuchMethodException {
-
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // change localization to russain
+        // change localization to russian
         Locale dLocale = new Locale.Builder().setLanguage("ru").setScript("Cyrl").build();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", dLocale);
         Locale.setDefault(dLocale);
 
+        // subscribe for events
         EventBus.subscribe(this);
-        User user = new User();
-        manRadioButton.setToggleGroup(radioGroup);
+
+        // set togglegroup
+        manRadioButton.setToggleGroup(genderGroup);
         manRadioButton.setUserData("M");
-        womanRadioButton.setToggleGroup(radioGroup);
-        manRadioButton.setUserData("W");
+        womanRadioButton.setToggleGroup(genderGroup);
+        womanRadioButton.setUserData("W");
 
-
+        // binding between strinproperty and textfield
         Bindings.bindBidirectional(loginField.textProperty(), login);
         Bindings.bindBidirectional(surnameField.textProperty(), surname);
         Bindings.bindBidirectional(nameField.textProperty(), name);
@@ -189,12 +198,10 @@ public class DiagPanelController extends AbstractController implements Subscriba
         Bindings.bindBidirectional(monthField.textProperty(), month);
         Bindings.bindBidirectional(yearField.textProperty(), year);
 
-        // внести в базу
+        // add to database
         addButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
-
-                Visit visit = new Visit();
 
                 user.setLogin(login.getValue());
                 user.setSurname(surname.getValue());
@@ -204,12 +211,6 @@ public class DiagPanelController extends AbstractController implements Subscriba
                 user.setEmail(email.getValue());
                 user.setBornPlace(born.getValue());
                 user.setAdministrator(false);
-                visit.setUser(user);
-                visit.setDate(takeDate());
-
-
-
-//                Locale.setDefault(Locale.FRANCE);
 
                 LocalDate localDate = datePicker.getValue();
                 if(datePicker.getValue() == null) {
@@ -218,25 +219,65 @@ public class DiagPanelController extends AbstractController implements Subscriba
                 else {
                     Instant instant = localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
                     Date res = Date.from(instant);
-
                     user.setBornDate(res);
                 }
 
-                user.getVisits().add(visit);
-
-//                user.setBornDate(datePicker.getValue());
-
-                /*if (takeDate() != null) {
-                    user.setBornDate(takeDate());
-                }*/
-
                 String body = JsonUtils.getJson(user);
-
                 deviceBioHttpClient.executePutRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_PUT_CREATE_USER, body);
                 getUsers();
             }
         });
 
+        // show history
+        showHistoryButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                String url = String.format("http://%s:%s%s", settings.getHost(), settings.getPort(), ControllerAPI.VISITS_CONTROLLER + ControllerAPI.VISITS_CONTROLLER_GET_ALL);
+                String json = deviceBioHttpClient.executeGetRequest(url);
+                visits = JsonUtils.fromJson(Visit[].class, json);
+                historyUsersData.clear();
+                for (Visit visit : visits) {
+                    if(visit.getUser().getName().equals(nameField.getText())) {
+                        LOGGER.info("User - %s", visit.getUser().getName());
+                        historyUsersData.add(visit);
+                    }
+
+                }
+                historyTableUsers.setItems(historyUsersData);
+
+            }
+        });
+
+        // select user from database
+        selectFromDbButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                LOGGER.info("  ACTION EDIT METEO in  Scenario");
+                SelectFromDbPanel panel = new SelectFromDbPanel();
+                Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Выбрать из бд").setClazz(panel.getClass()).setHeight(500d).setWidth(650d).setHeightPanel(450d).setWidthPanel(650d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+                panel.setPrimaryStage(stage);
+
+            }
+        });
+
+        deleteButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                ObservableList<User> usersData = getUserList();
+                Long Id = null;
+                for (User tempUsersData: usersData) {
+                    if (tempUsersData.getSurname() != null && tempUsersData.getSurname().equals(surnameField.getText())) {
+                        Id = tempUsersData.getId();
+                    }
+                }
+
+                LOGGER.info("%s", ControllerAPI.USER_CONTROLLER + "/remove/" + String.valueOf(Id));
+                deviceBioHttpClient.executeDeleteRequest(ControllerAPI.USER_CONTROLLER + "/remove/" + String.valueOf(Id));
+            }
+        });
+
+        // select birthday from datepicker
         datePicker.setOnAction(new EventHandler<ActionEvent>()
         {
             @Override
@@ -260,8 +301,6 @@ public class DiagPanelController extends AbstractController implements Subscriba
                 Instant instant = localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
                 Date res = Date.from(instant);
 
-                user.setBornDate(res);
-
                 if (localDate.getDayOfMonth() < 10) {
                     dateField.setText(String.valueOf("0" + String.valueOf(localDate.getDayOfMonth())));
                 }
@@ -275,20 +314,33 @@ public class DiagPanelController extends AbstractController implements Subscriba
             }
         });
 
-
         // radiobutton's for choose gender
-        radioGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+        genderGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
             public void changed(ObservableValue<? extends Toggle> ov,
                                 Toggle old_toggle, Toggle new_toggle) {
-                if (radioGroup.getSelectedToggle() != null) {
-                    if(radioGroup.getSelectedToggle().getUserData().toString().equals("W")) {
-                        user.setGender(User.Gender.Мужчина);
+                if ((genderGroup.getSelectedToggle() != null) || (user != null)) {
+                    if(genderGroup.getSelectedToggle().getUserData().toString().equals("M")) {
+                        user.setGender(String.valueOf(User.Gender.Man));
                     }
-                    else user.setGender(User.Gender.Женщина);
+                    else user.setGender(String.valueOf(User.Gender.Woman));
                 }
             }
         });
 
+        // openFile button
+        openFileButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                FileChooser fileChooser = new FileChooser();
+                File selectedFile = fileChooser.showOpenDialog(null);
+
+                createChart(selectedFile);
+
+            }
+        });
+
+        // ----------------------------------------Table historyTableUsers -----------------------------------------------------------------------------------------------
+        // historyNameColumn
         historyNameColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Visit, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Visit, String> visit) {
@@ -298,114 +350,57 @@ public class DiagPanelController extends AbstractController implements Subscriba
             }
         });
 
+        // dateColumn
         dateColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Visit, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Visit, String> visit) {
                 SimpleStringProperty property = new SimpleStringProperty();
-                String month = null;
-                if (visit.getValue().getUser().getBornDate().getMonth() < 10) {
-                    month = (String.valueOf("0" + String.valueOf(visit.getValue().getUser().getBornDate().getMonth() + 1)));
-                }
-                else month = String.valueOf(String.valueOf(visit.getValue().getUser().getBornDate().getMonth() + 1));
+                String day,month = null;
+                Long time;
+                try {
+                    if (visit.getValue().getDate().getDate() < 10) {
+                        day = (String.valueOf("0" + String.valueOf(visit.getValue().getDate().getDate())));
+                    }
+                    else day = (String.valueOf(String.valueOf(visit.getValue().getDate().getDate())));
+                    if (visit.getValue().getDate().getMonth() < 10) {
+                        month = (String.valueOf("0" + String.valueOf(visit.getValue().getDate().getMonth() + 1)));
+                    } else
+                        month = String.valueOf(String.valueOf(visit.getValue().getDate().getMonth() + 1));
+
+//                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy:HH:mm:SS");
+
+//                    Date date = new Date();
+//                    System.out.println(dateFormat.format(date)); //2013/10/15 16:16:39
 
                 /*Date tempdate = visit.getValue().getDate();
                 Instant instant = Instant.ofEpochMilli(tempdate.getDate());
                 LocalDate res = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalDate();*/
+//                    property.setValue(String.format("%s-%s-%s", day, month , visit.getValue().getDate().getYear() + 1900));
+                    property.setValue(String.format("%s", dateFormat.format(visit.getValue().getDate())));
 
-                property.setValue(String.format("%s-%s-%s", visit.getValue().getUser().getBornDate().getDate(), month , visit.getValue().getUser().getBornDate().getYear() + 1900));
-//                property.setValue(String.format("%s-%s-%s", res.getDayOfMonth(), res.getMonth().getValue(), res.getYear()));
+                } catch (NullPointerException e){
+
+                }
                 return property;
             }
         });
 
-        getUsers();
-
-     /*   // заполняем таблицу данными
-        tableUsers.setItems(usersData);*/
-
-
-
-
-        deleteButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                ObservableList<User> usersData = getUserList();
-                Long Id = null;
-                for (User tempUsersData: usersData) {
-                    if (tempUsersData.getSurname() != null && tempUsersData.getSurname().equals(surnameField.getText())) {
-                        Id = tempUsersData.getId();
-                    }
-                }
-
-                LOGGER.info("%s", ControllerAPI.USER_CONTROLLER + "/remove/" + String.valueOf(Id));
-                deviceBioHttpClient.executeDeleteRequest(ControllerAPI.USER_CONTROLLER + "/remove/" + String.valueOf(Id));
-            }
-        });
-
-
-        showHistoryButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-
-                String url = String.format("http://%s:%s%s", settings.getHost(), settings.getPort(), ControllerAPI.VISITS_CONTROLLER + ControllerAPI.VISITS_CONTROLLER_GET_ALL);
-                String json = deviceBioHttpClient.executeGetRequest(url);
-                visits = JsonUtils.fromJson(Visit[].class, json);
-                historyUsersData.clear();
-                for (Visit visit : visits) {
-                    if(visit.getUser().getName().equals(nameField.getText())) {
-                        LOGGER.info("User - %s", visit.getUser().getName());
-                        historyUsersData.add(visit);
-                    }
-
-                }
-                historyTableUsers.setItems(historyUsersData);
-
-            }
-        });
-
-        selectFromDbButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                LOGGER.info("  ACTION EDIT METEO in  Scenario");
-                SelectFromDbPanel panel = new SelectFromDbPanel();
-                Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Выбрать из бд").setClazz(panel.getClass()).setHeight(500d).setWidth(650d).setHeightPanel(450d).setWidthPanel(650d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
-//                Stage stage = new Stage();
-                panel.setPrimaryStage(stage);
-
-                /*Scene scene = new Scene(panel);
-                stage.setScene(scene);
-                stage.show();*/
-            }
-        });
+//        getUsers();
 
         automaticButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 Visit visit = new Visit();
-                User user = new User();
 
-                user.setSurname(surname.getValue());
-                user.setName(name.getValue());
-                user.setPatronymic(patronymic.getValue());
-                user.setTel(tel.getValue());
-                user.setEmail(email.getValue());
-                user.setBornPlace(born.getValue());
+                LOGGER.info("User automatics - Id %s", user.getId());
 
-                LocalDate localDate = datePicker.getValue();
-                if(datePicker.getValue() == null) {
-                    user.setBornDate(null);
-                }
-                else {
-                    Instant instant = localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
-                    Date res = Date.from(instant);
+                visit.setUser(getUser());
 
-                    user.setBornDate(res);
-                }
+                Date date = new Date();
+                visit.setDate(date);
 
-                user.setAdministrator(false);
-                visit.setUser(user);
-                visit.setDate(takeDate());
-                user.getVisits().add(visit);
+                getUser().getVisits().add(visit);
 
                 String body = JsonUtils.getJson(visit);
                 LOGGER.info("User - Visit %s", body);
@@ -416,13 +411,51 @@ public class DiagPanelController extends AbstractController implements Subscriba
 
     }
 
+    // --------------------------------------Methods------------------------------------------
+
+    private void createChart(File selectedFile) {
+        NumberAxis x = new NumberAxis();
+        NumberAxis y = new NumberAxis();
+
+        numberLineChart.setTitle("Входной сигнал");
+
+//        File file = new File("D:/MPS/Temp/Downloads/test3.wav");
+        WaveFile waveFile = null;
+        try {
+            waveFile = WaveFile.openWavFile(selectedFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (WavFileException e) {
+            e.printStackTrace();
+        }
+        LOGGER.info(String.valueOf(waveFile.getSampleRate()));
+        long sampleRate = waveFile.getSampleRate();
+        if (selectedFile != null) {
+            double[] extractedData = new double[0];
+
+            try {
+                extractedData = extractWaveform(selectedFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (UnsupportedAudioFileException e) {
+                e.printStackTrace();
+            }
+
+            XYChart.Series<Number, Number> numberSeries = LineChartUtil.createNumberSeries(extractedData, RATE,sampleRate);
+
+//            numberLineChart.getStylesheets().add(DiagPanelController.class.getResource("main.css").toExternalForm());
+            numberLineChart.getStylesheets().add("main.css");
+            numberLineChart.getData().addAll(numberSeries);
+            numberLineChart.createSymbolsProperty();
+
+        }
+    }
+
     private Date takeDate() {
-//        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
         Date currentDate = null;
         if (date.getValue() != null && month.getValue() != null && year.getValue() != null) {
             try {
-//                String d = date.getValue() + "-" + month.getValue() + "-" + year.getValue();
                 String d = date.getValue() + "." + month.getValue() + "." + year.getValue();
                 System.out.println(d);
 
@@ -431,16 +464,11 @@ public class DiagPanelController extends AbstractController implements Subscriba
                 e.printStackTrace();
             }
 
-       /* Format formatter = new SimpleDateFormat("dd-MMM-yy");
-        String s = formatter.format(date.getValue() + "-" + month.getValue() + "-" + year.getValue());
-*/
             System.out.println(currentDate.toString());
         }
         return currentDate;
 
     }
-
-
 
     private ObservableList<User> getUserList() {
         String json = deviceBioHttpClient.executeGetRequest("/api/users/all");
@@ -454,58 +482,41 @@ public class DiagPanelController extends AbstractController implements Subscriba
         return usersData;
     }
 
-
-
-    /*@FXML
-    private void onTableClick(MouseEvent event) {
-        System.out.println("Click");
-
-        User selectedId = tableUsers.getSelectionModel().getSelectedItem();
-        String formDate = null;
-        if (selectedId != null) {
-
-            surnameField.setText(selectedId.getSurname());
-            nameField.setText(selectedId.getName());
-            patronymicField.setText(selectedId.getPatronymic());
-            telField.setText(selectedId.getTel());
-            emailField.setText(selectedId.getEmail());
-           *//* bornField.setText(selectedId.getBornPlace());
-            dateField.setText(String.valueOf(selectedId.getBornDate().getDate()));
-            if (selectedId.getBornDate().getMonth()< 10) {
-                formDate = "0" + String.valueOf(selectedId.getBornDate().getMonth());
-            }
-            monthField.setText(formDate);
-            yearField.setText(String.valueOf(selectedId.getBornDate().getYear()+1900));
-            if(selectedId.getGender().equals(User.Gender.Мужчина)) {
-                manRadioButton.setSelected(true);
-            }
-            else womanRadioButton.setSelected(true);*//*
-        }
-    }*/
-
+    // handler for selected user from db
     @Handler
     public void handleMessage(SelectUserEvent event) throws Exception {
         LOGGER.info("  GOT Updated Training Meteo or Scenario parameters ");
         refreshTable(event.getUser());
     }
 
-    private void refreshTable(User user) {
+    private void refreshTable(User selectedUser) {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 try {
-                    loginField.setText(user.getLogin());
-                    surnameField.setText(user.getSurname());
-                    nameField.setText(user.getName());
-                    patronymicField.setText(user.getPatronymic());
-                    telField.setText(user.getTel());
-                    emailField.setText(user.getEmail());
-                    bornField.setText(user.getBornPlace());
-                    dateField.setText(String.valueOf(user.getBornDate().getDate()));
-                    if (user.getBornDate().getMonth() < 10) {
-                        monthField.setText(String.valueOf("0" + String.valueOf(user.getBornDate().getMonth() + 1)));
+                    setUser(selectedUser);
+                    getUser().setId(selectedUser.getId());
+                    LOGGER.info("User - Id %s", user.getId());
+                    loginField.setText(selectedUser.getLogin());
+                    surnameField.setText(selectedUser.getSurname());
+                    nameField.setText(selectedUser.getName());
+                    patronymicField.setText(selectedUser.getPatronymic());
+                    telField.setText(selectedUser.getTel());
+                    emailField.setText(selectedUser.getEmail());
+                    bornField.setText(selectedUser.getBornPlace());
+                    dateField.setText(String.valueOf(selectedUser.getBornDate().getDate()));
+                    if (selectedUser.getBornDate().getMonth() < 10) {
+                        monthField.setText(String.valueOf("0" + String.valueOf(selectedUser.getBornDate().getMonth() + 1)));
                     }
-                    yearField.setText(String.valueOf(user.getBornDate().getYear() + 1900));
+                    yearField.setText(String.valueOf(selectedUser.getBornDate().getYear() + 1900));
+                    if (selectedUser.getGender().equals("Man")) {
+                        manRadioButton.setSelected(true);
+                        womanRadioButton.setSelected(false);
+                    }
+                    else {
+                        manRadioButton.setSelected(false);
+                        womanRadioButton.setSelected(true);
+                    }
                 }
                 catch (NullPointerException e) {
                     System.out.println("Date is null");
@@ -514,7 +525,6 @@ public class DiagPanelController extends AbstractController implements Subscriba
             }
         });
     }
-
 
     public void updatePanel(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -535,7 +545,17 @@ public class DiagPanelController extends AbstractController implements Subscriba
         primaryStage.close();
     }
 
+    private double[] extractWaveform(File file) throws IOException, UnsupportedAudioFileException {
+        return new WavFileExtractor().extract(file);
+    }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
 
 }
