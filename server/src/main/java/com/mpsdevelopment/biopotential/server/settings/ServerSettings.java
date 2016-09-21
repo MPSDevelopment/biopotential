@@ -12,77 +12,89 @@ import java.util.List;
 
 public class ServerSettings {
 
-    private static final Logger LOGGER = LoggerUtil.getLogger(ServerSettings.class);
+	private static final Logger LOGGER = LoggerUtil.getLogger(ServerSettings.class);
 
-    private String path;
+	private String path;
 
-    @Expose
-    private String host = "localhost";
-    @Expose
-    private String cookieHost = "";
-    @Expose
-    private Integer port;
-    @Expose
-    private String tempDirectory = "data/tmp";
-    @Expose
-    private String filesPath;
+	@Expose
+	private String host = "localhost";
+	@Expose
+	private String cookieHost = "";
 
-    private void init() {
-        ServerSettings fileSettings = (ServerSettings) JsonUtils.getJsonObjectFromFile(ServerSettings.class, path);
-        updateSettings(fileSettings);
-    }
+	@Expose
+	public int cookieMaxAge = 24 * 60 * 60;
 
-    public String getPath() {
-        return path;
-    }
+	@Expose
+	private Integer port;
+	@Expose
+	private String tempDirectory = "data/tmp";
+	@Expose
+	private String filesPath;
 
-    public void setPath(String path) {
-        this.path = path;
-    }
+	private void init() {
+		ServerSettings fileSettings = (ServerSettings) JsonUtils.getJsonObjectFromFile(ServerSettings.class, path);
+		updateSettings(fileSettings);
+	}
 
-    public String getCookieHost() {
-        return cookieHost;
-    }
+	public String getPath() {
+		return path;
+	}
 
-    public void setCookieHost(String cookieHost) {
-        this.cookieHost = cookieHost;
-    }
+	public void setPath(String path) {
+		this.path = path;
+	}
 
-    public String getHost() {
-        return host;
-    }
+	public String getCookieHost() {
+		return cookieHost;
+	}
 
-    public void setHost(String host) {
-        this.host = host;
-    }
+	public void setCookieHost(String cookieHost) {
+		this.cookieHost = cookieHost;
+	}
 
-    public Integer getPort() {
-        return port;
-    }
+	public String getHost() {
+		return host;
+	}
 
-    public void setPort(Integer port) {
-        this.port = port;
-    }
+	public void setHost(String host) {
+		this.host = host;
+	}
 
-    public String getTempDirectory() {
-        return tempDirectory;
-    }
+	public Integer getPort() {
+		return port;
+	}
 
-    public void setTempDirectory(String tempDirectory) {
-        this.tempDirectory = tempDirectory;
-    }
+	public void setPort(Integer port) {
+		this.port = port;
+	}
 
-    public String getFilesPath() {
-        return filesPath;
-    }
+	public String getTempDirectory() {
+		return tempDirectory;
+	}
 
-    public void setFilesPath(String filesPath) {
-        this.filesPath = filesPath;
-    }
+	public void setTempDirectory(String tempDirectory) {
+		this.tempDirectory = tempDirectory;
+	}
 
-    public void updateSettings(ServerSettings newSettings) {
+	public String getFilesPath() {
+		return filesPath;
+	}
 
-        BeanUtils.copyProperties(newSettings, this);
-    }
+	public void setFilesPath(String filesPath) {
+		this.filesPath = filesPath;
+	}
+
+	public int getCookieMaxAge() {
+		return cookieMaxAge;
+	}
+
+	public void setCookieMaxAge(int cookieMaxAge) {
+		this.cookieMaxAge = cookieMaxAge;
+	}
+
+	public void updateSettings(ServerSettings newSettings) {
+
+		BeanUtils.copyProperties(newSettings, this);
+	}
 
 }

@@ -6,7 +6,6 @@ import com.mpsdevelopment.biopotential.server.db.dao.VisitDao;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.biopotential.server.db.pojo.Visit;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
-import com.mpsdevelopment.biopotential.server.utils.SecurityUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import org.json.simple.parser.ParseException;
@@ -32,9 +31,6 @@ public class VisitsController {
 
 	@Autowired
 	private UserDao userDao;
-
-	@Autowired
-	private SecurityUtils securityUtils;
 
 	public VisitsController() {
 	}

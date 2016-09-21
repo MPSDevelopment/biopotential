@@ -4,7 +4,7 @@ import com.auth0.jwt.JWTVerifyException;
 import com.mpsdevelopment.biopotential.server.JettyServer;
 import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
 import com.mpsdevelopment.biopotential.server.db.dao.DaoException;
-import com.mpsdevelopment.biopotential.server.db.dao.UserDao;
+import com.mpsdevelopment.biopotential.server.db.pojo.Token.Role;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
@@ -15,9 +15,24 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -31,18 +46,16 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
-
 import javax.servlet.ServletException;
-
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = SpringockitoContextLoader.class, locations = { "classpath:/webapp/app-context-test.xml",
-		"classpath:/webapp/web-context.xml" })
+@ContextConfiguration(loader = SpringockitoContextLoader.class, locations = { "classpath:/webapp/app-context-test.xml", "classpath:/webapp/web-context.xml" })
 @Configurable
 public class UsersControllerServerTest {
 
@@ -51,10 +64,9 @@ public class UsersControllerServerTest {
 	@Autowired
 	private ServerSettings serverSettings;
 
-	@Autowired
-	private UserDao userDao;
-
 	private static HttpClient client;
+
+	private static DefaultHttpClient httpClient;
 
 	private static final String ENCODING_NAME = "UTF-8";
 	private static final String CONTENT_TYPE_NAME = "application/json";
@@ -62,10 +74,16 @@ public class UsersControllerServerTest {
 	@BeforeClass
 	public static void beforeClass() throws ServletException, InterruptedException {
 		JettyServer.getInstance().start();
-		// JettyServer.getInstance().join();
 
 		client = new HttpClient();
 		client.getParams().setParameter("http.useragent", "Test Client");
+
+		DefaultHttpClient client = new DefaultHttpClient();
+		ClientConnectionManager mgr = client.getConnectionManager();
+		HttpParams params = client.getParams();
+		HttpProtocolParams.setContentCharset(params, "UTF-8");
+		httpClient = new DefaultHttpClient(mgr, params);
+		LOGGER.info("DEVICES HTTP CLIENT is %s ", httpClient);
 
 	}
 
@@ -75,13 +93,121 @@ public class UsersControllerServerTest {
 
 	}
 
-	private HttpStatus postObject(String url, Object object)
-			throws URIException, UnsupportedEncodingException, IOException, HttpException {
+	private HttpStatus postObject(String url, Object object) throws URIException, UnsupportedEncodingException, IOException, HttpException {
 		String fullUrl = String.format("http://%s:%s%s", serverSettings.getHost(), serverSettings.getPort(), url);
 		LOGGER.info("Full url is %s", fullUrl);
 		PostMethod method = new PostMethod();
 		method.setURI(new URI(fullUrl, false, ENCODING_NAME));
 		method.setRequestEntity(new StringRequestEntity(JsonUtils.getJson(object), CONTENT_TYPE_NAME, ENCODING_NAME));
+		try {
+			return HttpStatus.valueOf(client.executeMethod(method));
+		} finally {
+			method.releaseConnection();
+		}
+	}
+
+	public String executePutRequest(String uri, String body) {
+		String fullUrl = String.format("http://%s:%s%s", serverSettings.getHost(), serverSettings.getPort(), uri);
+		HttpPut request = new HttpPut(fullUrl);
+		String json = null;
+		HttpResponse response = null;
+		if (StringUtils.isNotBlank(body)) {
+			StringEntity entity;
+			try {
+				entity = new StringEntity(body, ENCODING_NAME);
+				entity.setContentType(CONTENT_TYPE_NAME);
+				request.setEntity(entity);
+				response = httpClient.execute(request);
+				json = getContextResponse(response);
+				LOGGER.debug(" PUT Request JSON - %s", json);
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return json;
+	}
+
+	public String executePostRequest(String uri, String body) {
+		String fullUrl = String.format("http://%s:%s%s", serverSettings.getHost(), serverSettings.getPort(), uri);
+		HttpPost request = new HttpPost(fullUrl);
+		String json = null;
+		HttpResponse response = null;
+		if (StringUtils.isNotBlank(body)) {
+			StringEntity entity;
+			try {
+				entity = new StringEntity(body, ENCODING_NAME);
+				entity.setContentType(CONTENT_TYPE_NAME);
+				request.setEntity(entity);
+				response = httpClient.execute(request);
+				json = getContextResponse(response);
+				LOGGER.debug(" POST Request JSON - %s", json);
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return json;
+	}
+
+	public String executeGetRequest(String uri) {
+		String fullUrl = String.format("http://%s:%s%s", serverSettings.getHost(), serverSettings.getPort(), uri);
+		HttpGet request = new HttpGet(fullUrl);
+		String json = null;
+		HttpResponse response = null;
+		try {
+			response = httpClient.execute(request);
+			json = getContextResponse(response);
+			LOGGER.debug(" New Request JSON - %s", json);
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return json;
+	}
+
+	public String executeDeleteRequest(String uri) {
+		String fullUrl = String.format("http://%s:%s%s", serverSettings.getHost(), serverSettings.getPort(), uri);
+		HttpDelete request = new HttpDelete(fullUrl);
+		String json = null;
+		HttpResponse response;
+		try {
+			response = httpClient.execute(request);
+			json = getContextResponse(response);
+			LOGGER.debug(" Delete responce JSON - %s", json);
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return json;
+	}
+
+	private HttpStatus putObject(String url, Object object) throws URIException, UnsupportedEncodingException, IOException, HttpException {
+		String fullUrl = String.format("http://%s:%s%s", serverSettings.getHost(), serverSettings.getPort(), url);
+		LOGGER.info("Full url is %s", fullUrl);
+		PutMethod method = new PutMethod();
+		method.setURI(new URI(fullUrl, false, ENCODING_NAME));
+		method.setRequestEntity(new StringRequestEntity(JsonUtils.getJson(object), CONTENT_TYPE_NAME, ENCODING_NAME));
+		try {
+			return HttpStatus.valueOf(client.executeMethod(method));
+		} finally {
+			method.releaseConnection();
+		}
+	}
+
+	private HttpStatus deleteObject(String url) throws URIException, UnsupportedEncodingException, IOException, HttpException {
+		String fullUrl = String.format("http://%s:%s%s", serverSettings.getHost(), serverSettings.getPort(), url);
+		LOGGER.info("Full url is %s", fullUrl);
+		DeleteMethod method = new DeleteMethod();
+		method.setURI(new URI(fullUrl, false, ENCODING_NAME));
 		try {
 			return HttpStatus.valueOf(client.executeMethod(method));
 		} finally {
@@ -106,28 +232,65 @@ public class UsersControllerServerTest {
 	}
 
 	@Test
-	public void checkLogin() throws DaoException, InvalidKeyException, NoSuchAlgorithmException, IllegalStateException,
-			SignatureException, IOException, JWTVerifyException {
+	public void checkAuthorithation() throws DaoException, InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException, IOException, JWTVerifyException {
 
-		assertEquals(HttpStatus.UNAUTHORIZED,
-				postObject(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_LOGIN, new User()));
+		assertEquals(HttpStatus.UNAUTHORIZED, get(ControllerAPI.USER_CONTROLLER + "/all"));
 
-		assertEquals(HttpStatus.BAD_REQUEST,
-				postObject(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_LOGIN, null));
+		User admin = new User().setLogin(DatabaseCreator.ADMIN_LOGIN).setPassword(DatabaseCreator.ADMIN_PASSWORD);
+		User operator = new User().setLogin(DatabaseCreator.OPERATOR_LOGIN).setPassword(DatabaseCreator.OPERATOR_PASSWORD);
 
-		User newUser = new User().setLogin("login").setPassword("password");
 
-		assertEquals(HttpStatus.UNAUTHORIZED,
-				postObject(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_LOGIN, newUser));
+		postObject(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_LOGIN, operator);
 
-		adminLogin();
+		assertEquals(HttpStatus.FORBIDDEN, get(ControllerAPI.USER_CONTROLLER + "/all"));
+
+		assertEquals(HttpStatus.ACCEPTED, logout());
+
+		postObject(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_LOGIN, admin);
+
+		assertEquals(HttpStatus.OK, get(ControllerAPI.USER_CONTROLLER + "/all"));
+
+		assertEquals(HttpStatus.ACCEPTED, logout());
 
 	}
 
+	@Test
+	public void checkCreateDeleteUser() throws DaoException, InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException, IOException, JWTVerifyException {
+
+		User admin = new User().setLogin(DatabaseCreator.ADMIN_LOGIN).setPassword(DatabaseCreator.ADMIN_PASSWORD).setRole(Role.ADMIN.name());
+		User operator = new User().setLogin(DatabaseCreator.OPERATOR_LOGIN).setPassword(DatabaseCreator.OPERATOR_PASSWORD).setRole(Role.OPERATOR.name());
+		User user = new User().setLogin("user").setPassword("user").setRole(Role.USER.name());
+		User user1 = new User().setLogin("user1").setPassword("user1").setRole(Role.USER.name());
+
+		executePostRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_LOGIN, JsonUtils.getJson(operator));
+
+		String createdUser = executePutRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_PUT_CREATE_USER, JsonUtils.getJson(user1));
+
+		LOGGER.info("  Created USER = %s", createdUser);
+
+		user1 = JsonUtils.fromJson(User.class, createdUser);
+
+		LOGGER.info("  Created USER   id = %s", user1.getId());
+
+		executeGetRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_LOGOUT);
+
+		executePostRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_LOGIN, JsonUtils.getJson(user));
+
+		executeDeleteRequest(ControllerAPI.USER_CONTROLLER + "/remove/" + user1.getId());
+
+		executeGetRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_LOGOUT);
+
+		executePostRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_LOGIN, JsonUtils.getJson(admin));
+
+		executeDeleteRequest(ControllerAPI.USER_CONTROLLER + "/remove/" + user1.getId());
+
+		executeGetRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_LOGOUT);
+	}
+
 	public void adminLogin() throws URIException, UnsupportedEncodingException, HttpException, IOException {
-		User user = new User().setLogin(DatabaseCreator.ADMIN_LOGIN).setPassword(DatabaseCreator.ADMIN_PASSWORD);
-		assertEquals(HttpStatus.ACCEPTED,
-				postObject(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_LOGIN, user));
+		User user = new User().setLogin(DatabaseCreator.ADMIN_LOGIN).setPassword(DatabaseCreator.ADMIN_PASSWORD).setRole(Role.ADMIN.name());
+		assertEquals(HttpStatus.CREATED, postObject(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_LOGIN, user));
+
 	}
 
 	public HttpStatus logout() throws URIException, UnsupportedEncodingException, HttpException, IOException {
@@ -135,127 +298,27 @@ public class UsersControllerServerTest {
 	}
 
 	@Test
-	public void checkLogout() throws DaoException, InvalidKeyException, NoSuchAlgorithmException, IllegalStateException,
-			SignatureException, IOException, JWTVerifyException {
+	public void checkLogout() throws DaoException, InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException, IOException, JWTVerifyException {
 
 		adminLogin();
 
 		assertEquals(HttpStatus.ACCEPTED, logout());
 
 		// second attempt
-		assertEquals(HttpStatus.BAD_REQUEST, logout());
+		assertEquals(HttpStatus.UNAUTHORIZED, logout());
 
 	}
 
-	// @Test
-	// public void createUser() throws DaoException, InvalidKeyException,
-	// NoSuchAlgorithmException, IllegalStateException, SignatureException,
-	// IOException, JWTVerifyException {
-	//
-	// User newUser = new User();
-	// newUser.setSurname("surmane").setName("name").setLogin("login").setPassword("password");
-	//
-	// ResponseEntity<String> createUserResponse =
-	// usersController.createUser(request, JsonUtils.getJson(newUser));
-	// assertEquals(HttpStatus.UNAUTHORIZED,
-	// createUserResponse.getStatusCode());
-	//
-	// operatorLogin();
-	// createUserResponse = usersController.createUser(request,
-	// JsonUtils.getJson(newUser));
-	// assertEquals(HttpStatus.UNAUTHORIZED,
-	// createUserResponse.getStatusCode());
-	//
-	// adminLogin();
-	// createUserResponse = usersController.createUser(request,
-	// JsonUtils.getJson(newUser));
-	// assertEquals(HttpStatus.CREATED, createUserResponse.getStatusCode());
-	//
-	//
-	// User userFromResponse = JsonUtils.fromJson(User.class,
-	// createUserResponse.getBody());
-	// assertNotNull(userFromResponse.getId());
-	// assertEquals(newUser.getLogin(), userFromResponse.getLogin());
-	//
-	// userDao.delete(userFromResponse);
-	// }
-	//
-	// @Test
-	// public void updateUser() throws DaoException, InvalidKeyException,
-	// NoSuchAlgorithmException, IllegalStateException, SignatureException,
-	// IOException, JWTVerifyException {
-	// User user = new User();
-	// user.setSurname("oldSurmane");
-	// userDao.save(user);
-	//
-	// user.setSurname("newSurname");
-	//
-	// ResponseEntity<String> updateUserResponse =
-	// usersController.updateUser(request, JsonUtils.getJson(user));
-	// assertEquals(HttpStatus.UNAUTHORIZED,
-	// updateUserResponse.getStatusCode());
-	//
-	// adminLogin();
-	// updateUserResponse = usersController.updateUser(request,
-	// JsonUtils.getJson(user));
-	// assertEquals(HttpStatus.OK, updateUserResponse.getStatusCode());
-	//
-	// User userFromResponse = JsonUtils.fromJson(User.class,
-	// updateUserResponse.getBody());
-	//
-	// assertEquals("newSurname", userFromResponse.getSurname());
-	//
-	// userDao.delete(user);
-	// }
-	//
-	// @Test
-	// public void deleteUser() throws InvalidKeyException,
-	// NoSuchAlgorithmException, IllegalStateException, SignatureException,
-	// IOException, JWTVerifyException {
-	//
-	// User user = new User();
-	// userDao.save(user);
-	// Long userId = user.getId();
-	//
-	// assertNotNull(userDao.get(userId));
-	//
-	// ResponseEntity<String> deleteUserResponse =
-	// usersController.deleteUser(request, userId);
-	// assertEquals(HttpStatus.UNAUTHORIZED,
-	// deleteUserResponse.getStatusCode());
-	//
-	// adminLogin();
-	// deleteUserResponse = usersController.deleteUser(request, userId);
-	// assertEquals(HttpStatus.OK, deleteUserResponse.getStatusCode());
-	//
-	// assertNull(userDao.get(userId));
-	//
-	// }
-	//
-	// private ResponseEntity<String> userLogout() {
-	// ResponseEntity<String> logoutResponse;
-	// logoutResponse = usersController.logout(request, response);
-	// LOGGER.info("Response is %s", logoutResponse.getBody());
-	// return logoutResponse;
-	// }
+	private String getContextResponse(HttpResponse response) {
+		StringWriter writer = new StringWriter();
+		try {
+			IOUtils.copy(response.getEntity().getContent(), writer, "UTF-8");
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return writer.toString();
+	}
 
-	// public void adminLogin() {
-	// User adminUser = new
-	// User().setLogin(DatabaseCreator.ADMIN_LOGIN).setPassword(DatabaseCreator.ADMIN_PASSWORD);
-	//
-	// ResponseEntity<String> adminResponse = usersController.login(request,
-	// JsonUtils.getJson(adminUser));
-	// LOGGER.info("Response is %s", adminResponse.getBody());
-	// assertEquals(HttpStatus.ACCEPTED, adminResponse.getStatusCode());
-	// }
-	//
-	// public void operatorLogin() {
-	// User adminUser = new User().setLogin(DatabaseCreator.OPERATOR_LOGIN)
-	// .setPassword(DatabaseCreator.OPERATOR_PASSWORD);
-	//
-	// ResponseEntity<String> adminResponse = usersController.login(request,
-	// JsonUtils.getJson(adminUser));
-	// LOGGER.info("Response is %s", adminResponse.getBody());
-	// assertEquals(HttpStatus.ACCEPTED, adminResponse.getStatusCode());
-	// }
 }

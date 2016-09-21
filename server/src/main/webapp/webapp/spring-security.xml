@@ -1,4 +1,5 @@
-<beans:beans xmlns="http://www.springframework.org/schema/security" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:sec="http://www.springframework.org/schema/security" xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="
       http://www.springframework.org/schema/security
@@ -6,30 +7,52 @@
       http://www.springframework.org/schema/beans
       http://www.springframework.org/schema/beans/spring-beans-4.1.xsd">
 
-	<!--<global-method-security pre-post-annotations="enabled"/> -->
+	<!-- <global-method-security pre-post-annotations="enabled"/> -->
 
-	<http auto-config="true" use-expressions="true" entry-point-ref="restAuthenticationEntryPoint">
-		<intercept-url pattern="/api/users/login" access="permitAll()" />
-		<intercept-url pattern="/api/**" access="hasAuthority('ADMIN')" />
-		<csrf disabled="true" />
-		<access-denied-handler ref="accessDeniedHandler" />
-	</http>
 
 	<beans:bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
 
+	<http pattern="/api/users/login" security="none" />
+
+
+	<!-- Security configuration for REST services. -->
+	<http pattern="/**" authentication-manager-ref="authenticationManager" 	entry-point-ref="restAuthenticationEntryPoint" create-session="stateless">
+
+		<intercept-url pattern="/api/users/create" access="hasAnyRole('ADMIN')" />
+		<intercept-url pattern="/api/users/all" access="hasAnyRole('ADMIN')" />
+		<intercept-url pattern="/api/users/update" access="hasAnyRole('ADMIN')" />
+		<intercept-url pattern="/api/users/remove/**" access="hasAnyRole('ADMIN')" />
+		<intercept-url pattern="/api/users/logout" access="isAuthenticated()" />
+
+		<intercept-url pattern="/**" access="hasRole('ADMIN')" />
+		<csrf disabled="true" />
+		<custom-filter ref="tokenAuthenticationFilter" before="PRE_AUTH_FILTER" />
+	</http>
+
+
+	<beans:bean id="restAuthenticationEntryPoint" class="com.mpsdevelopment.biopotential.server.security.RestAuthenticationEntryPoint" />
+
+	<!-- Security configuration for other resources. Use standart LOGIN FORM. -->
+	<!-- <http use-expressions="true" > -->
+	<!-- <intercept-url pattern="/api/users/login" access="none" /> -->
+	<!-- <intercept-url pattern="/api/users/test" access="hasRole('USER')" /> -->
+	<!-- <form-login login-processing-url="/api/users/login" -->
+	<!-- authentication-failure-url="/api/users/login;error=true" /> -->
+	<!-- <logout logout-success-url="/api/users/login?project=sample-project" 
+		/> -->
+	<!-- </http> -->
+
+
+	<!-- Authentication manager. -->
 	<authentication-manager alias="authenticationManager">
-		<authentication-provider user-service-ref="customUserDetailsService">
-			<password-encoder ref="passwordEncoder" />
-		</authentication-provider>
+		<authentication-provider user-service-ref='customUserDetailsService' />
 	</authentication-manager>
 
-	<beans:bean class="com.mpsdevelopment.biopotential.server.service.CustomUserDetailsService" id="customUserDetailsService" />
-	<beans:bean class="com.mpsdevelopment.biopotential.server.handler.RestAuthenticationEntryPoint" id="restAuthenticationEntryPoint" />
+
+	<beans:bean id="customUserDetailsService" class="com.mpsdevelopment.biopotential.server.service.CustomUserDetailsService" />
 
 	<beans:bean id="customUserDetailsServiceProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
-		<beans:property name="target">
-			<beans:bean class="com.mpsdevelopment.biopotential.server.service.CustomUserDetailsService" id="customUserDetailsService" />
-		</beans:property>
+		<beans:property name="target" ref="customUserDetailsService" />
 		<beans:property name="interceptorNames">
 			<beans:list>
 				<beans:value>annotationSessionAdviceBean</beans:value>
@@ -37,10 +60,11 @@
 		</beans:property>
 	</beans:bean>
 
-	<beans:bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" p:targetClass="org.springframework.security.core.context.SecurityContextHolder"
-		p:targetMethod="setStrategyName" p:arguments="MODE_INHERITABLETHREADLOCAL" />
 
-	<beans:bean id="accessDeniedHandler" class="com.mpsdevelopment.biopotential.server.handler.CustomAccessDeniedHandlerImpl" />
+	<beans:bean id="tokenAuthenticationManager" class="com.mpsdevelopment.biopotential.server.security.TokenAuthenticationManager" />
 
+	<beans:bean id="tokenAuthenticationFilter" class="com.mpsdevelopment.biopotential.server.security.TokenAuthenticationFilter">
+		<beans:property name="authenticationManager" ref="tokenAuthenticationManager" />
+	</beans:bean>
 
 </beans:beans>

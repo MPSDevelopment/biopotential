@@ -64,15 +64,15 @@ public class UsersControllerTest {
 	@Test
 	public void login() throws DaoException, InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException, IOException, JWTVerifyException {
 
-		ResponseEntity<String> emptyResponse = usersController.login(request, "{}");
+		ResponseEntity<String> emptyResponse = usersController.login(request, response, "{}", null);
 		assertEquals(HttpStatus.UNAUTHORIZED, emptyResponse.getStatusCode());
 
-		ResponseEntity<String> nullResponse = usersController.login(request, null);
+		ResponseEntity<String> nullResponse = usersController.login(request, null, null, null);
 		assertEquals(HttpStatus.BAD_REQUEST, nullResponse.getStatusCode());
 
 		User newUser = new User().setLogin("login").setPassword("password");
 
-		ResponseEntity<String> loginResponse = usersController.login(request, JsonUtils.getJson(newUser));
+		ResponseEntity<String> loginResponse = usersController.login(request, response, JsonUtils.getJson(newUser), null);
 		assertEquals(HttpStatus.UNAUTHORIZED, loginResponse.getStatusCode());
 
 		adminLogin();
@@ -84,7 +84,7 @@ public class UsersControllerTest {
 
 		User adminUser = new User().setLogin(DatabaseCreator.ADMIN_LOGIN).setPassword(DatabaseCreator.ADMIN_PASSWORD);
 
-		ResponseEntity<String> adminResponse = usersController.login(request, JsonUtils.getJson(adminUser));
+		ResponseEntity<String> adminResponse = usersController.login(request, response, JsonUtils.getJson(adminUser), null);
 		LOGGER.info("Response is %s", adminResponse.getBody());
 		assertEquals(HttpStatus.ACCEPTED, adminResponse.getStatusCode());
 
@@ -171,18 +171,18 @@ public class UsersControllerTest {
 		return logoutResponse;
 	}
 
-	public void adminLogin() {
+	public void adminLogin() throws InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException, IOException, JWTVerifyException {
 		User adminUser = new User().setLogin(DatabaseCreator.ADMIN_LOGIN).setPassword(DatabaseCreator.ADMIN_PASSWORD);
 
-		ResponseEntity<String> adminResponse = usersController.login(request, JsonUtils.getJson(adminUser));
+		ResponseEntity<String> adminResponse = usersController.login(request, response, JsonUtils.getJson(adminUser), null);
 		LOGGER.info("Response is %s", adminResponse.getBody());
 		assertEquals(HttpStatus.ACCEPTED, adminResponse.getStatusCode());
 	}
 	
-	public void operatorLogin() {
+	public void operatorLogin() throws InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException, IOException, JWTVerifyException {
 		User adminUser = new User().setLogin(DatabaseCreator.OPERATOR_LOGIN).setPassword(DatabaseCreator.OPERATOR_PASSWORD);
 
-		ResponseEntity<String> adminResponse = usersController.login(request, JsonUtils.getJson(adminUser));
+		ResponseEntity<String> adminResponse = usersController.login(request, response, JsonUtils.getJson(adminUser), null);
 		LOGGER.info("Response is %s", adminResponse.getBody());
 		assertEquals(HttpStatus.ACCEPTED, adminResponse.getStatusCode());
 	}

@@ -3,10 +3,6 @@ package com.mpsdevelopment.biopotential.server.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-
-import com.mpsdevelopment.biopotential.server.controller.UsersController;
-import com.mpsdevelopment.biopotential.server.db.PersistUtils;
 import com.mpsdevelopment.biopotential.server.db.SessionManager;
 import com.mpsdevelopment.biopotential.server.db.advice.Adviceable;
 import com.mpsdevelopment.biopotential.server.db.dao.UserDao;

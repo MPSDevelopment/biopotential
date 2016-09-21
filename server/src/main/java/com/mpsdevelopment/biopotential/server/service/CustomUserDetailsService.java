@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.mpsdevelopment.biopotential.server.db.advice.Adviceable;
 import com.mpsdevelopment.biopotential.server.db.dao.UserDao;
-import com.mpsdevelopment.biopotential.server.db.pojo.Role;
+import com.mpsdevelopment.biopotential.server.db.pojo.Token.Role;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -7,6 +7,7 @@ import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
@@ -14,18 +15,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
+import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.DispatcherServlet;
 
+import javax.servlet.DispatcherType;
 import javax.servlet.ServletException;
 import java.io.*;
 import java.net.URL;
+import java.util.EnumSet;
 
 public class JettyServer {
 
 	private static final Logger LOGGER = LoggerUtil.getLogger(JettyServer.class);
 
-	public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext(
-			"webapp/app-context.xml");
+	public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/app-context.xml");
 
 	public static XmlWebApplicationContext WEB_CONTEXT;
 
@@ -118,11 +121,8 @@ public class JettyServer {
 			mvcServletHolder.setInitParameter("useFileMappedBuffer", "false");
 			contextHandler.addServlet(mvcServletHolder, "/");
 
-			// // Add spring security
-//			contextHandler.addFilter(
-//					new FilterHolder(
-//							new DelegatingFilterProxy(AbstractSecurityWebApplicationInitializer.DEFAULT_FILTER_NAME)),
-//					"/*", EnumSet.allOf(DispatcherType.class));
+			// Add spring security
+			contextHandler.addFilter(new FilterHolder(new DelegatingFilterProxy("springSecurityFilterChain")), "/*", EnumSet.allOf(DispatcherType.class));
 
 			contextHandler.setResourceBase(getBaseUrl());
 

@@ -64,19 +64,18 @@ public class ProtectedApiSessionAdvice implements MethodInterceptor {
 	public Object invoke(MethodInvocation invocation) throws Throwable {
 		if (invocation.getMethod().isAnnotationPresent(ProtectedApi.class)) {
 			LOGGER.info("Method %s Invoked around aop method", invocation.getMethod().getName());
-//			if (invocation.getArguments()[0] instanceof HttpServletRequest) {
+			// if (invocation.getArguments()[0] instanceof HttpServletRequest) {
 
-				ResponseEntity<String> checkAuthorizationResponseEntity = securityUtils.checkAuthorization();
-				if (checkAuthorizationResponseEntity != null) {
-					return checkAuthorizationResponseEntity;
-				}
-				else {
-					return invocation.proceed();
-				}
-				
-//			} else {
-//				throw new IncorrectProtectedApiMethodException("There is no servlet request as a first parameter in method ", invocation.getMethod().getName());
-//			}
+			ResponseEntity<String> checkAuthorizationResponseEntity = securityUtils.checkAuthorization();
+			if (checkAuthorizationResponseEntity != null) {
+				return checkAuthorizationResponseEntity;
+			} else {
+				return invocation.proceed();
+			}
+
+			// } else {
+			// throw new IncorrectProtectedApiMethodException("There is no servlet request as a first parameter in method ", invocation.getMethod().getName());
+			// }
 		}
 		return invocation.proceed();
 	}

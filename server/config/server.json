@@ -2,5 +2,7 @@
   "host": "localhost",
   "port": 8098,
   "filesPath": "data/files",
-  "tempDirectory": "data/tmp/webapp"
+  "tempDirectory": "data/tmp/webapp",
+  "cookieHost": "",
+  "cookieMaxAge": 86400
 }

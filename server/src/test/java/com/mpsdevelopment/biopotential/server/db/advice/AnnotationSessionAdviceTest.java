@@ -1,5 +1,10 @@
 package com.mpsdevelopment.biopotential.server.db.advice;
 
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +16,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.auth0.jwt.JWTVerifyException;
 import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
 import com.mpsdevelopment.biopotential.server.controller.UsersController;
 import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
@@ -39,9 +45,9 @@ public class AnnotationSessionAdviceTest {
 	}
 
 	@Test
-	public void checkAnnotation() {
+	public void checkAnnotation() throws InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException, IOException, JWTVerifyException {
 		User adminUser = new User().setLogin(DatabaseCreator.ADMIN_LOGIN).setPassword(DatabaseCreator.ADMIN_PASSWORD);
-		usersController.login(request, JsonUtils.getJson(adminUser));
+		usersController.login(request, null, JsonUtils.getJson(adminUser), null);
 		
 		sessionManager.printStatistics();
 	}

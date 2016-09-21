@@ -29,11 +29,9 @@ public class SecurityUtils {
 			String role = authenticateInSpringSecurityInner(user, session);
 			LOGGER.info(String.format("User %s has been logged in. with role = %s", user.getLogin(), role));
 		} catch (UsernameNotFoundException e) {
-			return new ResponseEntity<>(String.format("No user with login(%s)", user.getLogin()), null,
-					HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>(String.format("No user with login(%s)", user.getLogin()), null, HttpStatus.UNAUTHORIZED);
 		} catch (BadCredentialsException e) {
-			return new ResponseEntity<>(String.format("Incorrect login(%s)/password", user.getLogin()), null,
-					HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>(String.format("Incorrect login(%s)/password", user.getLogin()), null, HttpStatus.UNAUTHORIZED);
 		} catch (NullPointerException e) {
 			return new ResponseEntity<>("User is empty", null, HttpStatus.BAD_REQUEST);
 		}
@@ -48,8 +46,7 @@ public class SecurityUtils {
 				throw new NullPointerException("User is null");
 			}
 
-			UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(user.getLogin(),
-					user.getPassword());
+			UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(user.getLogin(), user.getPassword());
 
 			// Authenticate the user
 			authentication = authenticationManager.authenticate(authRequest);
@@ -59,9 +56,7 @@ public class SecurityUtils {
 
 		SecurityContext securityContext = SecurityContextHolder.getContext();
 		securityContext.setAuthentication(authentication);
-		
-		
-		
+
 		// Create a new session and add the security context.
 		// session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
 		return authentication.getAuthorities().iterator().next().toString();
@@ -74,17 +69,14 @@ public class SecurityUtils {
 			if (authentication == null) {
 				return new ResponseEntity<>("Not authorized", null, HttpStatus.UNAUTHORIZED);
 			}
-			
+
 			String role = authentication.getAuthorities().iterator().next().toString();
-			
+
 			LOGGER.info("Role is %s", role);
 		} catch (UsernameNotFoundException e) {
-			return new ResponseEntity<>(
-					String.format("No user with login(%s)", authentication == null ? null : authentication.getName()),
-					null, HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>(String.format("No user with login(%s)", authentication == null ? null : authentication.getName()), null, HttpStatus.UNAUTHORIZED);
 		} catch (BadCredentialsException e) {
-			return new ResponseEntity<>(String.format("Incorrect login(%s)/password",
-					authentication == null ? null : authentication.getName()), null, HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>(String.format("Incorrect login(%s)/password", authentication == null ? null : authentication.getName()), null, HttpStatus.UNAUTHORIZED);
 		} catch (NullPointerException e) {
 			return new ResponseEntity<String>("User is empty", null, HttpStatus.BAD_REQUEST);
 		}
