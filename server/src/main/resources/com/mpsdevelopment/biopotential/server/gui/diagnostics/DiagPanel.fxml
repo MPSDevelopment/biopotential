@@ -80,10 +80,10 @@
       <Label layoutX="44.0" layoutY="58.0" text="Логин/Пседоним" />
       <LineChart fx:id="numberLineChart" layoutX="33.0" layoutY="377.0" prefHeight="327.0" prefWidth="968.0">
         <xAxis>
-          <NumberAxis side="BOTTOM" upperBound="0.0" />
+          <NumberAxis side="BOTTOM" />
         </xAxis>
         <yAxis>
-          <NumberAxis side="LEFT" upperBound="0.0" />
+          <NumberAxis side="LEFT" />
         </yAxis>
       </LineChart>
       <Label layoutX="751.0" layoutY="33.0" text="История" />

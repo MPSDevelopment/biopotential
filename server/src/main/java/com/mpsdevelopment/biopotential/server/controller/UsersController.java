@@ -86,7 +86,7 @@ public class UsersController {
             BeanUtils.copyProperties(user, oldUser);
 			userDao.saveOrUpdate(oldUser);
 
-            LOGGER.info("User changed - Id %s", user.getId());
+            LOGGER.info("User changed - Id %s Gender %s", user.getId(), user.getGender());
 			return new ResponseEntity<String>(JsonUtils.getJson("User with such login already exist"), null, HttpStatus.CONFLICT);
 		}
 		else {
@@ -144,6 +144,11 @@ public class UsersController {
     public ResponseEntity<String> getAllUsers() throws ParseException {
         List<User> users = userDao.getUsers(null, null);
         LOGGER.info("Has been loaded '%s' users", users.size());
+		for (User user : users) {
+
+			LOGGER.info("User changed - Id %s Gender %s", user.getId(), user.getGender());
+			}
+
         return new ResponseEntity<>(JsonUtils.getJson(users),
                 null, HttpStatus.OK);
     }

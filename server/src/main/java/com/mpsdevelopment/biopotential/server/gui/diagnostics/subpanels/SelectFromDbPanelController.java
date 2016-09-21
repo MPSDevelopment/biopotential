@@ -97,8 +97,9 @@ public class SelectFromDbPanelController extends AbstractController implements S
         selectUserButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
-                LOGGER.info("  ACTION SAVE METEO");
+                LOGGER.info(" User selected");
                     EventBus.publishEvent(new SelectUserEvent(selectedId));
+//                usersData.clear();
                     close();
                 }
         });
@@ -108,7 +109,7 @@ public class SelectFromDbPanelController extends AbstractController implements S
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<User, String> user) {
                 SimpleStringProperty property = new SimpleStringProperty();
-                property.setValue(String.format("%-2s %10s %10s", user.getValue().getName(), user.getValue().getSurname(), user.getValue().getPatronymic()));
+                property.setValue(String.format("%s %s %s",  user.getValue().getSurname(), user.getValue().getName(), user.getValue().getPatronymic()));
                 return property;
             }
         });
@@ -189,8 +190,9 @@ public class SelectFromDbPanelController extends AbstractController implements S
         usersData.clear();
         for (User unit : users) {
 
-            LOGGER.info("User - %s", unit.getLogin() +unit.getName() +" " +unit.getSurname());
+//            LOGGER.info("User - %s", unit.getLogin() +unit.getName() +" " +unit.getSurname() + unit.getGender());
             usersData.add(unit);
+
         }
     }
     public void updatePanel(Stage primaryStage) {

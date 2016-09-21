@@ -165,6 +165,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
     private Stage primaryStage;
     private User user = new User();
     public static final int RATE = 16;
+    private String gender = null;
 
     public DiagPanelController() {
 
@@ -221,6 +222,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
                     Date res = Date.from(instant);
                     user.setBornDate(res);
                 }
+                user.setGender(gender);
 
                 String body = JsonUtils.getJson(user);
                 deviceBioHttpClient.executePutRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_PUT_CREATE_USER, body);
@@ -253,7 +255,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
         selectFromDbButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                LOGGER.info("  ACTION EDIT METEO in  Scenario");
+                LOGGER.info("  Open SelectedFromDBPanel");
                 SelectFromDbPanel panel = new SelectFromDbPanel();
                 Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Выбрать из бд").setClazz(panel.getClass()).setHeight(500d).setWidth(650d).setHeightPanel(450d).setWidthPanel(650d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
                 panel.setPrimaryStage(stage);
@@ -318,11 +320,12 @@ public class DiagPanelController extends AbstractController implements Subscriba
         genderGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
             public void changed(ObservableValue<? extends Toggle> ov,
                                 Toggle old_toggle, Toggle new_toggle) {
-                if ((genderGroup.getSelectedToggle() != null) || (user != null)) {
+                if (genderGroup.getSelectedToggle() != null) {
                     if(genderGroup.getSelectedToggle().getUserData().toString().equals("M")) {
-                        user.setGender(String.valueOf(User.Gender.Man));
+                        gender = String.valueOf(User.Gender.Man);
+//                        user.setGender(String.valueOf(User.Gender.Man));
                     }
-                    else user.setGender(String.valueOf(User.Gender.Woman));
+                    else /*user.setGender(String.valueOf(User.Gender.Woman));*/gender = String.valueOf(User.Gender.Woman);
                 }
             }
         });
@@ -485,7 +488,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
     // handler for selected user from db
     @Handler
     public void handleMessage(SelectUserEvent event) throws Exception {
-        LOGGER.info("  GOT Updated Training Meteo or Scenario parameters ");
+        LOGGER.info("  GOT selected user from db table ");
         refreshTable(event.getUser());
     }
 
@@ -495,7 +498,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
             public void run() {
                 try {
                     setUser(selectedUser);
-                    getUser().setId(selectedUser.getId());
+//                    getUser().setId(selectedUser.getId());
                     LOGGER.info("User - Id %s", user.getId());
                     loginField.setText(selectedUser.getLogin());
                     surnameField.setText(selectedUser.getSurname());
@@ -504,22 +507,22 @@ public class DiagPanelController extends AbstractController implements Subscriba
                     telField.setText(selectedUser.getTel());
                     emailField.setText(selectedUser.getEmail());
                     bornField.setText(selectedUser.getBornPlace());
-                    dateField.setText(String.valueOf(selectedUser.getBornDate().getDate()));
-                    if (selectedUser.getBornDate().getMonth() < 10) {
-                        monthField.setText(String.valueOf("0" + String.valueOf(selectedUser.getBornDate().getMonth() + 1)));
+                    if (selectedUser.getBornDate() != null) {
+                        dateField.setText(String.valueOf(selectedUser.getBornDate().getDate()));
+                        if (selectedUser.getBornDate().getMonth() < 10) {
+                            monthField.setText(String.valueOf("0" + String.valueOf(selectedUser.getBornDate().getMonth() + 1)));
+                        }
+                        yearField.setText(String.valueOf(selectedUser.getBornDate().getYear() + 1900));
                     }
-                    yearField.setText(String.valueOf(selectedUser.getBornDate().getYear() + 1900));
-                    if (selectedUser.getGender().equals("Man")) {
+                    if (getUser().getGender().equals("Man")) {
                         manRadioButton.setSelected(true);
-                        womanRadioButton.setSelected(false);
                     }
                     else {
-                        manRadioButton.setSelected(false);
                         womanRadioButton.setSelected(true);
                     }
                 }
                 catch (NullPointerException e) {
-                    System.out.println("Date is null");
+                    System.out.println("BornDate is null");
                 }
 
             }

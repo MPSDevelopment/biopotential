@@ -55,9 +55,8 @@ public class DatabaseCreator {
 	private ResultSet patternsFolders;
 
 	public void initialization() throws IOException, URISyntaxException, DaoException {
-		createUserIfNotExists(new User().setLogin(ADMIN_LOGIN).setPassword(passwordEncoder.encode(ADMIN_PASSWORD))
-				.setRole(Role.ADMIN.name()));
-		createUserIfNotExists(new User().setLogin(OPERATOR_LOGIN).setPassword(passwordEncoder.encode(OPERATOR_PASSWORD))
+		createUserIfNotExists(new User().setLogin(ADMIN_LOGIN).setPassword(passwordEncoder.encode(ADMIN_PASSWORD)).setSurname("Медков").setName("Игорь").setPatronymic("Владимирович").setTel("0982359090").setEmail("igor@ukr.net").setGender("Man").setRole(Role.ADMIN.name()));
+		createUserIfNotExists(new User().setLogin(OPERATOR_LOGIN).setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Медков").setName("Денис").setPatronymic("Игоревич").setTel("0678940934").setEmail("denis@ukr.net").setGender("Man")
 				.setRole(Role.OPERATOR.name()));
 	}
 
@@ -160,32 +159,44 @@ public class DatabaseCreator {
                 patternsFoldersDao.save(patternsFolderses);
 
             }
+
             List<Folders> folderList = foldersDao.findAll();
             List<Patterns> patternsList = patternsDao.findAll();
+            Long bacId = 0L;
+            Long mucId = 0L;
+            Long virId = 0L;
+            for (Folders folders : folderList) {
+                if (folders.getFolderName().contains("BAC")) bacId = folders.getId();
+                if (folders.getFolderName().contains("Muc")) mucId = folders.getId();
+                if (folders.getFolderName().contains("VIR")) virId = folders.getId();
+
+            }
 
             for (Patterns patterns: patternsList) {
 
                 for (Folders folders : folderList) {
 
-                    if ((patterns.getPatternName().contains("BAC ") && (folders.getIdFolder() == 2483)) ||
-                            (patterns.getPatternName().contains("Muc ") && (folders.getIdFolder() == 959)) ||
-                            (patterns.getPatternName().contains("VIR ") && (folders.getIdFolder() == 490))) {
+                    if  (folders.getIdFolder() == 4328) {
 
                         patternsFolderses = new PatternsFolderses();
                         patternsFolderses.setFolders(folders);
                         patternsFolderses.setPatterns(patterns);
-                        patternsFolderses.setCorrectors(folders.getId());
+                        if (patterns.getPatternName().contains("BAC ")) patternsFolderses.setCorrectors(bacId);
+                        else if (patterns.getPatternName().contains("Muc ")) patternsFolderses.setCorrectors(mucId);
+                            else if (patterns.getPatternName().contains("VIR ")) patternsFolderses.setCorrectors(virId);
 
-                        patternsFolderses.getFolders().getPatternseFolderses().add(patternsFolderses);
-                        patternsFolderses.getPatterns().getPatternseFolderses().add(patternsFolderses);
-
-                        patternsFoldersDao.save(patternsFolderses);
                     }
 
+                }
+
+                patternsFolderses.getFolders().getPatternseFolderses().add(patternsFolderses);
+                patternsFolderses.getPatterns().getPatternseFolderses().add(patternsFolderses);
+
+                patternsFoldersDao.save(patternsFolderses);
             }
-            }
+
             LOGGER.info("End");
-           /*
+            /*
             folders = foldersDao.getById(4328);
             LOGGER.info("Flora dissection size %s", folders.getPatterns().size());
             folders = foldersDao.getById(2483);

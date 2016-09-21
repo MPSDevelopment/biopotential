@@ -1,5 +1,7 @@
 package com.mpsdevelopment.biopotential.server.db.dao;
 
+import com.mpsdevelopment.biopotential.server.controller.UsersController;
+import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -9,6 +11,8 @@ import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import java.util.List;
 
 public class UserDao extends GenericDao<User, Long> {
+    private static final com.mpsdevelopment.plasticine.commons.logging.Logger LOGGER = LoggerUtil.getLogger(UserDao.class);
+
 
     public User getByLogin(String value) {
         Criteria query = getSession().createCriteria(User.class).setCacheable(false);
@@ -37,6 +41,12 @@ public class UserDao extends GenericDao<User, Long> {
         if (pageSize != null) {
             query.setMaxResults(pageSize);
         }
-        return query.list();
+        List<User> tempUser= query.list();
+        for (User user: tempUser) {
+            LOGGER.info("User from query list %s %s", user.getName(),user.getGender());
+
+        }
+//        return query.list();
+        return tempUser;
     }
 }

@@ -42,8 +42,6 @@ public class User extends BaseObject {
     public static final String BORNDATE_FIELD = "bornDate";
     public static final String BORNDATE_FIELD_GS = "bd";
 
-
-
     public enum Gender{
         Man,
         Woman
@@ -233,16 +231,18 @@ public class User extends BaseObject {
         return tel;
     }
 
-    public void setTel(String tel) {
+    public User setTel(String tel) {
         this.tel = tel;
+        return this;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public User setEmail(String email) {
         this.email = email;
+        return this;
     }
 
     public String getBornPlace() {
@@ -265,8 +265,9 @@ public class User extends BaseObject {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public User setGender(String gender) {
         this.gender = gender;
+        return this;
     }
 
     public List<Visit> getVisits() {
