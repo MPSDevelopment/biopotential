@@ -36,11 +36,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static javassist.util.proxy.FactoryHelper.dataSize;
+
 public class SelectFromDbPanelController extends AbstractController implements Subscribable {
 
     private Stage primaryStage;
     StackPane tablePane;
-    private final static int dataSize = 100;
+    private /*final*/ static int dataSize = 10;
     private final static int rowsPerPage = 10;
     private User[] users;
 
@@ -99,7 +101,6 @@ public class SelectFromDbPanelController extends AbstractController implements S
             public void handle(ActionEvent t) {
                 LOGGER.info(" User selected");
                     EventBus.publishEvent(new SelectUserEvent(selectedId));
-//                usersData.clear();
                     close();
                 }
         });
@@ -132,6 +133,10 @@ public class SelectFromDbPanelController extends AbstractController implements S
                             int toIndex = Math.min(fromIndex + rowsPerPage, dataSize);
 
                             List<User> loadedList = loadData(fromIndex, toIndex);
+                            /*if (loadedList.size() > dataSize) {
+                                dataSize=+10;
+
+                            }*/
 
                             Platform.runLater(new Runnable() {
                                 @Override
@@ -173,7 +178,7 @@ public class SelectFromDbPanelController extends AbstractController implements S
     private List<User> loadData(int fromIndex, int toIndex) {
         List<User> list = new ArrayList<>();
         try {
-            for (int i = fromIndex; i < users.length; i++) {
+            for (int i = fromIndex; i < toIndex; i++) {
                 list.add(users[i]);
             }
             Thread.sleep(500);

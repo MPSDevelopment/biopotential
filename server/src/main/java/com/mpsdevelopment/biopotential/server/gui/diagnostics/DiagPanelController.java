@@ -30,10 +30,13 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.PointLight;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -160,6 +163,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
     @FXML
     private LineChart<Number, Number> numberLineChart;
 
+
     private User[] users;
     private Visit[] visits;
     private Stage primaryStage;
@@ -180,7 +184,6 @@ public class DiagPanelController extends AbstractController implements Subscriba
 
         // subscribe for events
         EventBus.subscribe(this);
-
         // set togglegroup
         manRadioButton.setToggleGroup(genderGroup);
         manRadioButton.setUserData("M");
@@ -266,16 +269,17 @@ public class DiagPanelController extends AbstractController implements Subscriba
         deleteButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                ObservableList<User> usersData = getUserList();
+                /*ObservableList<User> usersData = getUserList();
                 Long Id = null;
                 for (User tempUsersData: usersData) {
                     if (tempUsersData.getSurname() != null && tempUsersData.getSurname().equals(surnameField.getText())) {
                         Id = tempUsersData.getId();
                     }
-                }
+                }*/
 
-                LOGGER.info("%s", ControllerAPI.USER_CONTROLLER + "/remove/" + String.valueOf(Id));
-                deviceBioHttpClient.executeDeleteRequest(ControllerAPI.USER_CONTROLLER + "/remove/" + String.valueOf(Id));
+                LOGGER.info("%s", ControllerAPI.USER_CONTROLLER + "/remove/" + String.valueOf(getUser().getId()));
+                deviceBioHttpClient.executeDeleteRequest(ControllerAPI.USER_CONTROLLER + "/remove/" + String.valueOf(getUser().getId()));
+                clearFields();
             }
         });
 
@@ -390,7 +394,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
         });
 
 //        getUsers();
-
+        // "Автомат" button
         automaticButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -411,6 +415,22 @@ public class DiagPanelController extends AbstractController implements Subscriba
 
             }
         });
+
+    }
+
+    private void clearFields() {
+        login.setValue("");
+        surname.setValue("");
+        name.setValue("");
+        patronymic.setValue("");
+        tel.setValue("");
+        email.setValue("");
+        born.setValue("");
+        dateField.setText("");
+        monthField.setText("");
+        yearField.setText("");
+        manRadioButton.setSelected(false);
+        womanRadioButton.setSelected(false);
 
     }
 

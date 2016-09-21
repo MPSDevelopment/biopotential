@@ -232,7 +232,8 @@ public class BioHttpClient {
     }
 
     public String executeDeleteRequest(String uri) {
-        HttpDelete request = new HttpDelete(uri);
+        String url = String.format("%s%s", mainUrl, uri);
+        HttpDelete request = new HttpDelete(url);
         String json = null;
         HttpResponse response;
         try {

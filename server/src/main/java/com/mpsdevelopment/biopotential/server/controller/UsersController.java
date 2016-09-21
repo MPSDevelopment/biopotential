@@ -128,10 +128,10 @@ public class UsersController {
 
 		User user = userDao.get(id);
 
-		ResponseEntity<String> response = securityUtils.authenticateInSpringSecurity(user, request.getSession());
+		/*ResponseEntity<String> response = securityUtils.authenticateInSpringSecurity(user, request.getSession());
 		if (response != null) {
 			return response;
-		}
+		}*/
 
 		userDao.delete(user);
 
