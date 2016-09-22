@@ -2,11 +2,13 @@ package com.mpsdevelopment.biopotential.server.gui.diagnostics;
 
 import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
+import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.biopotential.server.db.pojo.Visit;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.SelectUserEvent;
+import com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.AutomaticsPanel;
 import com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.SelectFromDbPanel;
 import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
@@ -177,6 +179,10 @@ public class DiagPanelController extends AbstractController implements Subscriba
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        User admin = new User().setLogin(DatabaseCreator.ADMIN_LOGIN).setPassword(DatabaseCreator.ADMIN_PASSWORD);
+        String loginbody = JsonUtils.getJson(admin);
+
+        deviceBioHttpClient.executePostRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_LOGIN, loginbody);
         // change localization to russian
         Locale dLocale = new Locale.Builder().setLanguage("ru").setScript("Cyrl").build();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", dLocale);
@@ -228,6 +234,8 @@ public class DiagPanelController extends AbstractController implements Subscriba
                 user.setGender(gender);
 
                 String body = JsonUtils.getJson(user);
+
+
                 deviceBioHttpClient.executePutRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_PUT_CREATE_USER, body);
                 getUsers();
             }
@@ -243,6 +251,10 @@ public class DiagPanelController extends AbstractController implements Subscriba
                 visits = JsonUtils.fromJson(Visit[].class, json);
                 historyUsersData.clear();
                 for (Visit visit : visits) {
+                    if(loginField.getText() == null) {
+                        loginField.setFocusTraversable(true); // нужно сделать подсветку поля через CSS
+                    }
+                    else
                     if(visit.getUser().getName().equals(nameField.getText())) {
                         LOGGER.info("User - %s", visit.getUser().getName());
                         historyUsersData.add(visit);
@@ -362,7 +374,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Visit, String> visit) {
                 SimpleStringProperty property = new SimpleStringProperty();
-                String day,month = null;
+                /*String day,month = null;
                 Long time;
                 try {
                     if (visit.getValue().getDate().getDate() < 10) {
@@ -372,23 +384,15 @@ public class DiagPanelController extends AbstractController implements Subscriba
                     if (visit.getValue().getDate().getMonth() < 10) {
                         month = (String.valueOf("0" + String.valueOf(visit.getValue().getDate().getMonth() + 1)));
                     } else
-                        month = String.valueOf(String.valueOf(visit.getValue().getDate().getMonth() + 1));
+                        month = String.valueOf(String.valueOf(visit.getValue().getDate().getMonth() + 1));*/
 
-//                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy:HH:mm:SS");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy HH:mm:SS");
 
-//                    Date date = new Date();
-//                    System.out.println(dateFormat.format(date)); //2013/10/15 16:16:39
-
-                /*Date tempdate = visit.getValue().getDate();
-                Instant instant = Instant.ofEpochMilli(tempdate.getDate());
-                LocalDate res = LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toLocalDate();*/
-//                    property.setValue(String.format("%s-%s-%s", day, month , visit.getValue().getDate().getYear() + 1900));
                     property.setValue(String.format("%s", dateFormat.format(visit.getValue().getDate())));
 
-                } catch (NullPointerException e){
+                /*} catch (NullPointerException e){
 
-                }
+                }*/
                 return property;
             }
         });
@@ -398,14 +402,18 @@ public class DiagPanelController extends AbstractController implements Subscriba
         automaticButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                // open automatics panel
+                AutomaticsPanel panel = new AutomaticsPanel();
+                Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Автомат").setClazz(panel.getClass()).setHeight(250d).setWidth(300d).setHeightPanel(200d).setWidthPanel(300d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+                panel.setPrimaryStage(stage);
+
                 Visit visit = new Visit();
-
                 LOGGER.info("User automatics - Id %s", user.getId());
-
                 visit.setUser(getUser());
 
                 Date date = new Date();
                 visit.setDate(date);
+
 
                 getUser().getVisits().add(visit);
 

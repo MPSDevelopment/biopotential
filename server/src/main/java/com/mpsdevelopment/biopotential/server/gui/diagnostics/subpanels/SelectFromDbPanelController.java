@@ -2,6 +2,7 @@ package com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels;
 
 import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
+import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
@@ -84,11 +85,11 @@ public class SelectFromDbPanelController extends AbstractController implements S
     public void initialize(URL location, ResourceBundle resources) {
         tablePane = new StackPane();
         getUsers();
-
+        size = users.length;
         // заполняем таблицу данными
         tableUsers.setItems(usersData);
         size = users.length;
-        Pagination pagination = new Pagination((dataSize / rowsPerPage + 1), 0);
+        Pagination pagination = new Pagination((size / rowsPerPage + 1), 0);
         progressIndicator.setMaxSize(200, 200);
 
         // wrap table and progress indicator into a stackpane, progress indicator is on top of table
@@ -129,7 +130,7 @@ public class SelectFromDbPanelController extends AbstractController implements S
                     public void run() {
                         try {
                             int fromIndex = pageIndex * rowsPerPage;
-                            int toIndex = Math.min(fromIndex + rowsPerPage, dataSize);
+                            int toIndex = Math.min(size, dataSize*(pageIndex+1));
 
                             List<User> loadedList = loadData(fromIndex, toIndex);
                             /*if (loadedList.size() > dataSize) {
@@ -193,12 +194,12 @@ public class SelectFromDbPanelController extends AbstractController implements S
         users = JsonUtils.fromJson(User[].class, json);
         usersData.clear();
 
-        /*User[] arr = new User[users.length];
-        Arrays.sort(arr, new Comparator<User>() {
+        // sort all users by name
+        Arrays.sort(users, new Comparator<User>() {
             public int compare(User o1, User o2) {
-                return o1.toString().compareTo(o2.toString());
+                return o1.getSurname().toString().compareTo(o2.getSurname().toString());
             }
-        });*/
+        });
 
         for (User unit : users) {
 

@@ -1,7 +1,14 @@
 package com.mpsdevelopment.biopotential.server.httpclient;
 
+import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
+import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
@@ -19,9 +26,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -34,6 +43,9 @@ import java.util.Map;
 @ComponentScan
 @EnableAutoConfiguration
 public class BioHttpClient {
+
+    @Autowired
+    private ServerSettings serverSettings;
 
     private static final Logger LOGGER = LoggerUtil.getLogger(BioHttpClient.class);
 
@@ -271,4 +283,17 @@ public class BioHttpClient {
         }
         return answer;
     }
+
+    /*private HttpStatus postObject(String url, Object object) throws URIException, UnsupportedEncodingException, IOException, HttpException {
+        String fullUrl = String.format("http://%s:%s%s", serverSettings.getHost(), serverSettings.getPort(), url);
+        LOGGER.info("Full url is %s", fullUrl);
+        PostMethod method = new PostMethod();
+        method.setURI(new URI(fullUrl, false, ENCODING_NAME));
+        method.setRequestEntity(new StringRequestEntity(JsonUtils.getJson(object), CONTENT_TYPE_NAME, ENCODING_NAME));
+        try {
+            return HttpStatus.valueOf(httpClient.executeMethod(method));
+        } finally {
+            method.releaseConnection();
+        }
+    }*/
 }

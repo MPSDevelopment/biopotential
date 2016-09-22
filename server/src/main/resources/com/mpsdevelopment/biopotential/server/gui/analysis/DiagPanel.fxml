@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="727.0" prefWidth="1034.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mpsdevelopment.biopotential.server.gui.diagnostics.DiagPanelController">
+   <children>
+      <AnchorPane />
+      <TableView fx:id="historyTableUsers" layoutX="27.0" layoutY="25.0" prefHeight="678.0" prefWidth="503.0">
+         <placeholder>
+            <Label text="Нет данных для отображения" />
+         </placeholder>
+         <columns>
+            <TableColumn fx:id="historyNameColumn" prefWidth="63.0" text="Номер" />
+            <TableColumn fx:id="dateColumn" minWidth="0.0" prefWidth="109.0" text="Название" />
+            <TableColumn fx:id="patricColumn1" prefWidth="75.0" text="Группа" />
+            <TableColumn fx:id="historyNameColumn1" prefWidth="79.0" text="Система" />
+            <TableColumn fx:id="dateColumn1" minWidth="0.0" prefWidth="84.0" text="Дисперсия" />
+            <TableColumn fx:id="patricColumn11" prefWidth="92.0" text="Уровень" />
+         </columns>
+      </TableView>
+      <TableView layoutX="562.0" layoutY="410.0" prefHeight="291.0" prefWidth="228.0">
+        <columns>
+          <TableColumn prefWidth="75.0" text="Номер" />
+          <TableColumn prefWidth="75.0" text="Система" />
+            <TableColumn prefWidth="75.0" text="Уровень" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>
