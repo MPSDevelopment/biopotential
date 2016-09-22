@@ -3,7 +3,6 @@ package com.mpsdevelopment.biopotential.server.db;
 import com.mps.machine.dbs.arkdb.ArkDBException;
 import com.mpsdevelopment.biopotential.server.db.dao.*;
 import com.mpsdevelopment.biopotential.server.db.pojo.*;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -26,15 +25,15 @@ public class DatabaseCreator {
 
 	public static final String ADMIN_PASSWORD = "234sgfweyewsgsf";
 
-	public static final String ADMIN = "ADMIN";
-
 	public static final String OPERATOR_LOGIN = "operator";
 
 	public static final String OPERATOR_PASSWORD = "234sgfwesgsf";
 
+	public static final String ADMIN = "ADMIN";
+
 	public static final String OPERATOR = "OPERATOR";
 
-	public static final String USER = "USER";
+ 	public static final String USER = "USER";
 
 	@Autowired
 	private UserDao userDao;
@@ -62,6 +61,23 @@ public class DatabaseCreator {
 	public void initialization() throws IOException, URISyntaxException, DaoException {
 		createUserIfNotExists(new User().setLogin(ADMIN_LOGIN).setPassword(passwordEncoder.encode(ADMIN_PASSWORD)).setSurname("Медков").setName("Игорь").setPatronymic("Владимирович").setTel("0982359090").setEmail("igor@ukr.net").setGender("Man").setRole(Token.Role.ADMIN.name()));
 		createUserIfNotExists(new User().setLogin(OPERATOR_LOGIN).setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Медков").setName("Денис").setPatronymic("Игоревич").setTel("0678940934").setEmail("denis@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+		createUserIfNotExists(new User().setLogin("YavorD").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Яворский").setName("Дмитрий").setPatronymic("Константинович").setTel("0675676511").setEmail("yd@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+		createUserIfNotExists(new User().setLogin("YavorL").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Яворский").setName("Алексей").setPatronymic("Константинович").setTel("0665940934").setEmail("yl@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+		createUserIfNotExists(new User().setLogin("aurusd").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Назаренко").setName("Дмитрий").setPatronymic("Владимирович").setTel("0936578944").setEmail("rebrov@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+		createUserIfNotExists(new User().setLogin("Zep").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Цепляев").setName("Игорь").setPatronymic("Игоревич").setTel("0634445566").setEmail("zep@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+		createUserIfNotExists(new User().setLogin("Vova").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Вовненко").setName("Сергей").setPatronymic("Сергеевич").setTel("0958899001").setEmail("sv@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+		createUserIfNotExists(new User().setLogin("Serg").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Войтюк").setName("Сергей").setPatronymic("Денисович").setTel("0687217645").setEmail("voytyk@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+		createUserIfNotExists(new User().setLogin("pete").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Жирков").setName("Петр").setPatronymic("Петрович").setTel("0992164589").setEmail("zhirkov@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+		createUserIfNotExists(new User().setLogin("Vita").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Барановский").setName("Виталий").setPatronymic("Витальевич").setTel("066758491").setEmail("server@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+		createUserIfNotExists(new User().setLogin("Ivan").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Медяков").setName("Иван").setPatronymic("Григорьевич").setTel("0951237890").setEmail("med@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+		createUserIfNotExists(new User().setLogin("sheva").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Шевченко").setName("Андрей").setPatronymic("Николаевич").setTel("0509872674").setEmail("shev@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+		createUserIfNotExists(new User().setLogin("sheva").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Федченко").setName("Андрей").setPatronymic("Петрович").setTel("0959872674").setEmail("fed@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+		createUserIfNotExists(new User().setLogin("sheva").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Рей").setName("Антон").setPatronymic("Федорович").setTel("0506677453").setEmail("ray@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+		createUserIfNotExists(new User().setLogin("sheva").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Гудзь").setName("Даниил").setPatronymic("Олегович").setTel("09365489234").setEmail("gudz@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+		createUserIfNotExists(new User().setLogin("sheva").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Баленко").setName("Алексей").setPatronymic("Алексеевич").setTel("0632587496").setEmail("bal@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+		createUserIfNotExists(new User().setLogin("sheva").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Черныш").setName("Слава").setPatronymic("Владимирович").setTel("0662589641").setEmail("slava@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+		createUserIfNotExists(new User().setLogin("sheva").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Ютужанин").setName("Алексей").setPatronymic("Алексеевич").setTel("0507895214").setEmail("yut@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+		createUserIfNotExists(new User().setLogin("sheva").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Шульга").setName("Ростислав").setPatronymic("Павлович").setTel("09867546124").setEmail("shul@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
 	}
 
 	public User createUserIfNotExists(User user) {
@@ -86,6 +102,7 @@ public class DatabaseCreator {
 			this.patternsDb = this.db.createStatement().executeQuery("SELECT * FROM patterns");
 			this.patternsFolders = this.db.createStatement().executeQuery("SELECT * FROM link_patterns_to_folders");
 
+
 		} catch (SQLException e) {
 			throw new ArkDBException("SQLException: " + e.getMessage());
 		}
@@ -100,7 +117,14 @@ public class DatabaseCreator {
 
 				folders = foldersDao.getById(foldersDb.getInt("id_folder"));
 				if (folders == null) {
-					folders = (Folders) new Folders().setIdFolder(foldersDb.getInt("id_folder")).setFolderName(foldersDb.getString("parent_folder_id")).setFolderName(foldersDb.getString("folder_name")).setFolderDescription(foldersDb.getString("folder_description")).setDbdtsAdded(foldersDb.getString("dbdts_added")).setSortPriority(foldersDb.getString("sort_priority")).setIsInUse(foldersDb.getInt("is_in_use")).setFolderType(foldersDb.getString("folder_type"));
+					folders = (Folders) new Folders().setIdFolder(foldersDb.getInt("id_folder"))
+							.setFolderName(foldersDb.getString("parent_folder_id"))
+							.setFolderName(foldersDb.getString("folder_name"))
+							.setFolderDescription(foldersDb.getString("folder_description"))
+							.setDbdtsAdded(foldersDb.getString("dbdts_added"))
+							.setSortPriority(foldersDb.getString("sort_priority"))
+							.setIsInUse(foldersDb.getInt("is_in_use"))
+							.setFolderType(foldersDb.getString("folder_type"));
 
 					LOGGER.info("foldersDao %s", folders);
 					foldersDao.save(folders);
@@ -111,8 +135,24 @@ public class DatabaseCreator {
 
 				patterns = patternsDao.getById(patternsDb.getInt("id_pattern"));
 				if (patterns == null) {
-					patterns = (Patterns) new Patterns().setIdPattern(patternsDb.getInt("id_pattern")).setPatternName(patternsDb.getString("pattern_name")).setPatternDescription(patternsDb.getString("pattern_description")).setPatternUid(patternsDb.getString("pattern_uid")).setSrcHash(patternsDb.getString("src_hash")).setEdxHash(patternsDb.getString("edx_hash")).setDbdtsAdded(patternsDb.getString("dbdts_added")).setIsInUse(patternsDb.getInt("is_in_use")).setPatternShortDesc(patternsDb.getString("pattern_short_desc")).setPatternSourceFileName(patternsDb.getString("pattern_source_file_name")).setPatternMaxPlayingTime(patternsDb.getFloat("pattern_max_playing_time")).setPatternType(patternsDb.getInt("pattern_type")).setIsCanBeReproduced(patternsDb.getInt("is_can_be_reproduced"))
-							.setSmuls(patternsDb.getString("smuls")).setEdxFileCreationDts(patternsDb.getString("edx_file_creation_dts")).setEdxFileCreationDtsMsecs(patternsDb.getInt("edx_file_creation_dts_msecs")).setEdxFileLastModifiedDts(patternsDb.getString("edx_file_last_modified_dts")).setEdxFileLastModifiedDtsMsecs(patternsDb.getInt("edx_file_last_modified_dts_msecs")).setLinkedFolderId(patternsDb.getInt("linked_folder_id"));
+					patterns = (Patterns) new Patterns().setIdPattern(patternsDb.getInt("id_pattern"))
+							.setPatternName(patternsDb.getString("pattern_name"))
+							.setPatternDescription(patternsDb.getString("pattern_description"))
+							.setPatternUid(patternsDb.getString("pattern_uid"))
+							.setSrcHash(patternsDb.getString("src_hash")).setEdxHash(patternsDb.getString("edx_hash"))
+							.setDbdtsAdded(patternsDb.getString("dbdts_added"))
+							.setIsInUse(patternsDb.getInt("is_in_use"))
+							.setPatternShortDesc(patternsDb.getString("pattern_short_desc"))
+							.setPatternSourceFileName(patternsDb.getString("pattern_source_file_name"))
+							.setPatternMaxPlayingTime(patternsDb.getFloat("pattern_max_playing_time"))
+							.setPatternType(patternsDb.getInt("pattern_type"))
+							.setIsCanBeReproduced(patternsDb.getInt("is_can_be_reproduced"))
+							.setSmuls(patternsDb.getString("smuls"))
+							.setEdxFileCreationDts(patternsDb.getString("edx_file_creation_dts"))
+							.setEdxFileCreationDtsMsecs(patternsDb.getInt("edx_file_creation_dts_msecs"))
+							.setEdxFileLastModifiedDts(patternsDb.getString("edx_file_last_modified_dts"))
+							.setEdxFileLastModifiedDtsMsecs(patternsDb.getInt("edx_file_last_modified_dts_msecs"))
+							.setLinkedFolderId(patternsDb.getInt("linked_folder_id"));
 
 					LOGGER.info("patternsDao %s", patterns);
 					patternsDao.save(patterns);
@@ -120,16 +160,16 @@ public class DatabaseCreator {
 			}
 
 			while (patternsFolders.next()) {
-				/*
-				 * Long id_folder = patternsFolders.getLong("id_folder"); LOGGER.info("id_folder %s", id_folder); Long id_pattern = patternsFolders.getLong("id_pattern"); LOGGER.info("id_pattern %s", id_pattern);
-				 */
+                /*Long id_folder = patternsFolders.getLong("id_folder");
+				LOGGER.info("id_folder %s", id_folder);
+				Long id_pattern = patternsFolders.getLong("id_pattern");
+				LOGGER.info("id_pattern %s", id_pattern);*/
 
 				folders = foldersDao.getById(patternsFolders.getInt("id_folder"));
 				patterns = patternsDao.getById(patternsFolders.getInt("id_pattern"));
 
-				/*
-				 * folders.getPatterns().add(patterns); patterns.getFolders().add(folders);
-				 */
+                /*folders.getPatterns().add(patterns);
+				patterns.getFolders().add(folders);*/
 
 				patternsFolderses = new PatternsFolderses();
 				patternsFolderses.setFolders(folders);
@@ -146,30 +186,24 @@ public class DatabaseCreator {
 			Long mucId = 0L;
 			Long virId = 0L;
 			for (Folders folders : folderList) {
-				if (folders.getFolderName().contains("BAC"))
-					bacId = folders.getId();
-				if (folders.getFolderName().contains("Muc"))
-					mucId = folders.getId();
-				if (folders.getFolderName().contains("VIR"))
-					virId = folders.getId();
+				if (folders.getFolderName().contains("BAC")) bacId = folders.getId();
+				if (folders.getFolderName().contains("Muc")) mucId = folders.getId();
+				if (folders.getFolderName().contains("VIR")) virId = folders.getId();
 
 			}
 
-			for (Patterns patterns : patternsList) {
+			for (Patterns patterns: patternsList) {
 
 				for (Folders folders : folderList) {
 
-					if (folders.getIdFolder() == 4328) {
+					if  (folders.getIdFolder() == 4328) {
 
 						patternsFolderses = new PatternsFolderses();
 						patternsFolderses.setFolders(folders);
 						patternsFolderses.setPatterns(patterns);
-						if (patterns.getPatternName().contains("BAC "))
-							patternsFolderses.setCorrectors(bacId);
-						else if (patterns.getPatternName().contains("Muc "))
-							patternsFolderses.setCorrectors(mucId);
-						else if (patterns.getPatternName().contains("VIR "))
-							patternsFolderses.setCorrectors(virId);
+						if (patterns.getPatternName().contains("BAC ")) patternsFolderses.setCorrectors(bacId);
+						else if (patterns.getPatternName().contains("Muc ")) patternsFolderses.setCorrectors(mucId);
+						else if (patterns.getPatternName().contains("VIR ")) patternsFolderses.setCorrectors(virId);
 
 					}
 
@@ -182,9 +216,15 @@ public class DatabaseCreator {
 			}
 
 			LOGGER.info("End");
-			/*
-			 * folders = foldersDao.getById(4328); LOGGER.info("Flora dissection size %s", folders.getPatterns().size()); folders = foldersDao.getById(2483); LOGGER.info("BAC size %s", folders.getPatterns().size()); folders = foldersDao.getById(959); LOGGER.info("Muc size %s", folders.getPatterns().size()); folders = foldersDao.getById(490); LOGGER.info("VIR size %s", folders.getPatterns().size());
-			 */
+            /*
+            folders = foldersDao.getById(4328);
+            LOGGER.info("Flora dissection size %s", folders.getPatterns().size());
+            folders = foldersDao.getById(2483);
+            LOGGER.info("BAC size %s", folders.getPatterns().size());
+            folders = foldersDao.getById(959);
+            LOGGER.info("Muc size %s", folders.getPatterns().size());
+            folders = foldersDao.getById(490);
+            LOGGER.info("VIR size %s", folders.getPatterns().size());*/
 
 		} catch (SQLException e) {
 			e.printStackTrace();
