@@ -6,9 +6,12 @@ import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.SelectUserEvent;
+import com.mpsdevelopment.biopotential.server.gui.analysis.AnalysisPanel;
 import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
+import com.mpsdevelopment.biopotential.server.settings.StageSettings;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
+import com.mpsdevelopment.biopotential.server.utils.StageUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.application.Platform;
@@ -70,6 +73,15 @@ public class AutomaticsPanelController extends AbstractController implements Sub
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        makeAnalyzerButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                AnalysisPanel panel = new AnalysisPanel();
+                Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Результат анализа").setClazz(panel.getClass()).setHeight(752d).setWidth(1172d).setHeightPanel(722d).setWidthPanel(1172d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+                panel.setPrimaryStage(stage);
+                close();
+            }
+        });
 
     }
 

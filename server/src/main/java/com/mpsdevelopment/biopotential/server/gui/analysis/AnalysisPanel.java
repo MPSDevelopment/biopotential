@@ -1,38 +1,38 @@
-package com.mpsdevelopment.biopotential.server.gui.diagnostics;
+package com.mpsdevelopment.biopotential.server.gui.analysis;
+
 
 import com.mpsdevelopment.biopotential.server.SpringLoaderFXML;
-import com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.SelectFromDbPanelController;
+import com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.AutomaticsPanelController;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Group;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.io.IOException;
-import java.net.URL;
+public class AnalysisPanel extends Pane {
 
-public class DiagPanel extends Pane {
-
-    private static final Logger LOGGER = LoggerUtil.getLogger(DiagPanel.class);
+	private static final Logger LOGGER = LoggerUtil.getLogger(AnalysisPanel.class);
     public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/app-context.xml", "webapp/web-context.xml");
 
+	private AnalysisPanelController controller;
 
-    private DiagPanelController diagPanelController;
+    public AnalysisPanel() {
 
-    public DiagPanel() {
 
-        diagPanelController = (DiagPanelController) SpringLoaderFXML.load(APP_CONTEXT,DiagPanelController.class, "DiagPanel.fxml");
-        Pane panel = diagPanelController.getView();
+        controller = (AnalysisPanelController) SpringLoaderFXML.load(APP_CONTEXT,AnalysisPanelController.class, "AnalysisPanel.fxml");
+        Pane panel = controller.getView();
         getChildren().add(panel);
         panel.getStyleClass().clear();
+//        controller.subscribe();
+//        controller.setScenario(scenario);
+
 
     }
 
+
     public void setPrimaryStage(Stage primaryStage) {
-        diagPanelController.updatePanel(primaryStage);
+        controller.updatePanel(primaryStage);
         primaryStage.show();
     }
 }

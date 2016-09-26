@@ -426,6 +426,8 @@ public class DiagPanelController extends AbstractController implements Subscriba
 
     }
 
+    // --------------------------------------Methods------------------------------------------
+
     private void clearFields() {
         login.setValue("");
         surname.setValue("");
@@ -441,8 +443,6 @@ public class DiagPanelController extends AbstractController implements Subscriba
         womanRadioButton.setSelected(false);
 
     }
-
-    // --------------------------------------Methods------------------------------------------
 
     private void createChart(File selectedFile) {
         NumberAxis x = new NumberAxis();
@@ -474,7 +474,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
 
             XYChart.Series<Number, Number> numberSeries = LineChartUtil.createNumberSeries(extractedData, RATE,sampleRate);
 
-//            numberLineChart.getStylesheets().add(DiagPanelController.class.getResource("main.css").toExternalForm());
+//            numberLineChart.getStylesheets().add(AnalysisPanelController.class.getResource("main.css").toExternalForm());
             numberLineChart.getStylesheets().add("main.css");
             numberLineChart.getData().addAll(numberSeries);
             numberLineChart.createSymbolsProperty();
