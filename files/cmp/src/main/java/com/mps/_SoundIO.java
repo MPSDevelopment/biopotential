@@ -1,5 +1,6 @@
 package com.mps;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,17 +9,20 @@ import javax.sound.sampled.AudioFormat.Encoding;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioFormat;
 
-public class _SoundIO {
-    public static Collection<Double> readAllFrames()
-            throws IOException {
-        return readAllFrames();
-    }
+import static javax.sound.sampled.AudioFormat.Encoding.PCM_UNSIGNED;
 
-    public static Collection<Double> readAllFrames(final AudioInputStream audioStream)
+public class _SoundIO {
+    // TODO: REPLACEME
+//    public static List<Double> readAllFrames()
+//            throws IOException {
+//        return readAllFrames();
+//    }
+
+    public static List<Double> readAllFrames(final AudioInputStream audioStream)
             throws IOException {
         final AudioFormat format = audioStream.getFormat();
 
-        if (format.getEncoding() != Encoding.PCM_UNSIGNED) {
+        if (format.getEncoding() != PCM_UNSIGNED) {
             throw new IOException("Bad encoding");
         }
         if (format.getChannels() != 1) {
@@ -50,6 +54,38 @@ public class _SoundIO {
         }
 
         return peaks;
+    }
+
+    public static void writeFramesAsWave(final FileOutputStream outstream,
+                                         final List<Double> frames)
+            throws IOException {
+        outstream.write("RIFF".getBytes());
+        outstream.write(int2le(4, 36 + frames.size())); // Container size minus first 8 bytes
+        outstream.write("WAVE".getBytes());
+        outstream.write("fmt ".getBytes());
+        outstream.write(int2le(4, 10)); // Size of WAVE section
+        outstream.write(int2le(2, 1)); // Use PCM_UNSIGNED
+        outstream.write(int2le(2, 1)); // Mono
+        outstream.write(int2le(4, 22050)); // Quantization freq
+        outstream.write(int2le(4, 22050)); // Bytes/s
+        outstream.write(int2le(2, 1)); // Block alignment
+        outstream.write(int2le(2, 8)); // Bits/sample
+        outstream.write("data".getBytes()); // Bits/sample
+        outstream.write(int2le(4, frames.size()));
+        for (Double v : frames) {
+            // if (v > 1.0 || v < 0.0) {
+            //     throw ...
+            // }
+            outstream.write((byte) (v * 128.0) ^ 0x80);
+        }
+    }
+
+    private static byte[] int2le(int size, int value) {
+        byte[] result = new byte[size];
+        for (int i = 0; i < size; i += 1) {
+            result[i] = (byte) (value << i*8);
+        }
+        return result;
     }
 
 //    private static long readFrameBE(byte[] rawData,

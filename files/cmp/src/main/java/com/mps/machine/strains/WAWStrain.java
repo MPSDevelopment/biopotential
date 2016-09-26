@@ -7,6 +7,7 @@ import com.mps.machine.Strain;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 // Implemented for legacy reasons
 public class WAWStrain implements Strain {
@@ -26,11 +27,11 @@ public class WAWStrain implements Strain {
         return this.name;
     }
 
-    public Collection<ChunkSummary> getSummary() {
+    public List<ChunkSummary> getSummary() {
         return this.summary;
     }
 
-    public Collection<Double> getPCMData() {
+    public List<Double> getPCMData() {
         return null;
     }
 
@@ -40,5 +41,5 @@ public class WAWStrain implements Strain {
 
     private final String kind;
     private final String name;
-    private final Collection<ChunkSummary> summary;
+    private final List<ChunkSummary> summary;
 }

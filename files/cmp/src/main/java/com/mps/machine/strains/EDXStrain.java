@@ -6,8 +6,8 @@ import com.mps.machine.Strain;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 class EDXSection {
     String name;
@@ -17,22 +17,16 @@ class EDXSection {
 }
 
 public class EDXStrain implements Strain {
-    public static final String subdir = "edxfiles/";
-
-    public EDXStrain(String kind,
-                     String name,
-                     String desc,
-                     String fileName) throws IOException {
-        System.out.println(subdir + fileName);
-
+    public EDXStrain(String kind, String name,
+                     String desc, String fileName) throws IOException {
         this.kind = kind;
         this.name = name;
         this.desc = desc;
         this.sects = new HashMap<>();
 
         try (RandomAccessFile in = new RandomAccessFile(
-                new File(subdir + fileName), "r")) {
-            byte[] hdr = new byte[4];
+                new File(fileName), "r")) {
+            final byte[] hdr = new byte[4];
             if (in.read(hdr) != 4 || !new String(hdr).equals("EDXI")) {
                 throw new IOException("not EDX");
             }
@@ -41,12 +35,12 @@ public class EDXStrain implements Strain {
                 throw new IOException("not EDX");
             }
 
-            int len = readi32le(in);
-            int count = len / 16; // 16 = name[8] + offs + len
+            final int len = readi32le(in);
+            final int count = len / 16; // 16 = name[8] + offs + len
             for (int i = 0; i < count; i += 1) {
-                EDXSection sect = new EDXSection();
+                final EDXSection sect = new EDXSection();
 
-                byte[] sect_name = new byte[8];
+                final byte[] sect_name = new byte[8];
                 in.read(sect_name);
 
                 sect.name = new String(sect_name);
@@ -54,7 +48,7 @@ public class EDXStrain implements Strain {
                 sect.length = readi32le(in);
                 sect.contents = new byte[sect.length];
 
-                long cur = in.getFilePointer();
+                final long cur = in.getFilePointer();
                 in.seek(sect.offset + 12); // 12 bytes of useless junk
                 in.read(sect.contents, 0, sect.contents.length);
                 in.seek(cur);
@@ -68,7 +62,7 @@ public class EDXStrain implements Strain {
         if (this.sects.containsKey(".orig   ")) {
             this.pcmData = new ArrayList<>();
             for (byte b : this.sects.get(".orig   ").contents) {
-                this.pcmData.add((double) b / 255.0);
+                this.pcmData.add((double) (byte) (b ^ 0x80) / 128.0);
             }
             this.summary = Analyzer.summarize(this.pcmData);
         } else {
@@ -89,11 +83,11 @@ public class EDXStrain implements Strain {
         return "";
     }
 
-    public Collection<Double> getPCMData() {
+    public List<Double> getPCMData() {
         return this.pcmData;
     }
 
-    public Collection<ChunkSummary> getSummary() {
+    public List<ChunkSummary> getSummary() {
         return this.summary;
     }
 
@@ -112,8 +106,8 @@ public class EDXStrain implements Strain {
     }
 
     private HashMap<String, EDXSection> sects;
-    private Collection<ChunkSummary> summary;
-    private Collection<Double> pcmData;
+    private List<ChunkSummary> summary;
+    private List<Double> pcmData;
     private String kind;
     private String name;
     private String desc;
