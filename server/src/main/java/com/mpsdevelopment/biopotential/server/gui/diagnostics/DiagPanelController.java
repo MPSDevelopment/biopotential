@@ -7,6 +7,7 @@ import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.biopotential.server.db.pojo.Visit;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
+import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
 import com.mpsdevelopment.biopotential.server.eventbus.event.SelectUserEvent;
 import com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.AutomaticsPanel;
 import com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.SelectFromDbPanel;
@@ -16,9 +17,9 @@ import com.mpsdevelopment.biopotential.server.settings.StageSettings;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.biopotential.server.utils.LineChartUtil;
 import com.mpsdevelopment.biopotential.server.utils.StageUtils;
-import com.mpsdevelopment.biopotential.server.wave.WaveFile;
 import com.mpsdevelopment.biopotential.server.wave.WavFileException;
 import com.mpsdevelopment.biopotential.server.wave.WavFileExtractor;
+import com.mpsdevelopment.biopotential.server.wave.WaveFile;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.application.Platform;
@@ -32,13 +33,10 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.PointLight;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -353,6 +351,8 @@ public class DiagPanelController extends AbstractController implements Subscriba
                 FileChooser fileChooser = new FileChooser();
                 File selectedFile = fileChooser.showOpenDialog(null);
 
+                EventBus.publishEvent(new FileChooserEvent(selectedFile));
+
                 createChart(selectedFile);
 
             }
@@ -473,11 +473,13 @@ public class DiagPanelController extends AbstractController implements Subscriba
             }
 
             XYChart.Series<Number, Number> numberSeries = LineChartUtil.createNumberSeries(extractedData, RATE,sampleRate);
-
+            numberLineChart.getData().clear();
 //            numberLineChart.getStylesheets().add(AnalysisPanelController.class.getResource("main.css").toExternalForm());
             numberLineChart.getStylesheets().add("main.css");
             numberLineChart.getData().addAll(numberSeries);
             numberLineChart.createSymbolsProperty();
+
+
 
         }
     }
@@ -526,7 +528,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
             public void run() {
                 try {
                     setUser(selectedUser);
-//                    getUser().setId(selectedUser.getId());
+//                    getFile().setId(selectedUser.getId());
                     LOGGER.info("User - Id %s", user.getId());
                     loginField.setText(selectedUser.getLogin());
                     surnameField.setText(selectedUser.getSurname());

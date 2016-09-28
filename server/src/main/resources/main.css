@@ -1,4 +1,3 @@
-/*
 .chart-line-symbol {
     -fx-background: #ffffff;
     -fx-background-radius: 0px;
@@ -16,7 +15,7 @@
     -fx-background: #ffffff;
 }
 
-.chart-symbol { !* solid circle *!
+.chart-symbol { /* solid circle */
     -fx-background: #ffffff;
     -fx-padding: 0px;
     -fx-background-image: url("Image-of-the-human-body.jpg");
@@ -29,7 +28,3 @@
     -fx-stroke: #FFFFFF;
 }
 
-*/
-.chart-plot-background {
-    -fx-background-image: url("Image-of-the-human-body.jpg");
-}

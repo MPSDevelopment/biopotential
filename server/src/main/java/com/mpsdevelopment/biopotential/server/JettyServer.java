@@ -122,7 +122,7 @@ public class JettyServer {
 			contextHandler.addServlet(mvcServletHolder, "/");
 
 			// Add spring security
-			contextHandler.addFilter(new FilterHolder(new DelegatingFilterProxy("springSecurityFilterChain")), "/*", EnumSet.allOf(DispatcherType.class));
+//			contextHandler.addFilter(new FilterHolder(new DelegatingFilterProxy("springSecurityFilterChain")), "/*", EnumSet.allOf(DispatcherType.class));
 
 			contextHandler.setResourceBase(getBaseUrl());
 
