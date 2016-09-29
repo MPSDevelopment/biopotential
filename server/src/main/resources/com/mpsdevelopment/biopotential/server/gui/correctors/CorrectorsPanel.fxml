@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="722.0" prefWidth="1273.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mpsdevelopment.biopotential.server.gui.correctors.CorrectorsPanelController">
+   <children>
+      <TableView fx:id="сorrectorsTable" layoutX="29.0" layoutY="24.0" prefHeight="641.0" prefWidth="1223.0">
+        <columns>
+          <TableColumn fx:id="numberColumn" prefWidth="30.0" text="№" />
+          <TableColumn fx:id="deseaseName" prefWidth="369.0" text="Название" />
+            <TableColumn prefWidth="218.0" text="Каталог" />
+            <TableColumn prefWidth="233.0" text="Система" />
+            <TableColumn fx:id="deseaseLevel" prefWidth="133.0" text="Дисперсия" />
+            <TableColumn prefWidth="125.0" text="Уровень" />
+            <TableColumn prefWidth="114.0" text="Выбрать" />
+        </columns>
+      </TableView>
+      <Button layoutX="603.0" layoutY="683.0" mnemonicParsing="false" text="Создать файл коррекции" />
+      <Button layoutX="767.0" layoutY="683.0" mnemonicParsing="false" text="Назад" />
+      <Button layoutX="465.0" layoutY="683.0" mnemonicParsing="false" text="Добавить корректор" />
+   </children>
+</AnchorPane>

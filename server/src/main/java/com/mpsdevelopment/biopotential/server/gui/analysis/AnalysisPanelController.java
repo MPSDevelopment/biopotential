@@ -13,6 +13,10 @@ import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
 import com.mpsdevelopment.biopotential.server.db.pojo.DataTable;
+import com.mpsdevelopment.biopotential.server.gui.correctors.CorrectorsPanel;
+import com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.AutomaticsPanel;
+import com.mpsdevelopment.biopotential.server.settings.StageSettings;
+import com.mpsdevelopment.biopotential.server.utils.StageUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -20,10 +24,12 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
@@ -56,6 +62,9 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     @FXML
     private TableColumn<DataTable, String> numberColumn;
+
+    @FXML
+    private Button continueButton;
 
     private Stage primaryStage;
     private static File file;
@@ -93,6 +102,15 @@ public class AnalysisPanelController extends AbstractController implements Subsc
                 SimpleStringProperty property = new SimpleStringProperty();
                 property.setValue(String.format("%s", dataTable.getValue().getDegree()));
                 return property;
+            }
+        });
+
+        continueButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                CorrectorsPanel panel = new CorrectorsPanel();
+                Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Коррекция").setClazz(panel.getClass()).setHeight(722d).setWidth(1273d).setHeightPanel(722d).setWidthPanel(1273d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+                panel.setPrimaryStage(stage);
             }
         });
 
