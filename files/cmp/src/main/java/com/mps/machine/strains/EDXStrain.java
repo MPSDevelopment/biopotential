@@ -19,13 +19,20 @@ class EDXSection {
 public class EDXStrain implements Strain {
     public EDXStrain(String kind, String name,
                      String desc, String fileName) throws IOException {
+        this(kind, name, desc, fileName, null);
+    }
+
+    public EDXStrain(String kind, String name,
+                     String desc, String fileName,
+                     String correctingFolder) throws IOException {
         this.kind = kind;
         this.name = name;
         this.desc = desc;
         this.sects = new HashMap<>();
+        this.correctingFolder = correctingFolder;
 
-        try (RandomAccessFile in = new RandomAccessFile(
-                new File(fileName), "r")) {
+        try (RandomAccessFile in =
+                new RandomAccessFile(new File(fileName), "r")) {
             final byte[] hdr = new byte[4];
             if (in.read(hdr) != 4 || !new String(hdr).equals("EDXI")) {
                 throw new IOException("not EDX");
@@ -71,6 +78,14 @@ public class EDXStrain implements Strain {
         }
     }
 
+    public boolean hasCorrectingFolder() {
+        return this.correctingFolder != null;
+    }
+
+    public String getCorrectingFolder() {
+        return this.correctingFolder;
+    }
+
     public String getKind() {
         return this.kind;
     }
@@ -80,7 +95,7 @@ public class EDXStrain implements Strain {
     }
 
     public String getDescription() {
-        return "";
+        return this.desc;
     }
 
     public List<Double> getPCMData() {
@@ -105,10 +120,11 @@ public class EDXStrain implements Strain {
         }
     }
 
-    private HashMap<String, EDXSection> sects;
-    private List<ChunkSummary> summary;
-    private List<Double> pcmData;
-    private String kind;
-    private String name;
-    private String desc;
+    final private HashMap<String, EDXSection> sects;
+    final private List<ChunkSummary> summary;
+    final private List<Double> pcmData;
+    final private String correctingFolder;
+    final private String kind;
+    final private String name;
+    final private String desc;
 }
