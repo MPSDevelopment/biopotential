@@ -23,7 +23,8 @@ class ArkDBIter implements StrainDB {
                             this.patterns.getString("folder_name"),
                             this.patterns.getString("pattern_name"),
                             this.patterns.getString("pattern_description"),
-                            "edxfiles/" + this.patterns.getString("pattern_uid"));
+                            "edxfiles/" + this.patterns.getString("pattern_uid"),
+                            null);
                     } catch (IOException e) {
                         e.printStackTrace();
                         // ???
