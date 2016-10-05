@@ -13,6 +13,15 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<jdk.version>1.8</jdk.version>
 
+		<jet.output.directory>target/jet</jet.output.directory>
+		<jet.version>0.1</jet.version>
+		<jet.vendor>MPS Development</jet.vendor>
+		<jet32.home>c:\Program Files (x86)\ExcelsiorJet</jet32.home>
+		<jet64.home>c:\Program Files\ExcelsiorJet</jet64.home>
+		<jet.expire.message>Program has stopped working. Contact an administrator</jet.expire.message>
+
+		<replacer.plugin.version>1.5.2</replacer.plugin.version>
+		<excelsiorjet.plugin.version>0.7.2</excelsiorjet.plugin.version>
 		<resources.plugin.version>2.7</resources.plugin.version>
 		<compiler.plugin.version>3.3</compiler.plugin.version>
 		<surefire.plugin.version>2.18.1</surefire.plugin.version>
@@ -59,7 +68,7 @@
 		<dependency>
 			<groupId>net.engio</groupId>
 			<artifactId>mbassador</artifactId>
-            <version>${mbassador.version}</version>
+			<version>${mbassador.version}</version>
 		</dependency>
 
 		<dependency>
@@ -450,6 +459,74 @@
 					<finalName>${project.artifactId}</finalName>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${resources.plugin.version}</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/${jet.output.directory}/temp</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${basedir}</directory>
+									<includes>
+										<include>web/**</include>
+										<include>config/**</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-resources-build</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/${jet.output.directory}/build</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${basedir}</directory>
+									<includes>
+										<include>web/**</include>
+										<include>config/**</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.excelsiorjet</groupId>
+				<artifactId>excelsior-jet-maven-plugin</artifactId>
+				<version>${excelsiorjet.plugin.version}</version>
+				<configuration>
+					<mainClass>com.mpsdevelopment.helicopter.ServerApplication</mainClass>
+					<jetOutputDir>${jet.output.directory}</jetOutputDir>
+					<!-- <packaging>excelsior-installer</packaging> -->
+					<icon>${project.basedir}/build/bio.ico</icon>
+					<installerSplash>${project.basedir}/build/splash.png</installerSplash>
+					<splash>${project.basedir}/build/splash.png</splash>
+
+					<hideConsole>true</hideConsole>
+					<!-- <globalOptimizer>true</globalOptimizer> -->
+					<packageFilesDir>${jet.output.directory}/temp</packageFilesDir>
+
+					<jetHome>${jet32.home}</jetHome>
+
+					<product>Biopotential</product>
+					<vendor>${jet.vendor}</vendor>
+					<version>${jet.version}</version>
+				</configuration>
+			</plugin>
+
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>${assembly.plugin.version}</version>
