@@ -4,17 +4,19 @@ import com.mps._SoundIO;
 import com.mps.analyzer.AnalysisSummary;
 import com.mps.analyzer.Analyzer;
 import com.mps.analyzer.ChunkSummary;
+import com.mps.machine.KindCondition;
 import com.mps.machine.Machine;
 import com.mps.machine.Strain;
 import com.mps.machine.SummaryCondition;
-import com.mps.machine.dbs.arkdb.ArkDB;
+import com.mps.machine.dbs.h2db.H2DB;
+import com.mps.machine.strains.EDXStrain;
 import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
 import com.mpsdevelopment.biopotential.server.db.pojo.DataTable;
+import com.mpsdevelopment.biopotential.server.eventbus.event.HealingsMapEvent;
 import com.mpsdevelopment.biopotential.server.gui.correctors.CorrectorsPanel;
-import com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.AutomaticsPanel;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
 import com.mpsdevelopment.biopotential.server.utils.StageUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
@@ -68,6 +70,9 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     private Stage primaryStage;
     private static File file;
+    private static Map<Strain, AnalysisSummary> healings;
+    Map<Strain, AnalysisSummary> allHealings = new HashMap<Strain, AnalysisSummary>();
+
 
     public AnalysisPanelController() {
         EventBus.subscribe(this);
@@ -75,7 +80,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        init(file);
+        makeAnalyze(file);
 
         healthConditionTable.setItems(analysisData);
 
@@ -100,7 +105,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> dataTable) {
                 SimpleStringProperty property = new SimpleStringProperty();
-                property.setValue(String.format("%s", dataTable.getValue().getDegree()));
+                property.setValue(String.format("%s", dataTable.getValue().getDispersion()));
                 return property;
             }
         });
@@ -111,6 +116,8 @@ public class AnalysisPanelController extends AbstractController implements Subsc
                 CorrectorsPanel panel = new CorrectorsPanel();
                 Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Коррекция").setClazz(panel.getClass()).setHeight(722d).setWidth(1273d).setHeightPanel(722d).setWidthPanel(1273d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
                 panel.setPrimaryStage(stage);
+
+
             }
         });
 
@@ -126,8 +133,8 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     }
 
-    private void init(File file) {
-        try {
+    private void makeAnalyze(File file) {
+        /*try {
 
             final ArkDB db = new ArkDB("test.arkdb");
             db.setHealingFolders(Arrays.asList(490, 959, 2483));
@@ -142,14 +149,14 @@ public class AnalysisPanelController extends AbstractController implements Subsc
                 @Override
                 public boolean test(Strain strain, AnalysisSummary summary) {
 
-                    return summary.getDegree() == 0;
+                    return summary.getDispersion() == 0;
                 }
             }, sample, db.getDiseaseIds());
 
             diseases.forEach(new BiConsumer<Strain, AnalysisSummary>() {
                 @Override
                 public void accept(Strain k, AnalysisSummary v) {
-                    LOGGER.info("d: %s\t%d\n", k.getName(), v.getDegree());
+                    LOGGER.info("d: %s\t%d\n", k.getName(), v.getDispersion());
 
                     analysisData.add(createDataTableObject(k,v));
 
@@ -157,13 +164,80 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             });
         } catch (Exception e) {
             e.printStackTrace();
+        }*/
+
+        try {
+            final H2DB db = new H2DB("./database", "", "sa");
+
+            System.out.println("start");
+
+//            final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(new File("test3.wav"))));
+            final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(file)));
+            final Map<Strain, AnalysisSummary> diseases = Machine.summarizeStrains(new SummaryCondition() {
+                @Override
+                public boolean test(Strain strain, AnalysisSummary summary) {
+                    return summary.getDegree() == 0 /*|| summary.getDispersion() == -21*/;
+                }
+            },sample, db.getDiseases());
+
+
+            diseases.forEach(new BiConsumer<Strain, AnalysisSummary>() {
+                @Override
+                public void accept(Strain k, AnalysisSummary v) {
+                    System.out.printf("%s\t%f\n", k.getName(), v.getDispersion());
+//                    LOGGER.info("d: %s\t%f\n", k.getName(), v.getDispersion());
+
+                    analysisData.add(createDataTableObject(k,v));
+                }
+            });
+
+            final Map<String, Integer> probableKinds = Machine.filterKinds(new KindCondition() {
+                @Override
+                public boolean test(String kind, int count) {
+                    return count > 0;
+                }
+            }, diseases);
+
+            diseases.forEach(new BiConsumer<Strain, AnalysisSummary>() {
+                @Override
+                public void accept(Strain dk, AnalysisSummary dv) {
+                    System.out.printf("heals for %s %s\n", dk.getKind(), dk.getName());
+                    if (probableKinds.containsKey(dk.getKind())) {
+                        /*final Map<Strain, AnalysisSummary>*/
+                        healings = Machine.summarizeStrains(new SummaryCondition() {
+                            @Override
+                            public boolean test(Strain strain, AnalysisSummary summary) { // и потом берутся только те которые summary.getDispersion() == 0 т.е. MAx
+                                return summary.getDegree() == 0;
+                            }
+                        }, sample, db.getIterForFolder(((EDXStrain) dk).getCorrectingFolder())); // вытягиваются папка с коректорами для конкретной болезни BAC -> FL BAC
+
+
+                        healings.forEach(new BiConsumer<Strain, AnalysisSummary>() {
+                            @Override
+                            public void accept(Strain hk, AnalysisSummary hv) {
+//                            hk.getPCMData()
+                                LOGGER.info("%s %s\n", hk.getKind(), hk.getName(), hv.getDispersion());
+
+                            }
+                        });
+                        allHealings.putAll(healings);
+                    }
+                }
+            });
+            LOGGER.info("healings size %s", healings.size());
+            EventBus.publishEvent(new HealingsMapEvent(allHealings));
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+
     }
 
     private DataTable createDataTableObject(Strain k, AnalysisSummary v) {
         DataTable dataTable = new DataTable();
         dataTable.setName(k.getName());
-        dataTable.setDegree(v.getDegree());
+        dataTable.setDispersion(v.getDispersion());
         return dataTable;
     }
 

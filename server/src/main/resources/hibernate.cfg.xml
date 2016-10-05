@@ -5,9 +5,9 @@
 <hibernate-configuration>
 	<session-factory>
 		<mapping class="com.mpsdevelopment.biopotential.server.db.pojo.User" />
-		<mapping class="com.mpsdevelopment.biopotential.server.db.pojo.Folders" />
-		<mapping class="com.mpsdevelopment.biopotential.server.db.pojo.Patterns" />
-		<mapping class="com.mpsdevelopment.biopotential.server.db.pojo.PatternsFolderses" />
+		<mapping class="com.mpsdevelopment.biopotential.server.db.pojo.Folder" />
+		<mapping class="com.mpsdevelopment.biopotential.server.db.pojo.Pattern" />
+		<mapping class="com.mpsdevelopment.biopotential.server.db.pojo.PatternsFolders" />
 		<mapping class="com.mpsdevelopment.biopotential.server.db.pojo.Visit" />
 
 	</session-factory>

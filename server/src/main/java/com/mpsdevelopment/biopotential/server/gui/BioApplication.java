@@ -1,6 +1,7 @@
 package com.mpsdevelopment.biopotential.server.gui;
 
 import com.mps.machine.dbs.arkdb.ArkDBException;
+import com.mpsdevelopment.biopotential.server.JettyServer;
 import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
 import com.mpsdevelopment.biopotential.server.gui.authentication.AuthPanel;
 import com.mpsdevelopment.biopotential.server.gui.diagnostics.DiagPanel;
@@ -27,8 +28,25 @@ public class BioApplication extends Application {
     private DiagPanel diagPanel;
 
     public static void main(String[] args) {
-        LogbackConfigureLoader.initializeLogging(resourceManager, "logback.xml", "jul.properties");
-        launch(args);
+
+        JettyServer server = JettyServer.getInstance();
+        try {
+            server.start();
+            LOGGER.info("Server started");
+
+            LogbackConfigureLoader.initializeLogging(resourceManager, "logback.xml", "jul.properties");
+            launch(args);
+
+            server.join();
+
+
+
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to start server. = %s", e);
+        }
+
+
     }
 
     @Override
@@ -44,6 +62,12 @@ public class BioApplication extends Application {
 
     @Override
     public void stop() {
+        try {
+            JettyServer.getInstance().stop();
+            LOGGER.info("Server stopped");
+        } catch (Exception e) {
+            LOGGER.error("Failed to stop server. = %s", e);
+        }
         System.exit(0);
     }
 

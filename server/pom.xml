@@ -65,11 +65,11 @@
 	</properties>
 	<dependencies>
 
-		<dependency>
+		<!--<dependency>
 			<groupId>net.engio</groupId>
 			<artifactId>mbassador</artifactId>
 			<version>${mbassador.version}</version>
-		</dependency>
+		</dependency>-->
 
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -249,12 +249,20 @@
 			<version>${springsecurity.version}</version>
 		</dependency>
 
-		<dependency>
+		<!--<dependency>
 			<groupId>javax.websocket</groupId>
 			<artifactId>javax.websocket-api</artifactId>
 			<version>${websocket-api.version}</version>
 			<scope>provided</scope>
+		</dependency>-->
+
+		<!-- https://mvnrepository.com/artifact/javax.websocket/javax.websocket-api -->
+		<dependency>
+			<groupId>javax.websocket</groupId>
+			<artifactId>javax.websocket-api</artifactId>
+			<version>1.1</version>
 		</dependency>
+
 
 		<!-- Proxy class need this library -->
 		<dependency>

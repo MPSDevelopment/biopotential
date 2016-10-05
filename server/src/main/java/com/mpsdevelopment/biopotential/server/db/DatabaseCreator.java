@@ -50,13 +50,13 @@ public class DatabaseCreator {
 	@Autowired
 	private PatternsFoldersDao patternsFoldersDao;
 
-	private Folders folders;
-	private Patterns patterns;
-	private PatternsFolderses patternsFolderses;
+	private Folder folder;
+	private Pattern pattern;
+	private PatternsFolders patternsFolders;
 	private Connection db;
 	private ResultSet foldersDb;
 	private ResultSet patternsDb;
-	private ResultSet patternsFolders;
+	private ResultSet patternsFoldersDb;
 
 	public void initialization() throws IOException, URISyntaxException, DaoException {
 		createUserIfNotExists(new User().setLogin(ADMIN_LOGIN).setPassword(passwordEncoder.encode(ADMIN_PASSWORD)).setSurname("Медков").setName("Игорь").setPatronymic("Владимирович").setTel("0982359090").setEmail("igor@ukr.net").setGender("Man").setRole(Token.Role.ADMIN.name()));
@@ -100,7 +100,7 @@ public class DatabaseCreator {
 			this.db = DriverManager.getConnection("jdbc:sqlite:" + url);
 			this.foldersDb = this.db.createStatement().executeQuery("SELECT * FROM folders");
 			this.patternsDb = this.db.createStatement().executeQuery("SELECT * FROM patterns");
-			this.patternsFolders = this.db.createStatement().executeQuery("SELECT * FROM link_patterns_to_folders");
+			this.patternsFoldersDb = this.db.createStatement().executeQuery("SELECT * FROM link_patterns_to_folders");
 
 
 		} catch (SQLException e) {
@@ -115,9 +115,9 @@ public class DatabaseCreator {
 		try {
 			while (foldersDb.next()) {
 
-				folders = foldersDao.getById(foldersDb.getInt("id_folder"));
-				if (folders == null) {
-					folders = (Folders) new Folders().setIdFolder(foldersDb.getInt("id_folder"))
+				folder = foldersDao.getById(foldersDb.getInt("id_folder"));
+				if (folder == null) {
+					folder = (Folder) new Folder().setIdFolder(foldersDb.getInt("id_folder"))
 							.setFolderName(foldersDb.getString("parent_folder_id"))
 							.setFolderName(foldersDb.getString("folder_name"))
 							.setFolderDescription(foldersDb.getString("folder_description"))
@@ -126,16 +126,16 @@ public class DatabaseCreator {
 							.setIsInUse(foldersDb.getInt("is_in_use"))
 							.setFolderType(foldersDb.getString("folder_type"));
 
-					LOGGER.info("foldersDao %s", folders);
-					foldersDao.save(folders);
+					LOGGER.info("foldersDao %s", folder);
+					foldersDao.save(folder);
 				}
 			}
 
 			while (patternsDb.next()) {
 
-				patterns = patternsDao.getById(patternsDb.getInt("id_pattern"));
-				if (patterns == null) {
-					patterns = (Patterns) new Patterns().setIdPattern(patternsDb.getInt("id_pattern"))
+				pattern = patternsDao.getById(patternsDb.getInt("id_pattern"));
+				if (pattern == null) {
+					pattern = (Pattern) new Pattern().setIdPattern(patternsDb.getInt("id_pattern"))
 							.setPatternName(patternsDb.getString("pattern_name"))
 							.setPatternDescription(patternsDb.getString("pattern_description"))
 							.setPatternUid(patternsDb.getString("pattern_uid"))
@@ -154,77 +154,77 @@ public class DatabaseCreator {
 							.setEdxFileLastModifiedDtsMsecs(patternsDb.getInt("edx_file_last_modified_dts_msecs"))
 							.setLinkedFolderId(patternsDb.getInt("linked_folder_id"));
 
-					LOGGER.info("patternsDao %s", patterns);
-					patternsDao.save(patterns);
+					LOGGER.info("patternsDao %s", pattern);
+					patternsDao.save(pattern);
 				}
 			}
 
-			while (patternsFolders.next()) {
-                /*Long id_folder = patternsFolders.getLong("id_folder");
+			while (patternsFoldersDb.next()) {
+                /*Long id_folder = patternsFoldersDb.getLong("id_folder");
 				LOGGER.info("id_folder %s", id_folder);
-				Long id_pattern = patternsFolders.getLong("id_pattern");
+				Long id_pattern = patternsFoldersDb.getLong("id_pattern");
 				LOGGER.info("id_pattern %s", id_pattern);*/
 
-				folders = foldersDao.getById(patternsFolders.getInt("id_folder"));
-				patterns = patternsDao.getById(patternsFolders.getInt("id_pattern"));
+				folder = foldersDao.getById(patternsFoldersDb.getInt("id_folder"));
+				pattern = patternsDao.getById(patternsFoldersDb.getInt("id_pattern"));
 
-                /*folders.getPatterns().add(patterns);
-				patterns.getFolders().add(folders);*/
+                /*folder.getPattern().add(pattern);
+				pattern.getFolder().add(folder);*/
 
-				patternsFolderses = new PatternsFolderses();
-				patternsFolderses.setFolders(folders);
-				patternsFolderses.setPatterns(patterns);
-				patternsFolderses.setCorrectors(null);
+				patternsFolders = new PatternsFolders();
+				patternsFolders.setFolder(folder);
+				patternsFolders.setPattern(pattern);
+				patternsFolders.setCorrectors(null);
 
-				patternsFoldersDao.save(patternsFolderses);
+				patternsFoldersDao.save(patternsFolders);
 
 			}
 
-			List<Folders> folderList = foldersDao.findAll();
-			List<Patterns> patternsList = patternsDao.findAll();
+			List<Folder> folderList = foldersDao.findAll();
+			List<Pattern> patternList = patternsDao.findAll();
 			Long bacId = 0L;
 			Long mucId = 0L;
 			Long virId = 0L;
-			for (Folders folders : folderList) {
-				if (folders.getFolderName().contains("BAC")) bacId = folders.getId();
-				if (folders.getFolderName().contains("Muc")) mucId = folders.getId();
-				if (folders.getFolderName().contains("VIR")) virId = folders.getId();
+			for (Folder folder : folderList) {
+				if (folder.getFolderName().contains("BAC")) bacId = folder.getId();
+				if (folder.getFolderName().contains("Muc")) mucId = folder.getId();
+				if (folder.getFolderName().contains("VIR")) virId = folder.getId();
 
 			}
 
-			for (Patterns patterns: patternsList) {
+			for (Pattern pattern : patternList) {
 
-				for (Folders folders : folderList) {
+				for (Folder folder : folderList) {
 
-					if  (folders.getIdFolder() == 4328) {
+					if  (folder.getIdFolder() == 4328) {
 
-						patternsFolderses = new PatternsFolderses();
-						patternsFolderses.setFolders(folders);
-						patternsFolderses.setPatterns(patterns);
-						if (patterns.getPatternName().contains("BAC ")) patternsFolderses.setCorrectors(bacId);
-						else if (patterns.getPatternName().contains("Muc ")) patternsFolderses.setCorrectors(mucId);
-						else if (patterns.getPatternName().contains("VIR ")) patternsFolderses.setCorrectors(virId);
+						patternsFolders = new PatternsFolders();
+						patternsFolders.setFolder(folder);
+						patternsFolders.setPattern(pattern);
+						if (pattern.getPatternName().contains("BAC ")) patternsFolders.setCorrectors(bacId);
+						else if (pattern.getPatternName().contains("Muc ")) patternsFolders.setCorrectors(mucId);
+						else if (pattern.getPatternName().contains("VIR ")) patternsFolders.setCorrectors(virId);
 
 					}
 
 				}
 
-				patternsFolderses.getFolders().getPatternseFolderses().add(patternsFolderses);
-				patternsFolderses.getPatterns().getPatternseFolderses().add(patternsFolderses);
+				patternsFolders.getFolder().getPatternsFolders().add(patternsFolders);
+				patternsFolders.getPattern().getPatternsFolders().add(patternsFolders);
 
-				patternsFoldersDao.save(patternsFolderses);
+				patternsFoldersDao.save(patternsFolders);
 			}
 
 			LOGGER.info("End");
             /*
-            folders = foldersDao.getById(4328);
-            LOGGER.info("Flora dissection size %s", folders.getPatterns().size());
-            folders = foldersDao.getById(2483);
-            LOGGER.info("BAC size %s", folders.getPatterns().size());
-            folders = foldersDao.getById(959);
-            LOGGER.info("Muc size %s", folders.getPatterns().size());
-            folders = foldersDao.getById(490);
-            LOGGER.info("VIR size %s", folders.getPatterns().size());*/
+            folder = foldersDao.getById(4328);
+            LOGGER.info("Flora dissection size %s", folder.getPattern().size());
+            folder = foldersDao.getById(2483);
+            LOGGER.info("BAC size %s", folder.getPattern().size());
+            folder = foldersDao.getById(959);
+            LOGGER.info("Muc size %s", folder.getPattern().size());
+            folder = foldersDao.getById(490);
+            LOGGER.info("VIR size %s", folder.getPattern().size());*/
 
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -1,7 +1,7 @@
 package com.mpsdevelopment.biopotential.server.db.dao;
 
-import com.mpsdevelopment.biopotential.server.db.pojo.PatternsFolderses;
+import com.mpsdevelopment.biopotential.server.db.pojo.PatternsFolders;
 
-public class PatternsFoldersDao extends GenericDao<PatternsFolderses,Long> {
+public class PatternsFoldersDao extends GenericDao<PatternsFolders,Long> {
 
 }

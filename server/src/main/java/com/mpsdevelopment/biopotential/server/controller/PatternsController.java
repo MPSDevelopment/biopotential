@@ -1,12 +1,7 @@
 package com.mpsdevelopment.biopotential.server.controller;
 
-import com.mpsdevelopment.biopotential.server.db.advice.Adviceable;
 import com.mpsdevelopment.biopotential.server.db.dao.PatternsDao;
-import com.mpsdevelopment.biopotential.server.db.dao.UserDao;
-import com.mpsdevelopment.biopotential.server.db.dao.VisitDao;
-import com.mpsdevelopment.biopotential.server.db.pojo.Patterns;
-import com.mpsdevelopment.biopotential.server.db.pojo.User;
-import com.mpsdevelopment.biopotential.server.db.pojo.Visit;
+import com.mpsdevelopment.biopotential.server.db.pojo.Pattern;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
@@ -15,12 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RequestMapping(ControllerAPI.PATTERNS_CONTROLLER)
@@ -55,7 +48,7 @@ public class PatternsController {
     @ResponseBody
     public ResponseEntity<String> getAllUsers() throws ParseException {
 
-		List<Patterns> patterns = patternsDao.getPatterns(null, null);
+		List<Pattern> patterns = patternsDao.getPatterns(null, null);
 
         LOGGER.info("Has been loaded '%s' users", patterns.size());
         return new ResponseEntity<>(JsonUtils.getJson(patterns), null, HttpStatus.OK);

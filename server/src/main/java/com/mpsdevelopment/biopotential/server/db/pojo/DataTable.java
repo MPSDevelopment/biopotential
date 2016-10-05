@@ -2,7 +2,7 @@ package com.mpsdevelopment.biopotential.server.db.pojo;
 
 public class DataTable {
     private String name;
-    private double degree;
+    private double dispersion;
 
     public String getName() {
         return name;
@@ -12,11 +12,11 @@ public class DataTable {
         this.name = name;
     }
 
-    public double getDegree() {
-        return degree;
+    public double getDispersion() {
+        return dispersion;
     }
 
-    public void setDegree(double degree) {
-        this.degree = degree;
+    public void setDispersion(double dispersion) {
+        this.dispersion = dispersion;
     }
 }
