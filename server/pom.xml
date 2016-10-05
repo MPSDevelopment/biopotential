@@ -402,8 +402,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>bio</finalName>
-		<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+		<finalName>server</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -457,7 +456,6 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>com.mpsdevelopment.push.ServerApplication</mainClass>
 							<classpathLayoutType>custom</classpathLayoutType>
 							<customClasspathLayout>
 								${lib.property}/${artifact.artifactId}${artifact.dashClassifier?}.${artifact.extension}
@@ -518,12 +516,12 @@
 				<artifactId>excelsior-jet-maven-plugin</artifactId>
 				<version>${excelsiorjet.plugin.version}</version>
 				<configuration>
-					<mainClass>com.mpsdevelopment.helicopter.ServerApplication</mainClass>
+					<mainClass>com.mpsdevelopment.biopotential.server.gui.BioApplication</mainClass>
 					<jetOutputDir>${jet.output.directory}</jetOutputDir>
 					<!-- <packaging>excelsior-installer</packaging> -->
 					<icon>${project.basedir}/build/bio.ico</icon>
 					<installerSplash>${project.basedir}/build/splash.png</installerSplash>
-					<splash>${project.basedir}/build/splash.png</splash>
+<!-- 					<splash>${project.basedir}/build/splash.png</splash> -->
 
 					<hideConsole>true</hideConsole>
 					<!-- <globalOptimizer>true</globalOptimizer> -->
@@ -535,29 +533,6 @@
 					<vendor>${jet.vendor}</vendor>
 					<version>${jet.version}</version>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>${assembly.plugin.version}</version>
-				<configuration>
-					<descriptors>
-						<descriptor>zip.xml</descriptor>
-					</descriptors>
-					<archiverConfig>
-						<compress>true</compress>
-					</archiverConfig>
-					<recompressZippedFiles>true</recompressZippedFiles>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 		<resources>
