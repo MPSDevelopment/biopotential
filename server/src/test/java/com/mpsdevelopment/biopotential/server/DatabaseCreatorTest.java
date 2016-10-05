@@ -1,6 +1,6 @@
 package com.mpsdevelopment.biopotential.server;
 
-import com.mps.machine.dbs.arkdb.ArkDBException;
+import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.arkdb.ArkDBException;
 import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
 import com.mpsdevelopment.biopotential.server.db.dao.FoldersDao;
 import com.mpsdevelopment.biopotential.server.db.dao.PatternsDao;

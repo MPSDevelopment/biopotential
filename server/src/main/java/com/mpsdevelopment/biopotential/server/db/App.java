@@ -1,6 +1,6 @@
 package com.mpsdevelopment.biopotential.server.db;
 
-import com.mps.machine.dbs.arkdb.ArkDBException;
+import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.arkdb.ArkDBException;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

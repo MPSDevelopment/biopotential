@@ -1,6 +1,5 @@
 package com.mpsdevelopment.biopotential.server.gui;
 
-import com.mps.machine.dbs.arkdb.ArkDBException;
 import com.mpsdevelopment.biopotential.server.JettyServer;
 import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
 import com.mpsdevelopment.biopotential.server.gui.authentication.AuthPanel;

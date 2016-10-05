@@ -1,17 +1,16 @@
 package com.mpsdevelopment.biopotential.server.cmp.machine;
 
-import com.mps.machine.*;
 
 import java.util.Iterator;
 
 public class DemoIter implements StrainDB {
-    public DemoIter(Iterator<com.mps.machine.Strain> iter) {
+    public DemoIter(Iterator<Strain> iter) {
         this.iter = iter;
     }
 
-    public com.mps.machine.Strain next() {
+    public Strain next() {
         return this.iter.hasNext() ? this.iter.next() : null;
     }
 
-    private final Iterator<com.mps.machine.Strain> iter;
+    private final Iterator<Strain> iter;
 }

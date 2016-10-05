@@ -1,18 +1,19 @@
 package com.mpsdevelopment.biopotential.server.cmp;
 
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.Analyzer;
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
+import com.mpsdevelopment.biopotential.server.cmp.machine.KindCondition;
+import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
+import com.mpsdevelopment.biopotential.server.cmp.machine.Strain;
+import com.mpsdevelopment.biopotential.server.cmp.machine.SummaryCondition;
+import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.h2db.H2DB;
+import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXStrain;
+
 import java.io.File;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-import com.mps._SoundIO;
-import com.mps.analyzer.AnalysisSummary;
-import com.mps.analyzer.Analyzer;
-import com.mps.analyzer.ChunkSummary;
-import com.mps.machine.*;
-import com.mps.machine.dbs.arkdb.ArkDB;
-import com.mps.machine.dbs.h2db.H2DB;
-import com.mps.machine.strains.EDXStrain;
-import com.mps.pcm.PCM;
 
 import javax.sound.sampled.AudioSystem;
 

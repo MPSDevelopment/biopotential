@@ -1,16 +1,16 @@
 package com.mpsdevelopment.biopotential.server.cmp.machine;
 
-import com.mps.analyzer.AnalysisSummary;
-import com.mps.analyzer.Analyzer;
-import com.mps.analyzer.ChunkSummary;
-import com.mps.machine.*;
+
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.Analyzer;
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
 
 import java.util.*;
 
 public class Machine {
-    public static Map<com.mps.machine.Strain, AnalysisSummary> summarizeStrains(SummaryCondition condition, List<ChunkSummary> sample_summary, StrainDB strains) {
-        final Map<com.mps.machine.Strain, AnalysisSummary> summaries = new HashMap<>();
-        com.mps.machine.Strain strain;
+    public static Map<Strain, AnalysisSummary> summarizeStrains(SummaryCondition condition, List<ChunkSummary> sample_summary, StrainDB strains) {
+        final Map<Strain, AnalysisSummary> summaries = new HashMap<>();
+        Strain strain;
         while ((strain = strains.next()) != null) {
             final AnalysisSummary summary = Analyzer.compare(sample_summary, strain.getSummary());
             if (summary != null && condition.test(strain, summary)) {
@@ -21,7 +21,7 @@ public class Machine {
     }
 
     public static Map<String, Integer> filterKinds(
-            KindCondition condition, Map<com.mps.machine.Strain, AnalysisSummary> summaries) {
+            KindCondition condition, Map<Strain, AnalysisSummary> summaries) {
         final Map<String, Integer> counters = new HashMap<>();
         final Map<String, Integer> result   = new HashMap<>();
         summaries.forEach((k, v) ->

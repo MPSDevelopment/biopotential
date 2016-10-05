@@ -1,7 +1,7 @@
 package com.mpsdevelopment.biopotential.server.cmp.machine.dbs.h2db;
 
-import com.mps.machine.StrainDB;
-import com.mps.machine.strains.EDXStrain;
+import com.mpsdevelopment.biopotential.server.cmp.machine.StrainDB;
+import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXStrain;
 import org.h2.command.Prepared;
 
 import java.io.IOException;
@@ -65,7 +65,7 @@ class H2DBIter implements StrainDB {
                         this.patterns.getString("FOLDERNAME"),
                         this.patterns.getString("PATTERNNAME"),
                         this.patterns.getString("PATTERNDESCRIPTION"),
-                        "./edxfiles/" + this.patterns.getString("PATTERNUID"),
+                        "./data/edxfiles/" + this.patterns.getString("PATTERNUID"),
                         this.patterns.getString("CORRECTORS"));
                 } catch (IOException e) {
                     e.printStackTrace();

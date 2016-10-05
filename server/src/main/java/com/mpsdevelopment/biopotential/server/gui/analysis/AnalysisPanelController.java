@@ -1,16 +1,17 @@
 package com.mpsdevelopment.biopotential.server.gui.analysis;
 
-import com.mps._SoundIO;
-import com.mps.analyzer.AnalysisSummary;
-import com.mps.analyzer.Analyzer;
-import com.mps.analyzer.ChunkSummary;
-import com.mps.machine.KindCondition;
-import com.mps.machine.Machine;
-import com.mps.machine.Strain;
-import com.mps.machine.SummaryCondition;
-import com.mps.machine.dbs.h2db.H2DB;
-import com.mps.machine.strains.EDXStrain;
+
 import com.mpsdevelopment.biopotential.server.AbstractController;
+import com.mpsdevelopment.biopotential.server.cmp._SoundIO;
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.Analyzer;
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
+import com.mpsdevelopment.biopotential.server.cmp.machine.KindCondition;
+import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
+import com.mpsdevelopment.biopotential.server.cmp.machine.Strain;
+import com.mpsdevelopment.biopotential.server.cmp.machine.SummaryCondition;
+import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.h2db.H2DB;
+import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXStrain;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
@@ -172,6 +173,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             System.out.println("start");
 
 //            final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(new File("test3.wav"))));
+
             final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(file)));
             final Map<Strain, AnalysisSummary> diseases = Machine.summarizeStrains(new SummaryCondition() {
                 @Override

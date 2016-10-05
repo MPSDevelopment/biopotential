@@ -1,8 +1,8 @@
 package com.mpsdevelopment.biopotential.server.cmp.machine;
 
-import com.mps.analyzer.ChunkSummary;
 
-import java.util.Collection;
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
+
 import java.util.List;
 
 public interface Strain {

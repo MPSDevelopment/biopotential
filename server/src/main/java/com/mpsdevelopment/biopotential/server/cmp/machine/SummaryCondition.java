@@ -1,8 +1,8 @@
 package com.mpsdevelopment.biopotential.server.cmp.machine;
 
-import com.mps.analyzer.AnalysisSummary;
-import com.mps.machine.*;
+
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 
 public interface SummaryCondition {
-    boolean test(com.mps.machine.Strain strain, AnalysisSummary summary);
+    boolean test(Strain strain, AnalysisSummary summary);
 }

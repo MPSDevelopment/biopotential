@@ -393,11 +393,11 @@
 			<artifactId>maven-resources-plugin</artifactId>
 			<version>${resources.plugin.version}</version>
 		</dependency>
-		<dependency>
+		<!--<dependency>
 			<groupId>groupId</groupId>
 			<artifactId>cmp</artifactId>
 			<version>1.0-SNAPSHOT</version>
-		</dependency>
+		</dependency>-->
 
 	</dependencies>
 

@@ -1,11 +1,8 @@
 package com.mpsdevelopment.biopotential.server.gui.correctors;
 
-import com.mps.analyzer.AnalysisSummary;
-import com.mps.machine.Machine;
-import com.mps.machine.Strain;
-import com.mps.machine.SummaryCondition;
-import com.mps.machine.strains.EDXStrain;
 import com.mpsdevelopment.biopotential.server.AbstractController;
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
+import com.mpsdevelopment.biopotential.server.cmp.machine.Strain;
 import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
 import com.mpsdevelopment.biopotential.server.db.pojo.DataTable;
 import com.mpsdevelopment.biopotential.server.db.pojo.Patterns;

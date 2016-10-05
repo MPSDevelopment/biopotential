@@ -1,7 +1,8 @@
 package com.mpsdevelopment.biopotential.server.cmp.machine.dbs.arkdb;
 
-import com.mps.machine.StrainDB;
-import com.mps.machine.strains.EDXStrain;
+
+import com.mpsdevelopment.biopotential.server.cmp.machine.StrainDB;
+import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXStrain;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -23,7 +24,7 @@ class ArkDBIter implements StrainDB {
                             this.patterns.getString("folder_name"),
                             this.patterns.getString("pattern_name"),
                             this.patterns.getString("pattern_description"),
-                            "edxfiles/" + this.patterns.getString("pattern_uid"),
+                            "data/edxfiles/" + this.patterns.getString("pattern_uid"),
                             null);
                     } catch (IOException e) {
                         e.printStackTrace();

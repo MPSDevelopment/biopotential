@@ -2,7 +2,6 @@ package com.mpsdevelopment.biopotential.server.cmp.machine.dbs.h2db;
 
 // import org.h2
 
-import com.mps.machine.dbs.h2db.H2DBException;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

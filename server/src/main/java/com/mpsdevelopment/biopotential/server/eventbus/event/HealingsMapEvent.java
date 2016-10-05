@@ -1,8 +1,8 @@
 package com.mpsdevelopment.biopotential.server.eventbus.event;
 
 
-import com.mps.analyzer.AnalysisSummary;
-import com.mps.machine.Strain;
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
+import com.mpsdevelopment.biopotential.server.cmp.machine.Strain;
 import com.mpsdevelopment.biopotential.server.eventbus.Event;
 
 import java.io.File;

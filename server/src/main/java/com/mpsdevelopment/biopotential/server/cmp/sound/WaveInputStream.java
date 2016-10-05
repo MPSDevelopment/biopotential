@@ -1,6 +1,5 @@
 package com.mpsdevelopment.biopotential.server.cmp.sound;
 
-import com.mps.sound.*;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -11,7 +10,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class WaveInputStream extends AudioInputStream implements com.mps.sound.SoundInput {
+public class WaveInputStream extends AudioInputStream implements SoundInput {
     public WaveInputStream(URL url)
             throws IOException, UnsupportedAudioFileException {
         this(new BufferedInputStream(url.openStream()));

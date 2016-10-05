@@ -1,6 +1,5 @@
 package com.mpsdevelopment.biopotential.server.cmp.machine.dbs.arkdb;
 
-import com.mps.machine.dbs.arkdb.ArkDBException;
 
 import java.sql.*;
 import java.util.Collection;

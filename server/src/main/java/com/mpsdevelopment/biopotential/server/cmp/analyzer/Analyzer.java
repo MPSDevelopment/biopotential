@@ -1,7 +1,5 @@
 package com.mpsdevelopment.biopotential.server.cmp.analyzer;
 
-import com.mps.analyzer.AnalysisSummary;
-import com.mps.analyzer.ChunkSummary;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,8 +1,10 @@
 package com.mpsdevelopment.biopotential.server.cmp.machine.strains;
 
-import com.mps.analyzer.Analyzer;
-import com.mps.analyzer.ChunkSummary;
-import com.mps.machine.Strain;
+
+
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.Analyzer;
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
+import com.mpsdevelopment.biopotential.server.cmp.machine.Strain;
 
 import java.io.*;
 import java.util.ArrayList;
