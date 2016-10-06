@@ -3,17 +3,10 @@ package com.mpsdevelopment.biopotential.server.gui.correctors;
 import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Strain;
-import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
 import com.mpsdevelopment.biopotential.server.db.pojo.DataTable;
-import com.mpsdevelopment.biopotential.server.db.pojo.Patterns;
-import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
-import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
 import com.mpsdevelopment.biopotential.server.eventbus.event.HealingsMapEvent;
-import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
-import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
-import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -23,16 +16,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.chart.ScatterChart;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import net.engio.mbassy.listener.Handler;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.File;
 import java.net.URL;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -55,8 +45,6 @@ public class CorrectorsPanelController extends AbstractController implements Sub
     private TableColumn<DataTable, String> numberColumn;
 
     private Stage primaryStage;
-    private Patterns[] patterns;
-    private Patterns[] arrangePatterns;
     private static Map<Strain,AnalysisSummary> healingsMap;
 
     public CorrectorsPanelController() {

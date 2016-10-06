@@ -23,14 +23,14 @@ class H2DBIter implements StrainDB {
             + "     PATTERNDESCRIPTION,"
             + "     PATTERNUID,"
             + "     FOLDERNAME,"
-            + "     FOLDERS_ID,"
+            + "     FOLDER_ID,"
             + "     CORRECTORS,"
-            + "     PATTERNS_ID\n"
-            + "FROM MAIN.FOLDERS\n"
+            + "     PATTERN_ID\n"
+            + "FROM MAIN.FOLDER\n"
             + "JOIN MAIN.PATTERNS_FOLDERS"
-            + "     ON FOLDERS.ID = PATTERNS_FOLDERS.FOLDERS_ID\n"
-            + "JOIN MAIN.PATTERNS"
-            + "     ON PATTERNS.ID = PATTERNS_FOLDERS.PATTERNS_ID\n"
+            + "     ON FOLDER.ID = PATTERNS_FOLDERS.FOLDER_ID\n"
+            + "JOIN MAIN.PATTERN"
+            + "     ON PATTERN.ID = PATTERNS_FOLDERS.PATTERN_ID\n"
             + "WHERE CORRECTORS IS NOT NULL");
     }
 
@@ -44,15 +44,15 @@ class H2DBIter implements StrainDB {
             + "     PATTERNDESCRIPTION,"
             + "     PATTERNUID,"
             + "     FOLDERNAME,"
-            + "     FOLDERS_ID,"
+            + "     FOLDER_ID,"
             + "     CORRECTORS,"
-            + "     PATTERNS_ID\n"
-            + "FROM MAIN.FOLDERS\n"
+            + "     PATTERN_ID\n"
+            + "FROM MAIN.FOLDER\n"
             + "JOIN MAIN.PATTERNS_FOLDERS"
-            + "     ON FOLDERS.ID = PATTERNS_FOLDERS.FOLDERS_ID\n"
-            + "JOIN MAIN.PATTERNS"
-            + "     ON PATTERNS.ID = PATTERNS_FOLDERS.PATTERNS_ID\n"
-            + "WHERE FOLDERS_ID = ?");
+            + "     ON FOLDER.ID = PATTERNS_FOLDERS.FOLDER_ID\n"
+            + "JOIN MAIN.PATTERN"
+            + "     ON PATTERN.ID = PATTERNS_FOLDERS.PATTERN_ID\n"
+            + "WHERE FOLDER_ID = ?");
         ps.setString(1, filter);
         this.patterns = ps.executeQuery();
     }
