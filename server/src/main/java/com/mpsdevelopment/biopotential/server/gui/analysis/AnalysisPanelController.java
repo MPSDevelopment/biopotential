@@ -168,7 +168,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         }*/
 
         try {
-            final H2DB db = new H2DB("./database", "", "sa");
+            final H2DB db = new H2DB("./data/database", "", "sa");
 
             System.out.println("start");
 
