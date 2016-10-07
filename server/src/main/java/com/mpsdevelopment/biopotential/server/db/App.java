@@ -15,10 +15,10 @@ public class App {
 
         DatabaseCreator databaseCreator = APP_CONTEXT.getBean(DatabaseCreator.class);
         LOGGER.info("databaseCreator %s", databaseCreator);
-        try {
+       /* try {
             databaseCreator.convertToH2("./data/test.arkdb");
         } catch (ArkDBException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 }

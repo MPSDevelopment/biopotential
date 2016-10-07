@@ -23,7 +23,7 @@ public class Main {
 //            final ArkDB db = new ArkDB("test.arkdb");
 //            db.setHealingFolders(Arrays.asList(490, 959, 2483));
 //            db.setDiseaseFolders(Collections.singletonList(4328));
-            final H2DB db = new H2DB("./database", "", "sa");
+            final H2DB db = new H2DB("./data/database", "", "sa");
 //            db.setDiseaseFolderIds(Collections.singletonList("1545990528770768896"));
 
             System.out.println("start");
