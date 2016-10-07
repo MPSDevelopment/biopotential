@@ -349,6 +349,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
             @Override
             public void handle(ActionEvent event) {
                 FileChooser fileChooser = new FileChooser();
+                fileChooser.setInitialDirectory(new File(System.getProperty("user.dir") + System.getProperty("file.separator")+ "files"));
                 File selectedFile = fileChooser.showOpenDialog(null);
 
                 EventBus.publishEvent(new FileChooserEvent(selectedFile));
