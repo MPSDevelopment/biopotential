@@ -27,7 +27,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.function.BiConsumer;
 
-public class CorrectorsPanelController extends AbstractController implements Subscribable {
+public class CorrectorsPanelController extends AbstractController /*implements Subscribable*/ {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(CorrectorsPanelController.class);
     private ObservableList<DataTable> correctorsData = FXCollections.observableArrayList();
@@ -184,10 +184,10 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         healingsMap = event.getMap();
     }
 
-    @Override
+    /*@Override
     public void subscribe() {
         EventBus.subscribe(this);
-    }
+    }*/
 
     private DataTable createDataTableObject(Strain k, AnalysisSummary v) {
         DataTable dataTable = new DataTable();

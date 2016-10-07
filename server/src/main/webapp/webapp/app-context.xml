@@ -13,8 +13,6 @@
 		<property name="path" value="config/server.json" />
 	</bean>
 
-
-
     <bean id="httpClient" class="com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient" />
 
 </beans>

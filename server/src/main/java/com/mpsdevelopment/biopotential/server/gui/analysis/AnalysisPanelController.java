@@ -125,7 +125,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         scatterChart.setTitle("Body Overview");
 
         XYChart.Series series1 = new XYChart.Series();
-        series1.getData().add(new XYChart.Data(20.0, 90));
+        series1.getData().add(new XYChart.Data(15.0, 90));
         series1.getData().add(new XYChart.Data(2.8, 33.6));
         series1.getData().add(new XYChart.Data(1.8, 81.4));
 
@@ -226,7 +226,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
                     }
                 }
             });
-            LOGGER.info("healings size %s", healings.size());
+            LOGGER.info("healings size %s", allHealings.size());
             EventBus.publishEvent(new HealingsMapEvent(allHealings));
 
         } catch (Exception e) {
@@ -268,10 +268,10 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         file = event.getFile();
     }
 
-    @Override
+    /*@Override
     public void subscribe() {
         EventBus.subscribe(this);
-    }
+    }*/
 
 }
 

@@ -1,5 +1,7 @@
 package com.mpsdevelopment.biopotential.server;
 
+import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.arkdb.ArkDBException;
+import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
@@ -28,7 +30,7 @@ public class JettyServer {
 
 	private static final Logger LOGGER = LoggerUtil.getLogger(JettyServer.class);
 
-	public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/app-context.xml");
+	public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/app-context.xml", "webapp/web-context.xml");
 
 	public static XmlWebApplicationContext WEB_CONTEXT;
 
@@ -56,6 +58,9 @@ public class JettyServer {
 	}
 
 	public void start() throws ServletException {
+
+		DatabaseCreator databaseCreator = APP_CONTEXT.getBean(DatabaseCreator.class);
+
 		server = new Server();
 		ServerConnector connector = new ServerConnector(server);
 		connector.setPort(serverSettings.getPort());
