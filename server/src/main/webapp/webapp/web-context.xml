@@ -51,6 +51,7 @@
     <bean id="automaticsPanelController" class="com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.AutomaticsPanelController" />
     <bean id="analysisPanelController" class="com.mpsdevelopment.biopotential.server.gui.analysis.AnalysisPanelController" />
     <bean id="correctorsPanelController" class="com.mpsdevelopment.biopotential.server.gui.correctors.CorrectorsPanelController" />
+    <bean id="addCorrectorController" class="com.mpsdevelopment.biopotential.server.gui.correctors.AddCorrectorController" />
     <bean id="visitsController" class="com.mpsdevelopment.biopotential.server.controller.VisitsController" />
     <bean id="patternsController" class="com.mpsdevelopment.biopotential.server.controller.PatternsController" />
 

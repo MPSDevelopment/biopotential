@@ -15,6 +15,7 @@ public class Analyzer {
         final List<ChunkSummary> summaries = new ArrayList<>();
 
         // Somewhat resembling wavelet transform
+        // convert List<Double> to double[]
         double[] buffer = frames.stream().mapToDouble(new ToDoubleFunction<Double>() {
             @Override
             public double applyAsDouble(Double aDouble) {
@@ -22,16 +23,17 @@ public class Analyzer {
             }
         }).toArray();
         int count = (frames.size() - 5) / 2;
-        while (count > 0) {;
+        while (count > 0) {
+            ;
             final double[] sum = new double[count];
             final double[] diff = new double[count];
-            for (int j = 0; j < count; j += 1) {
+            for (int j = 0; j < count; j++) {
                 sum[j] = buffer[j * 2] * 0.0352262918821
-                       + buffer[j * 2 + 1] * 0.08544127388224
-                       + buffer[j * 2 + 2] * -0.13501102001039
-                       + buffer[j * 2 + 3] * -0.45987750211933
-                       + buffer[j * 2 + 4] * 0.80689150931334
-                       + buffer[j * 2 + 5] * -0.33267055295096;
+                        + buffer[j * 2 + 1] * 0.08544127388224
+                        + buffer[j * 2 + 2] * -0.13501102001039
+                        + buffer[j * 2 + 3] * -0.45987750211933
+                        + buffer[j * 2 + 4] * 0.80689150931334
+                        + buffer[j * 2 + 5] * -0.33267055295096;
 
                 diff[j] = buffer[j * 2] * 0.33267055295096
                         + buffer[j * 2 + 1] * 0.80689150931334
@@ -40,9 +42,9 @@ public class Analyzer {
                         + buffer[j * 2 + 4] * -0.08544127388224
                         + buffer[j * 2 + 5] * 0.0352262918821;
             }
-            final double meanDeviation = computeMeanDeviation(sum);
-            final double dispersion = computeDispersion(sum, meanDeviation);
-            summaries.add(new ChunkSummary(meanDeviation, dispersion));
+            final double meanDeviation = computeMeanDeviation(sum); // среднее отклонение, считается для каждого чанка
+            final double dispersion = computeDispersion(sum, meanDeviation); // дисперсия
+            summaries.add(new ChunkSummary(meanDeviation, dispersion)); // add Deviation and Dispersion to List<ChunkSummary>
 
             buffer = diff;
             count = (count - 5) / 2;
@@ -67,8 +69,7 @@ public class Analyzer {
         return summaries;
     }
 
-    public static AnalysisSummary compare(List<ChunkSummary> first,
-                                          List<ChunkSummary> second) {
+    public static AnalysisSummary compare(List<ChunkSummary> first, List<ChunkSummary> second) {
         if (first == null || second == null) {
             return null;
         }
@@ -84,17 +85,14 @@ public class Analyzer {
             final ChunkSummary chunk1 = firstI.next();
             final ChunkSummary chunk2 = secondI.next();
 
-            meanDeviation += Math.abs(
-                chunk1.getMeanDeviation() - chunk2.getMeanDeviation());
-            dispersion += Math.abs(
-                chunk1.getDispersion() - chunk2.getDispersion());
+            meanDeviation += Math.abs(chunk1.getMeanDeviation() - chunk2.getMeanDeviation());
+            dispersion += Math.abs(chunk1.getDispersion() - chunk2.getDispersion());
         }
 
-        meanDeviation /= size;
-        dispersion /= size;
+        meanDeviation = meanDeviation / size;
+        dispersion = dispersion / size;
 
-        return new AnalysisSummary(meanDeviation, dispersion,
-            Float.floatToIntBits((float) dispersion) << 29);
+        return new AnalysisSummary(meanDeviation, dispersion, Float.floatToIntBits((float) dispersion) << 29); // старшые два бита это уровень
     }
 
     private static double computeMeanDeviation(double[] sum) {

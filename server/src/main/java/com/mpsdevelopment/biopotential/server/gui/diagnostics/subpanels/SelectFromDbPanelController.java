@@ -196,10 +196,13 @@ public class SelectFromDbPanelController extends AbstractController implements S
 
         // sort all users by name
         Arrays.sort(users, new Comparator<User>() {
+            @Override
             public int compare(User o1, User o2) {
                 return o1.getSurname().toString().compareTo(o2.getSurname().toString());
             }
         });
+
+//        Arrays.sort(users, (o1,o2) -> o1.getSurname().toString().compareTo(o2.getSurname().toString()));
 
         for (User unit : users) {
 

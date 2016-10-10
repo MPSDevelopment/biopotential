@@ -8,10 +8,10 @@ import com.mpsdevelopment.biopotential.server.cmp.analyzer.Analyzer;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.KindCondition;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
-import com.mpsdevelopment.biopotential.server.cmp.machine.Strain;
+import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.cmp.machine.SummaryCondition;
 import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.h2db.H2DB;
-import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXStrain;
+import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
@@ -27,7 +27,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.chart.ScatterChart;
@@ -71,8 +70,8 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     private Stage primaryStage;
     private static File file;
-    private static Map<Strain, AnalysisSummary> healings;
-    Map<Strain, AnalysisSummary> allHealings = new HashMap<Strain, AnalysisSummary>();
+    private static Map<Pattern, AnalysisSummary> healings;
+    Map<Pattern, AnalysisSummary> allHealings = new HashMap<Pattern, AnalysisSummary>();
 
 
     public AnalysisPanelController() {
@@ -111,15 +110,12 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             }
         });
 
-        continueButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                CorrectorsPanel panel = new CorrectorsPanel();
-                Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Коррекция").setClazz(panel.getClass()).setHeight(722d).setWidth(1273d).setHeightPanel(722d).setWidthPanel(1273d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
-                panel.setPrimaryStage(stage);
+        continueButton.setOnAction(event -> {
+            CorrectorsPanel panel = new CorrectorsPanel();
+            Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Коррекция").setClazz(panel.getClass()).setHeight(722d).setWidth(1273d).setHeightPanel(722d).setWidthPanel(1273d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+            panel.setPrimaryStage(stage);
 
 
-            }
         });
 
         scatterChart.setTitle("Body Overview");
@@ -146,17 +142,17 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 //            final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(new File("test3.wav"))));
             final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(file)));
 
-            final Map<Strain, AnalysisSummary> diseases = Machine.summarizeStrains(new SummaryCondition() {
+            final Map<Pattern, AnalysisSummary> diseases = Machine.summarizePatterns(new SummaryCondition() {
                 @Override
-                public boolean test(Strain strain, AnalysisSummary summary) {
+                public boolean test(Pattern strain, AnalysisSummary summary) {
 
                     return summary.getDispersion() == 0;
                 }
             }, sample, db.getDiseaseIds());
 
-            diseases.forEach(new BiConsumer<Strain, AnalysisSummary>() {
+            diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
                 @Override
-                public void accept(Strain k, AnalysisSummary v) {
+                public void accept(Pattern k, AnalysisSummary v) {
                     LOGGER.info("d: %s\t%d\n", k.getName(), v.getDispersion());
 
                     analysisData.add(createDataTableObject(k,v));
@@ -175,17 +171,17 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 //            final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(new File("test3.wav"))));
 
             final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(file)));
-            final Map<Strain, AnalysisSummary> diseases = Machine.summarizeStrains(new SummaryCondition() {
+            final Map<Pattern, AnalysisSummary> diseases = Machine.summarizePatterns(new SummaryCondition() {
                 @Override
-                public boolean test(Strain strain, AnalysisSummary summary) {
+                public boolean test(Pattern strain, AnalysisSummary summary) {
                     return summary.getDegree() == 0 /*|| summary.getDispersion() == -21*/;
                 }
             },sample, db.getDiseases());
 
 
-            diseases.forEach(new BiConsumer<Strain, AnalysisSummary>() {
+            diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
                 @Override
-                public void accept(Strain k, AnalysisSummary v) {
+                public void accept(Pattern k, AnalysisSummary v) {
                     System.out.printf("%s\t%f\n", k.getName(), v.getDispersion());
 //                    LOGGER.info("d: %s\t%f\n", k.getName(), v.getDispersion());
 
@@ -200,23 +196,23 @@ public class AnalysisPanelController extends AbstractController implements Subsc
                 }
             }, diseases);
 
-            diseases.forEach(new BiConsumer<Strain, AnalysisSummary>() {
+            diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
                 @Override
-                public void accept(Strain dk, AnalysisSummary dv) {
+                public void accept(Pattern dk, AnalysisSummary dv) {
                     System.out.printf("heals for %s %s\n", dk.getKind(), dk.getName());
                     if (probableKinds.containsKey(dk.getKind())) {
-                        /*final Map<Strain, AnalysisSummary>*/
-                        healings = Machine.summarizeStrains(new SummaryCondition() {
+                        /*final Map<Pattern, AnalysisSummary>*/
+                        healings = Machine.summarizePatterns(new SummaryCondition() {
                             @Override
-                            public boolean test(Strain strain, AnalysisSummary summary) { // и потом берутся только те которые summary.getDispersion() == 0 т.е. MAx
+                            public boolean test(Pattern pattern, AnalysisSummary summary) { // и потом берутся только те которые summary.getDispersion() == 0 т.е. MAx
                                 return summary.getDegree() == 0;
                             }
-                        }, sample, db.getIterForFolder(((EDXStrain) dk).getCorrectingFolder())); // вытягиваются папка с коректорами для конкретной болезни BAC -> FL BAC
+                        }, sample, db.getIterForFolder(((EDXPattern) dk).getCorrectingFolder())); // вытягиваются папка с коректорами для конкретной болезни BAC -> FL BAC
 
 
-                        healings.forEach(new BiConsumer<Strain, AnalysisSummary>() {
+                        healings.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
                             @Override
-                            public void accept(Strain hk, AnalysisSummary hv) {
+                            public void accept(Pattern hk, AnalysisSummary hv) {
 //                            hk.getPCMData()
                                 LOGGER.info("%s %s\n", hk.getKind(), hk.getName(), hv.getDispersion());
 
@@ -236,7 +232,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     }
 
-    private DataTable createDataTableObject(Strain k, AnalysisSummary v) {
+    private DataTable createDataTableObject(Pattern k, AnalysisSummary v) {
         DataTable dataTable = new DataTable();
         dataTable.setName(k.getName());
         dataTable.setDispersion(v.getDispersion());

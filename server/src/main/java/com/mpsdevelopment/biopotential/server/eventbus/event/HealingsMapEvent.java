@@ -2,25 +2,24 @@ package com.mpsdevelopment.biopotential.server.eventbus.event;
 
 
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
-import com.mpsdevelopment.biopotential.server.cmp.machine.Strain;
+import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.eventbus.Event;
 
-import java.io.File;
 import java.util.Map;
 
 public class HealingsMapEvent extends Event {
 
-    private Map<Strain, AnalysisSummary> map;
+    private Map<Pattern, AnalysisSummary> map;
 
-    public HealingsMapEvent(Map<Strain, AnalysisSummary> map) {
+    public HealingsMapEvent(Map<Pattern, AnalysisSummary> map) {
         this.map = map;
     }
 
-    public Map<Strain, AnalysisSummary> getMap() {
+    public Map<Pattern, AnalysisSummary> getMap() {
         return map;
     }
 
-    public void setMap(Map<Strain, AnalysisSummary> map) {
+    public void setMap(Map<Pattern, AnalysisSummary> map) {
         this.map = map;
     }
 }

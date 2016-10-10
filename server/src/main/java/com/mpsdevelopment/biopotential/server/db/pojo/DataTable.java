@@ -19,4 +19,12 @@ public class DataTable {
     public void setDispersion(double dispersion) {
         this.dispersion = dispersion;
     }
+
+    @Override
+    public String toString() {
+        return "DataTable{" +
+                "name='" + name + '\'' +
+                ", dispersion=" + dispersion +
+                '}';
+    }
 }

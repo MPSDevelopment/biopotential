@@ -22,13 +22,13 @@ public class _SoundIO {
             throws IOException {
         final AudioFormat format = audioStream.getFormat();
 
-        if (format.getEncoding() != PCM_UNSIGNED) {
+        if (format.getEncoding() != PCM_UNSIGNED) { // если кодировка ИКМ беззнаковая
             throw new IOException("Bad encoding");
         }
-        if (format.getChannels() != 1) {
+        if (format.getChannels() != 1) { // если не 1 канал
             throw new IOException("Bad number of channels");
         }
-        if (format.getSampleSizeInBits() != 8) {
+        if (format.getSampleSizeInBits() != 8) { // Величина амплитуды в момент оцифровки
             throw new IOException("Bad sample rate");
         }
 
@@ -50,7 +50,7 @@ public class _SoundIO {
 //              ? readFrameBE(rawData, rawPtr, frameSize)
 //              : readFrameLE(rawData, rawPtr, frameSize);
             //peaks[0][i] = (double) (byte) (rawData[i] ^ 0x80) / 128.0;
-            peaks.add((double) (byte) (rawData[i] ^ 0x80) / 128.0);
+            peaks.add((double) (byte) (rawData[i] ^ 0x80) / 128.0); // усреднение.. привести все к амплитуде 1 + делает инверсию
         }
 
         return peaks;

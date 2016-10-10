@@ -2,11 +2,12 @@ package com.mpsdevelopment.biopotential.server.gui.correctors;
 
 import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
-import com.mpsdevelopment.biopotential.server.cmp.machine.Strain;
+import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.db.pojo.DataTable;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
-import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.HealingsMapEvent;
+import com.mpsdevelopment.biopotential.server.settings.StageSettings;
+import com.mpsdevelopment.biopotential.server.utils.StageUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -14,8 +15,11 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
@@ -44,8 +48,14 @@ public class CorrectorsPanelController extends AbstractController /*implements S
     @FXML
     private TableColumn<DataTable, String> numberColumn;
 
+    @FXML
+    private Button createFileCorrection;
+
+    @FXML
+    private Button addCorrectorButton;
+
     private Stage primaryStage;
-    private static Map<Strain,AnalysisSummary> healingsMap;
+    private static Map<Pattern,AnalysisSummary> healingsMap;
 
     public CorrectorsPanelController() {
         EventBus.subscribe(this);
@@ -57,6 +67,8 @@ public class CorrectorsPanelController extends AbstractController /*implements S
         getPatters();
 
         сorrectorsTable.setItems(correctorsData);
+        сorrectorsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        сorrectorsTable.getSelectionModel().setCellSelectionEnabled(true);
 
         numberColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
             @Override public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> p) {
@@ -84,6 +96,20 @@ public class CorrectorsPanelController extends AbstractController /*implements S
                 return property;
             }
         });
+        createFileCorrection.setOnAction(event -> {
+            ObservableList<DataTable> selectedItems = сorrectorsTable.getSelectionModel().getSelectedItems();
+            LOGGER.info("Selected item %s", selectedItems);
+        });
+
+        addCorrectorButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                AddCorrectorPanel panel = new AddCorrectorPanel();
+                Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Добавить корректор").setClazz(panel.getClass()).setHeight(220d).setWidth(330d).setHeightPanel(208d).setWidthPanel(306d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+                panel.setPrimaryStage(stage);
+            }
+        });
+
 
 
     }
@@ -109,18 +135,18 @@ public class CorrectorsPanelController extends AbstractController /*implements S
 
 //        LOGGER.info("arrangePatterns size %s", arrangePatterns.length);
 
-       /* final Map<Strain, AnalysisSummary> healings = Machine.summarizeStrains(
+       /* final Map<Pattern, AnalysisSummary> healings = Machine.summarizePatterns(
                 new SummaryCondition() {
                     @Override
-                    public boolean test(Strain strain, AnalysisSummary summary) { // и потом берутся только те которые summary.getDispersion() == 0 т.е. MAx
+                    public boolean test(Pattern strain, AnalysisSummary summary) { // и потом берутся только те которые summary.getDispersion() == 0 т.е. MAx
                         return summary.getDegree() == 0;
                     }
                 },
                 sample,
-                db.getIterForFolder(((EDXStrain) dk).getCorrectingFolder())); // вытягиваются папка с коректорами для конкретной болезни BAC -> FL BAC
-        healings.forEach(new BiConsumer<Strain, AnalysisSummary>() {
+                db.getIterForFolder(((EDXPattern) dk).getCorrectingFolder())); // вытягиваются папка с коректорами для конкретной болезни BAC -> FL BAC
+        healings.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
             @Override
-            public void accept(Strain hk, AnalysisSummary hv) {
+            public void accept(Pattern hk, AnalysisSummary hv) {
 //                            hk.getPCMData()
                 System.out.printf("%s %s\n",
                         hk.getKind(), hk.getName());
@@ -147,9 +173,9 @@ public class CorrectorsPanelController extends AbstractController /*implements S
 
         сorrectorsTable.setItems(correctorsData);*/
 
-        healingsMap.forEach(new BiConsumer<Strain, AnalysisSummary>() {
+        healingsMap.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
             @Override
-            public void accept(Strain hk, AnalysisSummary hv) {
+            public void accept(Pattern hk, AnalysisSummary hv) {
                 System.out.printf("%s %s\n", hk.getKind(), hk.getName(), hv.getDispersion());
 
                 correctorsData.add(createDataTableObject(hk,hv));
@@ -189,7 +215,7 @@ public class CorrectorsPanelController extends AbstractController /*implements S
         EventBus.subscribe(this);
     }*/
 
-    private DataTable createDataTableObject(Strain k, AnalysisSummary v) {
+    private DataTable createDataTableObject(Pattern k, AnalysisSummary v) {
         DataTable dataTable = new DataTable();
         dataTable.setName(k.getName());
         dataTable.setDispersion(v.getDispersion());

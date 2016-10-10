@@ -3,16 +3,15 @@ package com.mpsdevelopment.biopotential.server.cmp.machine.strains;
 
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.Analyzer;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
-import com.mpsdevelopment.biopotential.server.cmp.machine.Strain;
+import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 
 // Implemented for legacy reasons
-public class WAWStrain implements Strain {
-    public WAWStrain(String kind, String name, String fileName)
+public class WAWPattern implements Pattern {
+    public WAWPattern(String kind, String name, String fileName)
             throws IOException {
         this.kind = kind;
         this.name = name;

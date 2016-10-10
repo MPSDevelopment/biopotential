@@ -1,19 +1,16 @@
 package com.mpsdevelopment.biopotential.server.cmp.machine.dbs.h2db;
 
-import com.mpsdevelopment.biopotential.server.cmp.machine.StrainDB;
-import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXStrain;
-import org.h2.command.Prepared;
+import com.mpsdevelopment.biopotential.server.cmp.machine.PatternDB;
+import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.math.BigDecimal;
-import java.net.URL;
 import java.sql.*;
-import java.util.Calendar;
-import java.util.Collection;
 
-class H2DBIter implements StrainDB {
+class H2DBIter implements PatternDB {
+
+    protected final Connection db;
+    protected final ResultSet patterns;
+
     H2DBIter(Connection db) throws SQLException {
         this.db = db;
         this.patterns = this.db.createStatement().executeQuery(
@@ -57,11 +54,11 @@ class H2DBIter implements StrainDB {
         this.patterns = ps.executeQuery();
     }
 
-    public EDXStrain next() {
+    public EDXPattern next() {
         try {
             while (this.patterns.next()) {
                 try {
-                    return new EDXStrain(
+                    return new EDXPattern(
                         this.patterns.getString("FOLDERNAME"),
                         this.patterns.getString("PATTERNNAME"),
                         this.patterns.getString("PATTERNDESCRIPTION"),
@@ -79,6 +76,5 @@ class H2DBIter implements StrainDB {
         }
     }
 
-    protected final Connection db;
-    protected final ResultSet patterns;
+
 }

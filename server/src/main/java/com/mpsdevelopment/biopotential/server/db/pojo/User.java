@@ -277,4 +277,26 @@ public class User extends BaseObject {
     public void setVisits(List<Visit> visits) {
         this.visits = visits;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "visits=" + visits +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", patronymic='" + patronymic + '\'' +
+                ", role='" + role + '\'' +
+                ", rank='" + rank + '\'' +
+                ", division='" + division + '\'' +
+                ", call='" + call + '\'' +
+                ", admin=" + admin +
+                ", tel='" + tel + '\'' +
+                ", email='" + email + '\'' +
+                ", bornPlace='" + bornPlace + '\'' +
+                ", bornDate=" + bornDate +
+                ", gender='" + gender + '\'' +
+                '}';
+    }
 }

@@ -484,6 +484,7 @@
 										<include>web/**</include>
 										<include>config/**</include>
 										<include>data/**</include>
+										<include>files/**</include>
 									</includes>
 								</resource>
 							</resources>
@@ -504,6 +505,7 @@
 										<include>web/**</include>
 										<include>config/**</include>
 										<include>data/**</include>
+										<include>files/**</include>
 									</includes>
 								</resource>
 							</resources>
@@ -517,7 +519,6 @@
 				<version>${excelsiorjet.plugin.version}</version>
 				<configuration>
 					<mainClass>com.mpsdevelopment.biopotential.server.gui.BioApplication</mainClass>
-					<!--<mainJar>${project.build.directory}\${project.build.finalName}-${maven.jar.classifier}.jar</mainJar>-->
 					<jetOutputDir>${jet.output.directory}</jetOutputDir>
 					<!-- <packaging>excelsior-installer</packaging> -->
 					<icon>${project.basedir}/build/bio.ico</icon>
@@ -546,6 +547,10 @@
 			<resource>
 				<directory>data</directory>
 				<targetPath>${project.build.directory}/data/</targetPath>
+			</resource>
+			<resource>
+				<directory>files</directory>
+				<targetPath>${project.build.directory}/files/</targetPath>
 			</resource>
 			<resource>
 				<directory>web</directory>

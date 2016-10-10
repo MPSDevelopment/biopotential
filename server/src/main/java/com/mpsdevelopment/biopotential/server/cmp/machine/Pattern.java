@@ -5,7 +5,7 @@ import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
 
 import java.util.List;
 
-public interface Strain {
+public interface Pattern {
     String getKind();
     String getName();
     String getDescription();

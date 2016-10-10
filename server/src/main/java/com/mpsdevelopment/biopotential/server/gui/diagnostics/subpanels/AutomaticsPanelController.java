@@ -39,7 +39,7 @@ import java.util.*;
 public class AutomaticsPanelController extends AbstractController implements Subscribable {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(AutomaticsPanelController.class);
-    private ObservableList<User> usersData = FXCollections.observableArrayList();
+    ObservableList<String> items = FXCollections.observableArrayList("Max", "Po");
 
     @Autowired
     private BioHttpClient deviceBioHttpClient;
@@ -82,6 +82,8 @@ public class AutomaticsPanelController extends AbstractController implements Sub
                 close();
             }
         });
+
+        whatShowComboBox.setItems(items);
 
     }
 

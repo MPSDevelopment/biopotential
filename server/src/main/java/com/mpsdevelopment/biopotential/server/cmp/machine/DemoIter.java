@@ -3,14 +3,14 @@ package com.mpsdevelopment.biopotential.server.cmp.machine;
 
 import java.util.Iterator;
 
-public class DemoIter implements StrainDB {
-    public DemoIter(Iterator<Strain> iter) {
+public class DemoIter implements PatternDB {
+    public DemoIter(Iterator<Pattern> iter) {
         this.iter = iter;
     }
 
-    public Strain next() {
+    public Pattern next() {
         return this.iter.hasNext() ? this.iter.next() : null;
     }
 
-    private final Iterator<Strain> iter;
+    private final Iterator<Pattern> iter;
 }

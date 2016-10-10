@@ -18,8 +18,8 @@
             <TableColumn prefWidth="114.0" text="Выбрать" />
         </columns>
       </TableView>
-      <Button layoutX="603.0" layoutY="683.0" mnemonicParsing="false" text="Создать файл коррекции" />
+      <Button fx:id="createFileCorrection" layoutX="603.0" layoutY="683.0" mnemonicParsing="false" text="Создать файл коррекции" />
       <Button layoutX="767.0" layoutY="683.0" mnemonicParsing="false" text="Назад" />
-      <Button layoutX="465.0" layoutY="683.0" mnemonicParsing="false" text="Добавить корректор" />
+      <Button fx:id="addCorrectorButton" layoutX="465.0" layoutY="683.0" mnemonicParsing="false" text="Добавить корректор" />
    </children>
 </AnchorPane>

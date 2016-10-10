@@ -2,9 +2,13 @@ package com.mpsdevelopment.biopotential.server.cmp.analyzer;
 
 
 public class ChunkSummary {
+
+    private final double meanDeviation;
+    private final double dispersion;
+
     public ChunkSummary(double meanDeviation, double dispersion) {
         this.meanDeviation = meanDeviation;
-        this.dispersion    = dispersion;
+        this.dispersion = dispersion;
     }
 
     public double getMeanDeviation() {
@@ -15,6 +19,5 @@ public class ChunkSummary {
         return this.dispersion;
     }
 
-    private final double meanDeviation;
-    private final double dispersion;
+
 }

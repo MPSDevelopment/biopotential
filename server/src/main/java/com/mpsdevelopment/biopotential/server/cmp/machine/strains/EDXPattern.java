@@ -1,10 +1,9 @@
 package com.mpsdevelopment.biopotential.server.cmp.machine.strains;
 
 
-
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.Analyzer;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
-import com.mpsdevelopment.biopotential.server.cmp.machine.Strain;
+import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -18,23 +17,28 @@ class EDXSection {
     byte[] contents;
 }
 
-public class EDXStrain implements Strain {
-    public EDXStrain(String kind, String name,
-                     String desc, String fileName) throws IOException {
+public class EDXPattern implements Pattern {
+
+    final private HashMap<String, EDXSection> sects;
+    final private List<ChunkSummary> summary;
+    final private List<Double> pcmData;
+    final private String correctingFolder;
+    final private String kind;
+    final private String name;
+    final private String desc;
+
+    public EDXPattern(String kind, String name, String desc, String fileName) throws IOException {
         this(kind, name, desc, fileName, null);
     }
 
-    public EDXStrain(String kind, String name,
-                     String desc, String fileName,
-                     String correctingFolder) throws IOException {
+    public EDXPattern(String kind, String name, String desc, String fileName, String correctingFolder) throws IOException {
         this.kind = kind;
         this.name = name;
         this.desc = desc;
         this.sects = new HashMap<>();
         this.correctingFolder = correctingFolder;
 
-        try (RandomAccessFile in =
-                new RandomAccessFile(new File(fileName), "r")) {
+        try (RandomAccessFile in = new RandomAccessFile(new File(fileName), "r")) {
             final byte[] hdr = new byte[4];
             if (in.read(hdr) != 4 || !new String(hdr).equals("EDXI")) {
                 throw new IOException("not EDX");
@@ -113,20 +117,14 @@ public class EDXStrain implements Strain {
             byte[] raw = new byte[4];
             in.read(raw);
             return (raw[0] & 0xff)
-                | ((raw[1] & 0xff) << 8)
-                | ((raw[2] & 0xff) << 16)
-                | ((raw[3] & 0xff) << 24);
+                    | ((raw[1] & 0xff) << 8)
+                    | ((raw[2] & 0xff) << 16)
+                    | ((raw[3] & 0xff) << 24);
         } catch (IOException e) {
             e.printStackTrace();
             return 0;
         }
     }
 
-    final private HashMap<String, EDXSection> sects;
-    final private List<ChunkSummary> summary;
-    final private List<Double> pcmData;
-    final private String correctingFolder;
-    final private String kind;
-    final private String name;
-    final private String desc;
+
 }
