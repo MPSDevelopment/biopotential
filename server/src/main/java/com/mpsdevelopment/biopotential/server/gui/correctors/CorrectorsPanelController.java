@@ -3,6 +3,7 @@ package com.mpsdevelopment.biopotential.server.gui.correctors;
 import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
+import com.mpsdevelopment.biopotential.server.cmp.pcm.PCM;
 import com.mpsdevelopment.biopotential.server.db.pojo.DataTable;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.event.HealingsMapEvent;
@@ -15,6 +16,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -27,14 +29,23 @@ import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import net.engio.mbassy.listener.Handler;
 
+import javax.sound.sampled.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.ToDoubleFunction;
 
 public class CorrectorsPanelController extends AbstractController /*implements Subscribable*/ {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(CorrectorsPanelController.class);
     private ObservableList<DataTable> correctorsData = FXCollections.observableArrayList();
+
+    private static File outputFile = new File("data\\out\\out.wav");
+
 
     @FXML
     private TableView<DataTable> сorrectorsTable;
@@ -97,8 +108,51 @@ public class CorrectorsPanelController extends AbstractController /*implements S
             }
         });
         createFileCorrection.setOnAction(event -> {
+            Collection lists = new HashSet();
+//            Collection hash = new HashSet<DataTable>();
+            HashSet<DataTable> hash = new HashSet<>();
             ObservableList<DataTable> selectedItems = сorrectorsTable.getSelectionModel().getSelectedItems();
-            LOGGER.info("Selected item %s", selectedItems);
+            LOGGER.info("Selected item %s", selectedItems.size());
+
+            ArrayList<DataTable> temp = new ArrayList<>(selectedItems);
+            hash = removeDuplicates(temp);
+
+            /*for (DataTable item : hash) {
+                healingsMap.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
+                    @Override
+                    public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
+
+                        if (item.getName().equals(pattern.getName())) {
+                            List<Double> pcmData = pattern.getPCMData();
+                            lists.add(pcmData);
+                        }
+
+                    }
+                });
+            }*/
+
+            selectedItems.forEach((tab) -> {
+                healingsMap.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
+                    @Override
+                    public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
+
+                        if (tab.getName().equals(pattern.getName())) {
+                            List<Double> pcmData = pattern.getPCMData();
+                            lists.add(pcmData);
+                        }
+
+                    }
+                });
+            });
+
+            LOGGER.info("Added correctors %s", lists.size());
+            try {
+                merge(lists);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (UnsupportedAudioFileException e) {
+                e.printStackTrace();
+            }
         });
 
         addCorrectorButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -114,74 +168,22 @@ public class CorrectorsPanelController extends AbstractController /*implements S
 
     }
 
-
-
-    public void getPatters() {
-        /*String url = String.format("http://%s:%s%s", settings.getHost(), settings.getPort(), ControllerAPI.PATTERNS_CONTROLLER + ControllerAPI.PATTERNS_CONTROLLER_GET_ALL);
-        String json = deviceBioHttpClient.executeGetRequest(url);
-        patterns = JsonUtils.fromJson(Patterns[].class, json);
-        correctorsData.clear();*/
-        /*arrangePatterns = new Patterns[0];
-        int i = 0;
-        int count = 0;
-        for (Patterns pat : patterns) {
-            if((!pat.getPatternName().contains("BAC ")) && (!pat.getPatternName().contains("Muc ") && (!pat.getPatternName().contains("VIR ")))) {
-                arrangePatterns[i] = pat;
-                i++;
-            }
-            else count++;
-
-        }*/
-
-//        LOGGER.info("arrangePatterns size %s", arrangePatterns.length);
-
-       /* final Map<Pattern, AnalysisSummary> healings = Machine.summarizePatterns(
-                new SummaryCondition() {
-                    @Override
-                    public boolean test(Pattern strain, AnalysisSummary summary) { // и потом берутся только те которые summary.getDispersion() == 0 т.е. MAx
-                        return summary.getDegree() == 0;
-                    }
-                },
-                sample,
-                db.getIterForFolder(((EDXPattern) dk).getCorrectingFolder())); // вытягиваются папка с коректорами для конкретной болезни BAC -> FL BAC
-        healings.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
-            @Override
-            public void accept(Pattern hk, AnalysisSummary hv) {
-//                            hk.getPCMData()
-                System.out.printf("%s %s\n",
-                        hk.getKind(), hk.getName());
-            }
-        });*/
-
-
-
-
-        // sort all users by name
-        /*Arrays.sort(patterns, new Comparator<Patterns>() {
-            public int compare(Patterns o1, Patterns o2) {
-                    return o1.getPatternName().toString().compareTo(o2.getPatternName().toString());
-
-            }
-        });
-
-        for (Patterns unit : patterns) {
-
-//            LOGGER.info("User - %s", unit.getLogin() +unit.getName() +" " +unit.getSurname() + unit.getGender());
-            correctorsData.add(unit);
-
-        }
-
-        сorrectorsTable.setItems(correctorsData);*/
+    public void getPatters()  {
 
         healingsMap.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
             @Override
-            public void accept(Pattern hk, AnalysisSummary hv) {
-                System.out.printf("%s %s\n", hk.getKind(), hk.getName(), hv.getDispersion());
-
-                correctorsData.add(createDataTableObject(hk,hv));
+            public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
+                System.out.printf("%s %s\n", pattern.getKind(), pattern.getName(), analysisSummary.getDispersion());
+                /*List<Double> pcmData = pattern.getPCMData();
+                lists.add(pcmData);*/
+                correctorsData.add(createDataTableObject(pattern,analysisSummary));
 
             }
+
+
         });
+
+
 
     }
 
@@ -210,16 +212,73 @@ public class CorrectorsPanelController extends AbstractController /*implements S
         healingsMap = event.getMap();
     }
 
-    /*@Override
-    public void subscribe() {
-        EventBus.subscribe(this);
-    }*/
 
     private DataTable createDataTableObject(Pattern k, AnalysisSummary v) {
         DataTable dataTable = new DataTable();
         dataTable.setName(k.getName());
         dataTable.setDispersion(v.getDispersion());
         return dataTable;
+    }
+
+    public static void merge(Collection<List<Double>> lists) throws IOException, UnsupportedAudioFileException {
+
+        Collection out;
+        out = PCM.merge(lists);
+
+        double[] buffer = out.stream().mapToDouble(new ToDoubleFunction<Double>() {
+            @Override
+            public double applyAsDouble(Double aDouble) {
+                return aDouble.doubleValue();
+            }
+        }).toArray();
+
+
+        double minP =0;
+        boolean flagp = true;
+        for (int i = 0; i < buffer.length; i++) {
+            if (buffer[i] > 0) {
+                if (flagp){minP = buffer[i]; flagp = false;}
+                else if (buffer[i] < minP) {
+                    minP = buffer[i];
+                }
+            }
+        }
+        byte[] bytes = new byte[buffer.length];
+
+        for (int i=0; i < buffer.length; i++) {
+
+            bytes[i] = (byte) (((buffer[i]) * 1/minP)/*+128*/);
+
+        }
+
+        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+        AudioFormat format = new AudioFormat(22050, 8, 1, true, false);
+        AudioInputStream stream = new AudioInputStream(bais, format, buffer.length);
+        AudioSystem.write(stream, AudioFileFormat.Type.WAVE, outputFile);
+
+    }
+
+    public static HashSet<DataTable> removeDuplicates(ArrayList<DataTable> list) {
+//        ArrayList<DataTable> result = new ArrayList<>();
+        HashSet<DataTable> set = new HashSet<>();
+//        ObservableSet<DataTable> set = FXCollections.observableSet(new HashSet<>());
+//        set.add(list.get(0));
+        for (DataTable item : list) {
+//            if (!set.contains(item)) {
+            set.add(item);
+                /*set.forEach((new Consumer<DataTable>() {
+                    @Override
+                    public void accept(DataTable s) {
+                        if (!s.getName().equals(item.getName())) {
+//                            result.add(item);
+                            set.add(item);
+                        }
+                    }
+                }));*/
+
+//            }
+        }
+        return set;
     }
 
 

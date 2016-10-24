@@ -1,6 +1,8 @@
 package com.mpsdevelopment.biopotential.server.cmp.pcm;
 
 import java.util.*;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,10 +20,10 @@ public class PCM {
     }
 
     public static List<Double> merge(Collection<List<Double>> input) {
-        return input
-            .stream()
-            .reduce(new ArrayList<>(), (list1, list2) -> {
-                for (int i = 0; i < list2.size(); i += 1) {
+        return input.stream().reduce(new ArrayList<>(), new BinaryOperator<List<Double>>() {
+            @Override
+            public List<Double> apply(List<Double> list1, List<Double> list2) {
+                for (int i = 0; i < list2.size(); i++) {
                     if (i >= list1.size()) {
                         list1.add(list2.get(i));
                     } else {
@@ -29,9 +31,12 @@ public class PCM {
                     }
                 }
                 return list1;
-            })
-            .stream()
-            .map((x) -> x / input.size())
-            .collect(Collectors.toList());
+            }
+        }).stream().map(new Function<Double, Double>() {
+            @Override
+            public Double apply(Double x) {
+                return x / input.size();
+            }
+        }).collect(Collectors.toList());
     }
 }

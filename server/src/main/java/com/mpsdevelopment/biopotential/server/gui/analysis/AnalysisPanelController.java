@@ -12,6 +12,7 @@ import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.cmp.machine.SummaryCondition;
 import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.h2db.H2DB;
 import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
+import com.mpsdevelopment.biopotential.server.cmp.pcm.PCM;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
@@ -39,11 +40,14 @@ import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import net.engio.mbassy.listener.Handler;
 
-import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.*;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.ToDoubleFunction;
 
 public class AnalysisPanelController extends AbstractController implements Subscribable {
 
@@ -72,6 +76,9 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     private static File file;
     private static Map<Pattern, AnalysisSummary> healings;
     Map<Pattern, AnalysisSummary> allHealings = new HashMap<Pattern, AnalysisSummary>();
+
+    private static File outputFile = new File("AudioFiles\\out\\out.wav");
+
 
 
     public AnalysisPanelController() {
@@ -160,8 +167,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
-        }*/
+            e.printStackTrace();}*/
 
         try {
             final H2DB db = new H2DB("./data/database", "", "sa");
@@ -195,7 +201,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
                     return count > 0;
                 }
             }, diseases);
-
+            Collection lists = new ArrayList();
             diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
                 @Override
                 public void accept(Pattern dk, AnalysisSummary dv) {
@@ -221,9 +227,18 @@ public class AnalysisPanelController extends AbstractController implements Subsc
                         allHealings.putAll(healings);
                     }
                 }
+
+            });
+            allHealings.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
+                @Override
+                public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
+                    List<Double> pcmData = pattern.getPCMData();
+                    lists.add(pcmData);
+                }
             });
             LOGGER.info("healings size %s", allHealings.size());
             EventBus.publishEvent(new HealingsMapEvent(allHealings));
+//            merge(lists);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -267,6 +282,99 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     /*@Override
     public void subscribe() {
         EventBus.subscribe(this);
+    }*/
+
+   /* public static void merge(Collection<List<Double>> lists) throws IOException, UnsupportedAudioFileException {
+
+        Collection out;
+        out = PCM.merge(lists);
+
+        double[] buffer = out.stream().mapToDouble(new ToDoubleFunction<Double>() {
+            @Override
+            public double applyAsDouble(Double aDouble) {
+                return aDouble.doubleValue();
+            }
+        }).toArray();
+
+
+        *//*byte[] data = new byte[buffer.length*2];
+        for (int i = 0; i < buffer.length; i++) {
+            int temp = (short) (buffer[i] * 8);
+            data[2*i + 0] = (byte) temp;
+            data[2*i + 1] = (byte) (temp >> 8);
+        }*//*
+        double sum =0,av=0;
+        *//*for (int i=0;i < buffer.length;i++){
+            System.out.println(buffer[i]);
+            sum = sum + Math.abs(buffer[i]);
+
+        }*//*
+
+        double maxP = 0,minP =0;
+        double maxN = 0,minN =0;
+        for (int i = 0; i < buffer.length; i++) {
+            if (buffer[i] > maxP)
+                maxP = buffer[i];
+        }
+        boolean flagp = true;
+        boolean flagn = true;
+        for (int i = 0; i < buffer.length; i++) {
+            if (buffer[i] > 0) {
+                if (flagp){minP = buffer[i]; flagp = false;}
+                else if (buffer[i] < minP) {
+                    minP = buffer[i];
+                }
+            }
+        }
+        for (int i = 0; i < buffer.length; i++) {
+            if (buffer[i] < maxN)
+                maxN = buffer[i];
+        }
+        for (int i = 0; i < buffer.length; i++) {
+            if (buffer[i] < 0) {
+                if (flagn){minN = buffer[i]; flagn = false;}
+                else if (buffer[i] > minN)
+                    minN = buffer[i];
+            }
+        }
+        av = sum/buffer.length;
+        byte[] bytes = new byte[buffer.length];
+        short[] shortbytes = new short[buffer.length];
+
+//        byte [] units = new byte[buffer.length*8];
+        for (int i=0; i < buffer.length; i++) {
+            *//*if ((buffer[i]) * 1/minP > 127){
+                bytes[i] = 127;
+            }
+            else {
+                bytes[i] = ((byte) ((buffer[i]) * 1/minP)*//**//**0.925*lists.size()*//**//**//**//**1.85*//**//*);
+            }
+
+            if ((buffer[i]) * 1/minP < -128){
+                bytes[i] = -128;
+            }
+            else {
+                bytes[i] = (byte) ((byte) ((buffer[i]) * 1/minP)*//**//**0.925*lists.size()*//**//**//**//**1.85*//**//*);
+            }*//*
+            shortbytes[i] = (short) ((short) ((buffer[i]) * 1/minP)+128);
+            if (shortbytes[i] > 127) {
+                shortbytes[i] = 127;
+            }
+            bytes[i] = (byte) shortbytes[i];
+            System.out.println(shortbytes[i]);
+            *//*ByteBuffer.wrap(bytes).putDouble(buffer[i]);
+
+            bytes = ByteBuffer.allocate(8).putDouble(buffer[i]).array();
+            units[i] = bytes[0];*//*
+        }
+
+        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+        AudioFormat format = new AudioFormat(22050, 8, 1, true, false);
+//        AudioInputStream stream = new AudioInputStream(new ByteArrayInputStream(data), format, data.length);
+        AudioInputStream stream = new AudioInputStream(bais, format, buffer.length);
+        AudioSystem.write(stream, AudioFileFormat.Type.WAVE, outputFile);
+        AudioFileFormat stream1 = AudioSystem.getAudioFileFormat(outputFile);
+
     }*/
 
 }
