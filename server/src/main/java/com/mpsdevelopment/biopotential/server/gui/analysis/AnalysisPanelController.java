@@ -2,17 +2,10 @@ package com.mpsdevelopment.biopotential.server.gui.analysis;
 
 
 import com.mpsdevelopment.biopotential.server.AbstractController;
-import com.mpsdevelopment.biopotential.server.cmp._SoundIO;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
-import com.mpsdevelopment.biopotential.server.cmp.analyzer.Analyzer;
-import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
-import com.mpsdevelopment.biopotential.server.cmp.machine.KindCondition;
-import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
-import com.mpsdevelopment.biopotential.server.cmp.machine.SummaryCondition;
-import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.h2db.H2DB;
-import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
-import com.mpsdevelopment.biopotential.server.cmp.pcm.PCM;
+import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.h2db.H2DBException;
+import com.mpsdevelopment.biopotential.server.db.dao.DeseaseDao;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
@@ -39,23 +32,25 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import net.engio.mbassy.listener.Handler;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sound.sampled.*;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.function.ToDoubleFunction;
 
 public class AnalysisPanelController extends AbstractController implements Subscribable {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(AnalysisPanelController.class);
     private ObservableList<DataTable> analysisData = FXCollections.observableArrayList();
 
+    @Autowired
+    DeseaseDao deseaseDao;
+
     @FXML
-    private ScatterChart<Number,Number> scatterChart;
+    private ScatterChart<Number, Number> scatterChart;
 
     @FXML
     private TableView<DataTable> healthConditionTable;
@@ -75,10 +70,10 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     private Stage primaryStage;
     private static File file;
     private static Map<Pattern, AnalysisSummary> healings;
+    Map<Pattern, AnalysisSummary> diseases = new HashMap<Pattern, AnalysisSummary>();
     Map<Pattern, AnalysisSummary> allHealings = new HashMap<Pattern, AnalysisSummary>();
 
     private static File outputFile = new File("AudioFiles\\out\\out.wav");
-
 
 
     public AnalysisPanelController() {
@@ -87,12 +82,21 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        makeAnalyze(file);
+        try {
+            makeAnalyze(file);
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (H2DBException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         healthConditionTable.setItems(analysisData);
 
         numberColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
-            @Override public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> p) {
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> p) {
                 return new ReadOnlyObjectWrapper(healthConditionTable.getItems().indexOf(p.getValue()) + "");
             }
         });
@@ -137,7 +141,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     }
 
-    private void makeAnalyze(File file) {
+    private void makeAnalyze(File file) throws UnsupportedAudioFileException, H2DBException, IOException {
         /*try {
 
             final ArkDB db = new ArkDB("test.arkdb");
@@ -169,7 +173,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         } catch (Exception e) {
             e.printStackTrace();}*/
 
-        try {
+        /*try {
             final H2DB db = new H2DB("./data/database", "", "sa");
 
             System.out.println("start");
@@ -180,7 +184,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             final Map<Pattern, AnalysisSummary> diseases = Machine.summarizePatterns(new SummaryCondition() {
                 @Override
                 public boolean test(Pattern strain, AnalysisSummary summary) {
-                    return summary.getDegree() == 0 /*|| summary.getDispersion() == -21*/;
+                    return summary.getDegree() == 0 *//*|| summary.getDispersion() == -21*//*;
                 }
             },sample, db.getDiseases());
 
@@ -202,12 +206,14 @@ public class AnalysisPanelController extends AbstractController implements Subsc
                 }
             }, diseases);
             Collection lists = new ArrayList();
+
+
             diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
                 @Override
                 public void accept(Pattern dk, AnalysisSummary dv) {
                     System.out.printf("heals for %s %s\n", dk.getKind(), dk.getName());
                     if (probableKinds.containsKey(dk.getKind())) {
-                        /*final Map<Pattern, AnalysisSummary>*/
+                        *//*final Map<Pattern, AnalysisSummary>*//*
                         healings = Machine.summarizePatterns(new SummaryCondition() {
                             @Override
                             public boolean test(Pattern pattern, AnalysisSummary summary) { // и потом берутся только те которые summary.getDispersion() == 0 т.е. MAx
@@ -228,21 +234,34 @@ public class AnalysisPanelController extends AbstractController implements Subsc
                     }
                 }
 
-            });
-            allHealings.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
-                @Override
-                public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
-                    List<Double> pcmData = pattern.getPCMData();
-                    lists.add(pcmData);
-                }
-            });
-            LOGGER.info("healings size %s", allHealings.size());
-            EventBus.publishEvent(new HealingsMapEvent(allHealings));
-//            merge(lists);
+            });*/
+        Collection lists = new ArrayList();
+        diseases.putAll(deseaseDao.getDeseases(file));
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
+            @Override
+            public void accept(Pattern k, AnalysisSummary v) {
+                System.out.printf("%s\t%f\n", k.getName(), v.getDispersion());
+//                    LOGGER.info("d: %s\t%f\n", k.getName(), v.getDispersion());
+
+                analysisData.add(createDataTableObject(k, v));
+            }
+        });
+
+        allHealings.putAll(deseaseDao.getHealings(diseases, file));
+
+        allHealings.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
+            @Override
+            public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
+                List<Double> pcmData = pattern.getPCMData();
+                lists.add(pcmData);
+            }
+        });
+
+
+        LOGGER.info("healings size %s", allHealings.size());
+        EventBus.publishEvent(new HealingsMapEvent(allHealings));
+//            merge(lists);
 
 
     }

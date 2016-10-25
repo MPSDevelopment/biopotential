@@ -3,7 +3,7 @@
 	<groupId>com.mpsdevelopment.biopotential</groupId>
 	<artifactId>server</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>Biopotential</name>
 	<url>http://maven.apache.org</url>
 	<properties>

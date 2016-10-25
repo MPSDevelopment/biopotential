@@ -41,11 +41,22 @@ public class H2DB {
     public H2DBIter getIterForFolder(String folder) {
         try {
             return new H2DBIter(this.db, folder);
+
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
     }
+
+    public void close() {
+        try {
+            db.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
     private Connection db;
     private Collection<String> diseaseFolderIds;
