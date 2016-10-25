@@ -21,7 +21,7 @@
 		<jet.expire.message>Program has stopped working. Contact an administrator</jet.expire.message>
 
 		<replacer.plugin.version>1.5.2</replacer.plugin.version>
-		<excelsiorjet.plugin.version>0.7.2</excelsiorjet.plugin.version>
+		<excelsiorjet.plugin.version>0.8.0</excelsiorjet.plugin.version>
 		<resources.plugin.version>2.7</resources.plugin.version>
 		<compiler.plugin.version>3.3</compiler.plugin.version>
 		<surefire.plugin.version>2.18.1</surefire.plugin.version>
@@ -33,7 +33,7 @@
 		<maven.antrun.plugin.version>1.8</maven.antrun.plugin.version>
 		<exec.maven.plugin.version>1.4.0</exec.maven.plugin.version>
 
-		<plasticine.version>0.7-SNAPSHOT</plasticine.version>
+		<plasticine.version>0.7</plasticine.version>
 		<hibernate.version>5.1.0.Final</hibernate.version>
 		<ehcache.version>2.10.0</ehcache.version>
 		<h2database.version>1.4.190</h2database.version>
