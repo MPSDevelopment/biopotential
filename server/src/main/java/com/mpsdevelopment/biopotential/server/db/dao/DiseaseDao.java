@@ -79,7 +79,7 @@ public class DiseaseDao {
 			@Override
 			public void accept(Pattern dk, AnalysisSummary dv) {
 
-				System.out.printf("heals for %s %s\n", dk.getKind(), dk.getName());
+				LOGGER.info("heals for %s %s\n", dk.getKind(), dk.getName());
 
 				if (probableKinds.containsKey(dk.getKind())) {
 
@@ -91,17 +91,10 @@ public class DiseaseDao {
 						
 						LOGGER.info("iterForFolder took %d ms", System.currentTimeMillis() - t1);
 						
-						final Map<Pattern, AnalysisSummary> healings = Machine.summarizePatterns(sample, patterns); // вытягиваются
-						// папка
-						// с
-						// коректорами
-						// для
-						// конкретной
-						// болезни
-						// BAC
-						// ->
-						// FL
-						// BAC
+						/**
+						 * вытягиваются папка с коректорами для конкретной болезни BAC -> FL BAC
+						 */
+						final Map<Pattern, AnalysisSummary> healings = Machine.summarizePatterns(sample, patterns);
 
 						LOGGER.info("SummarizePatterns took %d ms", System.currentTimeMillis() - t1);
 						allHealings.putAll(healings);
