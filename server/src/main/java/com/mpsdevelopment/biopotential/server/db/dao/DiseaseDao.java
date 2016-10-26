@@ -22,13 +22,13 @@ import java.util.function.BiConsumer;
 
 import static org.terracotta.modules.ehcache.ToolkitInstanceFactoryImpl.LOGGER;
 
-public class DeseaseDao {
+public class DiseaseDao {
 
 	Map<Pattern, AnalysisSummary> allHealings;
 
 	private H2DB db;
 
-	public DeseaseDao() throws H2DBException {
+	public DiseaseDao() throws H2DBException {
 		db = new H2DB("./data/database", "", "sa");
 		allHealings = new HashMap<Pattern, AnalysisSummary>();
 	}
@@ -88,14 +88,14 @@ public class DeseaseDao {
 																								// FL
 																								// BAC
 
-					healings.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
+					/*healings.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
 						@Override
 						public void accept(Pattern hk, AnalysisSummary hv) {
 							// hk.getPCMData()
 							LOGGER.info("%s %s\n", hk.getKind(), hk.getName(), hv.getDispersion());
 
 						}
-					});
+					});*/
 					allHealings.putAll(healings);
 				}
 			}

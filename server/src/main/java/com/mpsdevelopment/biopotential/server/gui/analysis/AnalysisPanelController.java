@@ -4,7 +4,7 @@ import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.h2db.H2DBException;
-import com.mpsdevelopment.biopotential.server.db.dao.DeseaseDao;
+import com.mpsdevelopment.biopotential.server.db.dao.DiseaseDao;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
@@ -42,106 +42,106 @@ import java.util.function.BiConsumer;
 
 public class AnalysisPanelController extends AbstractController implements Subscribable {
 
-	private static final Logger LOGGER = LoggerUtil.getLogger(AnalysisPanelController.class);
-	private ObservableList<DataTable> analysisData = FXCollections.observableArrayList();
+    private static final Logger LOGGER = LoggerUtil.getLogger(AnalysisPanelController.class);
+    private ObservableList<DataTable> analysisData = FXCollections.observableArrayList();
 
-	@Autowired
-	private DeseaseDao deseaseDao;
+    @Autowired
+    private DiseaseDao diseaseDao;
 
-	@FXML
-	private ScatterChart<Number, Number> scatterChart;
+    @FXML
+    private ScatterChart<Number, Number> scatterChart;
 
-	@FXML
-	private TableView<DataTable> healthConditionTable;
+    @FXML
+    private TableView<DataTable> healthConditionTable;
 
-	@FXML
-	private TableColumn<DataTable, String> deseaseName;
+    @FXML
+    private TableColumn<DataTable, String> deseaseName;
 
-	@FXML
-	private TableColumn<DataTable, String> deseaseLevel;
+    @FXML
+    private TableColumn<DataTable, String> deseaseLevel;
 
-	@FXML
-	private TableColumn<DataTable, String> numberColumn;
+    @FXML
+    private TableColumn<DataTable, String> numberColumn;
 
-	@FXML
-	private Button continueButton;
+    @FXML
+    private Button continueButton;
 
-	private Stage primaryStage;
-	private static File file;
-	private static Map<Pattern, AnalysisSummary> healings;
-	Map<Pattern, AnalysisSummary> diseases = new HashMap<Pattern, AnalysisSummary>();
-	Map<Pattern, AnalysisSummary> allHealings = new HashMap<Pattern, AnalysisSummary>();
+    private Stage primaryStage;
+    private static File file;
+    private static Map<Pattern, AnalysisSummary> healings;
+    Map<Pattern, AnalysisSummary> diseases = new HashMap<Pattern, AnalysisSummary>();
+    Map<Pattern, AnalysisSummary> allHealings = new HashMap<Pattern, AnalysisSummary>();
 
-	private static File outputFile = new File("AudioFiles\\out\\out.wav");
+    private static File outputFile = new File("AudioFiles\\out\\out.wav");
 
-	public AnalysisPanelController() {
-		EventBus.subscribe(this);
-	}
+    public AnalysisPanelController() {
+        EventBus.subscribe(this);
+    }
 
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		try {
-			makeAnalyze(file);
-		} catch (UnsupportedAudioFileException e) {
-			LOGGER.printStackTrace(e);
-		} catch (H2DBException e) {
-			LOGGER.printStackTrace(e);
-		} catch (IOException e) {
-			LOGGER.printStackTrace(e);
-		}
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        try {
+            makeAnalyze(file);
+        } catch (UnsupportedAudioFileException e) {
+            LOGGER.printStackTrace(e);
+        } catch (H2DBException e) {
+            LOGGER.printStackTrace(e);
+        } catch (IOException e) {
+            LOGGER.printStackTrace(e);
+        }
 
-		healthConditionTable.setItems(analysisData);
+        healthConditionTable.setItems(analysisData);
 
-		numberColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
-			@Override
-			public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> p) {
-				return new ReadOnlyObjectWrapper(healthConditionTable.getItems().indexOf(p.getValue()) + "");
-			}
-		});
-		numberColumn.setSortable(false);
-		numberColumn.setStyle("-fx-alignment: CENTER;");
+        numberColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> p) {
+                return new ReadOnlyObjectWrapper(healthConditionTable.getItems().indexOf(p.getValue()) + "");
+            }
+        });
+        numberColumn.setSortable(false);
+        numberColumn.setStyle("-fx-alignment: CENTER;");
 
-		deseaseName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
-			@Override
-			public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> dataTable) {
-				SimpleStringProperty property = new SimpleStringProperty();
-				property.setValue(String.format("%s", dataTable.getValue().getName()));
+        deseaseName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> dataTable) {
+                SimpleStringProperty property = new SimpleStringProperty();
+                property.setValue(String.format("%s", dataTable.getValue().getName()));
 
-				return property;
-			}
-		});
-		deseaseLevel.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
-			@Override
-			public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> dataTable) {
-				SimpleStringProperty property = new SimpleStringProperty();
-				property.setValue(String.format("%s", dataTable.getValue().getDispersion()));
-				return property;
-			}
-		});
+                return property;
+            }
+        });
+        deseaseLevel.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> dataTable) {
+                SimpleStringProperty property = new SimpleStringProperty();
+                property.setValue(String.format("%s", dataTable.getValue().getDispersion()));
+                return property;
+            }
+        });
 
-		continueButton.setOnAction(event -> {
-			CorrectorsPanel panel = new CorrectorsPanel();
-			Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Коррекция").setClazz(panel.getClass()).setHeight(722d).setWidth(1273d)
-					.setHeightPanel(722d).setWidthPanel(1273d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
-			panel.setPrimaryStage(stage);
+        continueButton.setOnAction(event -> {
+            CorrectorsPanel panel = new CorrectorsPanel();
+            Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Коррекция").setClazz(panel.getClass()).setHeight(722d).setWidth(1273d)
+                    .setHeightPanel(722d).setWidthPanel(1273d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+            panel.setPrimaryStage(stage);
 
-		});
+        });
 
-		scatterChart.setTitle("Body Overview");
+        scatterChart.setTitle("Body Overview");
 
-		XYChart.Series series1 = new XYChart.Series();
-		series1.getData().add(new XYChart.Data(15.0, 90));
-		series1.getData().add(new XYChart.Data(2.8, 33.6));
-		series1.getData().add(new XYChart.Data(1.8, 81.4));
+        XYChart.Series series1 = new XYChart.Series();
+        series1.getData().add(new XYChart.Data(15.0, 90));
+        series1.getData().add(new XYChart.Data(2.8, 33.6));
+        series1.getData().add(new XYChart.Data(1.8, 81.4));
 
-		scatterChart.getStylesheets().add("scater.css");
-		scatterChart.getData().addAll(series1);
+        scatterChart.getStylesheets().add("scater.css");
+        scatterChart.getData().addAll(series1);
 
-	}
+    }
 
-	private void makeAnalyze(File file) throws UnsupportedAudioFileException, H2DBException, IOException {
-		/*
-		 * try {
+    private void makeAnalyze(File file) throws UnsupportedAudioFileException, H2DBException, IOException {
+        /*
+         * try {
 		 * 
 		 * final ArkDB db = new ArkDB("test.arkdb");
 		 * db.setHealingFolders(Arrays.asList(490, 959, 2483));
@@ -289,66 +289,66 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 														 * 
 														 * });
 														 */
-		Collection lists = new ArrayList();
-		diseases.putAll(deseaseDao.getDeseases(file));
+        Collection lists = new ArrayList();
+        diseases.putAll(diseaseDao.getDeseases(file));
 
-		diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
-			@Override
-			public void accept(Pattern k, AnalysisSummary v) {
-				System.out.printf("%s\t%f\n", k.getName(), v.getDispersion());
-				// LOGGER.info("d: %s\t%f\n", k.getName(), v.getDispersion());
+        diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
+            @Override
+            public void accept(Pattern k, AnalysisSummary v) {
+                System.out.printf("%s\t%f\n", k.getName(), v.getDispersion());
+                // LOGGER.info("d: %s\t%f\n", k.getName(), v.getDispersion());
 
-				analysisData.add(createDataTableObject(k, v));
-			}
-		});
+                analysisData.add(createDataTableObject(k, v));
+            }
+        });
 
-		allHealings.putAll(deseaseDao.getHealings(diseases, file));
+        allHealings.putAll(diseaseDao.getHealings(diseases, file));
 
-		allHealings.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
-			@Override
-			public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
-				List<Double> pcmData = pattern.getPCMData();
-				lists.add(pcmData);
-			}
-		});
+        allHealings.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
+            @Override
+            public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
+                List<Double> pcmData = pattern.getPCMData();
+                lists.add(pcmData);
+            }
+        });
 
-		LOGGER.info("healings size %s", allHealings.size());
-		EventBus.publishEvent(new HealingsMapEvent(allHealings));
-		// merge(lists);
+        LOGGER.info("healings size %s", allHealings.size());
+        EventBus.publishEvent(new HealingsMapEvent(allHealings));
+        // merge(lists);
 
-	}
+    }
 
-	private DataTable createDataTableObject(Pattern k, AnalysisSummary v) {
-		DataTable dataTable = new DataTable();
-		dataTable.setName(k.getName());
-		dataTable.setDispersion(v.getDispersion());
-		return dataTable;
-	}
+    private DataTable createDataTableObject(Pattern k, AnalysisSummary v) {
+        DataTable dataTable = new DataTable();
+        dataTable.setName(k.getName());
+        dataTable.setDispersion(v.getDispersion());
+        return dataTable;
+    }
 
-	public void updatePanel(Stage primaryStage) {
-		this.primaryStage = primaryStage;
+    public void updatePanel(Stage primaryStage) {
+        this.primaryStage = primaryStage;
 
-		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			@Override
-			public void handle(WindowEvent t) {
-				close();
-			}
-		});
-	}
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                close();
+            }
+        });
+    }
 
-	public void close() {
-		LOGGER.info("  CLOSE  REQUEST");
+    public void close() {
+        LOGGER.info("  CLOSE  REQUEST");
 
-		EventBus.unsubscribe(this);
+        EventBus.unsubscribe(this);
 
-		primaryStage.close();
-	}
+        primaryStage.close();
+    }
 
-	@Handler
-	public void handleMessage(FileChooserEvent event) throws Exception {
-		LOGGER.info(" GOT audio file for analyze ");
-		file = event.getFile();
-	}
+    @Handler
+    public void handleMessage(FileChooserEvent event) throws Exception {
+        LOGGER.info(" GOT audio file for analyze ");
+        file = event.getFile();
+    }
 
 	/*
 	 * @Override public void subscribe() { EventBus.subscribe(this); }
