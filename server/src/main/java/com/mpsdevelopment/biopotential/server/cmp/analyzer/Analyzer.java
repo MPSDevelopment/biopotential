@@ -74,19 +74,14 @@ public class Analyzer {
             return null;
         }
 
-        final Iterator<ChunkSummary> firstI = first.iterator();
-        final Iterator<ChunkSummary> secondI = second.iterator();
         final int size = Math.min(first.size(), second.size());
 
         double meanDeviation = 0.0;
         double dispersion = 0.0;
 
-        while (firstI.hasNext() && secondI.hasNext()) {
-            final ChunkSummary chunk1 = firstI.next();
-            final ChunkSummary chunk2 = secondI.next();
-
-            meanDeviation += Math.abs(chunk1.getMeanDeviation() - chunk2.getMeanDeviation());
-            dispersion += Math.abs(chunk1.getDispersion() - chunk2.getDispersion());
+        for (int i=0; i<size; i++) {
+            meanDeviation += Math.abs(first.get(i).getMeanDeviation() - second.get(i).getMeanDeviation());
+            dispersion += Math.abs(first.get(i).getDispersion() - second.get(i).getDispersion());
         }
 
         meanDeviation = meanDeviation / size;

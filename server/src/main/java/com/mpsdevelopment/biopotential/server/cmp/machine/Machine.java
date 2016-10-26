@@ -9,13 +9,14 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 public class Machine {
-    private static Pattern pattern;
 
-    public static Map<Pattern, AnalysisSummary> summarizePatterns(SummaryCondition condition, List<ChunkSummary> sampleSummary, PatternDB patterns) {
+    public static Map<Pattern, AnalysisSummary> summarizePatterns(List<ChunkSummary> sampleSummary, PatternDB patterns) {
         final Map<Pattern, AnalysisSummary> summaries = new HashMap<>();
+        Pattern pattern;
+        AnalysisSummary summary;
         while ((pattern = patterns.next()) != null) {
-            final AnalysisSummary summary = Analyzer.compare(sampleSummary, pattern.getSummary());
-            if (summary != null && condition.test(pattern, summary)) {
+            summary = Analyzer.compare(sampleSummary, pattern.getSummary());
+            if (summary != null && summary.getDegree() == 0) {
                 summaries.put(pattern, summary);
             }
         }

@@ -32,7 +32,7 @@ public class DiseaseDaoTest {
 	@Autowired
 	private DiseaseDao diseaseDao;
 
-	private static final Logger LOGGER = LoggerUtil.getLogger(com.mpsdevelopment.biopotential.server.db.dao.DiseaseDaoTest.class);
+	private static final Logger LOGGER = LoggerUtil.getLogger(DiseaseDaoTest.class);
 	Map<Pattern, AnalysisSummary> allHealings;
 	Map<Pattern, AnalysisSummary> diseases;
 	private File file;
