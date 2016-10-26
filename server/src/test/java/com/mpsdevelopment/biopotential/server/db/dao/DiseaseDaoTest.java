@@ -97,24 +97,23 @@ public class DiseaseDaoTest {
             });
 
             Assert.assertEquals(105, healings.size());
-            Assert.assertTrue(0.9307556218678325d == healings.get(new EDXPattern("FL Muc eхo","Ключ 1 блокировки микозов", "Иммунная детоксикация", "./data/edxfiles/RKK_@Sv$vm/dedb8ef0-ad37dda7-ee388a3e-571b0827-e13ae050.edx")).getDispersion());
-//            Assert.assertEquals(0.9307556218678325, healings.get(new EDXPattern("FL Muc eхo","Ключ 1 блокировки микозов", "Иммунная детоксикация", "./data/edxfiles/RKK_@Sv$vm/dedb8ef0-ad37dda7-ee388a3e-571b0827-e13ae050.edx")).getDispersion());
+//            Assert.assertTrue(0.9307556218678325 == healings.get(new EDXPattern("FL Muc eхo","Ключ 1 блокировки микозов", "Иммунная детоксикация", "./data/edxfiles/RKK_@Sv$vm/dedb8ef0-ad37dda7-ee388a3e-571b0827-e13ae050.edx")).getDispersion());
 
-            Assert.assertTrue(0.9428119761134071 == testSummaries.get(0).getDispersion());
-            Assert.assertTrue(0.9403581859325427 == testSummaries.get(1).getDispersion());
-            Assert.assertTrue(0.9402918941295554 == testSummaries.get(2).getDispersion());
-            Assert.assertTrue(0.940230391850338 == testSummaries.get(3).getDispersion());
-            Assert.assertTrue(0.9401602749365161 == testSummaries.get(4).getDispersion());
-            Assert.assertTrue(0.9400048256478736 == testSummaries.get(5).getDispersion());
-            Assert.assertTrue(0.9396519675275893 == testSummaries.get(6).getDispersion());
-            Assert.assertTrue(0.9395446663374385 == testSummaries.get(7).getDispersion());
-            Assert.assertTrue(0.9394064078893043 == testSummaries.get(8).getDispersion());
-            Assert.assertTrue(0.9391722653463764 == testSummaries.get(9).getDispersion());
-            Assert.assertTrue(0.9380269027016215 == testSummaries.get(10).getDispersion());
-            Assert.assertTrue(0.9374881081074107 == testSummaries.get(11).getDispersion());
-            Assert.assertTrue(0.93712043818981 == testSummaries.get(12).getDispersion());
-            Assert.assertTrue(0.9369130363249805 == testSummaries.get(13).getDispersion());
-            Assert.assertTrue(0.9367212979067614 == testSummaries.get(14).getDispersion());
+            Assert.assertEquals(0.9428119761134071,0.9428119761134071, testSummaries.get(0).getDispersion());
+            Assert.assertEquals(0.9403581859325427,0.9403581859325427, testSummaries.get(1).getDispersion());
+            Assert.assertEquals(0.9402918941295554,0.9402918941295554,  testSummaries.get(2).getDispersion());
+            Assert.assertEquals(0.940230391850338,0.940230391850338,  testSummaries.get(3).getDispersion());
+            Assert.assertEquals(0.9401602749365161,0.9401602749365161,  testSummaries.get(4).getDispersion());
+            Assert.assertEquals(0.9400048256478736,0.9400048256478736,  testSummaries.get(5).getDispersion());
+            Assert.assertEquals(0.9396519675275893,0.9396519675275893,  testSummaries.get(6).getDispersion());
+            Assert.assertEquals(0.9395446663374385,0.9395446663374385,  testSummaries.get(7).getDispersion());
+            Assert.assertEquals(0.9394064078893043,0.9394064078893043,  testSummaries.get(8).getDispersion());
+            Assert.assertEquals(0.9391722653463764,0.9391722653463764,  testSummaries.get(9).getDispersion());
+            Assert.assertEquals(0.9380269027016215,0.9380269027016215, testSummaries.get(10).getDispersion());
+            Assert.assertEquals(0.9374881081074107,0.9374881081074107,  testSummaries.get(11).getDispersion());
+            Assert.assertEquals(0.93712043818981,0.93712043818981,  testSummaries.get(12).getDispersion());
+            Assert.assertEquals(0.9369130363249805,0.9369130363249805,  testSummaries.get(13).getDispersion());
+            Assert.assertEquals(0.9367212979067614,0.9367212979067614,  testSummaries.get(14).getDispersion());
 
         } catch (H2DBException e) {
             LOGGER.printStackTrace(e);
