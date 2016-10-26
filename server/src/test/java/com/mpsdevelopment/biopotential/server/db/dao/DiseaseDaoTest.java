@@ -32,16 +32,16 @@ public class DiseaseDaoTest {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(com.mpsdevelopment.biopotential.server.db.dao.DiseaseDaoTest.class);
     Map<Pattern, AnalysisSummary> allHealings;
-    private File file = new File("test3.wav");
+    Map<Pattern, AnalysisSummary> diseases;
+    private File file;
     private H2DB db;
 
     public DiseaseDaoTest() throws H2DBException {
         db = new H2DB("./data/database", "", "sa");
-        allHealings = new HashMap<Pattern, AnalysisSummary>();
+        diseases = new HashMap<>();
+        allHealings = new HashMap<>();
+        file = new File("test3.wav");
     }
-
-    Map<Pattern, AnalysisSummary> diseases = new HashMap<>();
-
 
     @Test
     public void getHealingsTest() throws IOException, UnsupportedAudioFileException {
