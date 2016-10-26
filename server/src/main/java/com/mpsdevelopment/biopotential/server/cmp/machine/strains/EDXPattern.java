@@ -132,5 +132,26 @@ public class EDXPattern implements Pattern {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        EDXPattern that = (EDXPattern) o;
+
+        if (kind != null ? !kind.equals(that.kind) : that.kind != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (desc != null ? !desc.equals(that.desc) : that.desc != null) return false;
+        return fileName != null ? fileName.equals(that.fileName) : that.fileName == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = kind != null ? kind.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (desc != null ? desc.hashCode() : 0);
+        result = 31 * result + (fileName != null ? fileName.hashCode() : 0);
+        return result;
+    }
 }
