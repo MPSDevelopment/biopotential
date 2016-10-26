@@ -26,6 +26,7 @@ public class EDXPattern implements Pattern {
     final private String kind;
     final private String name;
     final private String desc;
+    final private String fileName;
 
     public EDXPattern(String kind, String name, String desc, String fileName) throws IOException {
         this(kind, name, desc, fileName, null);
@@ -37,6 +38,7 @@ public class EDXPattern implements Pattern {
         this.desc = desc;
         this.sects = new HashMap<>();
         this.correctingFolder = correctingFolder;
+        this.fileName = fileName;
 
         try (RandomAccessFile in = new RandomAccessFile(new File(fileName), "r")) {
             final byte[] hdr = new byte[4];
@@ -110,6 +112,10 @@ public class EDXPattern implements Pattern {
 
     public List<ChunkSummary> getSummary() {
         return this.summary;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 
     private int readi32le(RandomAccessFile in) {

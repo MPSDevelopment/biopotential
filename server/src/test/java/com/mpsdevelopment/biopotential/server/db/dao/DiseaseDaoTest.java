@@ -2,9 +2,11 @@ package com.mpsdevelopment.biopotential.server.db.dao;
 
 
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.Analyzer;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.h2db.H2DB;
 import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.h2db.H2DBException;
+import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.h2db.H2DBIter;
 import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
@@ -21,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/webapp/app-context-test.xml", "classpath:/webapp/web-context.xml" })
@@ -36,6 +39,10 @@ public class DiseaseDaoTest {
     private File file;
     private H2DB db;
 
+    private static Pattern pattern;
+    private int count=0;
+
+
     public DiseaseDaoTest() throws H2DBException {
         db = new H2DB("./data/database", "", "sa");
         diseases = new HashMap<>();
@@ -45,13 +52,38 @@ public class DiseaseDaoTest {
 
     @Test
     public void getHealingsTest() throws IOException, UnsupportedAudioFileException {
-        diseases.put(new EDXPattern("FLORA dissection", "Muc Грибок поражение общее", "АНАЛИЗ","./data/edxfiles/#13gw7N91D/34527cd5-10b8ea35-af13d6d6-5b45a763-742acda9.edx","1549081936653189120"),new AnalysisSummary(0.004432397546419209,0.931693093422437,0 ));
-        diseases.put(new EDXPattern("FLORA dissection", "VIR Вирусная аминокислота", "АНАЛИЗ","./data/edxfiles/ZViCTL2oCG/c70ebc91-2e60e663-187c1692-cf72707a-b622503d.edx","1549081936652140544"),new AnalysisSummary(0.004556173769667698,0.932749751807533,0));
-        diseases.put(new EDXPattern("FLORA dissection", "BAC Бактерии", "АНАЛИЗ","./data/edxfiles/_sn~Ak@$~a/250b8a66-1d36c921-daf986c0-d008c42f-661a00cf.edx","1549081936663674880"),new AnalysisSummary(0.004402693132922528,0.9353995049351229,0));
         try {
+            diseases = diseaseDao.getDeseases(file);
+        } catch (H2DBException e) {
+            e.printStackTrace();
+        }
+
+        /*diseases.put(new EDXPattern("FLORA dissection", "Muc Грибок поражение общее", "АНАЛИЗ","./data/edxfiles/#13gw7N91D/34527cd5-10b8ea35-af13d6d6-5b45a763-742acda9.edx","1549081936653189120"),new AnalysisSummary(0.004432397546419209,0.931693093422437,0 ));
+        diseases.put(new EDXPattern("FLORA dissection", "VIR Вирусная аминокислота", "АНАЛИЗ","./data/edxfiles/ZViCTL2oCG/c70ebc91-2e60e663-187c1692-cf72707a-b622503d.edx","1549081936652140544"),new AnalysisSummary(0.004556173769667698,0.932749751807533,0));
+        diseases.put(new EDXPattern("FLORA dissection", "BAC Бактерии", "АНАЛИЗ","./data/edxfiles/_a1ACEXkHq/e62689dc-dcd5ff76-1874d4e2-4b8e344-8ce8d6e1.edx","1549081936663674880"),new AnalysisSummary(0.004402693132922528,0.9353995049351229,0));
+*/        try {
             Map<Pattern, AnalysisSummary> healings = diseaseDao.getHealings(diseases,file);
             LOGGER.info("test complete");
+            healings.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
+                @Override
+                public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
+                    if(pattern.getName().equals("Ключ 1 блокировки микозов") || pattern.getName().equals("Герпес - группа") || pattern.getName().equals("Валацикловир")
+                            || pattern.getName().equals("Вирус цитомегалии (ЦМВ) D  5") || pattern.getName().equals("Aspergillus niger D5") || pattern.getName().equals("Канестен")
+                            || pattern.getName().equals("Окоферон") || pattern.getName().equals("Mucor racemosus D6") || pattern.getName().equals("Comedones")
+                            || pattern.getName().equals("Гепатит  E|B") || pattern.getName().equals("Вирус натуральной оспы D 15") || pattern.getName().equals("Вирус Коксаки, серотип B5 D4")
+                            || pattern.getName().equals("Цефтриаксон 250") || pattern.getName().equals("Pau Darco (Паударко)") || pattern.getName().equals("Вирус ветряной оспы D 30")
+                            || pattern.getName().equals("Зиннат") || pattern.getName().equals("Азаран") || pattern.getName().equals("Клион")
+                            || pattern.getName().equals("Кетоконазол") || pattern.getName().equals("Протефлазид") || pattern.getName().equals("Вирус опояс лишая и ветрян оспы D 15")
+                            || pattern.getName().equals("Эконазол") || pattern.getName().equals("Максипим") || pattern.getName().equals("Penicillium glabruml D3")
+                            || pattern.getName().equals("Перхотал") || pattern.getName().equals("Вирус бешенства D 60") || pattern.getName().equals("Вирус цитомегалии (ЦМВ)"))  {
+                        count++;
+                    }
+                }
+            });
             Assert.assertEquals(105, healings.size());
+            Assert.assertTrue(count == 27);
+//            Assert.assertEquals(0.931881434094102, healings.get(new EDXPattern("FL Muc eхo","Ключ 1 блокировки микозов", "Иммунная детоксикация", "./data/edxfiles/RKK_@Sv$vm/dedb8ef0-ad37dda7-ee388a3e-571b0827-e13ae050.edx")).getDispersion());
+
         } catch (H2DBException e) {
             LOGGER.printStackTrace(e);
         }

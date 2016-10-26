@@ -6,7 +6,7 @@ import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
 import java.io.IOException;
 import java.sql.*;
 
-class H2DBIter implements PatternDB {
+public class H2DBIter implements PatternDB {
 
     protected final Connection db;
     protected final ResultSet patterns;
