@@ -37,6 +37,7 @@ import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.function.BiConsumer;
 
@@ -88,7 +89,10 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             LOGGER.printStackTrace(e);
         } catch (IOException e) {
             LOGGER.printStackTrace(e);
-        }
+        } catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         healthConditionTable.setItems(analysisData);
 
@@ -139,7 +143,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     }
 
-    private void makeAnalyze(File file) throws UnsupportedAudioFileException, H2DBException, IOException {
+    private void makeAnalyze(File file) throws UnsupportedAudioFileException, H2DBException, IOException, SQLException {
         /*
          * try {
 		 * 

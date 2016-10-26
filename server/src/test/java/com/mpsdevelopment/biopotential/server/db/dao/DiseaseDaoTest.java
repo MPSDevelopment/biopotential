@@ -21,6 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.function.BiConsumer;
 
@@ -47,7 +48,7 @@ public class DiseaseDaoTest {
 	public void getHealingsTest() throws IOException, UnsupportedAudioFileException {
 		try {
 			diseases = diseaseDao.getDeseases(file);
-		} catch (H2DBException e) {
+		} catch (H2DBException | SQLException e) {
 			e.printStackTrace();
 		}
 

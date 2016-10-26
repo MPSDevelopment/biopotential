@@ -1,136 +1,81 @@
 package com.mpsdevelopment.biopotential.server.cmp.machine.strains;
 
-
-import com.mpsdevelopment.biopotential.server.cmp.analyzer.Analyzer;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
+import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-class EDXSection {
-    String name;
-    int offset;
-    int length;
-    byte[] contents;
-}
 
 public class EDXPattern implements Pattern {
 
-    final private HashMap<String, EDXSection> sects;
-    final private List<ChunkSummary> summary;
-    final private List<Double> pcmData;
-    final private String correctingFolder;
-    final private String kind;
-    final private String name;
-    final private String desc;
-    final private String fileName;
+	private List<ChunkSummary> summary;
+	private List<Double> pcmData;
+	final private String correctingFolder;
+	final private String kind;
+	final private String name;
+	final private String desc;
+	final private String fileName;
 
-    public EDXPattern(String kind, String name, String desc, String fileName) throws IOException {
-        this(kind, name, desc, fileName, null);
-    }
+	public EDXPattern(String kind, String name, String desc, String fileName) throws IOException {
+		this(kind, name, desc, fileName, null);
+	}
 
-    public EDXPattern(String kind, String name, String desc, String fileName, String correctingFolder) throws IOException {
-        this.kind = kind;
-        this.name = name;
-        this.desc = desc;
-        this.sects = new HashMap<>();
-        this.correctingFolder = correctingFolder;
-        this.fileName = fileName;
+	public EDXPattern(String kind, String name, String desc, String fileName, String correctingFolder) throws IOException {
+		this.kind = kind;
+		this.name = name;
+		this.desc = desc;
+		this.correctingFolder = correctingFolder;
+		this.fileName = fileName;
 
-        try (RandomAccessFile in = new RandomAccessFile(new File(fileName), "r")) {
-            final byte[] hdr = new byte[4];
-            if (in.read(hdr) != 4 || !new String(hdr).equals("EDXI")) {
-                throw new IOException("not EDX");
-            }
-            // version number + .offs string
-            if (in.skipBytes(4 + 8) != (4 + 8)) {
-                throw new IOException("not EDX");
-            }
+		// this.pcmData = Machine.getPcmData(fileName).getPcmData();
+		// this.summary = Machine.getPcmData(fileName).getSummary();
+	}
 
-            final int len = readi32le(in);
-            final int count = len / 16; // 16 = name[8] + offs + len
-            for (int i = 0; i < count; i += 1) {
-                final EDXSection sect = new EDXSection();
+	public boolean hasCorrectingFolder() {
+		return this.correctingFolder != null;
+	}
 
-                final byte[] sect_name = new byte[8];
-                in.read(sect_name);
+	public String getCorrectingFolder() {
+		return this.correctingFolder;
+	}
 
-                sect.name = new String(sect_name);
-                sect.offset = readi32le(in);
-                sect.length = readi32le(in);
-                sect.contents = new byte[sect.length];
+	public String getKind() {
+		return this.kind;
+	}
 
-                final long cur = in.getFilePointer();
-                in.seek(sect.offset + 12); // 12 bytes of useless junk
-                in.read(sect.contents, 0, sect.contents.length);
-                in.seek(cur);
+	public String getName() {
+		return this.name;
+	}
 
-                this.sects.put(sect.name, sect);
-            }
-        } catch (IOException e) {
-            throw e;
-        }
+	public String getDescription() {
+		return this.desc;
+	}
 
-        if (this.sects.containsKey(".orig   ")) {
-            this.pcmData = new ArrayList<>();
-            for (byte b : this.sects.get(".orig   ").contents) {
-                this.pcmData.add((double) (byte) (b ^ 0x80) / 128.0);
-            }
-            this.summary = Analyzer.summarize(this.pcmData);
-        } else {
-            this.pcmData = null;
-            this.summary = null;
-        }
-    }
+	public List<Double> getPCMData() {
+		if (this.pcmData == null) {
+			try {
+				this.pcmData = Machine.getPcmData(fileName).getPcmData();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return this.pcmData;
+	}
 
-    public boolean hasCorrectingFolder() {
-        return this.correctingFolder != null;
-    }
+	public List<ChunkSummary> getSummary() {
+		if (this.summary == null) {
+			try {
+				this.summary = Machine.getPcmData(fileName).getSummary();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return this.summary;
+	}
 
-    public String getCorrectingFolder() {
-        return this.correctingFolder;
-    }
+	public String getFileName() {
+		return fileName;
+	}
 
-    public String getKind() {
-        return this.kind;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public String getDescription() {
-        return this.desc;
-    }
-
-    public List<Double> getPCMData() {
-        return this.pcmData;
-    }
-
-    public List<ChunkSummary> getSummary() {
-        return this.summary;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    private int readi32le(RandomAccessFile in) {
-        try {
-            byte[] raw = new byte[4];
-            in.read(raw);
-            return (raw[0] & 0xff)
-                    | ((raw[1] & 0xff) << 8)
-                    | ((raw[2] & 0xff) << 16)
-                    | ((raw[3] & 0xff) << 24);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    
 }

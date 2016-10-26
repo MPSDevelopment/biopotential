@@ -34,30 +34,30 @@ public class H2DB {
 		this.diseaseFolderIds = diseaseFolderIds;
 	}
 
-	public H2DBIter getDiseases() {
-		try {
-			return new H2DBIter(this.db);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	public H2DBIter getIterForFolder(String folder) {
-
-		long t1 = 0;
-		try {
-
-			t1 = System.currentTimeMillis();
-			return new H2DBIter(this.db, folder);
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		} finally {
-			LOGGER.info("getIterForFolder has been found for %d ms", System.currentTimeMillis() - t1);
-		}
-	}
+//	public H2DBIter getDiseases() {
+//		try {
+//			return new H2DBIter(this.db);
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
+//
+//	public H2DBIter getIterForFolder(String folder) {
+//
+//		long t1 = 0;
+//		try {
+//
+//			t1 = System.currentTimeMillis();
+//			return new H2DBIter(this.db, folder);
+//
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//			return null;
+//		} finally {
+//			LOGGER.info("getIterForFolder has been found for %d ms", System.currentTimeMillis() - t1);
+//		}
+//	}
 
 	public void close() {
 		try {
@@ -65,6 +65,10 @@ public class H2DB {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public Connection getDb() {
+		return db;
 	}
 
 	private Connection db;

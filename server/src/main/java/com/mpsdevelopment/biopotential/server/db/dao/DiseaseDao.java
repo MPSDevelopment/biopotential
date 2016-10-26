@@ -20,10 +20,10 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.function.BiConsumer;
-
-import static org.terracotta.modules.ehcache.ToolkitInstanceFactoryImpl.LOGGER;
 
 public class DiseaseDao {
 
@@ -36,10 +36,14 @@ public class DiseaseDao {
 	}
 
 	public Map<Pattern, AnalysisSummary> getDeseases(
-			/* Map<Pattern, AnalysisSummary> desease, */ File file) throws IOException, UnsupportedAudioFileException, H2DBException {
+			/* Map<Pattern, AnalysisSummary> desease, */ File file) throws IOException, UnsupportedAudioFileException, H2DBException, SQLException {
 
 		final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(file)));
-		final Map<Pattern, AnalysisSummary> diseases = Machine.summarizePatterns(sample, db.getDiseases());
+		
+		List<EDXPattern> patterns = PatternsDao.getFromDatabase(db.getDb());
+		
+		// TODO Split summarizePatterns to 2 methods for decease and pattern 
+		final Map<Pattern, AnalysisSummary> diseases = Machine.summarizePatterns(sample, patterns);
 		// db.close();
 		return diseases;
 	}
@@ -81,35 +85,29 @@ public class DiseaseDao {
 
 					long t1 = System.currentTimeMillis();
 
-					
-					H2DBIter iterForFolder = db.getIterForFolder(((EDXPattern) dk).getCorrectingFolder());
-					LOGGER.info("iterForFolder took %d ms", System.currentTimeMillis() - t1);
-					
-					final Map<Pattern, AnalysisSummary> healings = Machine.summarizePatterns(sample, iterForFolder); // вытягиваются
-					// папка
-					// с
-					// коректорами
-					// для
-					// конкретной
-					// болезни
-					// BAC
-					// ->
-					// FL
-					// BAC
+					List<EDXPattern> patterns;
+					try {
+						patterns = PatternsDao.getFromDatabase(db.getDb(), ((EDXPattern) dk).getCorrectingFolder());
+						
+						LOGGER.info("iterForFolder took %d ms", System.currentTimeMillis() - t1);
+						
+						final Map<Pattern, AnalysisSummary> healings = Machine.summarizePatterns(sample, patterns); // вытягиваются
+						// папка
+						// с
+						// коректорами
+						// для
+						// конкретной
+						// болезни
+						// BAC
+						// ->
+						// FL
+						// BAC
 
-					LOGGER.info("SummarizePatterns took %d ms", System.currentTimeMillis() - t1);
-
-					/*
-					 * healings.forEach(new BiConsumer<Pattern,
-					 * AnalysisSummary>() {
-					 * 
-					 * @Override public void accept(Pattern hk, AnalysisSummary
-					 * hv) { // hk.getPCMData() LOGGER.info("%s %s\n",
-					 * hk.getKind(), hk.getName(), hv.getDispersion());
-					 * 
-					 * } });
-					 */
-					allHealings.putAll(healings);
+						LOGGER.info("SummarizePatterns took %d ms", System.currentTimeMillis() - t1);
+						allHealings.putAll(healings);
+					} catch (SQLException | IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 
