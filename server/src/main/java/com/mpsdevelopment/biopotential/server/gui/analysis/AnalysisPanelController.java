@@ -3,7 +3,6 @@ package com.mpsdevelopment.biopotential.server.gui.analysis;
 import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
-import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.h2db.H2DBException;
 import com.mpsdevelopment.biopotential.server.db.dao.DiseaseDao;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
@@ -85,8 +84,6 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             makeAnalyze(file);
         } catch (UnsupportedAudioFileException e) {
             LOGGER.printStackTrace(e);
-        } catch (H2DBException e) {
-            LOGGER.printStackTrace(e);
         } catch (IOException e) {
             LOGGER.printStackTrace(e);
         } catch (SQLException e) {
@@ -143,7 +140,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     }
 
-    private void makeAnalyze(File file) throws UnsupportedAudioFileException, H2DBException, IOException, SQLException {
+    private void makeAnalyze(File file) throws UnsupportedAudioFileException, IOException, SQLException {
         /*
          * try {
 		 * 
@@ -311,7 +308,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         allHealings.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
             @Override
             public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
-                List<Double> pcmData = pattern.getPCMData();
+                List<Double> pcmData = pattern.getPcmData();
                 lists.add(pcmData);
             }
         });

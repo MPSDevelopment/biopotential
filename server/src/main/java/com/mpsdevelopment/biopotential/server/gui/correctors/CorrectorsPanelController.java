@@ -137,7 +137,7 @@ public class CorrectorsPanelController extends AbstractController /*implements S
                     public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
 
                         if (tab.getName().equals(pattern.getName())) {
-                            List<Double> pcmData = pattern.getPCMData();
+                            List<Double> pcmData = pattern.getPcmData();
                             lists.add(pcmData);
                         }
 

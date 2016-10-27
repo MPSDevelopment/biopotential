@@ -9,6 +9,6 @@ public interface Pattern {
     String getKind();
     String getName();
     String getDescription();
-    List<Double> getPCMData();
+    List<Double> getPcmData();
     List<ChunkSummary> getSummary();
 }

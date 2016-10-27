@@ -1,20 +1,20 @@
 package com.mpsdevelopment.biopotential.server.db.dao;
 
-import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.h2db.H2DBIter;
 import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
+import com.mpsdevelopment.biopotential.server.db.pojo.Folder;
 import com.mpsdevelopment.biopotential.server.db.pojo.Pattern;
+import com.mpsdevelopment.biopotential.server.db.pojo.PatternsFolders;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PatternsDao  extends GenericDao<Pattern,Long>{
@@ -38,9 +38,23 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
         return query.list();
     }
     
-	public static List<EDXPattern> getFromDatabase(Connection db) throws SQLException, IOException {
+	public List<EDXPattern> getFromDatabase() throws SQLException, IOException {
 
-        PreparedStatement ps = db.prepareStatement(
+		ProjectionList projections = Projections.projectionList()
+                .add(Projections.property("FOLDER."+Folder.FOLDER_NAME), "kind")
+                .add(Projections.property("PATTERN."+Pattern.PATTERN_NAME), "name")
+                .add(Projections.property("PATTERN."+Pattern.PATTERN_DESCRIPTION), "description")
+                .add(Projections.property("PATTERN."+Pattern.PATTERN_UID), "fileName");
+		 // .add(Projections.property("PATTERN."+"CORRECTORS"), "correctingFolder")
+		
+		List list = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS,"PATTERNS_FOLDERS").createCriteria(PatternsFolders.PATTERNS,"PATTERN")
+        .setProjection(projections)
+        .setResultTransformer(Transformers.aliasToBean(EDXPattern.class)).list();
+		
+		return list;
+        
+/**		
+		PreparedStatement ps = db.prepareStatement(
         		"SELECT IDFOLDER,"
         	            + "     IDPATTERN,"
         	            + "     PATTERNNAME,"
@@ -68,10 +82,32 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
                 rs.getString("CORRECTORS")));
         }
         return patterns;
+        **/
     }
     
-	public static List<EDXPattern> getFromDatabase(Connection db, String filter) throws SQLException, IOException {
+	public List<EDXPattern> getFromDatabase(String filter) throws SQLException, IOException {
 
+        long t1 = System.currentTimeMillis();
+		
+        ProjectionList projections = Projections.projectionList()
+                .add(Projections.property("FOLDER."+Folder.FOLDER_NAME), "kind")
+                .add(Projections.property("PATTERN."+Pattern.PATTERN_NAME), "name")
+                .add(Projections.property("PATTERN."+Pattern.PATTERN_DESCRIPTION), "desc")
+                .add(Projections.property("PATTERN."+Pattern.PATTERN_UID), "filename");
+        //.add(Projections.property("PATTERN."+"CORRECTORS"), "correctingFolder")
+        
+        Criteria query = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS,"PATTERNS_FOLDERS").createCriteria(PatternsFolders.PATTERNS,"PATTERN")
+        .add(Restrictions.eq("FOLDER."+Folder.ID_FOLDER, filter))
+        .setProjection(projections).
+        setResultTransformer(Transformers.aliasToBean(EDXPattern.class));
+       
+        List list = query.list();
+        
+        LOGGER.info("Work with iterator took %d ms Result set is %d ", System.currentTimeMillis() - t1, list.size());
+        
+		return list;
+		
+		/**
         PreparedStatement ps = db.prepareStatement(
             "SELECT IDFOLDER,"
             + "     IDPATTERN,"
@@ -108,6 +144,8 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
         LOGGER.info("Work with iterator took %d ms Result set is %d ", System.currentTimeMillis() - t1, patterns.size());
         
         return patterns;
+        
+        **/
     }
 
 

@@ -24,7 +24,7 @@ class ArkDBIter implements PatternDB {
                             this.patterns.getString("folder_name"),
                             this.patterns.getString("pattern_name"),
                             this.patterns.getString("pattern_description"),
-                            "data/edxfiles/" + this.patterns.getString("pattern_uid"),
+                            this.patterns.getString("pattern_uid"),
                             null);
                     } catch (IOException e) {
                         e.printStackTrace();

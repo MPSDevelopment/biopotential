@@ -8,9 +8,6 @@ import com.mpsdevelopment.biopotential.server.cmp.machine.KindCondition;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.cmp.machine.SummaryCondition;
-import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.h2db.H2DB;
-import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.h2db.H2DBException;
-import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.h2db.H2DBIter;
 import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
 import com.mpsdevelopment.biopotential.server.db.pojo.Visit;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
@@ -18,6 +15,9 @@ import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.DriverManager;
@@ -29,26 +29,26 @@ public class DiseaseDao {
 
 	private static final Logger LOGGER = LoggerUtil.getLogger(DiseaseDao.class);
 
-	private H2DB db;
+	@Autowired
+	private PatternsDao patternsDao;
 
-	public DiseaseDao() throws H2DBException {
-		db = new H2DB("./data/database", "", "sa");
+	public DiseaseDao() {
 	}
 
 	public Map<Pattern, AnalysisSummary> getDeseases(
-			/* Map<Pattern, AnalysisSummary> desease, */ File file) throws IOException, UnsupportedAudioFileException, H2DBException, SQLException {
+			/* Map<Pattern, AnalysisSummary> desease, */ File file) throws IOException, UnsupportedAudioFileException, SQLException {
 
 		final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(file)));
-		
-		List<EDXPattern> patterns = PatternsDao.getFromDatabase(db.getDb());
-		
-		// TODO Split summarizePatterns to 2 methods for decease and pattern 
+
+		List<EDXPattern> patterns = patternsDao.getFromDatabase();
+
+		// TODO Split summarizePatterns to 2 methods for decease and pattern
 		final Map<Pattern, AnalysisSummary> diseases = Machine.summarizePatterns(sample, patterns);
 		// db.close();
 		return diseases;
 	}
 
-	public Map<Pattern, AnalysisSummary> getHealings(Map<Pattern, AnalysisSummary> diseases, File file) throws H2DBException, IOException, UnsupportedAudioFileException {
+	public Map<Pattern, AnalysisSummary> getHealings(Map<Pattern, AnalysisSummary> diseases, File file) throws IOException, UnsupportedAudioFileException {
 		final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(file)));
 
 		final Map<String, Integer> probableKinds = getProbableKinds(diseases);
@@ -65,7 +65,7 @@ public class DiseaseDao {
 		allHealings.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
 			@Override
 			public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
-				List<Double> pcmData = pattern.getPCMData();
+				List<Double> pcmData = pattern.getPcmData();
 				lists.add(pcmData);
 			}
 		});
@@ -87,12 +87,13 @@ public class DiseaseDao {
 
 					List<EDXPattern> patterns;
 					try {
-						patterns = PatternsDao.getFromDatabase(db.getDb(), ((EDXPattern) dk).getCorrectingFolder());
-						
+						patterns = patternsDao.getFromDatabase(((EDXPattern) dk).getCorrectingFolder());
+
 						LOGGER.info("iterForFolder took %d ms", System.currentTimeMillis() - t1);
-						
+
 						/**
-						 * вытягиваются папка с коректорами для конкретной болезни BAC -> FL BAC
+						 * вытягиваются папка с коректорами для конкретной
+						 * болезни BAC -> FL BAC
 						 */
 						final Map<Pattern, AnalysisSummary> healings = Machine.summarizePatterns(sample, patterns);
 

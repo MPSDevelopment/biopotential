@@ -21,6 +21,8 @@ class EDXSection {
 
 public class Machine {
 
+	private static final String EDX_FILE_FOLDER = "./data/edxfiles/";
+
 	public static Map<Pattern, AnalysisSummary> summarizePatterns(List<ChunkSummary> sampleSummary, List<EDXPattern> patterns) {
 		final Map<Pattern, AnalysisSummary> summaries = new HashMap<>();
 		AnalysisSummary summary;
@@ -56,7 +58,7 @@ public class Machine {
 		List<ChunkSummary> summary = new ArrayList<>();
 		List<Double> pcmData = new ArrayList<>();
 
-		try (RandomAccessFile in = new RandomAccessFile(new File(fileName), "r")) {
+		try (RandomAccessFile in = new RandomAccessFile(new File(EDX_FILE_FOLDER + fileName), "r")) {
 			final byte[] hdr = new byte[4];
 			if (in.read(hdr) != 4 || !new String(hdr).equals("EDXI")) {
 				throw new IOException("not EDX");

@@ -249,14 +249,6 @@
 			<version>${springsecurity.version}</version>
 		</dependency>
 
-		<!--<dependency>
-			<groupId>javax.websocket</groupId>
-			<artifactId>javax.websocket-api</artifactId>
-			<version>${websocket-api.version}</version>
-			<scope>provided</scope>
-		</dependency>-->
-
-		<!-- https://mvnrepository.com/artifact/javax.websocket/javax.websocket-api -->
 		<dependency>
 			<groupId>javax.websocket</groupId>
 			<artifactId>javax.websocket-api</artifactId>
@@ -383,21 +375,10 @@
 		</dependency>
 
 		<dependency>
-			<groupId>io.vertx</groupId>
-			<artifactId>vertx-core</artifactId>
-			<version>${vertx.version}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-resources-plugin</artifactId>
 			<version>${resources.plugin.version}</version>
 		</dependency>
-		<!--<dependency>
-			<groupId>groupId</groupId>
-			<artifactId>cmp</artifactId>
-			<version>1.0-SNAPSHOT</version>
-		</dependency>-->
 
 	</dependencies>
 

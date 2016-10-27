@@ -31,7 +31,7 @@ public class WAWPattern implements Pattern {
         return this.summary;
     }
 
-    public List<Double> getPCMData() {
+    public List<Double> getPcmData() {
         return null;
     }
 
