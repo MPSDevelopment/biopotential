@@ -133,7 +133,7 @@ public class DatabaseCreator {
 
 				folder = foldersDao.getById(foldersDb.getInt("id_folder"));
 				if (folder == null) {
-					folder = (Folder) new Folder().setIdFolder(foldersDb.getInt("id_folder"))
+					folder = new Folder().setIdFolder(foldersDb.getInt("id_folder"))
 							.setFolderName(foldersDb.getString("parent_folder_id"))
 							.setFolderName(foldersDb.getString("folder_name"))
 							.setFolderDescription(foldersDb.getString("folder_description"))
@@ -151,7 +151,7 @@ public class DatabaseCreator {
 
 				pattern = patternsDao.getById(patternsDb.getInt("id_pattern"));
 				if (pattern == null) {
-					pattern = (Pattern) new Pattern().setIdPattern(patternsDb.getInt("id_pattern"))
+					pattern = new Pattern().setIdPattern(patternsDb.getInt("id_pattern"))
 							.setPatternName(patternsDb.getString("pattern_name"))
 							.setPatternDescription(patternsDb.getString("pattern_description"))
 							.setPatternUid(patternsDb.getString("pattern_uid"))

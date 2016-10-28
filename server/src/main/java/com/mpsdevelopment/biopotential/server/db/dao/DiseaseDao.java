@@ -44,8 +44,7 @@ public class DiseaseDao {
 
 		// TODO Split summarizePatterns to 2 methods for decease and pattern
 		final Map<Pattern, AnalysisSummary> diseases = Machine.summarizePatterns(sample, patterns);
-		// db.close();
-		return diseases;
+        return diseases;
 	}
 
 	public Map<Pattern, AnalysisSummary> getHealings(Map<Pattern, AnalysisSummary> diseases, File file) throws IOException, UnsupportedAudioFileException {

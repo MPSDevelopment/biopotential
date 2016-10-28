@@ -168,7 +168,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
     private Visit[] visits;
     private Stage primaryStage;
     private User user = new User();
-    public static final int RATE = 32;
+    public static final int RATE = 8;
     private String gender = null;
 
     public DiagPanelController() {
@@ -473,8 +473,9 @@ public class DiagPanelController extends AbstractController implements Subscriba
             } catch (UnsupportedAudioFileException e) {
                 e.printStackTrace();
             }
-
+            long t1 = System.currentTimeMillis();
             XYChart.Series<Number, Number> numberSeries = LineChartUtil.createNumberSeries(extractedData, RATE,sampleRate);
+            LOGGER.info("Time create createNumberSeries %s ms", System.currentTimeMillis() - t1);
             numberLineChart.getData().clear();
 //            numberLineChart.getStylesheets().add(AnalysisPanelController.class.getResource("main.css").toExternalForm());
             numberLineChart.getStylesheets().add("main.css");
