@@ -14,6 +14,8 @@ import javax.persistence.Table;
 public class PatternsFolders extends BaseObject{
 
     public static final String PATTERNS = "pattern";
+    
+    public static final String CORRECTORS = "correctors";
 
 //    private long id;
     @ManyToOne(cascade = CascadeType.ALL)

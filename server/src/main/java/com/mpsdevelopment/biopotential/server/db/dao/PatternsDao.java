@@ -39,17 +39,22 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
     }
     
 	public List<EDXPattern> getFromDatabase() throws SQLException, IOException {
+		
+		 long t1 = System.currentTimeMillis();
 
 		ProjectionList projections = Projections.projectionList()
                 .add(Projections.property("FOLDER."+Folder.FOLDER_NAME), "kind")
                 .add(Projections.property("PATTERN."+Pattern.PATTERN_NAME), "name")
                 .add(Projections.property("PATTERN."+Pattern.PATTERN_DESCRIPTION), "description")
-                .add(Projections.property("PATTERN."+Pattern.PATTERN_UID), "fileName");
-		 // .add(Projections.property("PATTERN."+"CORRECTORS"), "correctingFolder")
+                .add(Projections.property("PATTERN."+Pattern.PATTERN_UID), "fileName")
+		 .add(Projections.property("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS), "correctingFolder");
 		
 		List list = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS,"PATTERNS_FOLDERS").createCriteria(PatternsFolders.PATTERNS,"PATTERN")
-        .setProjection(projections)
+				.add(Restrictions.isNotNull("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS))
+				.setProjection(projections)
         .setResultTransformer(Transformers.aliasToBean(EDXPattern.class)).list();
+		
+		LOGGER.info("Work with iterator took %d ms Result set is %d ", System.currentTimeMillis() - t1, list.size());
 		
 		return list;
         
@@ -85,7 +90,7 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
         **/
     }
     
-	public List<EDXPattern> getFromDatabase(String filter) throws SQLException, IOException {
+	public List<EDXPattern> getFromDatabase(Long filter) throws SQLException, IOException {
 
         long t1 = System.currentTimeMillis();
 		
@@ -93,8 +98,8 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
                 .add(Projections.property("FOLDER."+Folder.FOLDER_NAME), "kind")
                 .add(Projections.property("PATTERN."+Pattern.PATTERN_NAME), "name")
                 .add(Projections.property("PATTERN."+Pattern.PATTERN_DESCRIPTION), "desc")
-                .add(Projections.property("PATTERN."+Pattern.PATTERN_UID), "filename");
-        //.add(Projections.property("PATTERN."+"CORRECTORS"), "correctingFolder")
+                .add(Projections.property("PATTERN."+Pattern.PATTERN_UID), "filename")
+        .add(Projections.property("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS), "correctingFolder");
         
         Criteria query = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS,"PATTERNS_FOLDERS").createCriteria(PatternsFolders.PATTERNS,"PATTERN")
         .add(Restrictions.eq("FOLDER."+Folder.ID_FOLDER, filter))
@@ -103,7 +108,7 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
        
         List list = query.list();
         
-        LOGGER.info("Work with iterator took %d ms Result set is %d ", System.currentTimeMillis() - t1, list.size());
+        LOGGER.info("Work with iterator and filter took %d ms Result set is %d ", System.currentTimeMillis() - t1, list.size());
         
 		return list;
 		

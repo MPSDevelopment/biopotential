@@ -11,7 +11,7 @@ public class EDXPattern implements Pattern {
 
 	private List<ChunkSummary> summary;
 	private List<Double> pcmData;
-	private String correctingFolder;
+	private Long correctingFolder;
 	private String kind;
 	private String name;
 	private String description;
@@ -25,7 +25,7 @@ public class EDXPattern implements Pattern {
 		this(kind, name, desc, fileName, null);
 	}
 
-	public EDXPattern(String kind, String name, String description, String fileName, String correctingFolder) throws IOException {
+	public EDXPattern(String kind, String name, String description, String fileName, Long correctingFolder) throws IOException {
 		this.kind = kind;
 		this.name = name;
 		this.description = description;
@@ -58,11 +58,11 @@ public class EDXPattern implements Pattern {
 		return this.pcmData;
 	}
 
-	public String getCorrectingFolder() {
+	public Long getCorrectingFolder() {
 		return correctingFolder;
 	}
 
-	public void setCorrectingFolder(String correctingFolder) {
+	public void setCorrectingFolder(Long correctingFolder) {
 		this.correctingFolder = correctingFolder;
 	}
 

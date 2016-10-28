@@ -9,10 +9,10 @@ import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 public class ServerApplication {
 
 	private static final Logger LOGGER = LoggerUtil.getLogger(ServerApplication.class);
-
+ 
 	private static ClasspathResourceManager resourceManager = ClasspathResourceManager.getResourceManager();
 
-	public static void main(String args[]) throws Exception {
+	   public static void main(String args[]) throws Exception {
 		
 		LogbackConfigureLoader.initializeLogging(resourceManager, "logback.xml", "jul.properties");
 		

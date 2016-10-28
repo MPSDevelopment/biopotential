@@ -21,7 +21,7 @@ class EDXSection {
 
 public class Machine {
 
-	private static final String EDX_FILE_FOLDER = "./data/edxfiles/";
+	private static final String EDX_FILE_FOLDER = "data/edxfiles/";
 
 	public static Map<Pattern, AnalysisSummary> summarizePatterns(List<ChunkSummary> sampleSummary, List<EDXPattern> patterns) {
 		final Map<Pattern, AnalysisSummary> summaries = new HashMap<>();
