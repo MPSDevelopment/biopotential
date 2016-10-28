@@ -3,6 +3,7 @@ package com.mpsdevelopment.biopotential.server.cmp.machine.strains;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
+import com.mpsdevelopment.biopotential.server.cmp.machine.PcmDataSummary;
 
 import java.io.*;
 import java.util.List;
@@ -35,25 +36,26 @@ public class EDXPattern implements Pattern {
 		// this.pcmData = Machine.getPcmData(fileName).getPcmData();
 		// this.summary = Machine.getPcmData(fileName).getSummary();
 	}
+	
+	private void initializePcmData() {
+		try {
+			PcmDataSummary pcmData = Machine.getPcmData(fileName);
+			this.summary = pcmData.getSummary();
+			this.pcmData = pcmData.getPcmData();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public List<ChunkSummary> getSummary() {
 		if (this.summary == null) {
-			try {
-				this.summary = Machine.getPcmData(fileName).getSummary();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			initializePcmData();
 		}
 		return this.summary;
 	}
-
 	public List<Double> getPcmData() {
 		if (this.pcmData == null) {
-			try {
-				this.pcmData = Machine.getPcmData(fileName).getPcmData();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			initializePcmData();
 		}
 		return this.pcmData;
 	}
