@@ -97,18 +97,18 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
         ProjectionList projections = Projections.projectionList()
                 .add(Projections.property("FOLDER."+Folder.FOLDER_NAME), "kind")
                 .add(Projections.property("PATTERN."+Pattern.PATTERN_NAME), "name")
-                .add(Projections.property("PATTERN."+Pattern.PATTERN_DESCRIPTION), "desc")
-                .add(Projections.property("PATTERN."+Pattern.PATTERN_UID), "filename")
+                .add(Projections.property("PATTERN."+Pattern.PATTERN_DESCRIPTION), "description")
+                .add(Projections.property("PATTERN."+Pattern.PATTERN_UID), "fileName")
         .add(Projections.property("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS), "correctingFolder");
         
         Criteria query = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS,"PATTERNS_FOLDERS").createCriteria(PatternsFolders.PATTERNS,"PATTERN")
-        .add(Restrictions.eq("FOLDER."+Folder.ID_FOLDER, filter))
+        .add(Restrictions.eq("FOLDER."+Folder.ID_FIELD, filter))
         .setProjection(projections).
         setResultTransformer(Transformers.aliasToBean(EDXPattern.class));
        
         List list = query.list();
         
-        LOGGER.info("Work with iterator and filter took %d ms Result set is %d ", System.currentTimeMillis() - t1, list.size());
+        LOGGER.info("Work with iterator and filter %s took %d ms Result set is %d ", filter, System.currentTimeMillis() - t1, list.size());
         
 		return list;
 		

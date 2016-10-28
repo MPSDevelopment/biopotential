@@ -45,7 +45,7 @@ public class Folder extends BaseObject {
     @Expose
     @Column(name = ID_FOLDER)
     @SerializedName(ID_FOLDER_GS)
-    private int idFolder;
+    private Long idFolder;
 
     @Expose
     @Column(name = PARENT_FOLDER_ID)
@@ -98,12 +98,17 @@ public class Folder extends BaseObject {
         this.patternsFolders = patternseFolderses;
     }
 
-    public int getIdFolder() {
+    public Long getIdFolder() {
         return idFolder;
     }
 
-    public Folder setIdFolder(int idFolder) {
+    public Folder setIdFolder(Long idFolder) {
         this.idFolder = idFolder;
+        return this;
+    }
+    
+    public Folder setIdFolder(Integer idFolder) {
+        this.idFolder = Integer.toUnsignedLong(idFolder);
         return this;
     }
 
