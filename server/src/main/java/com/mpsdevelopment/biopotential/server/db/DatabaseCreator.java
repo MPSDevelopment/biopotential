@@ -1,8 +1,14 @@
 package com.mpsdevelopment.biopotential.server.db;
 
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
+import com.mpsdevelopment.biopotential.server.cmp.machine.*;
 import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.arkdb.ArkDBException;
+import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
 import com.mpsdevelopment.biopotential.server.db.dao.*;
 import com.mpsdevelopment.biopotential.server.db.pojo.*;
+import com.mpsdevelopment.biopotential.server.db.pojo.Pattern;
+import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -15,7 +21,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
 public class DatabaseCreator {
 
@@ -33,7 +43,7 @@ public class DatabaseCreator {
 
 	public static final String OPERATOR = "OPERATOR";
 
- 	public static final String USER = "USER";
+	public static final String USER = "USER";
 
 	@Autowired
 	private UserDao userDao;
@@ -125,7 +135,7 @@ public class DatabaseCreator {
 
 	}
 
-	public void convertToH2(String url) throws ArkDBException {
+	public void convertToH2(String url) throws ArkDBException, IOException {
 		connect(url);
 
 		try {
@@ -212,7 +222,7 @@ public class DatabaseCreator {
 
 				for (Folder folder : folderList) {
 
-					if  (folder.getIdFolder() == 4328) {
+					if (folder.getIdFolder() == 4328) {
 
 						patternsFolders = new PatternsFolders();
 						patternsFolders.setFolder(folder);
@@ -231,8 +241,10 @@ public class DatabaseCreator {
 				patternsFoldersDao.save(patternsFolders);
 			}
 
+			setChunkSummary();
+
+
 			LOGGER.info("End");
-			db.close();
             /*
             folder = foldersDao.getById(4328);
             LOGGER.info("Flora dissection size %s", folder.getPattern().size());
@@ -248,5 +260,26 @@ public class DatabaseCreator {
 		}
 
 	}
+
+	private void setChunkSummary() throws IOException, SQLException {
+		List<Pattern> patternAll = patternsDao.getPatterns(null, null);
+        LOGGER.info("List size %s", patternAll.size());
+		patternAll.forEach(new Consumer<Pattern>() {
+            @Override
+            public void accept(Pattern patternTemp) {
+
+                try {
+                    PcmDataSummary sum =  Machine.getPcmData(/*"./data/edxfiles/" + */patternTemp.getPatternUid());
+
+                    patternTemp.setChunkSummary(JsonUtils.getJson(sum.getSummary()));
+                    patternsDao.saveOrUpdate(patternTemp);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+        });
+    }
 
 }

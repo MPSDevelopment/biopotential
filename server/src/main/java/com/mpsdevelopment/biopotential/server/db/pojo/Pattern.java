@@ -48,6 +48,8 @@ public class Pattern extends BaseObject {
     public static final String EDX_FILE_LAST_MODIFIED_DTS_MSEC_GS = "eFileLastModMs";
     public static final String LINKED_FOLDER_ID = "linkedFolderId";
     public static final String LINKED_FOLDER_ID_GS = "lFoldId";
+    public static final String CHUNK_SUMMARY = "chunkSummary";
+    public static final String CHUNK_SUMMARY_GS = "cS";
 
     /*@ManyToMany(fetch = FetchType.LAZY, mappedBy= "patterns")
     private List<Folder> folders = new ArrayList<>();*/
@@ -152,6 +154,11 @@ public class Pattern extends BaseObject {
     @Column(name = LINKED_FOLDER_ID)
     @SerializedName(LINKED_FOLDER_ID_GS)
     private int linkedFolderId;
+
+    @Expose
+    @Column(name = CHUNK_SUMMARY, length = 2000)
+    @SerializedName(CHUNK_SUMMARY_GS)
+    private String chunkSummary;
 
     /*public List<Folder> getFolder() {
         return folders;
@@ -335,8 +342,34 @@ public class Pattern extends BaseObject {
         return linkedFolderId;
     }
 
+    public String getChunkSummary() {
+        return chunkSummary;
+    }
+
+    public Pattern setChunkSummary(String chunkSummary) {
+        this.chunkSummary = chunkSummary;
+        return this;
+    }
+
     public Pattern setLinkedFolderId(int linkedFolderId) {
         this.linkedFolderId = linkedFolderId;
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Pattern pattern = (Pattern) o;
+
+        return patternName.equals(pattern.patternName);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return patternName.hashCode();
     }
 }

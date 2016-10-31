@@ -4,6 +4,9 @@ import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.Analyzer;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
+import com.mpsdevelopment.biopotential.server.db.dao.DiseaseDao;
+import com.mpsdevelopment.plasticine.commons.logging.Logger;
+import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -21,13 +24,17 @@ class EDXSection {
 
 public class Machine {
 
+	private static final Logger LOGGER = LoggerUtil.getLogger(Machine.class);
+
 	private static final String EDX_FILE_FOLDER = "data/edxfiles/";
 
 	public static Map<Pattern, AnalysisSummary> summarizePatterns(List<ChunkSummary> sampleSummary, List<EDXPattern> patterns) {
 		final Map<Pattern, AnalysisSummary> summaries = new HashMap<>();
 		AnalysisSummary summary;
 		for (Pattern pattern : patterns) {
+//			long t1 = System.currentTimeMillis();
 			summary = Analyzer.compare(sampleSummary, pattern.getSummary());
+//			LOGGER.info("Operation compare took %d ms", System.currentTimeMillis() - t1);
 			if (summary != null && summary.getDegree() == 0) {
 				summaries.put(pattern, summary);
 			}
@@ -97,7 +104,10 @@ public class Machine {
 			for (byte b : sects.get(".orig   ").contents) {
 				pcmData.add((double) (byte) (b ^ 0x80) / 128.0);
 			}
+			long t1 = System.currentTimeMillis();
 			summary = Analyzer.summarize(pcmData);
+			LOGGER.info("Time for get summurize %d ms", System.currentTimeMillis() - t1);
+
 		} else {
 			pcmData = null;
 			summary = null;
