@@ -261,18 +261,24 @@ public class DatabaseCreator {
 
 	}
 
+    /**
+     *
+     * @throws IOException
+     * @throws SQLException
+     * setChunkSummary add to Pattern table column ChunkSummary pre-calculated lis of meandeviation and dispersion
+     */
+
 	private void setChunkSummary() throws IOException, SQLException {
 		List<Pattern> patternAll = patternsDao.getPatterns(null, null);
         LOGGER.info("List size %s", patternAll.size());
 		patternAll.forEach(new Consumer<Pattern>() {
             @Override
-            public void accept(Pattern patternTemp) {
+            public void accept(Pattern patternsum) {
 
                 try {
-                    PcmDataSummary sum =  Machine.getPcmData(/*"./data/edxfiles/" + */patternTemp.getPatternUid());
-
-                    patternTemp.setChunkSummary(JsonUtils.getJson(sum.getSummary()));
-                    patternsDao.saveOrUpdate(patternTemp);
+                    PcmDataSummary sum =  Machine.getPcmData(patternsum.getPatternUid());
+                    patternsum.setChunkSummary(JsonUtils.getJson(sum.getSummary()));
+                    patternsDao.saveOrUpdate(patternsum);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
