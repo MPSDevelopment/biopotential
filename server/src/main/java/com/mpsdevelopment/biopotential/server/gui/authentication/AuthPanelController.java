@@ -1,6 +1,7 @@
 package com.mpsdevelopment.biopotential.server.gui.authentication;
 
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
+import com.mpsdevelopment.biopotential.server.gui.BioApplication;
 import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
@@ -19,7 +20,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class AuthPanelController {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(AuthPanelController.class);
-    public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/app-context.xml");
 
     private BioHttpClient deviceBioHttpClient;
 
@@ -43,7 +43,7 @@ public class AuthPanelController {
     public void initialize() throws NoSuchMethodException {
 
         User user = new User();
-        deviceBioHttpClient = APP_CONTEXT.getBean(BioHttpClient.class);
+        deviceBioHttpClient = BioApplication.APP_CONTEXT.getBean(BioHttpClient.class);
         // #2 Use property bindings
         Bindings.bindBidirectional(loginField.textProperty(), login);
         Bindings.bindBidirectional(passField.textProperty(), password);

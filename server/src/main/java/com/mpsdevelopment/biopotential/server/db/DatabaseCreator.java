@@ -29,6 +29,10 @@ import java.util.function.Consumer;
 
 public class DatabaseCreator {
 
+	public DatabaseCreator() {
+		LOGGER.info("Create constructor DatabaseCreator");
+	}
+
 	private static final Logger LOGGER = LoggerUtil.getLogger(DatabaseCreator.class);
 
 	public static final String ADMIN_LOGIN = "admin";
@@ -69,6 +73,7 @@ public class DatabaseCreator {
 	private ResultSet patternsFoldersDb;
 
 	public void initialization() throws IOException, URISyntaxException, DaoException {
+		LOGGER.info("databaseCreator initialization ");
 		List<User> users = userDao.findAll();
 		if (users.size() < 10) {
 			createAllUsers();

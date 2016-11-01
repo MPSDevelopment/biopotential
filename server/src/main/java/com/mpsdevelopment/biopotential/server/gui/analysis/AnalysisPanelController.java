@@ -294,8 +294,8 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 														 * });
 														 */
         Collection lists = new ArrayList();
+        long t2 = System.currentTimeMillis();
         diseases.putAll(diseaseDao.getDeseases(file));
-
         diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
             @Override
             public void accept(Pattern k, AnalysisSummary v) {
@@ -305,23 +305,14 @@ public class AnalysisPanelController extends AbstractController implements Subsc
                 analysisData.add(createDataTableObject(k, v));
             }
         });
+        LOGGER.info("Total time for calculate diseases %d ms", System.currentTimeMillis() - t2);
 
         long t1 = System.currentTimeMillis();
         allHealings.putAll(diseaseDao.getHealings(diseases, file));
         LOGGER.info("Total time for calculate healings %d ms", System.currentTimeMillis() - t1);
 
-        allHealings.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
-            @Override
-            public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
-                List<Double> pcmData = pattern.getPcmData();
-                lists.add(pcmData);
-            }
-        });
-
         LOGGER.info("healings size %s", allHealings.size());
         EventBus.publishEvent(new HealingsMapEvent(allHealings));
-        // merge(lists);
-
     }
 
     private DataTable createDataTableObject(Pattern k, AnalysisSummary v) {

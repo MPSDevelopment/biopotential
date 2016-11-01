@@ -17,8 +17,12 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class BioApplication extends Application {
+
+    public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/app-context.xml", "webapp/web-context.xml");
 
     private static ClasspathResourceManager resourceManager = ClasspathResourceManager.getResourceManager();
 

@@ -52,15 +52,15 @@ public class DiseaseDao {
 
 		final Map<String, Integer> probableKinds = getProbableKinds(diseases);
 
-		List<List<Double>> lists = new ArrayList<>();
+//		List<List<Double>> lists = new ArrayList<>();
 
 		HashMap<Pattern, AnalysisSummary> allHealings = new HashMap<Pattern, AnalysisSummary>();
 
-		 long t1 = System.currentTimeMillis();
+		long t1 = System.currentTimeMillis();
 		getHealings(diseases, sample, probableKinds, allHealings);
-		 LOGGER.info("Healing has been found for %d ms",
-		 System.currentTimeMillis() - t1);
+		LOGGER.info("Healing has been found for %d ms",	System.currentTimeMillis() - t1);
 
+		/*long t2 = System.currentTimeMillis();
 		allHealings.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
 			@Override
 			public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
@@ -68,7 +68,7 @@ public class DiseaseDao {
 				lists.add(pcmData);
 			}
 		});
-
+		LOGGER.info("Time took read pcm data %d ms",	System.currentTimeMillis() - t2);*/
 		return allHealings;
 	}
 

@@ -2,6 +2,7 @@ package com.mpsdevelopment.biopotential.server;
 
 import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.arkdb.ArkDBException;
 import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
+import com.mpsdevelopment.biopotential.server.gui.BioApplication;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
@@ -30,7 +31,7 @@ public class JettyServer {
 
 	private static final Logger LOGGER = LoggerUtil.getLogger(JettyServer.class);
 
-	public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/app-context.xml", "webapp/web-context.xml");
+//	public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/app-context.xml", "webapp/web-context.xml");
 
 	public static XmlWebApplicationContext WEB_CONTEXT;
 
@@ -47,7 +48,7 @@ public class JettyServer {
 	private ServerSettings serverSettings;
 
 	private JettyServer() {
-		serverSettings = APP_CONTEXT.getBean(ServerSettings.class);
+		serverSettings = BioApplication.APP_CONTEXT.getBean(ServerSettings.class);
 	}
 
 	public static JettyServer getInstance() {
@@ -59,7 +60,7 @@ public class JettyServer {
 
 	public void start() throws ServletException {
 
-		DatabaseCreator databaseCreator = APP_CONTEXT.getBean(DatabaseCreator.class);
+//		DatabaseCreator databaseCreator = BioApplication.APP_CONTEXT.getBean(DatabaseCreator.class);
 
 		server = new Server();
 		ServerConnector connector = new ServerConnector(server);
@@ -108,7 +109,7 @@ public class JettyServer {
 
 			WEB_CONTEXT = new XmlWebApplicationContext();
 			WEB_CONTEXT.setConfigLocations(SPRING_CONTEXT_FILENAME);
-			WEB_CONTEXT.setParent(APP_CONTEXT);
+			WEB_CONTEXT.setParent(BioApplication.APP_CONTEXT);
 
 			// // Specify the Session ID Manager
 			// HashSessionIdManager idmanager = new HashSessionIdManager();

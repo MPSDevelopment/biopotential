@@ -168,11 +168,11 @@ public class DiagPanelController extends AbstractController implements Subscriba
     private Visit[] visits;
     private Stage primaryStage;
     private User user = new User();
-    public static final int RATE = 8;
+    public static final int RATE = 32;
     private String gender = null;
 
     public DiagPanelController() {
-
+        LOGGER.info("Create DiagPanelController");
     }
 
     @Override
