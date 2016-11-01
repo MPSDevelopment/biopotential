@@ -56,10 +56,10 @@ public class DiseaseDao {
 
 		HashMap<Pattern, AnalysisSummary> allHealings = new HashMap<Pattern, AnalysisSummary>();
 
-		// long t1 = System.currentTimeMillis();
+		 long t1 = System.currentTimeMillis();
 		getHealings(diseases, sample, probableKinds, allHealings);
-		// LOGGER.info("Healing has been found for %d ms",
-		// System.currentTimeMillis() - t1);
+		 LOGGER.info("Healing has been found for %d ms",
+		 System.currentTimeMillis() - t1);
 
 		allHealings.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
 			@Override

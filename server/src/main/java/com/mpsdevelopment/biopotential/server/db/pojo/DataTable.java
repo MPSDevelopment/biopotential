@@ -27,4 +27,26 @@ public class DataTable {
                 ", dispersion=" + dispersion +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DataTable dataTable = (DataTable) o;
+
+        if (Double.compare(dataTable.dispersion, dispersion) != 0) return false;
+        return name.equals(dataTable.name);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = name.hashCode();
+        temp = Double.doubleToLongBits(dispersion);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
 }

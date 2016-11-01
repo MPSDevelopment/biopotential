@@ -47,6 +47,7 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
                 .add(Projections.property("PATTERN."+Pattern.PATTERN_NAME), "name")
                 .add(Projections.property("PATTERN."+Pattern.PATTERN_DESCRIPTION), "description")
                 .add(Projections.property("PATTERN."+Pattern.PATTERN_UID), "fileName")
+				.add(Projections.property("PATTERN."+Pattern.CHUNK_SUMMARY), "summary")
 		 .add(Projections.property("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS), "correctingFolder");
 		
 		List list = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS,"PATTERNS_FOLDERS").createCriteria(PatternsFolders.PATTERNS,"PATTERN")
@@ -99,6 +100,7 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
                 .add(Projections.property("PATTERN."+Pattern.PATTERN_NAME), "name")
                 .add(Projections.property("PATTERN."+Pattern.PATTERN_DESCRIPTION), "description")
                 .add(Projections.property("PATTERN."+Pattern.PATTERN_UID), "fileName")
+				.add(Projections.property("PATTERN."+Pattern.CHUNK_SUMMARY), "summary")
         .add(Projections.property("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS), "correctingFolder");
         
         Criteria query = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS,"PATTERNS_FOLDERS").createCriteria(PatternsFolders.PATTERNS,"PATTERN")

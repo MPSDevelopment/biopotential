@@ -46,7 +46,9 @@ public class DiseaseDaoTest {
 			e.printStackTrace();
 		}
 
+		long t1 = System.currentTimeMillis();
 		Map<Pattern, AnalysisSummary> healings = diseaseDao.getHealings(diseases, file);
+		LOGGER.info("Total time to get calculate healings %d ms", System.currentTimeMillis() - t1);
 
 		Set<Pattern> keys = new HashSet<>(healings.keySet());
 		List<TestSummary> testSummaries = new ArrayList<>();

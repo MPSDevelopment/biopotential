@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.IOException;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = SpringockitoContextLoader.class, locations = { "classpath:/webapp/app-context-test.xml", "classpath:/webapp/web-context.xml" })
 @Configurable
@@ -32,7 +34,7 @@ public class DatabaseCreatorTest {
 	private PatternsDao patternsDao;
 
 	@Test
-	public void convertToH2Test() throws ArkDBException {
+	public void convertToH2Test() throws ArkDBException, IOException {
 
 		LOGGER.info("databaseCreator %s", databaseCreator);
 

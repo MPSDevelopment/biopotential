@@ -43,7 +43,7 @@ import java.util.function.BiConsumer;
 public class AnalysisPanelController extends AbstractController implements Subscribable {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(AnalysisPanelController.class);
-    private ObservableList<DataTable> analysisData = FXCollections.observableArrayList();
+    private ObservableList<DataTable> analysisData;
 
     @Autowired
     private DiseaseDao diseaseDao;
@@ -69,8 +69,8 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     private Stage primaryStage;
     private static File file;
     private static Map<Pattern, AnalysisSummary> healings;
-    Map<Pattern, AnalysisSummary> diseases = new HashMap<Pattern, AnalysisSummary>();
-    Map<Pattern, AnalysisSummary> allHealings = new HashMap<Pattern, AnalysisSummary>();
+    Map<Pattern, AnalysisSummary> diseases;
+    Map<Pattern, AnalysisSummary> allHealings;
 
     private static File outputFile = new File("AudioFiles\\out\\out.wav");
 
@@ -80,6 +80,9 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        analysisData = FXCollections.observableArrayList();
+        diseases = new HashMap<>();
+        allHealings = new HashMap<>();
         try {
             makeAnalyze(file);
         } catch (UnsupportedAudioFileException e) {
@@ -303,7 +306,9 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             }
         });
 
+        long t1 = System.currentTimeMillis();
         allHealings.putAll(diseaseDao.getHealings(diseases, file));
+        LOGGER.info("Total time for calculate healings %d ms", System.currentTimeMillis() - t1);
 
         allHealings.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
             @Override

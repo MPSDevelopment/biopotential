@@ -44,7 +44,7 @@ public class JsonUtils {
 		return fromJson(clazz, json, false);
 	}
 
-	private static <T extends Object> T fromJson(Type type, String json) {
+	public static <T extends Object> T fromJson(Type type, String json) {
 		return (T) gson.fromJson(json, type);
 	}
 

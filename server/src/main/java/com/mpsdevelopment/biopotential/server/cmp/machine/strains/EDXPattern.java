@@ -1,11 +1,15 @@
 package com.mpsdevelopment.biopotential.server.cmp.machine.strains;
 
+import com.google.gson.reflect.TypeToken;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.cmp.machine.PcmDataSummary;
+import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 
 import java.io.*;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EDXPattern implements Pattern {
@@ -46,12 +50,18 @@ public class EDXPattern implements Pattern {
 			e.printStackTrace();
 		}
 	}
-
-	public List<ChunkSummary> getSummary() {
+    // getSummary() for calculate chunk summary values
+	/*public List<ChunkSummary> getSummary() {
 		if (this.summary == null) {
 			initializePcmData();
 		}
 		return this.summary;
+	}*/
+
+	// Override getSummary() for use summaries() method with pre-calculated values
+	@Override
+	public List<ChunkSummary> getSummary() {
+		return summary;
 	}
 	public List<Double> getPcmData() {
 		if (this.pcmData == null) {
@@ -100,7 +110,16 @@ public class EDXPattern implements Pattern {
 		this.fileName = fileName;
 	}
 
-	//
+	public void setSummary(String json) {
+        Type listType = new TypeToken<ArrayList<ChunkSummary>>(){}.getType();
+		this.summary = JsonUtils.fromJson(listType,json);;
+	}
+
+    /*public void setSummary(List<ChunkSummary> summary) {
+        this.summary = summary;
+    }*/
+
+    //
 	// public boolean hasCorrectingFolder() {
 	// return this.correctingFolder != null;
 	// }

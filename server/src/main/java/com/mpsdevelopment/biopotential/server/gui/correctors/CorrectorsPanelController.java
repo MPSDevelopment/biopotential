@@ -39,13 +39,12 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.ToDoubleFunction;
 
-public class CorrectorsPanelController extends AbstractController /*implements Subscribable*/ {
+public class CorrectorsPanelController extends AbstractController  {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(CorrectorsPanelController.class);
-    private ObservableList<DataTable> correctorsData = FXCollections.observableArrayList();
+    private ObservableList<DataTable> correctorsData;
 
     private static File outputFile = new File("data\\out\\out.wav");
-
 
     @FXML
     private TableView<DataTable> сorrectorsTable;
@@ -75,7 +74,14 @@ public class CorrectorsPanelController extends AbstractController /*implements S
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        correctorsData = FXCollections.observableArrayList();
         getPatters();
+        /**
+         *  Sort correctorsData from duplicate items
+         */
+        ArrayList<DataTable> tempData = new ArrayList<>(correctorsData);
+        correctorsData = FXCollections.observableArrayList(removeDuplicates(tempData));
+        // TODO change and upadate "Sort correctorsData" code
 
         сorrectorsTable.setItems(correctorsData);
         сorrectorsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
