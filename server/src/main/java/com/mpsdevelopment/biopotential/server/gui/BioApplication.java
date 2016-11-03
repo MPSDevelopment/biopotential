@@ -1,10 +1,7 @@
 package com.mpsdevelopment.biopotential.server.gui;
 
 import com.mpsdevelopment.biopotential.server.JettyServer;
-import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
-import com.mpsdevelopment.biopotential.server.gui.authentication.AuthPanel;
 import com.mpsdevelopment.biopotential.server.gui.diagnostics.DiagPanel;
-import com.mpsdevelopment.biopotential.server.gui.diagnostics.DiagPanelController;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
 import com.mpsdevelopment.biopotential.server.utils.StageUtils;
 import com.mpsdevelopment.plasticine.commons.ClasspathResourceManager;
@@ -13,10 +10,8 @@ import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.application.Application;
 import javafx.event.EventHandler;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -42,14 +37,9 @@ public class BioApplication extends Application {
 
             server.join();
 
-
-
-
         } catch (Exception e) {
             LOGGER.error("Failed to start server. = %s", e);
         }
-
-
     }
 
     @Override

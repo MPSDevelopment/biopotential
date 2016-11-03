@@ -16,7 +16,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableSet;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -35,8 +34,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.ToDoubleFunction;
 
 public class CorrectorsPanelController extends AbstractController  {
@@ -76,12 +73,6 @@ public class CorrectorsPanelController extends AbstractController  {
 
         correctorsData = FXCollections.observableArrayList();
         getPatters();
-        /**
-         *  Sort correctorsData from duplicate items
-         */
-        ArrayList<DataTable> tempData = new ArrayList<>(correctorsData);
-        correctorsData = FXCollections.observableArrayList(removeDuplicates(tempData));
-        // TODO change and upadate "Sort correctorsData" code
 
         сorrectorsTable.setItems(correctorsData);
         сorrectorsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -114,51 +105,10 @@ public class CorrectorsPanelController extends AbstractController  {
             }
         });
         createFileCorrection.setOnAction(event -> {
-            Collection lists = new HashSet();
-//            Collection hash = new HashSet<DataTable>();
-            HashSet<DataTable> hash = new HashSet<>();
-            ObservableList<DataTable> selectedItems = сorrectorsTable.getSelectionModel().getSelectedItems();
-            LOGGER.info("Selected item %s", selectedItems.size());
-
-            ArrayList<DataTable> temp = new ArrayList<>(selectedItems);
-            hash = removeDuplicates(temp);
-
-            /*for (DataTable item : hash) {
-                healingsMap.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
-                    @Override
-                    public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
-
-                        if (item.getName().equals(pattern.getName())) {
-                            List<Double> pcmData = pattern.getPCMData();
-                            lists.add(pcmData);
-                        }
-
-                    }
-                });
-            }*/
-
-            selectedItems.forEach((tab) -> {
-                healingsMap.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
-                    @Override
-                    public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
-
-                        if (tab.getName().equals(pattern.getName())) {
-                            List<Double> pcmData = pattern.getPcmData();
-                            lists.add(pcmData);
-                        }
-
-                    }
-                });
-            });
-
-            LOGGER.info("Added correctors %s", lists.size());
-            try {
-                merge(lists);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (UnsupportedAudioFileException e) {
-                e.printStackTrace();
-            }
+            /**
+             *  Sort correctorsData from duplicate items by filename
+             */
+            createFileCorrection();
         });
 
         addCorrectorButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -170,26 +120,51 @@ public class CorrectorsPanelController extends AbstractController  {
             }
         });
 
+    }
+
+    private void createFileCorrection() {
+        ObservableList<DataTable> selectedItems = сorrectorsTable.getSelectionModel().getSelectedItems();
+        LOGGER.info("Selected item %s", selectedItems.size());
+
+        Set<Pattern> sortedHealings = new HashSet<>();
+        Set<DataTable> sortedSelectedItems = new HashSet<>();
+
+        List selList = new ArrayList();
+
+        selectedItems.forEach(dataTable -> sortedSelectedItems.add(dataTable));
+
+        healingsMap.forEach((pattern, analysisSummary) -> sortedHealings.add(pattern));
 
 
+        for (DataTable item : sortedSelectedItems) {
+            sortedHealings.forEach(pattern -> {
+                if (item.getFilename().equals(pattern.getFileName())) {
+                    if(selList.add(pattern.getPcmData())) {
+                        LOGGER.info("%s", pattern.getName());
+                        LOGGER.info("%s", item.getFilename());
+
+                    }
+                }
+            });
+        }
+
+        LOGGER.info("Added correctors %s", selList.size());
+        try {
+            merge(selList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        }
     }
 
     public void getPatters()  {
 
-        healingsMap.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
-            @Override
-            public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
-                System.out.printf("%s %s\n", pattern.getKind(), pattern.getName(), analysisSummary.getDispersion());
-                /*List<Double> pcmData = pattern.getPCMData();
-                lists.add(pcmData);*/
-                correctorsData.add(createDataTableObject(pattern,analysisSummary));
-
-            }
-
+        healingsMap.forEach((pattern, analysisSummary) -> {
+            LOGGER.info("%s %s\n", pattern.getKind(), pattern.getName(), analysisSummary.getDispersion());
+            correctorsData.add(createDataTableObject(pattern,analysisSummary));
 
         });
-
-
 
     }
 
@@ -214,7 +189,7 @@ public class CorrectorsPanelController extends AbstractController  {
 
     @Handler
     public void handleMessage(HealingsMapEvent event) throws Exception {
-        LOGGER.info(" GOT healings map, size %s", event.getMap().size());
+        LOGGER.info("GOT healings map, size %s", event.getMap().size());
         healingsMap = event.getMap();
     }
 
@@ -223,6 +198,7 @@ public class CorrectorsPanelController extends AbstractController  {
         DataTable dataTable = new DataTable();
         dataTable.setName(k.getName());
         dataTable.setDispersion(v.getDispersion());
+        dataTable.setFilename(k.getFileName());
         return dataTable;
     }
 
@@ -238,7 +214,6 @@ public class CorrectorsPanelController extends AbstractController  {
             }
         }).toArray();
 
-
         double minP =0;
         boolean flagp = true;
         for (int i = 0; i < buffer.length; i++) {
@@ -252,9 +227,7 @@ public class CorrectorsPanelController extends AbstractController  {
         byte[] bytes = new byte[buffer.length];
 
         for (int i=0; i < buffer.length; i++) {
-
             bytes[i] = (byte) (((buffer[i]) * 1/minP)/*+128*/);
-
         }
 
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
@@ -263,31 +236,6 @@ public class CorrectorsPanelController extends AbstractController  {
         AudioSystem.write(stream, AudioFileFormat.Type.WAVE, outputFile);
 
     }
-
-    public static HashSet<DataTable> removeDuplicates(ArrayList<DataTable> list) {
-//        ArrayList<DataTable> result = new ArrayList<>();
-        HashSet<DataTable> set = new HashSet<>();
-//        ObservableSet<DataTable> set = FXCollections.observableSet(new HashSet<>());
-//        set.add(list.get(0));
-        for (DataTable item : list) {
-//            if (!set.contains(item)) {
-            set.add(item);
-                /*set.forEach((new Consumer<DataTable>() {
-                    @Override
-                    public void accept(DataTable s) {
-                        if (!s.getName().equals(item.getName())) {
-//                            result.add(item);
-                            set.add(item);
-                        }
-                    }
-                }));*/
-
-//            }
-        }
-        return set;
-    }
-
-
 
 }
 

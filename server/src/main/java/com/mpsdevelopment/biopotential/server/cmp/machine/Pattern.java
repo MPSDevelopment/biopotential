@@ -11,4 +11,5 @@ public interface Pattern {
     String getDescription();
     List<Double> getPcmData();
     List<ChunkSummary> getSummary();
+    String getFileName();
 }

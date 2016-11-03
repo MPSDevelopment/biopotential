@@ -47,14 +47,16 @@ public class DiseaseDao {
         return diseases;
 	}
 
+	/**
+	 * HashMap<Pattern, AnalysisSummary> allHealings contain's only unique keys define by hashcode method in EDXPattern class
+	 */
 	public Map<Pattern, AnalysisSummary> getHealings(Map<Pattern, AnalysisSummary> diseases, File file) throws IOException, UnsupportedAudioFileException {
+
 		final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(file)));
 
 		final Map<String, Integer> probableKinds = getProbableKinds(diseases);
 
-//		List<List<Double>> lists = new ArrayList<>();
-
-		HashMap<Pattern, AnalysisSummary> allHealings = new HashMap<Pattern, AnalysisSummary>();
+		HashMap<Pattern, AnalysisSummary> allHealings = new HashMap<>();
 
 		long t1 = System.currentTimeMillis();
 		getHealings(diseases, sample, probableKinds, allHealings);
@@ -97,7 +99,10 @@ public class DiseaseDao {
 						final Map<Pattern, AnalysisSummary> healings = Machine.summarizePatterns(sample, patterns);
 
 						LOGGER.info("SummarizePatterns took %d ms", System.currentTimeMillis() - t1);
+
 						allHealings.putAll(healings);
+						LOGGER.info("Healing size %d ms",allHealings.size());
+
 					} catch (SQLException | IOException e) {
 						e.printStackTrace();
 					}

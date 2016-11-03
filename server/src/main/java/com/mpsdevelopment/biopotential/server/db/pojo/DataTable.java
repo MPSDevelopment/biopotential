@@ -3,6 +3,7 @@ package com.mpsdevelopment.biopotential.server.db.pojo;
 public class DataTable {
     private String name;
     private double dispersion;
+    private String filename;
 
     public String getName() {
         return name;
@@ -20,6 +21,14 @@ public class DataTable {
         this.dispersion = dispersion;
     }
 
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
     @Override
     public String toString() {
         return "DataTable{" +
@@ -35,18 +44,12 @@ public class DataTable {
 
         DataTable dataTable = (DataTable) o;
 
-        if (Double.compare(dataTable.dispersion, dispersion) != 0) return false;
-        return name.equals(dataTable.name);
+        return filename != null ? filename.equals(dataTable.filename) : dataTable.filename == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        result = name.hashCode();
-        temp = Double.doubleToLongBits(dispersion);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        return result;
+        return filename != null ? filename.hashCode() : 0;
     }
 }

@@ -115,7 +115,23 @@ public class EDXPattern implements Pattern {
 		this.summary = JsonUtils.fromJson(listType,json);;
 	}
 
-    /*public void setSummary(List<ChunkSummary> summary) {
+    @Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		EDXPattern that = (EDXPattern) o;
+
+		return fileName.equals(that.fileName);
+
+	}
+
+	@Override
+	public int hashCode() {
+		return fileName.hashCode();
+	}
+
+	/*public void setSummary(List<ChunkSummary> summary) {
         this.summary = summary;
     }*/
 

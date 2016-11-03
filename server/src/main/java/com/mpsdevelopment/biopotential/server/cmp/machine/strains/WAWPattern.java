@@ -31,6 +31,10 @@ public class WAWPattern implements Pattern {
         return this.summary;
     }
 
+    public String getFileName() {
+        return null;
+    }
+
     public List<Double> getPcmData() {
         return null;
     }

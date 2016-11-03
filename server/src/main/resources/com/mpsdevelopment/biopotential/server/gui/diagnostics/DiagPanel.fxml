@@ -75,7 +75,7 @@
       <Label layoutX="44.0" layoutY="234.0" text="Место рождения" />
       <Label layoutX="44.0" layoutY="264.0" text="Дата рождения" />
       <Label layoutX="44.0" layoutY="296.0" text="Пол" />
-      <Button fx:id="automaticButton" layoutX="748.0" layoutY="330.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Автомат" />
+      <Button fx:id="automaticButton" disable="true" layoutX="748.0" layoutY="330.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Автомат" />
       <DatePicker fx:id="datePicker" layoutX="325.0" layoutY="260.0" />
       <Label layoutX="44.0" layoutY="58.0" text="Логин/Пседоним" />
       <LineChart fx:id="numberLineChart" layoutX="33.0" layoutY="377.0" prefHeight="327.0" prefWidth="968.0">

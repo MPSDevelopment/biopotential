@@ -24,16 +24,12 @@
 	<context:component-scan base-package="com.mpsdevelopment.biopotential.server.db.dao" />
 	<context:component-scan base-package="com.mpsdevelopment.biopotential.server.scheduler" />
 
-
-
 	<bean id="persistUtils" class="com.mpsdevelopment.biopotential.server.db.PersistUtils" init-method="configureSessionFactory" autowire="byName" />
 
 	<bean id="sessionManager" class="com.mpsdevelopment.biopotential.server.db.SessionManager" autowire="byName" />
 	<!-- <bean id="securityUtils" class="com.mpsdevelopment.biopotential.server.utils.SecurityUtils" autowire="byName" /> -->
 
 	<bean id="springContextHolder" class="com.mpsdevelopment.biopotential.server.SpringContextHolder" />
-
-	
 
 	<bean id="tokenUtils" class="com.mpsdevelopment.biopotential.server.utils.TokenUtils" />
 
@@ -46,7 +42,7 @@
 	<bean id="patternsDao" class="com.mpsdevelopment.biopotential.server.db.dao.PatternsDao" />
 	<bean id="foldersPatternsDao" class="com.mpsdevelopment.biopotential.server.db.dao.PatternsFoldersDao" />
 	<bean id="visitDao" class="com.mpsdevelopment.biopotential.server.db.dao.VisitDao" />
-	<bean id="deseaseDao" class="com.mpsdevelopment.biopotential.server.db.dao.DiseaseDao" />
+	<bean id="dіseaseDao" class="com.mpsdevelopment.biopotential.server.db.dao.DiseaseDao" />
 
 	<bean id="selectFromDbPanelController" class="com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.SelectFromDbPanelController" />
 	<bean id="diagPanelController" class="com.mpsdevelopment.biopotential.server.gui.diagnostics.DiagPanelController" />
@@ -57,7 +53,7 @@
 
 	<bean id="databaseCreatorProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
 		<property name="target">
-			<bean id="databaseCreator" class="com.mpsdevelopment.biopotential.server.db.DatabaseCreator" init-method="initialization" />
+			<bean id="databaseCreator" class="com.mpsdevelopment.biopotential.server.db.DatabaseCreator" init-method="initialization" scope="singleton" />
 		</property>
 		<property name="interceptorNames">
 			<list>

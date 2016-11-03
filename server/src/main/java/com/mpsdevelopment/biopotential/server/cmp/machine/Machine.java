@@ -62,8 +62,8 @@ public class Machine {
 	public static PcmDataSummary getPcmData(String fileName) throws IOException {
 
 		HashMap<String, EDXSection> sects = new HashMap<>();
-		List<ChunkSummary> summary = new ArrayList<>();
-		List<Double> pcmData = new ArrayList<>();
+		List<ChunkSummary> summary;
+		List<Double> pcmData;
 
 		try (RandomAccessFile in = new RandomAccessFile(new File(EDX_FILE_FOLDER + fileName), "r")) {
 			final byte[] hdr = new byte[4];

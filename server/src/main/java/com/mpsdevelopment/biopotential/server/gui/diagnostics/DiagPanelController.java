@@ -272,6 +272,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
                 SelectFromDbPanel panel = new SelectFromDbPanel();
                 Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Выбрать из бд").setClazz(panel.getClass()).setHeight(500d).setWidth(650d).setHeightPanel(450d).setWidthPanel(650d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
                 panel.setPrimaryStage(stage);
+                automaticButton.setDisable(false);
 
             }
         });
