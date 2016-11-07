@@ -31,7 +31,7 @@ import org.hibernate.service.ServiceRegistry;
 import org.hibernate.stat.EntityStatistics;
 import org.hibernate.stat.SecondLevelCacheStatistics;
 import org.hibernate.stat.Statistics;
-
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
@@ -45,14 +45,16 @@ public class PersistUtils {
 	private EventListenerRegistry eventListenerRegistry;
 	private ConfigurationService configurationService;
 	
-//	@Autowired(required = true)
-//	private ServerSettings serverSettings;
+	@Autowired(required = true)
+	private ServerSettings serverSettings;
 
 	public synchronized SessionFactory configureSessionFactory() throws HibernateException {
 		LOGGER.info("Creating session factory");
 		Configuration configuration = getOrCreateConfiguration();
 		
 		Properties properties = configuration.getProperties();
+		
+//		properties.setProperty("hibernate.connection.url", "");
 		
 		sessionFactory = configuration.buildSessionFactory();
 		eventListenerRegistry = ((SessionFactoryImpl) sessionFactory).getServiceRegistry().getService(EventListenerRegistry.class);
