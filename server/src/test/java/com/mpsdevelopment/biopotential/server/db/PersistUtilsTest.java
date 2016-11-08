@@ -6,6 +6,7 @@ import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.junit.Assert;
 import org.junit.Test;
@@ -55,24 +56,24 @@ public class PersistUtilsTest {
 
     @Test
     public void changeconfigureSessionFactoryTest() throws HibernateException {
-        Session session = persistUtils.openSession();
-        session.close();
-        Assert.assertFalse(session.isConnected());
-        LOGGER.info("Close session");
+        SessionFactory sessionFactory = persistUtils.configureSessionFactory();
+        LOGGER.info("Creating session factory");
+        sessionFactory.close();
+        Assert.assertTrue(sessionFactory.isClosed());
+        LOGGER.info("Close sessionFactory");
 
-        Configuration configuration = null;
-        configuration = new Configuration();
+        Configuration configuration = new Configuration();
 
         configuration.setProperty("hibernate.connection.url", "jdbc:h2:file:" + serverSettings.getDbPath());
-		configuration.setProperty("hibernate.connection.username", "root");
-		configuration.setProperty("hibernate.connection.password", "MiumVa");
+		/*configuration.setProperty("hibernate.connection.username", "root");
+		configuration.setProperty("hibernate.connection.password", "MiumVa");*/
 
-        configuration.configure();
+//        configuration.configure();
+        sessionFactory = configuration.buildSessionFactory();
 
-        session = persistUtils.openSession();
-        session.close();
-        Assert.assertFalse(session.isConnected());
-        LOGGER.info("Close session");
+        sessionFactory.close();
+        Assert.assertTrue(sessionFactory.isClosed());
+        LOGGER.info("Close sessionFactory");
 
 
     }
