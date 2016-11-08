@@ -22,6 +22,7 @@ import com.mpsdevelopment.biopotential.server.wave.WavFileExtractor;
 import com.mpsdevelopment.biopotential.server.wave.WaveFile;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
+import javafx.animation.SequentialTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
@@ -33,6 +34,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.CacheHint;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -356,7 +358,9 @@ public class DiagPanelController extends AbstractController implements Subscriba
 
                 EventBus.publishEvent(new FileChooserEvent(selectedFile));
 
+                long t2 = System.currentTimeMillis();
                 createChart(selectedFile);
+                LOGGER.info("createChart took %s ms", System.currentTimeMillis() - t2);
 
             }
         });
@@ -475,16 +479,25 @@ public class DiagPanelController extends AbstractController implements Subscriba
                 e.printStackTrace();
             }
             long t1 = System.currentTimeMillis();
-            XYChart.Series<Number, Number> numberSeries = LineChartUtil.createNumberSeries(extractedData, RATE,sampleRate);
+            XYChart.Series<Number, Number> numberSeries = LineChartUtil.chart(extractedData, RATE,sampleRate);
+//            XYChart.Series<Number, Number> numberSeries = LineChartUtil.createNumberSeries(extractedData, RATE,sampleRate);
             LOGGER.info("Time create createNumberSeries %s ms", System.currentTimeMillis() - t1);
             numberLineChart.getData().clear();
 //            numberLineChart.getStylesheets().add(AnalysisPanelController.class.getResource("main.css").toExternalForm());
             numberLineChart.getStylesheets().add("main.css");
+            long t2 = System.currentTimeMillis();
+            numberLineChart.setCache(true);
+            numberLineChart.setCacheHint(CacheHint.SPEED);
+            numberLineChart.setCacheShape(true);
             numberLineChart.getData().addAll(numberSeries);
+            LOGGER.info("numberSeries size %s", numberSeries.getData().size());
+            LOGGER.info("Adding data took %s ms", System.currentTimeMillis() - t2);
             numberLineChart.createSymbolsProperty();
 
-
-
+            /*long t3 = System.currentTimeMillis();
+            numberLineChart.setCreateSymbols(false);
+            numberLineChart.setAxisSortingPolicy(LineChart.SortingPolicy.NONE);
+            LOGGER.info("setCreateSymbols %s ms", System.currentTimeMillis() - t3);*/
         }
     }
 

@@ -1,8 +1,11 @@
 package com.mpsdevelopment.biopotential.server.db.pojo;
 
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
+import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
+
 public class DataTable {
     private String name;
-    private double dispersion;
+    private double dispersion;;
     private String filename;
 
     public String getName() {
@@ -27,6 +30,14 @@ public class DataTable {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    public static DataTable createDataTableObject(Pattern k, AnalysisSummary v) {
+        DataTable dataTable = new DataTable();
+        dataTable.setName(k.getName());
+        dataTable.setDispersion(v.getDispersion());
+        dataTable.setFilename(k.getFileName());
+        return dataTable;
     }
 
     @Override

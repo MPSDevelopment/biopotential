@@ -30,6 +30,8 @@ public class ServerSettings {
 	private String tempDirectory = "data/tmp";
 	@Expose
 	private String filesPath;
+	@Expose
+	private String dbPath;
 
 	private void init() {
 		ServerSettings fileSettings = (ServerSettings) JsonUtils.getJsonObjectFromFile(ServerSettings.class, path);
@@ -90,6 +92,14 @@ public class ServerSettings {
 
 	public void setCookieMaxAge(int cookieMaxAge) {
 		this.cookieMaxAge = cookieMaxAge;
+	}
+
+	public String getDbPath() {
+		return dbPath;
+	}
+
+	public void setDbPath(String dbPath) {
+		this.dbPath = dbPath;
 	}
 
 	public void updateSettings(ServerSettings newSettings) {

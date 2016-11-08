@@ -77,10 +77,10 @@ public class DatabaseCreator {
 		List<User> users = userDao.findAll();
 		if (users.size() < 10) {
 			createAllUsers();
-			LOGGER.info("databaseCreator created ");
+			LOGGER.info("databaseCreator created");
 
 			try {
-				convertToH2("./data/test.arkdb");
+				convertToH2("./data/db_cutted.db");
 			} catch (ArkDBException e) {
 				e.printStackTrace();
 			}
@@ -188,9 +188,9 @@ public class DatabaseCreator {
 							.setSmuls(patternsDb.getString("smuls")).setEdxFileCreationDts(patternsDb.getString("edx_file_creation_dts"))
 							.setEdxFileCreationDtsMsecs(patternsDb.getInt("edx_file_creation_dts_msecs"))
 							.setEdxFileLastModifiedDts(patternsDb.getString("edx_file_last_modified_dts"))
-							.setEdxFileLastModifiedDtsMsecs(patternsDb.getInt("edx_file_last_modified_dts_msecs")).setLinkedFolderId(patternsDb.getInt("linked_folder_id"));
+							.setEdxFileLastModifiedDtsMsecs(patternsDb.getInt("edx_file_last_modified_dts_msecs"));/*.setLinkedFolderId(patternsDb.getInt("linked_folder_id"));*/
 
-					LOGGER.info("patternsDao %s", pattern);
+					LOGGER.info("%s", pattern.getPatternName());
 					patternsDao.save(pattern);
 				}
 			}
@@ -222,41 +222,86 @@ public class DatabaseCreator {
 			Long bacId = 0L;
 			Long mucId = 0L;
 			Long virId = 0L;
+            Long cardioId =0L, dermaId = 0L,endocrinId = 0L,gastroId=0L,immunId=0L,mentisId=0L,neuralId=0L
+                    ,orthoId=0L,spiritusId=0L,stomatId=0L,urologId=0L,visionId = 0L;
 			for (Folder folder : folderList) {
-				if (folder.getFolderName().contains("BAC"))
-					bacId = folder.getId();
-				if (folder.getFolderName().contains("Muc"))
-					mucId = folder.getId();
-				if (folder.getFolderName().contains("VIR"))
-					virId = folder.getId();
+				if (folder.getFolderName().contains("BAC")){bacId = folder.getId();}
+				if (folder.getFolderName().contains("Muc")){mucId = folder.getId();}
+				if (folder.getFolderName().contains("VIR")){virId = folder.getId();}
+
+				// add new condition
+
+				if (folder.getFolderName().contains("CARDIO COR")){cardioId = folder.getId();}
+				if (folder.getFolderName().contains("DERMA COR")){dermaId = folder.getId();}
+				if (folder.getFolderName().contains("ENDOCRIN COR")){endocrinId = folder.getId();}
+				if (folder.getFolderName().contains("GASTRO COR")){gastroId = folder.getId();}
+                if (folder.getFolderName().contains("IMMUN COR")){immunId = folder.getId();}
+                if (folder.getFolderName().contains("MENTIS COR")){mentisId = folder.getId();}
+
+                if (folder.getFolderName().contains("NEURAL COR")){neuralId = folder.getId();}
+                if (folder.getFolderName().contains("ORTHO COR")){orthoId = folder.getId();}
+                if (folder.getFolderName().contains("SPIRITUS COR")){spiritusId = folder.getId();}
+                if (folder.getFolderName().contains("STOMAT COR")){stomatId = folder.getId();}
+                if (folder.getFolderName().contains("UROLOG COR")){urologId = folder.getId();}
+                if (folder.getFolderName().contains("VISION COR")){visionId = folder.getId();}
 
 			}
 
+			Folder floraDissection = foldersDao.getById(4328);
+			Folder analysis = foldersDao.getById(4550);
+
 			for (Pattern pattern : patternList) {
 
-				for (Folder folder : folderList) {
+				/*for (Folder folder : folderList) {
 
-					if (folder.getIdFolder() == 4328) {
+					if (folder.getIdFolder() == 4328) {*/
 
 						patternsFolders = new PatternsFolders();
-						patternsFolders.setFolder(folder);
+						patternsFolders.setFolder(analysis);
 						patternsFolders.setPattern(pattern);
-						if (pattern.getPatternName().contains("BAC "))
+						/*if (pattern.getPatternName().contains("BAC "))
 							patternsFolders.setCorrectors(bacId);
 						else if (pattern.getPatternName().contains("Muc "))
 							patternsFolders.setCorrectors(mucId);
 						else if (pattern.getPatternName().contains("VIR "))
 							patternsFolders.setCorrectors(virId);
+                        else */if (pattern.getPatternName().contains("CARDIO♥"))
+                            {patternsFolders.setCorrectors(cardioId);}
+                        else if (pattern.getPatternName().contains("DERMAლ"))
+                            {patternsFolders.setCorrectors(dermaId);}
+                        else if (pattern.getPatternName().contains("Endocrinology♋"))
+                            {patternsFolders.setCorrectors(endocrinId);}
+                        else if (pattern.getPatternName().contains("GASTRO⌘"))
+                        {patternsFolders.setCorrectors(gastroId);}
+                        else if (pattern.getPatternName().contains("IMMUN☂"))
+                        {patternsFolders.setCorrectors(immunId);}
+                        else if (pattern.getPatternName().contains("MENTIS☺"))
+                        {patternsFolders.setCorrectors(mentisId);}
+                        else if (pattern.getPatternName().contains("NEURAL♕"))
+                        {patternsFolders.setCorrectors(neuralId);}
+                        else if (pattern.getPatternName().contains("ORTHO☤"))
+                        {patternsFolders.setCorrectors(orthoId);}
+                        else if (pattern.getPatternName().contains("SPIRITUS✽"))
+                        {patternsFolders.setCorrectors(spiritusId);}
+                        else if (pattern.getPatternName().contains("Stomat〲"))
+                        {patternsFolders.setCorrectors(stomatId);}
+                        else if (pattern.getPatternName().contains("UROLOGÜ"))
+                        {patternsFolders.setCorrectors(urologId);}
+                        else if (pattern.getPatternName().contains("VISION☄"))
+                        {patternsFolders.setCorrectors(visionId);}
 
-					}
 
-				}
+					/*}
+
+				}*/
 
 				patternsFolders.getFolder().getPatternsFolders().add(patternsFolders);
 				patternsFolders.getPattern().getPatternsFolders().add(patternsFolders);
 
 				patternsFoldersDao.save(patternsFolders);
 			}
+
+
 
 			setChunkSummary();
 

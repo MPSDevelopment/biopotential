@@ -71,7 +71,7 @@ public class Pattern extends BaseObject {
     private String patternName;
 
     @Expose
-    @Column(name = PATTERN_DESCRIPTION, length=5000)
+    @Column(name = PATTERN_DESCRIPTION, length=6000)
     @SerializedName(PATTERN_DESCRIPTION_GS)
     private String patternDescription;
 

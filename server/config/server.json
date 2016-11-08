@@ -4,5 +4,6 @@
   "filesPath": "data/files",
   "tempDirectory": "data/tmp/webapp",
   "cookieHost": "",
-  "cookieMaxAge": 86400
+  "cookieMaxAge": 86400,
+  "dbPath" : "./data/db_cutted;"
 }

@@ -45,8 +45,8 @@ public class PersistUtils {
 	private EventListenerRegistry eventListenerRegistry;
 	private ConfigurationService configurationService;
 	
-	@Autowired(required = true)
-	private ServerSettings serverSettings;
+//	@Autowired(required = true)
+//	private ServerSettings serverSettings;
 
 	public synchronized SessionFactory configureSessionFactory() throws HibernateException {
 		LOGGER.info("Creating session factory");
@@ -55,6 +55,9 @@ public class PersistUtils {
 		Properties properties = configuration.getProperties();
 		
 //		properties.setProperty("hibernate.connection.url", "");
+//		configuration.setProperty("hibernate.connection.url", "jdbc:postgresql://" + serverSettings.getDbHost() + ":" + serverSettings.getDbPort() + "/" + serverSettings.getDbName());
+//		configuration.setProperty("hibernate.connection.username", serverSettings.getDbUser());
+//		configuration.setProperty("hibernate.connection.password", serverSettings.getDbPass());
 		
 		sessionFactory = configuration.buildSessionFactory();
 		eventListenerRegistry = ((SessionFactoryImpl) sessionFactory).getServiceRegistry().getService(EventListenerRegistry.class);

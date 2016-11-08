@@ -26,7 +26,8 @@ public class Machine {
 
 	private static final Logger LOGGER = LoggerUtil.getLogger(Machine.class);
 
-	private static final String EDX_FILE_FOLDER = "data/edxfiles/";
+//	private static final String EDX_FILE_FOLDER = "data/edxfiles/";
+	private static final String EDX_FILE_FOLDER = "D:\\MPS\\IDEA\\Biopotential material's\\база автомат\\my_super_puper_db_Storage\\";
 
 	public static Map<Pattern, AnalysisSummary> summarizePatterns(List<ChunkSummary> sampleSummary, List<EDXPattern> patterns) {
 		final Map<Pattern, AnalysisSummary> summaries = new HashMap<>();

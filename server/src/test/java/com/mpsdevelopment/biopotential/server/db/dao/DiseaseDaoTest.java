@@ -64,7 +64,8 @@ public class DiseaseDaoTest {
 			}
 		});
 
-		Assert.assertEquals(105, healings.size());
+//		Assert.assertEquals(105, healings.size()); // with duplicate patterns filename
+		Assert.assertEquals(104, healings.size()); // without duplicate patterns filename
 
 		Assert.assertEquals(0.9428119761134071, testSummaries.get(0).getDispersion(), 0.000000001);
 		Assert.assertEquals(0.9403581859325427, testSummaries.get(1).getDispersion(), 0.000000001);

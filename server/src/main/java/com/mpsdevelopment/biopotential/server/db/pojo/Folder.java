@@ -58,7 +58,7 @@ public class Folder extends BaseObject {
     private String folderName;
 
     @Expose
-    @Column(name = FOLDER_DESCRIPTION)
+    @Column(name = FOLDER_DESCRIPTION, length = 2000)
     @SerializedName(FOLDER_DESCRIPTION_GS)
     private String folderDescription;
 

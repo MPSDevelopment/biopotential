@@ -80,7 +80,7 @@ public class CorrectorsPanelController extends AbstractController  {
 
         numberColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
             @Override public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> p) {
-                return new ReadOnlyObjectWrapper(сorrectorsTable.getItems().indexOf(p.getValue()) +1 + "");
+                return new ReadOnlyObjectWrapper(сorrectorsTable.getItems().indexOf(p.getValue()) + 1 + "");
             }
         });
         numberColumn.setSortable(false);
@@ -162,7 +162,7 @@ public class CorrectorsPanelController extends AbstractController  {
 
         healingsMap.forEach((pattern, analysisSummary) -> {
             LOGGER.info("%s %s\n", pattern.getKind(), pattern.getName(), analysisSummary.getDispersion());
-            correctorsData.add(createDataTableObject(pattern,analysisSummary));
+            correctorsData.add(DataTable.createDataTableObject(pattern,analysisSummary));
 
         });
 
@@ -194,13 +194,13 @@ public class CorrectorsPanelController extends AbstractController  {
     }
 
 
-    private DataTable createDataTableObject(Pattern k, AnalysisSummary v) {
+    /*private DataTable createDataTableObject(Pattern k, AnalysisSummary v) {
         DataTable dataTable = new DataTable();
         dataTable.setName(k.getName());
         dataTable.setDispersion(v.getDispersion());
         dataTable.setFilename(k.getFileName());
         return dataTable;
-    }
+    }*/
 
     public static void merge(Collection<List<Double>> lists) throws IOException, UnsupportedAudioFileException {
 

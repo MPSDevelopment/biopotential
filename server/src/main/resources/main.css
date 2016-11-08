@@ -11,9 +11,9 @@
     -fx-effect: dropshadow( two-pass-box , rgba(0,0,0,0.3) , 8, 0.0 , 0 , 3 );
 }
 
-.chart {
+/*.chart {
     -fx-background: #ffffff;
-}
+}*/
 
 .chart-symbol { /* solid circle */
     -fx-background: #ffffff;
@@ -23,8 +23,8 @@
     -fx-background-radius: 0px;
 }
 
-.axis-minor-tick-mark {
+/*.axis-minor-tick-mark {
     -fx-fill: null;
     -fx-stroke: #FFFFFF;
-}
+}*/
 

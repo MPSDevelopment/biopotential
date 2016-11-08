@@ -99,7 +99,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         numberColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> p) {
-                return new ReadOnlyObjectWrapper(healthConditionTable.getItems().indexOf(p.getValue()) + "");
+                return new ReadOnlyObjectWrapper(healthConditionTable.getItems().indexOf(p.getValue()) + 1 + "");
             }
         });
         numberColumn.setSortable(false);
@@ -144,155 +144,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     }
 
     private void makeAnalyze(File file) throws UnsupportedAudioFileException, IOException, SQLException {
-        /*
-         * try {
-		 * 
-		 * final ArkDB db = new ArkDB("test.arkdb");
-		 * db.setHealingFolders(Arrays.asList(490, 959, 2483));
-		 * db.setDiseaseFolders(Collections.singletonList(4328));
-		 * 
-		 * LOGGER.info("start");
-		 * 
-		 * // final List<ChunkSummary> sample =
-		 * Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.
-		 * getAudioInputStream(new File("test3.wav")))); final
-		 * List<ChunkSummary> sample =
-		 * Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.
-		 * getAudioInputStream(file)));
-		 * 
-		 * final Map<Pattern, AnalysisSummary> diseases =
-		 * Machine.summarizePatterns(new SummaryCondition() {
-		 * 
-		 * @Override public boolean test(Pattern strain, AnalysisSummary
-		 * summary) {
-		 * 
-		 * return summary.getDispersion() == 0; } }, sample,
-		 * db.getDiseaseIds());
-		 * 
-		 * diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
-		 * 
-		 * @Override public void accept(Pattern k, AnalysisSummary v) {
-		 * LOGGER.info("d: %s\t%d\n", k.getName(), v.getDispersion());
-		 * 
-		 * analysisData.add(createDataTableObject(k,v));
-		 * 
-		 * } }); } catch (Exception e) { e.printStackTrace();}
-		 */
 
-		/*
-		 * try { final H2DB db = new H2DB("./data/database", "", "sa");
-		 * 
-		 * System.out.println("start");
-		 * 
-		 * // final List<ChunkSummary> sample =
-		 * Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.
-		 * getAudioInputStream(new File("test3.wav"))));
-		 * 
-		 * final List<ChunkSummary> sample =
-		 * Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.
-		 * getAudioInputStream(file))); final Map<Pattern, AnalysisSummary>
-		 * diseases = Machine.summarizePatterns(new SummaryCondition() {
-		 * 
-		 * @Override public boolean test(Pattern strain, AnalysisSummary
-		 * summary) { return summary.getDegree() == 0
-		 *//* || summary.getDispersion() == -21 *//*
-													 * ; } },sample,
-													 * db.getDiseases());
-													 * 
-													 * 
-													 * diseases.forEach(new
-													 * BiConsumer<Pattern,
-													 * AnalysisSummary>() {
-													 * 
-													 * @Override public void
-													 * accept(Pattern k,
-													 * AnalysisSummary v) {
-													 * System.out.printf(
-													 * "%s\t%f\n", k.getName(),
-													 * v.getDispersion()); //
-													 * LOGGER.info("d: %s\t%f\n"
-													 * , k.getName(),
-													 * v.getDispersion());
-													 * 
-													 * analysisData.add(
-													 * createDataTableObject(k,v
-													 * )); } });
-													 * 
-													 * final Map<String,
-													 * Integer> probableKinds =
-													 * Machine.filterKinds(new
-													 * KindCondition() {
-													 * 
-													 * @Override public boolean
-													 * test(String kind, int
-													 * count) { return count >
-													 * 0; } }, diseases);
-													 * Collection lists = new
-													 * ArrayList();
-													 * 
-													 * 
-													 * diseases.forEach(new
-													 * BiConsumer<Pattern,
-													 * AnalysisSummary>() {
-													 * 
-													 * @Override public void
-													 * accept(Pattern dk,
-													 * AnalysisSummary dv) {
-													 * System.out.
-													 * printf("heals for %s %s\n"
-													 * , dk.getKind(),
-													 * dk.getName()); if
-													 * (probableKinds.
-													 * containsKey(dk.getKind())
-													 * ) {
-													 *//*
-													 * final Map<Pattern,
-													 * AnalysisSummary>
-													 *//*
-														 * healings = Machine.
-														 * summarizePatterns(new
-														 * SummaryCondition() {
-														 * 
-														 * @Override public
-														 * boolean test(Pattern
-														 * pattern,
-														 * AnalysisSummary
-														 * summary) { // и потом
-														 * берутся только те
-														 * которые
-														 * summary.getDispersion
-														 * () == 0 т.е. MAx
-														 * return
-														 * summary.getDegree()
-														 * == 0; } }, sample,
-														 * db.getIterForFolder((
-														 * (EDXPattern) dk).
-														 * getCorrectingFolder()
-														 * )); // вытягиваются
-														 * папка с коректорами
-														 * для конкретной
-														 * болезни BAC -> FL BAC
-														 * 
-														 * 
-														 * healings.forEach(new
-														 * BiConsumer<Pattern,
-														 * AnalysisSummary>() {
-														 * 
-														 * @Override public void
-														 * accept(Pattern hk,
-														 * AnalysisSummary hv) {
-														 * // hk.getPCMData()
-														 * LOGGER.info("%s %s\n"
-														 * , hk.getKind(),
-														 * hk.getName(),
-														 * hv.getDispersion());
-														 * 
-														 * } });
-														 * allHealings.putAll(
-														 * healings); } }
-														 * 
-														 * });
-														 */
         Collection lists = new ArrayList();
         long t2 = System.currentTimeMillis();
         diseases.putAll(diseaseDao.getDeseases(file));
@@ -302,7 +154,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
                 System.out.printf("%s\t%f\n", k.getName(), v.getDispersion());
                 // LOGGER.info("d: %s\t%f\n", k.getName(), v.getDispersion());
 
-                analysisData.add(createDataTableObject(k, v));
+                analysisData.add(DataTable.createDataTableObject(k, v));
             }
         });
         LOGGER.info("Total time for calculate diseases %d ms", System.currentTimeMillis() - t2);
@@ -315,12 +167,13 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         EventBus.publishEvent(new HealingsMapEvent(allHealings));
     }
 
-    private DataTable createDataTableObject(Pattern k, AnalysisSummary v) {
+    /*private DataTable createDataTableObject(Pattern k, AnalysisSummary v) {
         DataTable dataTable = new DataTable();
         dataTable.setName(k.getName());
         dataTable.setDispersion(v.getDispersion());
+        dataTable.setFilename(k.getFileName());
         return dataTable;
-    }
+    }*/
 
     public void updatePanel(Stage primaryStage) {
         this.primaryStage = primaryStage;

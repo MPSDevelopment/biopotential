@@ -35,8 +35,7 @@ public class DiseaseDao {
 	public DiseaseDao() {
 	}
 
-	public Map<Pattern, AnalysisSummary> getDeseases(
-			/* Map<Pattern, AnalysisSummary> desease, */ File file) throws IOException, UnsupportedAudioFileException, SQLException {
+	public Map<Pattern, AnalysisSummary> getDeseases(File file) throws IOException, UnsupportedAudioFileException, SQLException {
 
 		final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(file)));
 
@@ -96,12 +95,15 @@ public class DiseaseDao {
 						 * вытягиваются папка с коректорами для конкретной
 						 * болезни BAC -> FL BAC
 						 */
+						if (dk.getFileName().equals("Lwx2z#owPB/13b940a4-39108191-9feb82f-2e5a942d-f2d8109c.edx")){
+							LOGGER.info("Operation compare took %d ms");
+						}
 						final Map<Pattern, AnalysisSummary> healings = Machine.summarizePatterns(sample, patterns);
 
 						LOGGER.info("SummarizePatterns took %d ms", System.currentTimeMillis() - t1);
 
 						allHealings.putAll(healings);
-						LOGGER.info("Healing size %d ms",allHealings.size());
+						LOGGER.info("Healing size %d patterns",allHealings.size());
 
 					} catch (SQLException | IOException e) {
 						e.printStackTrace();
