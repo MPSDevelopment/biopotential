@@ -44,30 +44,39 @@ public class PersistUtils {
 	private ServiceRegistry serviceRegistry;
 	private EventListenerRegistry eventListenerRegistry;
 	private ConfigurationService configurationService;
-	
-//	@Autowired(required = true)
-//	private ServerSettings serverSettings;
+
+	private String configurationFilename = null;
+
+	private String configurationDatabaseFilename = null;
+
+	// @Autowired(required = true)
+	// private ServerSettings serverSettings;
 
 	public synchronized SessionFactory configureSessionFactory() throws HibernateException {
 		LOGGER.info("Creating session factory");
-		Configuration configuration = getOrCreateConfiguration();
-		
+		Configuration configuration = getOrCreateConfiguration(configurationFilename);
+
 		Properties properties = configuration.getProperties();
-		
-//		properties.setProperty("hibernate.connection.url", "");
-//		configuration.setProperty("hibernate.connection.url", "jdbc:postgresql://" + serverSettings.getDbHost() + ":" + serverSettings.getDbPort() + "/" + serverSettings.getDbName());
-//		configuration.setProperty("hibernate.connection.username", serverSettings.getDbUser());
-//		configuration.setProperty("hibernate.connection.password", serverSettings.getDbPass());
-		
+
+		properties.setProperty("hibernate.connection.url", String.format("jdbc:h2:file:./data/%s;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MVCC=true;MODE=ORACLE;AUTO_SERVER=TRUE;INIT=CREATE SCHEMA IF NOT EXISTS main", configurationDatabaseFilename));
+
 		sessionFactory = configuration.buildSessionFactory();
 		eventListenerRegistry = ((SessionFactoryImpl) sessionFactory).getServiceRegistry().getService(EventListenerRegistry.class);
 		return sessionFactory;
 	}
 
-	private synchronized Configuration getOrCreateConfiguration() {
+	public void setConfigurationFilename(String configurationFilename) {
+		this.configurationFilename = configurationFilename;
+	}
+
+	public void setConfigurationDatabaseFilename(String configurationDatabaseFilename) {
+		this.configurationDatabaseFilename = configurationDatabaseFilename;
+	}
+
+	private synchronized Configuration getOrCreateConfiguration(String filename) {
 		Configuration configuration = null;
 		configuration = new Configuration();
-		configuration.configure();
+		configuration.configure(filename != null ? filename : null);
 		return configuration;
 	}
 
