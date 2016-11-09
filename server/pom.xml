@@ -135,11 +135,11 @@
 			<artifactId>sqlite-jdbc</artifactId>
 			<version>3.8.11.2</version>
 		</dependency>
-        <dependency>
-            <groupId>com.enigmabridge</groupId>
-            <artifactId>hibernate4-sqlite-dialect</artifactId>
-            <version>0.1.2</version>
-        </dependency>
+		<dependency>
+			<groupId>com.enigmabridge</groupId>
+			<artifactId>hibernate4-sqlite-dialect</artifactId>
+			<version>0.1.2</version>
+		</dependency>
 
 		<!-- Dependencies for hibernate-validation -->
 		<dependency>
@@ -384,13 +384,13 @@
 			<artifactId>maven-resources-plugin</artifactId>
 			<version>${resources.plugin.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>com.vividsolutions</groupId>
-            <artifactId>jts</artifactId>
-            <version>1.13</version>
-        </dependency>
+		<dependency>
+			<groupId>com.vividsolutions</groupId>
+			<artifactId>jts</artifactId>
+			<version>1.13</version>
+		</dependency>
 
-    </dependencies>
+	</dependencies>
 
 	<build>
 		<finalName>server</finalName>
@@ -514,7 +514,7 @@
 					<!-- <packaging>excelsior-installer</packaging> -->
 					<icon>${project.basedir}/build/bio.ico</icon>
 					<installerSplash>${project.basedir}/build/splash.png</installerSplash>
-<!-- 					<splash>${project.basedir}/build/splash.png</splash> -->
+					<!-- 					<splash>${project.basedir}/build/splash.png</splash> -->
 
 					<hideConsole>true</hideConsole>
 					<!-- <globalOptimizer>true</globalOptimizer> -->
@@ -575,4 +575,3 @@
 		</repository>
 	</repositories>
 </project>
-
