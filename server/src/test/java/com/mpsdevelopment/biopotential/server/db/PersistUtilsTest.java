@@ -3,14 +3,17 @@ package com.mpsdevelopment.biopotential.server.db;
 import com.mpsdevelopment.biopotential.server.db.dao.FoldersDao;
 import com.mpsdevelopment.biopotential.server.db.dao.UserDao;
 import com.mpsdevelopment.biopotential.server.db.pojo.Folder;
+import com.mpsdevelopment.biopotential.server.db.pojo.Pattern;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.criterion.Restrictions;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -67,26 +70,22 @@ public class PersistUtilsTest {
 
     @Test
     public void changeConfigureSessionFactoryTest() throws HibernateException {
-        /*SessionFactory sessionFactory = persistUtils.configureSessionFactory();
-        LOGGER.info("Creating session factory");
-        sessionFactory.close();
-        Assert.assertEquals(19, userDao.findAll().size());
-
-        Assert.assertTrue(sessionFactory.isClosed());
-        LOGGER.info("Close sessionFactory");*/
+        SessionFactory sessionFactory = persistUtils.configureSessionFactory();
+        Criteria queryNewDb = sessionFactory.openSession().createCriteria(Folder.class).setCacheable(false);
+        List<Folder> foldersFromNewDb = queryNewDb.list();
 
         Configuration configuration = new Configuration();
+        configuration.setProperty("hibernate.connection.url", "jdbc:h2:file:./data/databaseArk" /*+ serverSettings.getDbPath()*/);
+        configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        configuration.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
 
-        configuration.setProperty("hibernate.connection.url", "jdbc:sqlite:./data/db_cutted.db" /*+ serverSettings.getDbPath()*/);
-        configuration.setProperty("hibernate.dialect", "com.enigmabridge.hibernate.dialect.SQLiteDialect");
-        configuration.setProperty("hibernate.connection.driver_class", "org.sqlite.JDBC");
-        List<Folder> folders = foldersDao.findAll();
-        SessionFactory sessionFactory = configuration.buildSessionFactory();
-        Assert.assertEquals(19, userDao.findAll().size());
+        sessionFactory = configuration.buildSessionFactory();
+        Criteria query = sessionFactory.openSession().createCriteria(Folder.class).setCacheable(false);
+        List<Folder> folders = query.list();
+
         sessionFactory.close();
         Assert.assertTrue(sessionFactory.isClosed());
         LOGGER.info("Close sessionFactory");
-
 
     }
 
