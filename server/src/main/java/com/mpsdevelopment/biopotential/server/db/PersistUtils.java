@@ -59,10 +59,11 @@ public class PersistUtils {
 
 		Properties properties = configuration.getProperties();
 
-		properties.setProperty("hibernate.connection.url",
-				String.format("jdbc:h2:file:./data/%s;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MVCC=true;MODE=ORACLE;AUTO_SERVER=TRUE;INIT=CREATE SCHEMA IF NOT EXISTS main",
-						configurationDatabaseFilename));
-
+        if(configurationDatabaseFilename != null) {
+            properties.setProperty("hibernate.connection.url",
+                    String.format("jdbc:h2:file:%s;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MVCC=true;MODE=ORACLE;AUTO_SERVER=TRUE;INIT=CREATE SCHEMA IF NOT EXISTS main",
+                            configurationDatabaseFilename));
+        }
 		sessionFactory = configuration.buildSessionFactory();
 		eventListenerRegistry = ((SessionFactoryImpl) sessionFactory).getServiceRegistry().getService(EventListenerRegistry.class);
 		return sessionFactory;

@@ -3,6 +3,8 @@ package com.mpsdevelopment.biopotential.server.gui.diagnostics;
 import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
 import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
+import com.mpsdevelopment.biopotential.server.db.PersistUtils;
+import com.mpsdevelopment.biopotential.server.db.SessionManager;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.biopotential.server.db.pojo.Visit;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
@@ -45,6 +47,8 @@ import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import net.engio.mbassy.listener.Handler;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -71,6 +75,12 @@ public class DiagPanelController extends AbstractController implements Subscriba
 
     @Autowired
     private ServerSettings settings;
+
+    @Autowired
+    private PersistUtils persistUtils;
+
+    @Autowired
+    private SessionManager sessionManager;
 
     @FXML
     private TextField loginField;
@@ -158,6 +168,9 @@ public class DiagPanelController extends AbstractController implements Subscriba
 
     @FXML
     private Button automaticButton;
+
+    @FXML
+    private Button chooseBaseButton;
 
     @FXML
     private DatePicker datePicker;
@@ -365,6 +378,49 @@ public class DiagPanelController extends AbstractController implements Subscriba
             }
         });
 
+        // choose DB
+        chooseBaseButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setInitialDirectory(new File("files"));
+                File selectedFile = fileChooser.showOpenDialog(null);
+
+//                persistUtils.closeSessionFactory();
+                persistUtils.setConfigurationDatabaseFilename(selectedFile.getAbsolutePath().replaceAll(".mv.db",""));
+                SessionFactory sessionFactory = persistUtils.configureSessionFactory();
+                Session session = sessionFactory.openSession();
+                sessionManager.setSession(session);
+
+            }
+        });
+
+        // "Автомат" button
+        automaticButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                // open automatics panel
+                AutomaticsPanel panel = new AutomaticsPanel();
+                Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Автомат").setClazz(panel.getClass()).setHeight(250d).setWidth(300d).setHeightPanel(200d).setWidthPanel(300d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+                panel.setPrimaryStage(stage);
+
+                Visit visit = new Visit();
+                LOGGER.info("User automatics - Id %s", user.getId());
+                visit.setUser(getUser());
+
+                Date date = new Date();
+                visit.setDate(date);
+
+
+                getUser().getVisits().add(visit);
+
+                String body = JsonUtils.getJson(visit);
+                LOGGER.info("User - Visit %s", body);
+                deviceBioHttpClient.executePutRequest(ControllerAPI.VISITS_CONTROLLER + ControllerAPI.VISITS_CONTROLLER_PUT_CREATE_VISIT, body);
+
+            }
+        });
+
         // ----------------------------------------Table historyTableUsers -----------------------------------------------------------------------------------------------
         // historyNameColumn
         historyNameColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Visit, String>, ObservableValue<String>>() {
@@ -375,6 +431,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
                 return property;
             }
         });
+
 
         // dateColumn
         dateColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Visit, String>, ObservableValue<String>>() {
@@ -405,31 +462,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
         });
 
 //        getUsers();
-        // "Автомат" button
-        automaticButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                // open automatics panel
-                AutomaticsPanel panel = new AutomaticsPanel();
-                Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Автомат").setClazz(panel.getClass()).setHeight(250d).setWidth(300d).setHeightPanel(200d).setWidthPanel(300d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
-                panel.setPrimaryStage(stage);
 
-                Visit visit = new Visit();
-                LOGGER.info("User automatics - Id %s", user.getId());
-                visit.setUser(getUser());
-
-                Date date = new Date();
-                visit.setDate(date);
-
-
-                getUser().getVisits().add(visit);
-
-                String body = JsonUtils.getJson(visit);
-                LOGGER.info("User - Visit %s", body);
-                deviceBioHttpClient.executePutRequest(ControllerAPI.VISITS_CONTROLLER + ControllerAPI.VISITS_CONTROLLER_PUT_CREATE_VISIT, body);
-
-            }
-        });
 
     }
 

@@ -87,5 +87,6 @@
         </yAxis>
       </LineChart>
       <Label layoutX="751.0" layoutY="33.0" text="История" />
+      <Button fx:id="chooseBaseButton" layoutX="325.0" layoutY="231.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Выбрать базу" />
    </children>
 </AnchorPane>

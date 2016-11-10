@@ -45,7 +45,7 @@ public class VisitsController {
 		List<User> users = userDao.getUsers(null, null);
 		LOGGER.info("Has been loaded '%s' users", users.size());
 
-		return new ResponseEntity<String>(JsonUtils.getJson(visit), null, HttpStatus.CREATED);
+		return new ResponseEntity<>(JsonUtils.getJson(visit), null, HttpStatus.CREATED);
 
 	}
 
