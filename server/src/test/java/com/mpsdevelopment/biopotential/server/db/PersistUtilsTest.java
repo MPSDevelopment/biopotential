@@ -1,6 +1,7 @@
 package com.mpsdevelopment.biopotential.server.db;
 
 import com.mpsdevelopment.biopotential.server.db.dao.FoldersDao;
+import com.mpsdevelopment.biopotential.server.db.dao.PatternsDao;
 import com.mpsdevelopment.biopotential.server.db.dao.UserDao;
 import com.mpsdevelopment.biopotential.server.db.pojo.Folder;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
@@ -34,15 +35,13 @@ public class PersistUtilsTest {
     private PersistUtils persistUtils;
 
     @Autowired
-    private ServerSettings serverSettings;
-
-    @Autowired
-    private UserDao userDao;
+    private SessionManager sessionManager;
 
     @Autowired
     private FoldersDao foldersDao;
 
-    private static ServiceRegistry serviceRegistry;
+    @Autowired
+    private PatternsDao patternsDao;
 
 
     public PersistUtilsTest() {
@@ -72,43 +71,17 @@ public class PersistUtilsTest {
 
     @Test
     public void changeConfigureSessionFactoryTest() throws HibernateException {
+
+        Assert.assertEquals(14,foldersDao.findAll().size());
+//        persistUtils.closeSessionFactory();
+
+        persistUtils.setConfigurationDatabaseFilename("databaseArk");
         SessionFactory sessionFactory = persistUtils.configureSessionFactory();
         Session session = sessionFactory.openSession();
-        Criteria queryNewDb = session.createCriteria(Folder.class).setCacheable(false);
-        List<Folder> foldersFromNewDb = queryNewDb.list();
-        Assert.assertEquals(14,foldersFromNewDb.size());
+        sessionManager.setSession(session);
 
-        LOGGER.info("folders size %s", foldersFromNewDb.size());
-        sessionFactory.close();
-
-        Configuration configuration = new Configuration().addResource("hibernate.cfg.xml");
-        configuration.setProperty("hibernate.connection.url", "jdbc:h2:file:./data/databaseArk;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MVCC=true;MODE=ORACLE;AUTO_SERVER=TRUE;INIT=CREATE SCHEMA IF NOT EXISTS main");
-        configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
-        configuration.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
-        configuration.setProperty("hibernate.connection.password", "MiumVa");
-        configuration.setProperty("hibernate.connection.username", "root");
-
-        ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().configure().loadProperties("hibernateArk.properties").build();
-        sessionFactory = new Configuration().buildSessionFactory(serviceRegistry);
-
-//        ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySetting("hibernate.cfg.xml",configuration.getProperties()).build();
-//        sessionFactory = configuration.buildSessionFactory();
-        LOGGER.info("Connection changed to %s", configuration.getProperty("hibernate.connection.url"));
-
-        session = sessionFactory.openSession();
-
-        Criteria query = session.createCriteria(Folder.class).setCacheable(false);
-        List<Folder> folders = query.list();
-        LOGGER.info("folders size %s", folders.size());
-        Assert.assertEquals(5,folders.size());
-
-        Criteria queryUsers = sessionFactory.openSession().createCriteria(User.class).setCacheable(false);
-        List<User> users = queryUsers.list();
-        LOGGER.info("users size %s", users.size());
-
-        sessionFactory.close();
-        Assert.assertTrue(sessionFactory.isClosed());
-        LOGGER.info("Close sessionFactory");
+        Assert.assertEquals(5,foldersDao.findAll().size());
+        Assert.assertEquals(856,patternsDao.findAll().size());
 
     }
 
