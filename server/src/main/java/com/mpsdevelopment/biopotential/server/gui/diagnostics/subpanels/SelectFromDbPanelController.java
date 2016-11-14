@@ -49,6 +49,9 @@ public class SelectFromDbPanelController extends AbstractController implements S
     private static final Logger LOGGER = LoggerUtil.getLogger(SelectFromDbPanelController.class);
     private ObservableList<User> usersData = FXCollections.observableArrayList();
 
+    public static final String HOST = "localhost";
+    public static final int PORT = 8098;
+
     @FXML
     private ProgressIndicator progressIndicator;
 
@@ -189,7 +192,8 @@ public class SelectFromDbPanelController extends AbstractController implements S
     }
 
     public void getUsers() {
-        String url = String.format("http://%s:%s%s", settings.getHost(), settings.getPort(), ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_GET_ALL);
+        deviceBioHttpClient = new BioHttpClient();
+        String url = String.format("http://%s:%s%s", HOST, PORT, ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_GET_ALL);
         String json = deviceBioHttpClient.executeGetRequest(url);
         users = JsonUtils.fromJson(User[].class, json);
         usersData.clear();

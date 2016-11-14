@@ -33,6 +33,7 @@ import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.File;
 import java.net.URL;
 import java.util.*;
 
@@ -40,6 +41,8 @@ public class AutomaticsPanelController extends AbstractController implements Sub
 
     private static final Logger LOGGER = LoggerUtil.getLogger(AutomaticsPanelController.class);
     ObservableList<String> items = FXCollections.observableArrayList("Max", "Po");
+
+    private File file;
 
     @Autowired
     private BioHttpClient deviceBioHttpClient;
@@ -76,7 +79,7 @@ public class AutomaticsPanelController extends AbstractController implements Sub
         makeAnalyzerButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                AnalysisPanel panel = new AnalysisPanel();
+                AnalysisPanel panel = new AnalysisPanel(file);
                 Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Результат анализа").setClazz(panel.getClass()).setHeight(752d).setWidth(1172d).setHeightPanel(722d).setWidthPanel(1172d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
                 panel.setPrimaryStage(stage);
                 close();
@@ -104,5 +107,9 @@ public class AutomaticsPanelController extends AbstractController implements Sub
         EventBus.unsubscribe(this);
 
         primaryStage.close();
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 }

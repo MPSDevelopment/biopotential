@@ -1,5 +1,6 @@
 package com.mpsdevelopment.biopotential.server.db;
 
+import com.mpsdevelopment.biopotential.server.JettyServer;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.*;
@@ -80,7 +81,7 @@ public class DatabaseCreator {
 			LOGGER.info("databaseCreator created");
 
 			try {
-				convertToH2("./data/db_cutted.db");
+				convertToH2("./data/test.arkdb");
 			} catch (ArkDBException e) {
 				e.printStackTrace();
 			}

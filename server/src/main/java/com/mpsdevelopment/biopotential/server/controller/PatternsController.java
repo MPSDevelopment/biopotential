@@ -20,15 +20,16 @@ import java.util.List;
 @Controller
 public class PatternsController {
 
-	private static final Logger LOGGER = LoggerUtil.getLogger(PatternsController.class);
+    private static final Logger LOGGER = LoggerUtil.getLogger(PatternsController.class);
     private static final String UNDEFINED_CLIENT_DATA = "undefined";
 
-	@Autowired
-	private PatternsDao patternsDao;
+    @Autowired
+    private PatternsDao patternsDao;
 
 
-	public PatternsController() {
-	}
+
+    public PatternsController() {
+    }
 
 	/*@Adviceable
 	@RequestMapping(value = ControllerAPI.VISITS_CONTROLLER_PUT_CREATE_VISIT, method = RequestMethod.PUT, produces = { ControllerAPI.PRODUCES_JSON })
@@ -48,7 +49,7 @@ public class PatternsController {
     @ResponseBody
     public ResponseEntity<String> getAllUsers() throws ParseException {
 
-		List<Pattern> patterns = patternsDao.getPatterns(null, null);
+        List<Pattern> patterns = patternsDao.getPatterns(null, null);
 
         LOGGER.info("Has been loaded '%s' users", patterns.size());
         return new ResponseEntity<>(JsonUtils.getJson(patterns), null, HttpStatus.OK);

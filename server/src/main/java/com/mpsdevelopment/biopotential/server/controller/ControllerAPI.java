@@ -21,4 +21,7 @@ public class ControllerAPI {
 	public static final String PATTERNS_CONTROLLER_PUT_CREATE_VISIT = "/create";
 	public static final String PATTERNS_CONTROLLER_GET_ALL = "/all";
 
+	public static final String GET_FROM_DATABASE = "/";
+	public static final String DISEAS_CONTROLLER = "/api/diseas";;
+	public static final String CONVERT_DB = "/api/convert";;
 }

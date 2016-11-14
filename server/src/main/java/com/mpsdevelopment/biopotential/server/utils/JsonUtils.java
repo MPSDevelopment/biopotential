@@ -28,7 +28,7 @@ public class JsonUtils {
 	static {
 		GsonBuilder gsonBuilder = new GsonBuilder().setPrettyPrinting().setDateFormat(DATETIME_FORMAT_STRING)
 				.setLongSerializationPolicy(LongSerializationPolicy.STRING).excludeFieldsWithoutExposeAnnotation()
-				.disableHtmlEscaping();
+				.disableHtmlEscaping().enableComplexMapKeySerialization();
 		gson = gsonBuilder.create();
 	}
 
@@ -78,5 +78,7 @@ public class JsonUtils {
 		result.addProperty("error", isError);
 		return new ResponseEntity<>(result.toString(), status);
 	}
+
+
 
 }

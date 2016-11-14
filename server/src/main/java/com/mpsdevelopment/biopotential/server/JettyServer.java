@@ -31,7 +31,7 @@ public class JettyServer {
 
 	private static final Logger LOGGER = LoggerUtil.getLogger(JettyServer.class);
 
-//	public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/app-context.xml", "webapp/web-context.xml");
+	public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/web-context.xml");
 
 	public static XmlWebApplicationContext WEB_CONTEXT;
 
@@ -48,7 +48,7 @@ public class JettyServer {
 	private ServerSettings serverSettings;
 
 	private JettyServer() {
-		serverSettings = BioApplication.APP_CONTEXT.getBean(ServerSettings.class);
+		serverSettings = APP_CONTEXT.getBean(ServerSettings.class);
 	}
 
 	public static JettyServer getInstance() {

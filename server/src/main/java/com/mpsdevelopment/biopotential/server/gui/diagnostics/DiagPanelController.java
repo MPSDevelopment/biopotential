@@ -1,16 +1,16 @@
 package com.mpsdevelopment.biopotential.server.gui.diagnostics;
 
 import com.mpsdevelopment.biopotential.server.AbstractController;
+import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.arkdb.ArkDBException;
 import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
 import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
-import com.mpsdevelopment.biopotential.server.db.PersistUtils;
-import com.mpsdevelopment.biopotential.server.db.SessionManager;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.biopotential.server.db.pojo.Visit;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
 import com.mpsdevelopment.biopotential.server.eventbus.event.SelectUserEvent;
+import com.mpsdevelopment.biopotential.server.gui.BioApplication;
 import com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.AutomaticsPanel;
 import com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.SelectFromDbPanel;
 import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
@@ -24,7 +24,6 @@ import com.mpsdevelopment.biopotential.server.wave.WavFileExtractor;
 import com.mpsdevelopment.biopotential.server.wave.WaveFile;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
-import javafx.animation.SequentialTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
@@ -47,8 +46,6 @@ import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import net.engio.mbassy.listener.Handler;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -69,18 +66,25 @@ import java.util.ResourceBundle;
 public class DiagPanelController extends AbstractController implements Subscribable {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(DiagPanelController.class);
+    public static final String HOST = "localhost";
+    public static final int PORT = 8098;
 
-    @Autowired
-    private BioHttpClient deviceBioHttpClient;
+    private File selectedFile;
 
-    @Autowired
-    private ServerSettings settings;
+//    @Autowired
+    private BioHttpClient httpClient;
+//
+//    @Autowired
+//    private ServerSettings settings;
 
-    @Autowired
+    /*@Autowired
     private PersistUtils persistUtils;
 
     @Autowired
-    private SessionManager sessionManager;
+    private UserDao userDao;
+
+    @Autowired
+    private SessionManager sessionManager;*/
 
     @FXML
     private TextField loginField;
@@ -192,10 +196,12 @@ public class DiagPanelController extends AbstractController implements Subscriba
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+//        httpClient = (BioHttpClient) BioApplication.APP_CONTEXT.getBean("httpClient");
+        httpClient = new BioHttpClient();
         User admin = new User().setLogin(DatabaseCreator.ADMIN_LOGIN).setPassword(DatabaseCreator.ADMIN_PASSWORD);
-        String loginbody = JsonUtils.getJson(admin);
+        String loginBody = JsonUtils.getJson(admin);
 
-        deviceBioHttpClient.executePostRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_LOGIN, loginbody);
+        httpClient.executePostRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_LOGIN, loginBody);
         // change localization to russian
         Locale dLocale = new Locale.Builder().setLanguage("ru").setScript("Cyrl").build();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", dLocale);
@@ -249,7 +255,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
                 String body = JsonUtils.getJson(user);
 
 
-                deviceBioHttpClient.executePutRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_PUT_CREATE_USER, body);
+                httpClient.executePutRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_PUT_CREATE_USER, body);
                 getUsers();
             }
         });
@@ -258,9 +264,8 @@ public class DiagPanelController extends AbstractController implements Subscriba
         showHistoryButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-
-                String url = String.format("http://%s:%s%s", settings.getHost(), settings.getPort(), ControllerAPI.VISITS_CONTROLLER + ControllerAPI.VISITS_CONTROLLER_GET_ALL);
-                String json = deviceBioHttpClient.executeGetRequest(url);
+                String url = String.format("http://%s:%s%s", HOST, PORT, ControllerAPI.VISITS_CONTROLLER + ControllerAPI.VISITS_CONTROLLER_GET_ALL);
+                String json = httpClient.executeGetRequest(url);
                 visits = JsonUtils.fromJson(Visit[].class, json);
                 historyUsersData.clear();
                 for (Visit visit : visits) {
@@ -304,7 +309,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
                 }*/
 
                 LOGGER.info("%s", ControllerAPI.USER_CONTROLLER + "/remove/" + String.valueOf(getUser().getId()));
-                deviceBioHttpClient.executeDeleteRequest(ControllerAPI.USER_CONTROLLER + "/remove/" + String.valueOf(getUser().getId()));
+                httpClient.executeDeleteRequest(ControllerAPI.USER_CONTROLLER + "/remove/" + String.valueOf(getUser().getId()));
                 clearFields();
             }
         });
@@ -367,7 +372,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
                 FileChooser fileChooser = new FileChooser();
 //                fileChooser.setInitialDirectory(new File(System.getProperty("user.dir") + System.getProperty("file.separator")+ "files")); // System.getProperty("file.separator") = "/"
                 fileChooser.setInitialDirectory(new File("files"));
-                File selectedFile = fileChooser.showOpenDialog(null);
+                selectedFile = fileChooser.showOpenDialog(null);
 
                 EventBus.publishEvent(new FileChooserEvent(selectedFile));
 
@@ -383,14 +388,27 @@ public class DiagPanelController extends AbstractController implements Subscriba
             @Override
             public void handle(ActionEvent event) {
                 FileChooser fileChooser = new FileChooser();
-                fileChooser.setInitialDirectory(new File("files"));
+                fileChooser.setInitialDirectory(new File("data"));
                 File selectedFile = fileChooser.showOpenDialog(null);
 
-//                persistUtils.closeSessionFactory();
-                persistUtils.setConfigurationDatabaseFilename(selectedFile.getAbsolutePath().replaceAll(".mv.db",""));
-                SessionFactory sessionFactory = persistUtils.configureSessionFactory();
-                Session session = sessionFactory.openSession();
-                sessionManager.setSession(session);
+                DatabaseCreator databaseCreator = new DatabaseCreator();
+                if (!selectedFile.getPath().contains(".mv.db")) {
+//                    httpClient.executePostRequest(ControllerAPI.USER_CONTROLLER + "/change/db/", selectedFile.getAbsolutePath().replaceAll(".mv.db",""));
+                    httpClient.executePostRequest(ControllerAPI.CONVERT_DB + "/convertDB/", selectedFile.getAbsolutePath());
+
+                }
+                    /*try {
+                        httpClient.executePostRequest(ControllerAPI.USER_CONTROLLER + "/change/db/", selectedFile.getAbsolutePath().replaceAll(".mv.db",""));
+                        databaseCreator.convertToH2(selectedFile.getPath());
+                    } catch (ArkDBException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }*/
+
+                else {httpClient.executePostRequest(ControllerAPI.USER_CONTROLLER + "/change/db/",
+                        selectedFile.getAbsolutePath().replaceAll(".mv.db",""));}
+//                httpClient.executePostRequest(ControllerAPI.USER_CONTROLLER + "/change/db/", selectedFile.getAbsolutePath().replaceAll(".mv.db",""));
 
             }
         });
@@ -400,7 +418,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
             @Override
             public void handle(ActionEvent event) {
                 // open automatics panel
-                AutomaticsPanel panel = new AutomaticsPanel();
+                AutomaticsPanel panel = new AutomaticsPanel(selectedFile);
                 Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Автомат").setClazz(panel.getClass()).setHeight(250d).setWidth(300d).setHeightPanel(200d).setWidthPanel(300d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
                 panel.setPrimaryStage(stage);
 
@@ -416,7 +434,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
 
                 String body = JsonUtils.getJson(visit);
                 LOGGER.info("User - Visit %s", body);
-                deviceBioHttpClient.executePutRequest(ControllerAPI.VISITS_CONTROLLER + ControllerAPI.VISITS_CONTROLLER_PUT_CREATE_VISIT, body);
+                httpClient.executePutRequest(ControllerAPI.VISITS_CONTROLLER + ControllerAPI.VISITS_CONTROLLER_PUT_CREATE_VISIT, body);
 
             }
         });
@@ -554,7 +572,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
     }
 
     private ObservableList<User> getUserList() {
-        String json = deviceBioHttpClient.executeGetRequest("/api/users/all");
+        String json = httpClient.executeGetRequest("/api/users/all");
         users = JsonUtils.fromJson(User[].class, json);
         usersData.clear();
         for (User unit : users) {

@@ -3,6 +3,8 @@ package com.mpsdevelopment.biopotential.server.controller;
 import com.auth0.jwt.JWTVerifyException;
 import com.mpsdevelopment.biopotential.server.JettyServer;
 import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
+import com.mpsdevelopment.biopotential.server.db.PersistUtils;
+import com.mpsdevelopment.biopotential.server.db.SessionManager;
 import com.mpsdevelopment.biopotential.server.db.advice.Adviceable;
 import com.mpsdevelopment.biopotential.server.db.advice.ProtectedApi;
 import com.mpsdevelopment.biopotential.server.db.dao.DaoException;
@@ -20,6 +22,8 @@ import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +66,12 @@ public class UsersController {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+
+	@Autowired
+	private PersistUtils persistUtils;
+
+	@Autowired
+	private SessionManager sessionManager;
 
 	public UsersController() {
 	}
@@ -208,6 +218,18 @@ public class UsersController {
 		}
 
 		return new ResponseEntity<>(JsonUtils.getJson(users), null, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/change/db/", method = RequestMethod.POST, produces = "text/json;charset=UTF-8")
+	@ResponseBody
+	public ResponseEntity<String> changeDb(@RequestBody String name) {
+		persistUtils.closeSessionFactory();
+		persistUtils.setConfigurationDatabaseFilename(name);
+		SessionFactory sessionFactory = persistUtils.configureSessionFactory();
+		Session session = sessionFactory.openSession();
+		sessionManager.setSession(session);
+
+		return new ResponseEntity<>("OK", null, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_GET_ALL_USERS_BY_PAGE, method = RequestMethod.GET, produces = "text/json;charset=UTF-8")

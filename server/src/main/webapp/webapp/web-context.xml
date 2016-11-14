@@ -36,21 +36,20 @@
 	<bean id="sessionAdviceBean" class="com.mpsdevelopment.biopotential.server.db.advice.SessionAdvice" />
 	<bean id="annotationSessionAdviceBean" class="com.mpsdevelopment.biopotential.server.db.advice.AnnotationSessionAdvice" />
 	<!-- <bean id="protectedApiSessionAdvice" class="com.mpsdevelopment.biopotential.server.db.advice.ProtectedApiSessionAdvice" /> -->
+	<bean id="diseasController" class="com.mpsdevelopment.biopotential.server.controller.DiseasController" />
 
 	<bean id="userDao" class="com.mpsdevelopment.biopotential.server.db.dao.UserDao" />
 	<bean id="foldersDao" class="com.mpsdevelopment.biopotential.server.db.dao.FoldersDao" />
 	<bean id="patternsDao" class="com.mpsdevelopment.biopotential.server.db.dao.PatternsDao" />
-	<bean id="foldersPatternsDao" class="com.mpsdevelopment.biopotential.server.db.dao.PatternsFoldersDao" />
+	<bean id="patternsFoldersDao" class="com.mpsdevelopment.biopotential.server.db.dao.PatternsFoldersDao" />
 	<bean id="visitDao" class="com.mpsdevelopment.biopotential.server.db.dao.VisitDao" />
+	<bean id="serverSettings" class="com.mpsdevelopment.biopotential.server.settings.ServerSettings" init-method="init">
+		<property name="path" value="config/server.json" />
+	</bean>
+
+	<bean id="foldersController" class="com.mpsdevelopment.biopotential.server.controller.FoldersController" />
+
 	<bean id="dіseaseDao" class="com.mpsdevelopment.biopotential.server.db.dao.DiseaseDao" />
-
-	<bean id="selectFromDbPanelController" class="com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.SelectFromDbPanelController" />
-	<bean id="diagPanelController" class="com.mpsdevelopment.biopotential.server.gui.diagnostics.DiagPanelController" />
-	<bean id="automaticsPanelController" class="com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.AutomaticsPanelController" />
-	<bean id="analysisPanelController" class="com.mpsdevelopment.biopotential.server.gui.analysis.AnalysisPanelController" />
-	<bean id="correctorsPanelController" class="com.mpsdevelopment.biopotential.server.gui.correctors.CorrectorsPanelController" />
-	<bean id="addCorrectorController" class="com.mpsdevelopment.biopotential.server.gui.correctors.AddCorrectorController" />
-
 	<bean id="databaseCreatorProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
 		<property name="target">
 			<bean id="databaseCreator" class="com.mpsdevelopment.biopotential.server.db.DatabaseCreator" init-method="initialization" scope="singleton" />

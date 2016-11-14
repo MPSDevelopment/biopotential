@@ -1,5 +1,6 @@
 package com.mpsdevelopment.biopotential.server.cmp.machine.strains;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.reflect.TypeToken;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
@@ -13,13 +14,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EDXPattern implements Pattern {
-
+	@Expose
 	private List<ChunkSummary> summary;
+	@Expose
 	private List<Double> pcmData;
+	@Expose
 	private Long correctingFolder;
+	@Expose
 	private String kind;
+	@Expose
 	private String name;
+	@Expose
 	private String description;
+	@Expose
 	private String fileName;
 
 	public EDXPattern() {

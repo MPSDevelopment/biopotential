@@ -5,6 +5,7 @@ import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -15,7 +16,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.cookie.Cookie;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.HttpParams;
@@ -24,6 +29,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -180,6 +187,60 @@ public class BioHttpClient {
         }
         return json;
     }
+
+    public String executePostRequest(String uri, File file, String body) {
+        String url = String.format("%s%s", mainUrl, uri);
+        LOGGER.info("Url - %s", url);
+        HttpPost request = new HttpPost(url);
+        String json = null;
+        HttpResponse response = null;
+        LOGGER.info(" POST Request  - %s", file.getName());
+
+        HttpEntity entity = MultipartEntityBuilder
+                .create()
+                .addBinaryBody("file", file, ContentType.create("application/octet-stream"), file.getName())
+                .addTextBody(body,CONTENT_TYPE_NAME)
+                .build();
+
+        request.setEntity(entity);
+        try {
+            response = httpClient.execute(request);
+            json = getContextResponse(response);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
+    public String executePostRequest(String uri, File file) {
+
+        LOGGER.info(" POST Request  - %s", file.getName());
+
+        String url = String.format("%s%s", mainUrl, uri);
+        HttpPost request = new HttpPost(url);
+        String json = null;
+        HttpResponse response = null;
+        if (file != null) {
+            try {
+                FileBody bin = new FileBody(file, "application/octet-stream");
+                StringBody comment = new StringBody("A binary file of some kind", ContentType.TEXT_PLAIN);
+                HttpEntity reqEntity = MultipartEntityBuilder.create().addPart("file", bin).addPart("comment", comment).build();
+                request.setEntity(reqEntity);
+                response = httpClient.execute(request);
+                json = getContextResponse(response);
+                LOGGER.info(" POST RESPONSE JSON - %s", json);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return json;
+    }
+
+
 
     public String executePostRequest(String uri, String body, Map<String, String> params) {
         HttpPost request = new HttpPost(uri);

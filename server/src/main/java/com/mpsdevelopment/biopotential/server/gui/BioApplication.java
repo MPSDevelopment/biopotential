@@ -9,21 +9,25 @@ import com.mpsdevelopment.plasticine.commons.LogbackConfigureLoader;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class BioApplication extends Application {
 
-    public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/app-context.xml", "webapp/web-context.xml");
+    public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/app-context.xml");
 
     private static ClasspathResourceManager resourceManager = ClasspathResourceManager.getResourceManager();
 
     private static final Logger LOGGER = LoggerUtil.getLogger(BioApplication.class);
 
-    private DiagPanel diagPanel;
+//    private DiagPanel diagPanel;
 
     public static void main(String[] args) {
 
@@ -45,12 +49,8 @@ public class BioApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        stage.setTitle("Ноев Ковчег");
-//        Scene scene = new Scene(new DiagPanel(stage));
-//        Scene scene = new Scene(addMainPanel());
         addMainPanel();
-        /*stage.setScene(scene);
-        stage.show();*/
+
     }
 
     @Override
@@ -65,7 +65,7 @@ public class BioApplication extends Application {
     }
 
     private void addMainPanel() {
-        diagPanel = new DiagPanel();
+        DiagPanel diagPanel = new DiagPanel();
         LOGGER.info(" Start Diag panel");
         Stage mainPanelStage = StageUtils.createStage(null, diagPanel, new StageSettings().setClazz(DiagPanel.class).setHeight(740d).setWidth(1034d).setHeightPanel(727d).setWidthPanel(1034d));
         diagPanel.setPrimaryStage(mainPanelStage);

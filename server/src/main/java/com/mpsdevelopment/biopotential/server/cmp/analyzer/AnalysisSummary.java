@@ -1,10 +1,15 @@
 package com.mpsdevelopment.biopotential.server.cmp.analyzer;
 
 
+import com.google.gson.annotations.Expose;
+
 public class AnalysisSummary {
 
+    @Expose
     private final double meanDeviation;
+    @Expose
     private final double dispersion;
+    @Expose
     private final int degree;
 
     // TODO: "degree" should be enum

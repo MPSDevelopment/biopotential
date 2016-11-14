@@ -73,7 +73,9 @@ public class PersistUtilsTest {
     public void changeConfigureSessionFactoryTest() throws HibernateException {
 
         Assert.assertEquals(14,foldersDao.findAll().size());
-//        persistUtils.closeSessionFactory();
+        Assert.assertEquals(363,patternsDao.findAll().size());
+        persistUtils.closeSessionFactory();
+        sessionManager.getSession().getSessionFactory().close();
 
         persistUtils.setConfigurationDatabaseFilename("databaseArk");
         SessionFactory sessionFactory = persistUtils.configureSessionFactory();

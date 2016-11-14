@@ -19,7 +19,7 @@ public class AddCorrectorPanel extends Pane {
 
     public AddCorrectorPanel() {
 
-        controller = (AddCorrectorController) SpringLoaderFXML.load(BioApplication.APP_CONTEXT,AddCorrectorController.class, "AddCorrectorPanel.fxml");
+//        controller = (AddCorrectorController) SpringLoaderFXML.load(BioApplication.APP_CONTEXT,AddCorrectorController.class, "AddCorrectorPanel.fxml");
         Pane panel = controller.getView();
         getChildren().add(panel);
         panel.getStyleClass().clear();

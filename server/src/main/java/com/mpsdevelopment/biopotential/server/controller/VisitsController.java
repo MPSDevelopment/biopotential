@@ -1,5 +1,7 @@
 package com.mpsdevelopment.biopotential.server.controller;
 
+import com.mpsdevelopment.biopotential.server.db.PersistUtils;
+import com.mpsdevelopment.biopotential.server.db.SessionManager;
 import com.mpsdevelopment.biopotential.server.db.advice.Adviceable;
 import com.mpsdevelopment.biopotential.server.db.dao.UserDao;
 import com.mpsdevelopment.biopotential.server.db.dao.VisitDao;
@@ -8,6 +10,8 @@ import com.mpsdevelopment.biopotential.server.db.pojo.Visit;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +36,12 @@ public class VisitsController {
 	@Autowired
 	private UserDao userDao;
 
+    @Autowired
+    private PersistUtils persistUtils;
+
+    @Autowired
+    private SessionManager sessionManager;
+
 	public VisitsController() {
 	}
 
@@ -40,6 +50,10 @@ public class VisitsController {
 	public ResponseEntity<String> createUser(HttpServletRequest request, @RequestBody String json) {
 
 		Visit visit = JsonUtils.fromJson(Visit.class, json);
+
+       /* SessionFactory sessionFactory = persistUtils.configureSessionFactory();
+        Session session = sessionFactory.openSession();
+        sessionManager.setSession(session);*/
 
 		visitDao.save(visit);
 		List<User> users = userDao.getUsers(null, null);

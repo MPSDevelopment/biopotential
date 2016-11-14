@@ -6,6 +6,7 @@ import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.cmp.pcm.PCM;
 import com.mpsdevelopment.biopotential.server.db.pojo.DataTable;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
+import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.HealingsMapEvent;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
 import com.mpsdevelopment.biopotential.server.utils.StageUtils;
@@ -34,9 +35,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.ToDoubleFunction;
 
-public class CorrectorsPanelController extends AbstractController  {
+public class CorrectorsPanelController extends AbstractController implements Subscribable {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(CorrectorsPanelController.class);
     private ObservableList<DataTable> correctorsData;
@@ -131,18 +134,31 @@ public class CorrectorsPanelController extends AbstractController  {
 
         List selList = new ArrayList();
 
-        selectedItems.forEach(dataTable -> sortedSelectedItems.add(dataTable));
+        selectedItems.forEach(new Consumer<DataTable>() {
+            @Override
+            public void accept(DataTable dataTable) {
+                sortedSelectedItems.add(dataTable);
+            }
+        });
 
-        healingsMap.forEach((pattern, analysisSummary) -> sortedHealings.add(pattern));
+        healingsMap.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
+            @Override
+            public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
+                sortedHealings.add(pattern);
+            }
+        });
 
 
         for (DataTable item : sortedSelectedItems) {
-            sortedHealings.forEach(pattern -> {
-                if (item.getFilename().equals(pattern.getFileName())) {
-                    if(selList.add(pattern.getPcmData())) {
-                        LOGGER.info("%s", pattern.getName());
-                        LOGGER.info("%s", item.getFilename());
+            sortedHealings.forEach(new Consumer<Pattern>() {
+                @Override
+                public void accept(Pattern pattern) {
+                    if (item.getFilename().equals(pattern.getFileName())) {
+                        if (selList.add(pattern.getPcmData())) {
+                            LOGGER.info("%s", pattern.getName());
+                            LOGGER.info("%s", item.getFilename());
 
+                        }
                     }
                 }
             });
@@ -201,6 +217,10 @@ public class CorrectorsPanelController extends AbstractController  {
         dataTable.setFilename(k.getFileName());
         return dataTable;
     }*/
+
+    public void setHealingsMap(Map<Pattern, AnalysisSummary> healingsMap) {
+        this.healingsMap = healingsMap;
+    }
 
     public static void merge(Collection<List<Double>> lists) throws IOException, UnsupportedAudioFileException {
 

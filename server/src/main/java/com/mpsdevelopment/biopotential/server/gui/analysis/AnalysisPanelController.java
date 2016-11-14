@@ -1,8 +1,11 @@
 package com.mpsdevelopment.biopotential.server.gui.analysis;
 
+import com.google.gson.reflect.TypeToken;
 import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
+import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
+import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
 import com.mpsdevelopment.biopotential.server.db.dao.DiseaseDao;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
@@ -10,7 +13,9 @@ import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
 import com.mpsdevelopment.biopotential.server.db.pojo.DataTable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.HealingsMapEvent;
 import com.mpsdevelopment.biopotential.server.gui.correctors.CorrectorsPanel;
+import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
+import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.biopotential.server.utils.StageUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
@@ -35,18 +40,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class AnalysisPanelController extends AbstractController implements Subscribable {
+
 
     private static final Logger LOGGER = LoggerUtil.getLogger(AnalysisPanelController.class);
     private ObservableList<DataTable> analysisData;
 
-    @Autowired
-    private DiseaseDao diseaseDao;
+//    @Autowired
+//    private DiseaseDao diseaseDao;
 
     @FXML
     private ScatterChart<Number, Number> scatterChart;
@@ -67,15 +75,15 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     private Button continueButton;
 
     private Stage primaryStage;
-    private static File file;
+    private /*static*/ File file;
     private static Map<Pattern, AnalysisSummary> healings;
-    Map<Pattern, AnalysisSummary> diseases;
-    Map<Pattern, AnalysisSummary> allHealings;
+    private Map<Pattern, AnalysisSummary> diseases;
+    private Map<Pattern, AnalysisSummary> allHealings;
 
     private static File outputFile = new File("AudioFiles\\out\\out.wav");
 
     public AnalysisPanelController() {
-        EventBus.subscribe(this);
+//        EventBus.subscribe(this);
     }
 
     @Override
@@ -83,7 +91,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         analysisData = FXCollections.observableArrayList();
         diseases = new HashMap<>();
         allHealings = new HashMap<>();
-        try {
+        /*try {
             makeAnalyze(file);
         } catch (UnsupportedAudioFileException e) {
             LOGGER.printStackTrace(e);
@@ -92,7 +100,20 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         } catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
+
+        Set<Pattern> sortedHealings = new HashSet<>();
+
+        List selList = new ArrayList();
+
+
+
+
+
+
+
+
+
 
         healthConditionTable.setItems(analysisData);
 
@@ -124,7 +145,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         });
 
         continueButton.setOnAction(event -> {
-            CorrectorsPanel panel = new CorrectorsPanel();
+            CorrectorsPanel panel = new CorrectorsPanel(allHealings);
             Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Коррекция").setClazz(panel.getClass()).setHeight(722d).setWidth(1273d)
                     .setHeightPanel(722d).setWidthPanel(1273d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
             panel.setPrimaryStage(stage);
@@ -144,10 +165,17 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     }
 
     private void makeAnalyze(File file) throws UnsupportedAudioFileException, IOException, SQLException {
-
+        DiseaseDao diseaseDao = new DiseaseDao();
         Collection lists = new ArrayList();
         long t2 = System.currentTimeMillis();
-        diseases.putAll(diseaseDao.getDeseases(file));
+
+        BioHttpClient bioHttpClient = new BioHttpClient();
+        String json = bioHttpClient.executePostRequest(ControllerAPI.DISEAS_CONTROLLER + "/getDiseas/", file);
+
+        Type typeOfHashMap = new TypeToken<Map<EDXPattern, AnalysisSummary>>() { }.getType();
+        Map<Pattern, AnalysisSummary> diseases = JsonUtils.fromJson(typeOfHashMap, json);
+
+//        diseases.putAll(diseaseDao.getDeseases(file));
         diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
             @Override
             public void accept(Pattern k, AnalysisSummary v) {
@@ -158,13 +186,44 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             }
         });
         LOGGER.info("Total time for calculate diseases %d ms", System.currentTimeMillis() - t2);
-
         long t1 = System.currentTimeMillis();
-        allHealings.putAll(diseaseDao.getHealings(diseases, file));
+
+        String heal = bioHttpClient.executePostRequest(ControllerAPI.DISEAS_CONTROLLER + "/getHealings/",file);
+        typeOfHashMap = new TypeToken<Map<EDXPattern, AnalysisSummary>>() { }.getType();
+        /*Map<Pattern, AnalysisSummary> */allHealings = JsonUtils.fromJson(typeOfHashMap, heal);
+
+//        allHealings.putAll(diseaseDao.getHealings(diseases, file));
         LOGGER.info("Total time for calculate healings %d ms", System.currentTimeMillis() - t1);
 
         LOGGER.info("healings size %s", allHealings.size());
         EventBus.publishEvent(new HealingsMapEvent(allHealings));
+
+        Set<DataTable> sortedSelectedItems = new HashSet<>();
+        char [] str = new char[5];
+        char [] cmp = new char[5];
+
+        analysisData.forEach(new Consumer<DataTable>() {
+            @Override
+            public void accept(DataTable dataTable) {
+                dataTable.getName().getChars(0,4,str,0);
+                analysisData.forEach(new Consumer<DataTable>() {
+                    @Override
+                    public void accept(DataTable temp) {
+                        int count=0;
+                        temp.getName().getChars(0,4,cmp,0);
+                        if(str.equals(cmp)){
+                            count++;
+                        }
+                        if (count > 1) {
+                            sortedSelectedItems.add(dataTable);
+                        }
+                    }
+                });
+
+            }
+        });
+
+
     }
 
     /*private DataTable createDataTableObject(Pattern k, AnalysisSummary v) {
@@ -200,11 +259,26 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         file = event.getFile();
     }
 
-	/*
-	 * @Override public void subscribe() { EventBus.subscribe(this); }
-	 */
+    /*@Override
+    public void subscribe() { EventBus.subscribe(this); }*/
 
-	/*
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    public void makeCurrentAnalyze(File file) {
+        try {
+            makeAnalyze(file);
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
 	 * public static void merge(Collection<List<Double>> lists) throws
 	 * IOException, UnsupportedAudioFileException {
 	 * 

@@ -1,15 +1,15 @@
 package com.mpsdevelopment.biopotential.server.gui.analysis;
 
 
-import com.mpsdevelopment.biopotential.server.SpringLoaderFXML;
-import com.mpsdevelopment.biopotential.server.gui.BioApplication;
-import com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.AutomaticsPanelController;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.io.File;
+import java.io.IOException;
 
 public class AnalysisPanel extends Pane {
 
@@ -17,9 +17,22 @@ public class AnalysisPanel extends Pane {
 
 	private AnalysisPanelController controller;
 
-    public AnalysisPanel() {
+    public AnalysisPanel(File file) {
 
-        controller = (AnalysisPanelController) SpringLoaderFXML.load(BioApplication.APP_CONTEXT,AnalysisPanelController.class, "AnalysisPanel.fxml");
+//        controller = (AnalysisPanelController) SpringLoaderFXML.load(BioApplication.APP_CONTEXT,AnalysisPanelController.class, "AnalysisPanel.fxml");
+        FXMLLoader loader = new FXMLLoader();
+
+        try {
+            Pane pane = loader.load(this.getClass().getResourceAsStream("AnalysisPanel.fxml"));
+            controller = loader.getController();
+            controller.setView(pane);
+            controller.setFile(file);
+            controller.makeCurrentAnalyze(file);
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Pane panel = controller.getView();
         getChildren().add(panel);
         panel.getStyleClass().clear();
@@ -29,6 +42,7 @@ public class AnalysisPanel extends Pane {
 
     public void setPrimaryStage(Stage primaryStage) {
         controller.updatePanel(primaryStage);
+        primaryStage.initModality(Modality.WINDOW_MODAL);
         primaryStage.show();
     }
 }

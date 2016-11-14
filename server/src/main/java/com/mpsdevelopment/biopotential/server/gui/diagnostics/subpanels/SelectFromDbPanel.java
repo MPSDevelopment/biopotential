@@ -24,7 +24,16 @@ public class SelectFromDbPanel extends Pane {
 
     public SelectFromDbPanel() {
 
-        controller = (SelectFromDbPanelController) SpringLoaderFXML.load(BioApplication.APP_CONTEXT,SelectFromDbPanelController.class, "SelectFromDbPanel.fxml");
+//        controller = (SelectFromDbPanelController) SpringLoaderFXML.load(BioApplication.APP_CONTEXT,SelectFromDbPanelController.class, "SelectFromDbPanel.fxml");
+        FXMLLoader loader = new FXMLLoader();
+        try {
+            Pane pane = loader.load(this.getClass().getResourceAsStream("SelectFromDbPanel.fxml"));
+            controller = loader.getController();
+            controller.setView(pane);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         Pane panel = controller.getView();
         getChildren().add(panel);
         panel.getStyleClass().clear();

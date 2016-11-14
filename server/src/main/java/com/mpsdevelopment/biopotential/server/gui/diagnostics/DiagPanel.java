@@ -1,19 +1,15 @@
 package com.mpsdevelopment.biopotential.server.gui.diagnostics;
 
 import com.mpsdevelopment.biopotential.server.SpringLoaderFXML;
-import com.mpsdevelopment.biopotential.server.gui.BioApplication;
-import com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.SelectFromDbPanelController;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Group;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import javafx.stage.StageStyle;
 
 import java.io.IOException;
-import java.net.URL;
 
 public class DiagPanel extends Pane {
 
@@ -21,9 +17,18 @@ public class DiagPanel extends Pane {
 
     private DiagPanelController diagPanelController;
 
-    public DiagPanel() {
+    SpringLoaderFXML loaderFXML = new SpringLoaderFXML();
 
-        diagPanelController = (DiagPanelController) SpringLoaderFXML.load(BioApplication.APP_CONTEXT,DiagPanelController.class, "DiagPanel.fxml");
+    public DiagPanel() {
+        FXMLLoader loader = new FXMLLoader();
+        try {
+            Pane pane = loader.load(this.getClass().getResourceAsStream("DiagPanel.fxml"));
+            diagPanelController = loader.getController();
+            diagPanelController.setView(pane);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Pane panel = diagPanelController.getView();
         getChildren().add(panel);
         panel.getStyleClass().clear();
@@ -32,6 +37,9 @@ public class DiagPanel extends Pane {
 
     public void setPrimaryStage(Stage primaryStage) {
         diagPanelController.updatePanel(primaryStage);
+        primaryStage.initModality(Modality.WINDOW_MODAL);
         primaryStage.show();
+
+//        primaryStage.setIconified(true);
     }
 }
