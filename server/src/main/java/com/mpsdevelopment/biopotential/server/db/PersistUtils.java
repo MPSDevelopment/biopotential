@@ -125,8 +125,8 @@ public class PersistUtils {
 			IOUtils.closeQuietly(in);
 		}
 	}
-
-	private SessionFactory getSessionFactory() {
+	// TO-DO вернуть на private
+	public SessionFactory getSessionFactory() {
 		if (sessionFactory == null) {
 			configureSessionFactory();
 		}

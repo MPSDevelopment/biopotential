@@ -49,7 +49,11 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
                 .add(Projections.property("PATTERN."+Pattern.PATTERN_UID), "fileName")
 				.add(Projections.property("PATTERN."+Pattern.CHUNK_SUMMARY), "summary")
 		 .add(Projections.property("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS), "correctingFolder");
-		
+
+		/*if (getSession().getSessionFactory().isClosed()) {
+			getSession().getSessionFactory().openSession();
+		}*/
+
 		List list = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS,"PATTERNS_FOLDERS").createCriteria(PatternsFolders.PATTERNS,"PATTERN")
 				.add(Restrictions.isNotNull("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS))
 				.setProjection(projections)

@@ -35,6 +35,10 @@ public class WAWPattern implements Pattern {
         return null;
     }
 
+    public void setName(String str) {
+
+    }
+
     public List<Double> getPcmData() {
         return null;
     }

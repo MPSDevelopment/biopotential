@@ -43,7 +43,7 @@ public class AuthPanelController {
     public void initialize() throws NoSuchMethodException {
 
         User user = new User();
-        deviceBioHttpClient = BioApplication.APP_CONTEXT.getBean(BioHttpClient.class);
+//        deviceBioHttpClient = BioApplication.APP_CONTEXT.getBean(BioHttpClient.class);
         // #2 Use property bindings
         Bindings.bindBidirectional(loginField.textProperty(), login);
         Bindings.bindBidirectional(passField.textProperty(), password);

@@ -43,9 +43,10 @@
 	<bean id="patternsDao" class="com.mpsdevelopment.biopotential.server.db.dao.PatternsDao" />
 	<bean id="patternsFoldersDao" class="com.mpsdevelopment.biopotential.server.db.dao.PatternsFoldersDao" />
 	<bean id="visitDao" class="com.mpsdevelopment.biopotential.server.db.dao.VisitDao" />
-	<bean id="serverSettings" class="com.mpsdevelopment.biopotential.server.settings.ServerSettings" init-method="init">
+
+	<!--<bean id="serverSettings" class="com.mpsdevelopment.biopotential.server.settings.ServerSettings" init-method="init">
 		<property name="path" value="config/server.json" />
-	</bean>
+	</bean>-->
 
 	<bean id="foldersController" class="com.mpsdevelopment.biopotential.server.controller.FoldersController" />
 

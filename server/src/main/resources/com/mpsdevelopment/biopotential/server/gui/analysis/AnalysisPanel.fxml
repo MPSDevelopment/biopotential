@@ -20,18 +20,18 @@
       <TableView fx:id="healthConditionTable" layoutX="29.0" layoutY="24.0" prefHeight="641.0" prefWidth="557.0">
         <columns>
           <TableColumn fx:id="numberColumn" prefWidth="30.0" text="№" />
-          <TableColumn fx:id="deseaseName" prefWidth="191.0" text="Название" />
+          <TableColumn fx:id="diseaseName" prefWidth="191.0" text="Название" />
             <TableColumn prefWidth="93.0" text="Группа" />
             <TableColumn prefWidth="96.0" text="Система" />
-            <TableColumn fx:id="deseaseLevel" prefWidth="74.0" text="Дисперсия" />
+            <TableColumn fx:id="diseaseLevel" prefWidth="74.0" text="Дисперсия" />
             <TableColumn prefWidth="72.0" text="Уровень" />
         </columns>
       </TableView>
-      <TableView layoutX="598.0" layoutY="362.0" prefHeight="302.0" prefWidth="274.0">
+      <TableView fx:id="smallTable" layoutX="598.0" layoutY="323.0" prefHeight="341.0" prefWidth="274.0">
         <columns>
-          <TableColumn prefWidth="50.0" text="Номер" />
-          <TableColumn prefWidth="149.0" text="Система" />
-            <TableColumn prefWidth="74.0" text="Уровень" />
+          <TableColumn fx:id="numberSystemColumn" prefWidth="33.0" text="№" />
+          <TableColumn fx:id="systemColumn" prefWidth="166.0" text="Система" />
+            <TableColumn fx:id="levelColumn" prefWidth="74.0" text="Уровень" />
         </columns>
       </TableView>
       <Button fx:id="continueButton" layoutX="443.0" layoutY="683.0" mnemonicParsing="false" text="Продолжить" />

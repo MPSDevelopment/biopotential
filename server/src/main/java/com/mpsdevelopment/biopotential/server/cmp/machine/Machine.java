@@ -4,15 +4,16 @@ import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.Analyzer;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
-import com.mpsdevelopment.biopotential.server.db.dao.DiseaseDao;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
 import java.util.function.BiConsumer;
 
 class EDXSection {
@@ -24,10 +25,16 @@ class EDXSection {
 
 public class Machine {
 
-	private static final Logger LOGGER = LoggerUtil.getLogger(Machine.class);
+	private static String edxFileFolder;
 
-//	private static final String EDX_FILE_FOLDER = "data/edxfiles/";
-	private static final String EDX_FILE_FOLDER = "D:\\MPS\\IDEA\\Biopotential material's\\база автомат\\my_super_puper_db_Storage\\";
+    public static void setEdxFileFolder(String edxFileFolder) {
+        Machine.edxFileFolder = edxFileFolder;
+    }
+
+    private static final Logger LOGGER = LoggerUtil.getLogger(Machine.class);
+
+	private static final String EDX_FILE_FOLDER = "data/edxfiles/";
+//	private static final String EDX_FILE_FOLDER = "D:/MPS/IDEA/Biopotential material's/база автомат/my_super_puper_db_Storage/";
 
 	public static Map<Pattern, AnalysisSummary> summarizePatterns(List<ChunkSummary> sampleSummary, List<EDXPattern> patterns) {
 		final Map<Pattern, AnalysisSummary> summaries = new HashMap<>();
@@ -66,7 +73,11 @@ public class Machine {
 		List<ChunkSummary> summary;
 		List<Double> pcmData;
 
-		try (RandomAccessFile in = new RandomAccessFile(new File(EDX_FILE_FOLDER + fileName), "r")) {
+        if (edxFileFolder == null) {
+            edxFileFolder = EDX_FILE_FOLDER;
+        }
+
+		try (RandomAccessFile in = new RandomAccessFile(new File(edxFileFolder + fileName), "r")) {
 			final byte[] hdr = new byte[4];
 			if (in.read(hdr) != 4 || !new String(hdr).equals("EDXI")) {
 				throw new IOException("not EDX");

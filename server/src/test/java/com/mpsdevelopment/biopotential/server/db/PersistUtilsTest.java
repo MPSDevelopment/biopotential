@@ -23,6 +23,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -84,6 +86,34 @@ public class PersistUtilsTest {
 
         Assert.assertEquals(5,foldersDao.findAll().size());
         Assert.assertEquals(856,patternsDao.findAll().size());
+
+    }
+
+    @Test
+    public void changeDBTest() throws HibernateException, IOException, SQLException {
+
+        Assert.assertEquals(132,patternsDao.getFromDatabase().size());
+
+
+        persistUtils.closeSessionFactory();
+        sessionManager.getSession().getSessionFactory().close();
+
+        persistUtils.setConfigurationDatabaseFilename("./data/test.arkdb");
+        SessionFactory sessionFactory = persistUtils.configureSessionFactory();
+        Session session = sessionFactory.openSession();
+        sessionManager.setSession(session);
+
+        Assert.assertEquals(44,patternsDao.getFromDatabase().size());
+
+        persistUtils.closeSessionFactory();
+        sessionManager.getSession().getSessionFactory().close();
+
+        persistUtils.setConfigurationDatabaseFilename("./data/db_cutted.db");
+        sessionFactory = persistUtils.configureSessionFactory();
+        session = sessionFactory.openSession();
+        sessionManager.setSession(session);
+
+        Assert.assertEquals(120,patternsDao.getFromDatabase().size());
 
     }
 

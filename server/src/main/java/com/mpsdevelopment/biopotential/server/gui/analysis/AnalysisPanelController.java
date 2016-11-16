@@ -14,6 +14,7 @@ import com.mpsdevelopment.biopotential.server.db.pojo.DataTable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.HealingsMapEvent;
 import com.mpsdevelopment.biopotential.server.gui.correctors.CorrectorsPanel;
 import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
+import com.mpsdevelopment.biopotential.server.httpclient.HttpClientFactory;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.biopotential.server.utils.StageUtils;
@@ -35,7 +36,6 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import net.engio.mbassy.listener.Handler;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sound.sampled.*;
 import java.io.File;
@@ -45,16 +45,13 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class AnalysisPanelController extends AbstractController implements Subscribable {
 
-
     private static final Logger LOGGER = LoggerUtil.getLogger(AnalysisPanelController.class);
+    public static final int patternWeight = 10;
     private ObservableList<DataTable> analysisData;
-
-//    @Autowired
-//    private DiseaseDao diseaseDao;
+    private ObservableList<String> level;
 
     @FXML
     private ScatterChart<Number, Number> scatterChart;
@@ -63,20 +60,31 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     private TableView<DataTable> healthConditionTable;
 
     @FXML
-    private TableColumn<DataTable, String> deseaseName;
+    private TableView<Map.Entry<String,Integer>> smallTable;
 
     @FXML
-    private TableColumn<DataTable, String> deseaseLevel;
+    private TableColumn<DataTable, String> diseaseName;
+
+    @FXML
+    private TableColumn<DataTable, String> diseaseLevel;
 
     @FXML
     private TableColumn<DataTable, String> numberColumn;
 
     @FXML
+    private TableColumn numberSystemColumn;
+
+    @FXML
+    private TableColumn<Map.Entry<String, Integer>, String> systemColumn;
+
+    @FXML
+    private TableColumn levelColumn;
+
+    @FXML
     private Button continueButton;
 
     private Stage primaryStage;
-    private /*static*/ File file;
-    private static Map<Pattern, AnalysisSummary> healings;
+    private File file;
     private Map<Pattern, AnalysisSummary> diseases;
     private Map<Pattern, AnalysisSummary> allHealings;
 
@@ -89,31 +97,9 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         analysisData = FXCollections.observableArrayList();
+        level = FXCollections.observableArrayList();
         diseases = new HashMap<>();
         allHealings = new HashMap<>();
-        /*try {
-            makeAnalyze(file);
-        } catch (UnsupportedAudioFileException e) {
-            LOGGER.printStackTrace(e);
-        } catch (IOException e) {
-            LOGGER.printStackTrace(e);
-        } catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-
-        Set<Pattern> sortedHealings = new HashSet<>();
-
-        List selList = new ArrayList();
-
-
-
-
-
-
-
-
-
 
         healthConditionTable.setItems(analysisData);
 
@@ -126,7 +112,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         numberColumn.setSortable(false);
         numberColumn.setStyle("-fx-alignment: CENTER;");
 
-        deseaseName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
+        diseaseName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> dataTable) {
                 SimpleStringProperty property = new SimpleStringProperty();
@@ -135,12 +121,38 @@ public class AnalysisPanelController extends AbstractController implements Subsc
                 return property;
             }
         });
-        deseaseLevel.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
+        diseaseLevel.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> dataTable) {
                 SimpleStringProperty property = new SimpleStringProperty();
                 property.setValue(String.format("%s", dataTable.getValue().getDispersion()));
                 return property;
+            }
+        });
+
+        numberSystemColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Map.Entry<String, Integer>, String>, ObservableValue<String>>() {
+
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Map.Entry<String, Integer>, String> p) {
+//                return new SimpleStringProperty(p.getValue().getKey());
+                return new ReadOnlyObjectWrapper(smallTable.getItems().indexOf(p.getValue()) + 1 + "");
+            }
+        });
+
+        systemColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Map.Entry<String, Integer>, String>, ObservableValue<String>>() {
+
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Map.Entry<String, Integer>, String> p) {
+                return new SimpleStringProperty(p.getValue().getKey());
+            }
+        });
+
+
+        levelColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Map.Entry<String, Integer>, String>, ObservableValue<String>>() {
+
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Map.Entry<String, Integer>, String> p) {
+                return new SimpleStringProperty(Integer.toString(p.getValue().getValue())+ " %");
             }
         });
 
@@ -165,11 +177,11 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     }
 
     private void makeAnalyze(File file) throws UnsupportedAudioFileException, IOException, SQLException {
-        DiseaseDao diseaseDao = new DiseaseDao();
-        Collection lists = new ArrayList();
         long t2 = System.currentTimeMillis();
 
-        BioHttpClient bioHttpClient = new BioHttpClient();
+//        BioHttpClient bioHttpClient = new BioHttpClient();
+        BioHttpClient bioHttpClient = HttpClientFactory.getInstance();
+
         String json = bioHttpClient.executePostRequest(ControllerAPI.DISEAS_CONTROLLER + "/getDiseas/", file);
 
         Type typeOfHashMap = new TypeToken<Map<EDXPattern, AnalysisSummary>>() { }.getType();
@@ -179,7 +191,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
             @Override
             public void accept(Pattern k, AnalysisSummary v) {
-                System.out.printf("%s\t%f\n", k.getName(), v.getDispersion());
+                System.out.printf("%s\t%f\n", k.getName().replace("?",""), v.getDispersion());
                 // LOGGER.info("d: %s\t%f\n", k.getName(), v.getDispersion());
 
                 analysisData.add(DataTable.createDataTableObject(k, v));
@@ -199,31 +211,97 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         EventBus.publishEvent(new HealingsMapEvent(allHealings));
 
         Set<DataTable> sortedSelectedItems = new HashSet<>();
+//        ObservableList<DataTable> sortedSelectedItems = FXCollections.observableArrayList();
         char [] str = new char[5];
         char [] cmp = new char[5];
 
-        analysisData.forEach(new Consumer<DataTable>() {
-            @Override
-            public void accept(DataTable dataTable) {
-                dataTable.getName().getChars(0,4,str,0);
-                analysisData.forEach(new Consumer<DataTable>() {
-                    @Override
-                    public void accept(DataTable temp) {
-                        int count=0;
-                        temp.getName().getChars(0,4,cmp,0);
-                        if(str.equals(cmp)){
-                            count++;
-                        }
-                        if (count > 1) {
-                            sortedSelectedItems.add(dataTable);
-                        }
-                    }
-                });
 
+        for (DataTable dataTable: analysisData) {
+            int count=0;
+            dataTable.getName().getChars(0,4,str,0);
+            for (DataTable temp: analysisData) {
+                temp.getName().getChars(0,4,cmp,0);
+                if(Arrays.equals(str,cmp)){
+                    count++;
+                }
+                if (count > 1) {
+                    sortedSelectedItems.add(dataTable);
+                }
             }
-        });
+        }
 
+        Map<String,Integer> systemMap = new HashMap<>();
+        systemMap.put("CARDIO система",0);
+        systemMap.put("DERMA система",0);
+        systemMap.put("Endocrinology система",0);
+        systemMap.put("GASTRO система",0);
+        systemMap.put("IMMUN система",0);
+        systemMap.put("MENTIS система",0);
+        systemMap.put("NEURAL система",0);
+        systemMap.put("ORTHO система",0);
+        systemMap.put("SPIRITUS система",0);
+        systemMap.put("Stomat система",0);
+        systemMap.put("UROLOG система",0);
+        systemMap.put("VISION система",0);
 
+        int index = 0;
+        for (DataTable dataTable: sortedSelectedItems) {
+            for (int i = 0 ; i < dataTable.getName().length(); i++) {
+                if ((dataTable.getName().charAt(i) == '♥') || (dataTable.getName().charAt(i) == 'ლ') || (dataTable.getName().charAt(i) == '♋') || (dataTable.getName().charAt(i) == '⌘')
+                        || (dataTable.getName().charAt(i) == '☂') || (dataTable.getName().charAt(i) == '☺') || (dataTable.getName().charAt(i) == '♕') || (dataTable.getName().charAt(i) == '☤')
+                        || (dataTable.getName().charAt(i) == '✽') || (dataTable.getName().charAt(i) == '〲') || (dataTable.getName().charAt(i) == 'Ü') || (dataTable.getName().charAt(i) == '☄')) {
+                    index = i;
+                    break;
+                }
+            }
+
+            switch (dataTable.getName().substring(0, index)) {
+
+                case "CARDIO":
+                    systemMap.put("CARDIO система",systemMap.get("CARDIO система")+patternWeight);
+                    break;
+                case "DERMA":
+                    systemMap.put("DERMA система",systemMap.get("DERMA система")+patternWeight);
+                    break;
+                case "Endocrinology":
+                    systemMap.put("Endocrinology система",systemMap.get("Endocrinology система")+patternWeight);
+                    break;
+                case "GASTRO":
+                    systemMap.put("GASTRO система",systemMap.get("GASTRO система")+ patternWeight);
+                    break;
+                case "IMMUN":
+                    systemMap.put("IMMUN система",systemMap.get("IMMUN система")+ patternWeight);
+                    break;
+                case "MENTIS":
+                    systemMap.put("MENTIS система",systemMap.get("MENTIS система")+ patternWeight);
+                    break;
+                case "NEURAL":
+                    systemMap.put("NEURAL система",systemMap.get("NEURAL система")+ patternWeight);
+                    break;
+                case "ORTHO":
+                    systemMap.put("ORTHO система",systemMap.get("ORTHO система")+ patternWeight);
+                    break;
+                case "SPIRITUS":
+                    systemMap.put("SPIRITUS система",systemMap.get("SPIRITUS система")+ patternWeight);
+                    break;
+                case "Stomat":
+                    systemMap.put("Stomat система",systemMap.get("Stomat система")+ patternWeight);
+                    break;
+                case "UROLOG":
+                    systemMap.put("UROLOG система",systemMap.get("UROLOG система")+ patternWeight);
+                    break;
+                case "VISION":
+                    systemMap.put("VISION система",systemMap.get("VISION система")+ patternWeight);
+                    break;
+            }
+
+        }
+
+        ObservableList<Map.Entry<String,Integer>> result = FXCollections.observableArrayList(systemMap.entrySet());
+        smallTable.setItems(result);
+        systemColumn.setSortable(true);
+//        smallTable.getColumns().addAll(numberSystemColumn,systemColumn,levelColumn);
+        smallTable.getSortOrder().add(systemColumn);
     }
 
     /*private DataTable createDataTableObject(Pattern k, AnalysisSummary v) {

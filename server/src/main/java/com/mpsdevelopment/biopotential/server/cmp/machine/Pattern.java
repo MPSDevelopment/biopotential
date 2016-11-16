@@ -12,4 +12,5 @@ public interface Pattern {
     List<Double> getPcmData();
     List<ChunkSummary> getSummary();
     String getFileName();
+    void setName(String str);
 }

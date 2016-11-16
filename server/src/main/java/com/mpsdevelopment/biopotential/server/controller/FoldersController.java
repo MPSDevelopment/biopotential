@@ -9,9 +9,8 @@ import com.mpsdevelopment.biopotential.server.db.SessionManager;
 import com.mpsdevelopment.biopotential.server.db.dao.FoldersDao;
 import com.mpsdevelopment.biopotential.server.db.dao.PatternsDao;
 import com.mpsdevelopment.biopotential.server.db.dao.PatternsFoldersDao;
-import com.mpsdevelopment.biopotential.server.db.pojo.Folder;
-import com.mpsdevelopment.biopotential.server.db.pojo.Pattern;
-import com.mpsdevelopment.biopotential.server.db.pojo.PatternsFolders;
+import com.mpsdevelopment.biopotential.server.db.dao.UserDao;
+import com.mpsdevelopment.biopotential.server.db.pojo.*;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
@@ -20,6 +19,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +37,9 @@ public class FoldersController {
     private static final Logger LOGGER = LoggerUtil.getLogger(FoldersController.class);
 
     @Autowired
+    private UserDao userDao;
+
+    @Autowired
     private FoldersDao foldersDao;
 
     @Autowired
@@ -51,6 +54,9 @@ public class FoldersController {
     @Autowired
     private PatternsFoldersDao patternsFoldersDao;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     private Folder folder;
     private Pattern pattern;
     private PatternsFolders patternsFolders;
@@ -59,6 +65,8 @@ public class FoldersController {
     private ResultSet patternsDb;
     private ResultSet patternsFoldersDb;
 
+    public static final String ADMIN_LOGIN = "admin";
+    public static final String ADMIN_PASSWORD = "234sgfweyewsgsf";
 
     public FoldersController() {
     }
@@ -68,7 +76,7 @@ public class FoldersController {
     @ResponseBody
     ResponseEntity<String> getDiseases(@RequestBody String url) {
         persistUtils.closeSessionFactory();
-        persistUtils.setConfigurationDatabaseFilename(url.replaceAll(".mv.db",""));
+        persistUtils.setConfigurationDatabaseFilename(url);
         SessionFactory sessionFactory = persistUtils.configureSessionFactory();
         Session session = sessionFactory.openSession();
         sessionManager.setSession(session);
@@ -85,6 +93,8 @@ public class FoldersController {
     }
 
     public void connect(String url) throws ArkDBException {
+        createUserIfNotExists(new User().setLogin(ADMIN_LOGIN).setPassword(passwordEncoder.encode(ADMIN_PASSWORD)).setSurname("Медков").setName("Игорь")
+                .setPatronymic("Владимирович").setTel("0982359090").setEmail("igor@ukr.net").setGender("Man").setRole(Token.Role.ADMIN.name()));
         try {
             Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException e) {
@@ -105,7 +115,7 @@ public class FoldersController {
 
     public void convertToH2(String url) throws ArkDBException, IOException {
         connect(url);
-        foldersDao = (FoldersDao) JettyServer.APP_CONTEXT.getBean("foldersDao");
+//        foldersDao = (FoldersDao) JettyServer.APP_CONTEXT.getBean("foldersDao");
         try {
             while (foldersDb.next()) {
 
@@ -120,7 +130,7 @@ public class FoldersController {
                     foldersDao.save(folder);
                 }
             }
-            patternsDao = (PatternsDao) JettyServer.APP_CONTEXT.getBean("patternsDao");
+//            patternsDao = (PatternsDao) JettyServer.APP_CONTEXT.getBean("patternsDao");
             while (patternsDb.next()) {
 
                 pattern = patternsDao.getById(patternsDb.getInt("id_pattern"));
@@ -140,7 +150,7 @@ public class FoldersController {
                     patternsDao.save(pattern);
                 }
             }
-            patternsFoldersDao = (PatternsFoldersDao) JettyServer.APP_CONTEXT.getBean("patternsFoldersDao");
+//            patternsFoldersDao = (PatternsFoldersDao) JettyServer.APP_CONTEXT.getBean("patternsFoldersDao");
             while (patternsFoldersDb.next()) {
 				/*
 				 * Long id_folder = patternsFoldersDb.getLong("id_folder"); LOGGER.info("id_folder %s", id_folder); Long id_pattern = patternsFoldersDb.getLong("id_pattern");
@@ -203,7 +213,13 @@ public class FoldersController {
 					if (folder.getIdFolder() == 4328) {*/
 
                 patternsFolders = new PatternsFolders();
-                patternsFolders.setFolder(analysis);
+                if (floraDissection != null) {
+                    patternsFolders.setFolder(floraDissection);
+                }
+                if (analysis != null) {
+                    patternsFolders.setFolder(analysis);
+                }
+//                patternsFolders.setFolder(analysis);
                 patternsFolders.setPattern(pattern);
 
                 if (pattern.getPatternName().contains("BAC "))
@@ -265,8 +281,17 @@ public class FoldersController {
 
     }
 
+    public User createUserIfNotExists(User user) {
+        User loadedUser = userDao.getByLogin(user.getLogin());
+        if (loadedUser == null) {
+            LOGGER.info("User %s has been created", user.getLogin());
+            loadedUser = userDao.save(user);
+        }
+        return loadedUser;
+    }
+
     private void setChunkSummary() throws IOException, SQLException {
-        List<com.mpsdevelopment.biopotential.server.db.pojo.Pattern> patternAll = patternsDao.getPatterns(null, null);
+        List<Pattern> patternAll = patternsDao.getPatterns(null, null);
         LOGGER.info("List size %s", patternAll.size());
 
 //		patternAll.forEach(new Consumer<Pattern>() {
@@ -284,7 +309,7 @@ public class FoldersController {
 //
 //		});
 
-        for (com.mpsdevelopment.biopotential.server.db.pojo.Pattern patternsum : patternAll) {
+        for (Pattern patternsum : patternAll) {
             try {
                 PcmDataSummary sum = Machine.getPcmData(patternsum.getPatternUid());
                 patternsum.setChunkSummary(JsonUtils.getJson(sum.getSummary()));

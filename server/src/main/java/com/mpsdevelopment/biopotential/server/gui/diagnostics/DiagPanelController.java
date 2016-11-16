@@ -1,6 +1,7 @@
 package com.mpsdevelopment.biopotential.server.gui.diagnostics;
 
 import com.mpsdevelopment.biopotential.server.AbstractController;
+import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
 import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.arkdb.ArkDBException;
 import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
 import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
@@ -14,6 +15,7 @@ import com.mpsdevelopment.biopotential.server.gui.BioApplication;
 import com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.AutomaticsPanel;
 import com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.SelectFromDbPanel;
 import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
+import com.mpsdevelopment.biopotential.server.httpclient.HttpClientFactory;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
@@ -40,6 +42,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -177,6 +180,9 @@ public class DiagPanelController extends AbstractController implements Subscriba
     private Button chooseBaseButton;
 
     @FXML
+    private Button chooseStorageButton;
+
+    @FXML
     private DatePicker datePicker;
 
     @FXML
@@ -197,7 +203,9 @@ public class DiagPanelController extends AbstractController implements Subscriba
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 //        httpClient = (BioHttpClient) BioApplication.APP_CONTEXT.getBean("httpClient");
-        httpClient = new BioHttpClient();
+//        httpClient = new BioHttpClient();
+        httpClient = HttpClientFactory.getInstance();
+
         User admin = new User().setLogin(DatabaseCreator.ADMIN_LOGIN).setPassword(DatabaseCreator.ADMIN_PASSWORD);
         String loginBody = JsonUtils.getJson(admin);
 
@@ -397,18 +405,22 @@ public class DiagPanelController extends AbstractController implements Subscriba
                     httpClient.executePostRequest(ControllerAPI.CONVERT_DB + "/convertDB/", selectedFile.getAbsolutePath());
 
                 }
-                    /*try {
-                        httpClient.executePostRequest(ControllerAPI.USER_CONTROLLER + "/change/db/", selectedFile.getAbsolutePath().replaceAll(".mv.db",""));
-                        databaseCreator.convertToH2(selectedFile.getPath());
-                    } catch (ArkDBException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }*/
-
                 else {httpClient.executePostRequest(ControllerAPI.USER_CONTROLLER + "/change/db/",
                         selectedFile.getAbsolutePath().replaceAll(".mv.db",""));}
-//                httpClient.executePostRequest(ControllerAPI.USER_CONTROLLER + "/change/db/", selectedFile.getAbsolutePath().replaceAll(".mv.db",""));
+
+            }
+        });
+
+        chooseStorageButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                DirectoryChooser chooser = new DirectoryChooser();
+                chooser.setTitle("EDX storage");
+                chooser.setInitialDirectory(new File("data"));
+                File selectedDirectory = chooser.showDialog(primaryStage);
+                Machine.setEdxFileFolder(selectedDirectory.getAbsolutePath() + "/");
+                LOGGER.info("EDX storage %s", selectedDirectory.getAbsolutePath() + "\\");
 
             }
         });

@@ -9,6 +9,7 @@ import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.cmp.machine.SummaryCondition;
 import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
+import com.mpsdevelopment.biopotential.server.db.PersistUtils;
 import com.mpsdevelopment.biopotential.server.db.pojo.Visit;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
@@ -32,6 +33,9 @@ public class DiseaseDao {
 	@Autowired
 	private PatternsDao patternsDao;
 
+	@Autowired
+	private PersistUtils persistUtils;
+
 	public DiseaseDao() {
 	}
 
@@ -39,6 +43,9 @@ public class DiseaseDao {
 
 		final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(file)));
 
+		/*if (persistUtils.getSessionFactory().isClosed()) {
+			persistUtils.getSessionFactory().openSession();
+		}*/
 		List<EDXPattern> patterns = patternsDao.getFromDatabase();
 
 		// TODO Split summarizePatterns to 2 methods for decease and pattern
