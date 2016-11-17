@@ -98,7 +98,7 @@ public class PersistUtilsTest {
         persistUtils.closeSessionFactory();
         sessionManager.getSession().getSessionFactory().close();
 
-        persistUtils.setConfigurationDatabaseFilename("testfiles/test.arkdb");
+        persistUtils.setConfigurationDatabaseFilename("./testfiles/test.arkdb");
         SessionFactory sessionFactory = persistUtils.configureSessionFactory();
         Session session = sessionFactory.openSession();
         sessionManager.setSession(session);
@@ -108,7 +108,7 @@ public class PersistUtilsTest {
         persistUtils.closeSessionFactory();
         sessionManager.getSession().getSessionFactory().close();
 
-        persistUtils.setConfigurationDatabaseFilename("testfiles/db_cutted.db");
+        persistUtils.setConfigurationDatabaseFilename("./testfiles/db_cutted.db");
         sessionFactory = persistUtils.configureSessionFactory();
         session = sessionFactory.openSession();
         sessionManager.setSession(session);
