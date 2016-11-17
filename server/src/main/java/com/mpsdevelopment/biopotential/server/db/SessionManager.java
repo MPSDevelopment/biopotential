@@ -19,7 +19,7 @@ public class SessionManager {
 	private PersistUtils persistUtils;
 
 	public SessionManager() {
-
+		LOGGER.info("Create SessionManager");
 	}
 
 	public SessionManager(PersistUtils persistUtils) {

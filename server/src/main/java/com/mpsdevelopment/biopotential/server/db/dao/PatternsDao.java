@@ -1,6 +1,8 @@
 package com.mpsdevelopment.biopotential.server.db.dao;
 
 import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
+import com.mpsdevelopment.biopotential.server.db.PersistUtils;
+import com.mpsdevelopment.biopotential.server.db.SessionManager;
 import com.mpsdevelopment.biopotential.server.db.pojo.Folder;
 import com.mpsdevelopment.biopotential.server.db.pojo.Pattern;
 import com.mpsdevelopment.biopotential.server.db.pojo.PatternsFolders;
@@ -8,10 +10,13 @@ import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 
 import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -20,6 +25,12 @@ import java.util.List;
 public class PatternsDao  extends GenericDao<Pattern,Long>{
 	
 	private static final Logger LOGGER = LoggerUtil.getLogger(PatternsDao.class);
+
+    @Autowired
+    private PersistUtils persistUtils;
+
+    @Autowired
+    private SessionManager sessionManager;
 
     public Pattern getById(int value) {
         Criteria query = getSession().createCriteria(Pattern.class).setCacheable(false);
@@ -50,11 +61,21 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
 				.add(Projections.property("PATTERN."+Pattern.CHUNK_SUMMARY), "summary")
 		 .add(Projections.property("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS), "correctingFolder");
 
-		/*if (getSession().getSessionFactory().isClosed()) {
-			getSession().getSessionFactory().openSession();
-		}*/
+        // TODO remove and fix this shit  ------------------
+		if (getSession().getSessionFactory().isClosed()) {
 
-		List list = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS,"PATTERNS_FOLDERS").createCriteria(PatternsFolders.PATTERNS,"PATTERN")
+
+            while (getSession().getSessionFactory().isClosed()) {
+                persistUtils.closeSessionFactory();
+//                persistUtils.setConfigurationDatabaseFilename(name);
+                SessionFactory sessionFactory = persistUtils.configureSessionFactory();
+                Session session = sessionFactory.openSession();
+                sessionManager.setSession(session);
+            }
+        }
+        // TODO remove and fix this shit  ------------------
+
+        List list = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS,"PATTERNS_FOLDERS").createCriteria(PatternsFolders.PATTERNS,"PATTERN")
 				.add(Restrictions.isNotNull("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS))
 				.setProjection(projections)
         .setResultTransformer(Transformers.aliasToBean(EDXPattern.class)).list();

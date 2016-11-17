@@ -396,7 +396,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
             @Override
             public void handle(ActionEvent event) {
                 FileChooser fileChooser = new FileChooser();
-                fileChooser.setInitialDirectory(new File("data"));
+                fileChooser.setInitialDirectory(new File("files"));
                 File selectedFile = fileChooser.showOpenDialog(null);
 
                 DatabaseCreator databaseCreator = new DatabaseCreator();

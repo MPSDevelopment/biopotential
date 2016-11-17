@@ -210,9 +210,18 @@ public class UsersController {
 	@RequestMapping(value = ControllerAPI.USER_CONTROLLER_GET_ALL, method = RequestMethod.GET, produces = "text/json;charset=UTF-8")
 	@ResponseBody
 	public ResponseEntity<String> getAllUsers() throws ParseException {
-		if (persistUtils.getSessionFactory().isClosed()) {
-			persistUtils.getSessionFactory().openSession();
-		}
+        // TODO remove and fix this shit  ------------------
+        if (persistUtils.getSessionFactory().isClosed()) {
+
+
+            while (persistUtils.getSessionFactory().isClosed()) {
+                persistUtils.closeSessionFactory();
+                SessionFactory sessionFactory = persistUtils.configureSessionFactory();
+                Session session = sessionFactory.openSession();
+                sessionManager.setSession(session);
+            }
+        }
+        // TODO remove and fix this shit ---------------------
 		List<User> users = userDao.getUsers(null, null);
 		LOGGER.info("Has been loaded '%s' users", users.size());
 		for (User user : users) {
