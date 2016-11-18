@@ -2,7 +2,6 @@ package com.mpsdevelopment.biopotential.server.gui.diagnostics;
 
 import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
-import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.arkdb.ArkDBException;
 import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
 import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
@@ -11,12 +10,10 @@ import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
 import com.mpsdevelopment.biopotential.server.eventbus.event.SelectUserEvent;
-import com.mpsdevelopment.biopotential.server.gui.BioApplication;
 import com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.AutomaticsPanel;
 import com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.SelectFromDbPanel;
 import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
 import com.mpsdevelopment.biopotential.server.httpclient.HttpClientFactory;
-import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.biopotential.server.utils.LineChartUtil;
@@ -49,7 +46,6 @@ import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import net.engio.mbassy.listener.Handler;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
@@ -74,20 +70,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
 
     private File selectedFile;
 
-//    @Autowired
     private BioHttpClient httpClient;
-//
-//    @Autowired
-//    private ServerSettings settings;
-
-    /*@Autowired
-    private PersistUtils persistUtils;
-
-    @Autowired
-    private UserDao userDao;
-
-    @Autowired
-    private SessionManager sessionManager;*/
 
     @FXML
     private TextField loginField;
@@ -188,7 +171,6 @@ public class DiagPanelController extends AbstractController implements Subscriba
     @FXML
     private LineChart<Number, Number> numberLineChart;
 
-
     private User[] users;
     private Visit[] visits;
     private Stage primaryStage;
@@ -197,13 +179,12 @@ public class DiagPanelController extends AbstractController implements Subscriba
     private String gender = null;
 
     public DiagPanelController() {
+        EventBus.subscribe(this);
         LOGGER.info("Create DiagPanelController");
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-//        httpClient = (BioHttpClient) BioApplication.APP_CONTEXT.getBean("httpClient");
-//        httpClient = new BioHttpClient();
         httpClient = HttpClientFactory.getInstance();
 
         User admin = new User().setLogin(DatabaseCreator.ADMIN_LOGIN).setPassword(DatabaseCreator.ADMIN_PASSWORD);
@@ -215,15 +196,13 @@ public class DiagPanelController extends AbstractController implements Subscriba
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", dLocale);
         Locale.setDefault(dLocale);
 
-        // subscribe for events
-        EventBus.subscribe(this);
         // set togglegroup
         manRadioButton.setToggleGroup(genderGroup);
         manRadioButton.setUserData("M");
         womanRadioButton.setToggleGroup(genderGroup);
         womanRadioButton.setUserData("W");
 
-        // binding between strinproperty and textfield
+        // binding between stringproperty and textfield
         Bindings.bindBidirectional(loginField.textProperty(), login);
         Bindings.bindBidirectional(surnameField.textProperty(), surname);
         Bindings.bindBidirectional(nameField.textProperty(), name);
@@ -396,14 +375,11 @@ public class DiagPanelController extends AbstractController implements Subscriba
             @Override
             public void handle(ActionEvent event) {
                 FileChooser fileChooser = new FileChooser();
-                fileChooser.setInitialDirectory(new File("files"));
+                fileChooser.setInitialDirectory(new File("testfiles"));
                 File selectedFile = fileChooser.showOpenDialog(null);
 
-                DatabaseCreator databaseCreator = new DatabaseCreator();
                 if (!selectedFile.getPath().contains(".mv.db")) {
-//                    httpClient.executePostRequest(ControllerAPI.USER_CONTROLLER + "/change/db/", selectedFile.getAbsolutePath().replaceAll(".mv.db",""));
-                    httpClient.executePostRequest(ControllerAPI.CONVERT_DB + "/convertDB/", selectedFile.getAbsolutePath());
-
+                    httpClient.executePostRequest(ControllerAPI.FOLDERS_CONTROLLER + "/convertDB/", selectedFile.getAbsolutePath());
                 }
                 else {httpClient.executePostRequest(ControllerAPI.USER_CONTROLLER + "/change/db/",
                         selectedFile.getAbsolutePath().replaceAll(".mv.db",""));}
@@ -440,8 +416,6 @@ public class DiagPanelController extends AbstractController implements Subscriba
 
                 Date date = new Date();
                 visit.setDate(date);
-
-
                 getUser().getVisits().add(visit);
 
                 String body = JsonUtils.getJson(visit);
@@ -462,37 +436,19 @@ public class DiagPanelController extends AbstractController implements Subscriba
             }
         });
 
-
         // dateColumn
         dateColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Visit, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Visit, String> visit) {
                 SimpleStringProperty property = new SimpleStringProperty();
-                /*String day,month = null;
-                Long time;
-                try {
-                    if (visit.getValue().getDate().getDate() < 10) {
-                        day = (String.valueOf("0" + String.valueOf(visit.getValue().getDate().getDate())));
-                    }
-                    else day = (String.valueOf(String.valueOf(visit.getValue().getDate().getDate())));
-                    if (visit.getValue().getDate().getMonth() < 10) {
-                        month = (String.valueOf("0" + String.valueOf(visit.getValue().getDate().getMonth() + 1)));
-                    } else
-                        month = String.valueOf(String.valueOf(visit.getValue().getDate().getMonth() + 1));*/
 
                     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy HH:mm:SS");
 
                     property.setValue(String.format("%s", dateFormat.format(visit.getValue().getDate())));
 
-                /*} catch (NullPointerException e){
-
-                }*/
                 return property;
             }
         });
-
-//        getUsers();
-
 
     }
 

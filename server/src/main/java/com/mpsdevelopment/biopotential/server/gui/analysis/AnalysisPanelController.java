@@ -5,8 +5,6 @@ import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
-import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
-import com.mpsdevelopment.biopotential.server.db.dao.DiseaseDao;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
@@ -60,7 +58,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     private TableView<DataTable> healthConditionTable;
 
     @FXML
-    private TableView<Map.Entry<String,Integer>> smallTable;
+    private TableView<Map.Entry<String,Integer>> systemTable;
 
     @FXML
     private TableColumn<DataTable, String> diseaseName;
@@ -136,7 +134,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Map.Entry<String, Integer>, String> p) {
 //                return new SimpleStringProperty(p.getValue().getKey());
-                return new ReadOnlyObjectWrapper(smallTable.getItems().indexOf(p.getValue()) + 1 + "");
+                return new ReadOnlyObjectWrapper(systemTable.getItems().indexOf(p.getValue()) + 1 + "");
             }
         });
 
@@ -180,7 +178,6 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     private void makeAnalyze(File file) throws UnsupportedAudioFileException, IOException, SQLException {
         long t2 = System.currentTimeMillis();
 
-//        BioHttpClient bioHttpClient = new BioHttpClient();
         BioHttpClient bioHttpClient = HttpClientFactory.getInstance();
 
         String json = bioHttpClient.executePostRequest("/api/diseas/" + degree + "/getDiseas", file);
@@ -192,9 +189,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
             @Override
             public void accept(Pattern k, AnalysisSummary v) {
-                System.out.printf("%s\t%f\n", k.getName().replace("?",""), v.getDispersion());
-                // LOGGER.info("d: %s\t%f\n", k.getName(), v.getDispersion());
-
+                LOGGER.info("d: %s\t%f\n", k.getName(), v.getDispersion());
                 analysisData.add(DataTable.createDataTableObject(k, v));
             }
         });
@@ -203,20 +198,18 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
         String heal = bioHttpClient.executePostRequest("/api/diseas/" + degree + "/getHealings",file);
         typeOfHashMap = new TypeToken<Map<EDXPattern, AnalysisSummary>>() { }.getType();
-        /*Map<Pattern, AnalysisSummary> */allHealings = JsonUtils.fromJson(typeOfHashMap, heal);
+        allHealings = JsonUtils.fromJson(typeOfHashMap, heal);
 
 //        allHealings.putAll(diseaseDao.getHealings(diseases, file));
         LOGGER.info("Total time for calculate healings %d ms", System.currentTimeMillis() - t1);
-
         LOGGER.info("healings size %s", allHealings.size());
         EventBus.publishEvent(new HealingsMapEvent(allHealings));
 
+        // sortedSelectedItems set with contains system which diseas appear > than 1 time
         Set<DataTable> sortedSelectedItems = new HashSet<>();
-//        ObservableList<DataTable> sortedSelectedItems = FXCollections.observableArrayList();
         char [] str = new char[5];
         char [] cmp = new char[5];
-
-
+        // check how many diseas from same system have been received from analysis
         for (DataTable dataTable: analysisData) {
             int count=0;
             dataTable.getName().getChars(0,4,str,0);
@@ -231,6 +224,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             }
         }
 
+        // Map with constant values for systemtable
         Map<String,Integer> systemMap = new HashMap<>();
         systemMap.put("CARDIO система",0);
         systemMap.put("DERMA система",0);
@@ -245,6 +239,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         systemMap.put("UROLOG система",0);
         systemMap.put("VISION система",0);
 
+        // decode diseas names to system's name's
         int index = 0;
         for (DataTable dataTable: sortedSelectedItems) {
             for (int i = 0 ; i < dataTable.getName().length(); i++) {
@@ -299,19 +294,10 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         }
 
         ObservableList<Map.Entry<String,Integer>> result = FXCollections.observableArrayList(systemMap.entrySet());
-        smallTable.setItems(result);
+        systemTable.setItems(result);
         systemColumn.setSortable(true);
-//        smallTable.getColumns().addAll(numberSystemColumn,systemColumn,levelColumn);
-        smallTable.getSortOrder().add(systemColumn);
+        systemTable.getSortOrder().add(systemColumn); // sort cell'a by name
     }
-
-    /*private DataTable createDataTableObject(Pattern k, AnalysisSummary v) {
-        DataTable dataTable = new DataTable();
-        dataTable.setName(k.getName());
-        dataTable.setDispersion(v.getDispersion());
-        dataTable.setFilename(k.getFileName());
-        return dataTable;
-    }*/
 
     public void updatePanel(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -360,84 +346,5 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     public void setDegree(String degree) {
         this.degree = degree;
     }
-
-    /*
-	 * public static void merge(Collection<List<Double>> lists) throws
-	 * IOException, UnsupportedAudioFileException {
-	 * 
-	 * Collection out; out = PCM.merge(lists);
-	 * 
-	 * double[] buffer = out.stream().mapToDouble(new ToDoubleFunction<Double>()
-	 * {
-	 * 
-	 * @Override public double applyAsDouble(Double aDouble) { return
-	 * aDouble.doubleValue(); } }).toArray();
-	 * 
-	 * 
-	 *//*
-		 * byte[] data = new byte[buffer.length*2]; for (int i = 0; i <
-		 * buffer.length; i++) { int temp = (short) (buffer[i] * 8); data[2*i +
-		 * 0] = (byte) temp; data[2*i + 1] = (byte) (temp >> 8); }
-		 *//*
-		 * double sum =0,av=0;
-		 *//*
-			 * for (int i=0;i < buffer.length;i++){
-			 * System.out.println(buffer[i]); sum = sum + Math.abs(buffer[i]);
-			 * 
-			 * }
-			 *//*
-			 * 
-			 * double maxP = 0,minP =0; double maxN = 0,minN =0; for (int i = 0;
-			 * i < buffer.length; i++) { if (buffer[i] > maxP) maxP = buffer[i];
-			 * } boolean flagp = true; boolean flagn = true; for (int i = 0; i <
-			 * buffer.length; i++) { if (buffer[i] > 0) { if (flagp){minP =
-			 * buffer[i]; flagp = false;} else if (buffer[i] < minP) { minP =
-			 * buffer[i]; } } } for (int i = 0; i < buffer.length; i++) { if
-			 * (buffer[i] < maxN) maxN = buffer[i]; } for (int i = 0; i <
-			 * buffer.length; i++) { if (buffer[i] < 0) { if (flagn){minN =
-			 * buffer[i]; flagn = false;} else if (buffer[i] > minN) minN =
-			 * buffer[i]; } } av = sum/buffer.length; byte[] bytes = new
-			 * byte[buffer.length]; short[] shortbytes = new
-			 * short[buffer.length];
-			 * 
-			 * // byte [] units = new byte[buffer.length*8]; for (int i=0; i <
-			 * buffer.length; i++) {
-			 *//*
-				 * if ((buffer[i]) * 1/minP > 127){ bytes[i] = 127; } else {
-				 * bytes[i] = ((byte) ((buffer[i]) * 1/minP)
-				 *//**//** 0.925*lists.size() */
-	/**//**//**//** 1.85 */
-	/**//*
-		 * ); }
-		 * 
-		 * if ((buffer[i]) * 1/minP < -128){ bytes[i] = -128; } else { bytes[i]
-		 * = (byte) ((byte) ((buffer[i]) * 1/minP)
-		 *//**//** 0.925*lists.size() */
-	/**//**//**//** 1.85 *//**/
-	/*
-	 * ); }
-	 *//*
-		 * shortbytes[i] = (short) ((short) ((buffer[i]) * 1/minP)+128); if
-		 * (shortbytes[i] > 127) { shortbytes[i] = 127; } bytes[i] = (byte)
-		 * shortbytes[i]; System.out.println(shortbytes[i]);
-		 *//*
-		 * ByteBuffer.wrap(bytes).putDouble(buffer[i]);
-		 * 
-		 * bytes = ByteBuffer.allocate(8).putDouble(buffer[i]).array(); units[i]
-		 * = bytes[0];
-		 *//*
-			 * }
-			 * 
-			 * ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-			 * AudioFormat format = new AudioFormat(22050, 8, 1, true, false);
-			 * // AudioInputStream stream = new AudioInputStream(new
-			 * ByteArrayInputStream(data), format, data.length);
-			 * AudioInputStream stream = new AudioInputStream(bais, format,
-			 * buffer.length); AudioSystem.write(stream,
-			 * AudioFileFormat.Type.WAVE, outputFile); AudioFileFormat stream1 =
-			 * AudioSystem.getAudioFileFormat(outputFile);
-			 * 
-			 * }
-			 */
 
 }

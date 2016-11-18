@@ -43,10 +43,7 @@ public class DiseasController {
     ResponseEntity<String> getDiseases(@RequestParam("file") MultipartFile file,  @PathVariable(value = "degree") String currentDegree) {
         String name = file.getOriginalFilename();
         String degree = currentDegree;
-        int level = 0;
-        if (degree.equals("Po")) {
-            level = -2147483648;
-        }
+        int level = getLevel(degree);
         requestHeaders = new HttpHeaders();
         requestHeaders.add("Content-Type", "text/html; charset=utf-8");
         diseases = new HashMap<>();
@@ -62,10 +59,7 @@ public class DiseasController {
     ResponseEntity<String> getHealings(@RequestParam("file") MultipartFile file, @PathVariable(value = "degree") String currentDegree) {
         String name = file.getOriginalFilename();
         String degree = currentDegree;
-        int level = 0;
-        if (degree.equals("Po")) {
-            level = -2147483648;
-        }
+        int level = getLevel(degree);
         allHealings = new HashMap<>();
 
         getDiseas(file, name,level);
@@ -80,6 +74,14 @@ public class DiseasController {
 
         LOGGER.info("allHealings '%s' ", allHealings.size());
         return new ResponseEntity<>(JsonUtils.getJson(allHealings), requestHeaders, HttpStatus.OK);
+    }
+
+    private int getLevel(String degree) {
+        int level = 0;
+        if (degree.equals("Po")) {
+            level = -2147483648;
+        }
+        return level;
     }
 
     private Map<Pattern, AnalysisSummary> getDiseas(MultipartFile file, String name,int degree) {

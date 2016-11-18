@@ -1,41 +1,26 @@
 package com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels;
 
 import com.mpsdevelopment.biopotential.server.AbstractController;
-import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
-import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
-import com.mpsdevelopment.biopotential.server.eventbus.event.SelectUserEvent;
 import com.mpsdevelopment.biopotential.server.gui.analysis.AnalysisPanel;
-import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
-import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
-import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.biopotential.server.utils.StageUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
-import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javafx.util.Callback;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.net.URL;
-import java.util.*;
+import java.util.ResourceBundle;
 
 public class AutomaticsPanelController extends AbstractController implements Subscribable {
 
@@ -43,12 +28,6 @@ public class AutomaticsPanelController extends AbstractController implements Sub
     ObservableList<String> items = FXCollections.observableArrayList("Max", "Po");
 
     private File file;
-
-    @Autowired
-    private BioHttpClient deviceBioHttpClient;
-
-    @Autowired
-    private ServerSettings settings;
 
     @FXML
     private ComboBox whatShowComboBox;
@@ -78,6 +57,7 @@ public class AutomaticsPanelController extends AbstractController implements Sub
     public void initialize(URL location, ResourceBundle resources) {
 
         whatShowComboBox.setItems(items);
+        whatShowComboBox.setValue("Max");
 
         makeAnalyzerButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -91,8 +71,6 @@ public class AutomaticsPanelController extends AbstractController implements Sub
                 close();
             }
         });
-
-
 
     }
 

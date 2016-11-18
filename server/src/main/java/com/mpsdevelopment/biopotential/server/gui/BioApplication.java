@@ -27,8 +27,6 @@ public class BioApplication extends Application {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(BioApplication.class);
 
-//    private DiagPanel diagPanel;
-
     public static void main(String[] args) {
 
         JettyServer server = JettyServer.getInstance();

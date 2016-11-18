@@ -1,23 +1,12 @@
 package com.mpsdevelopment.biopotential.server.db;
 
-import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
 import com.mpsdevelopment.biopotential.server.db.dao.FoldersDao;
 import com.mpsdevelopment.biopotential.server.db.dao.PatternsDao;
-import com.mpsdevelopment.biopotential.server.db.dao.UserDao;
-import com.mpsdevelopment.biopotential.server.db.pojo.Folder;
-import com.mpsdevelopment.biopotential.server.db.pojo.User;
-import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
-import com.mpsdevelopment.biopotential.server.httpclient.HttpClientFactory;
-import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
-import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +17,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/webapp/app-context-test.xml", "classpath:/webapp/web-context.xml" })
@@ -94,7 +82,7 @@ public class PersistUtilsTest {
 
     @Test
     public void changeDBTest() throws HibernateException, IOException, SQLException {
-
+        // this test pass only with converted h2 db
         Assert.assertEquals(132,patternsDao.getFromDatabase().size());
 
         persistUtils.closeSessionFactory();
@@ -102,9 +90,6 @@ public class PersistUtilsTest {
         SessionFactory sessionFactory = persistUtils.configureSessionFactory();
         Session session = sessionFactory.openSession();
         sessionManager.setSession(session);
-
-        BioHttpClient httpClient = HttpClientFactory.getInstance();
-        httpClient.executePostRequest(ControllerAPI.CONVERT_DB + "/convertDB/", "./testfiles/test.arkdb");
 
         Assert.assertEquals(44,patternsDao.getFromDatabase().size());
 

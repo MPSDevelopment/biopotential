@@ -40,6 +40,5 @@ public class DiagPanel extends Pane {
         primaryStage.initModality(Modality.WINDOW_MODAL);
         primaryStage.show();
 
-//        primaryStage.setIconified(true);
     }
 }

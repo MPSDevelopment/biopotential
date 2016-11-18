@@ -75,10 +75,10 @@ public class CorrectorsPanelController extends AbstractController implements Sub
     public void initialize(URL location, ResourceBundle resources) {
 
         correctorsData = FXCollections.observableArrayList();
-        getPatters();
+        getPattersFromHealingsMap();
 
         сorrectorsTable.setItems(correctorsData);
-        сorrectorsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        сorrectorsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // make enable minimize button on window
         сorrectorsTable.getSelectionModel().setCellSelectionEnabled(true);
 
         numberColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
@@ -108,9 +108,6 @@ public class CorrectorsPanelController extends AbstractController implements Sub
             }
         });
         createFileCorrection.setOnAction(event -> {
-            /**
-             *  Sort correctorsData from duplicate items by filename
-             */
             createFileCorrection();
         });
 
@@ -124,7 +121,9 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         });
 
     }
-
+    /**
+     *  Sort correctorsData from duplicate items by filename
+     */
     private void createFileCorrection() {
         ObservableList<DataTable> selectedItems = сorrectorsTable.getSelectionModel().getSelectedItems();
         LOGGER.info("Selected item %s", selectedItems.size());
@@ -174,7 +173,10 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         }
     }
 
-    public void getPatters()  {
+    /**
+     * getPatterns from healingsMap and put to сorrectorsTable
+     */
+    public void getPattersFromHealingsMap()  {
 
         healingsMap.forEach((pattern, analysisSummary) -> {
             LOGGER.info("%s %s\n", pattern.getKind(), pattern.getName(), analysisSummary.getDispersion());
@@ -209,14 +211,6 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         healingsMap = event.getMap();
     }
 
-
-    /*private DataTable createDataTableObject(Pattern k, AnalysisSummary v) {
-        DataTable dataTable = new DataTable();
-        dataTable.setName(k.getName());
-        dataTable.setDispersion(v.getDispersion());
-        dataTable.setFilename(k.getFileName());
-        return dataTable;
-    }*/
 
     public void setHealingsMap(Map<Pattern, AnalysisSummary> healingsMap) {
         this.healingsMap = healingsMap;

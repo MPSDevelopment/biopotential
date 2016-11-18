@@ -7,23 +7,19 @@ import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.KindCondition;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
-import com.mpsdevelopment.biopotential.server.cmp.machine.SummaryCondition;
 import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
-import com.mpsdevelopment.biopotential.server.db.PersistUtils;
-import com.mpsdevelopment.biopotential.server.db.pojo.Visit;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.io.File;
 import java.io.IOException;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 
 public class DiseaseDao {
@@ -33,9 +29,6 @@ public class DiseaseDao {
 	@Autowired
 	private PatternsDao patternsDao;
 
-	@Autowired
-	private PersistUtils persistUtils;
-
 	public DiseaseDao() {
 	}
 
@@ -43,9 +36,6 @@ public class DiseaseDao {
 
 		final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(file)));
 
-		/*if (persistUtils.getSessionFactory().isClosed()) {
-			persistUtils.getSessionFactory().openSession();
-		}*/
 		List<EDXPattern> patterns = patternsDao.getFromDatabase();
 
 		// TODO Split summarizePatterns to 2 methods for decease and pattern
@@ -102,11 +92,7 @@ public class DiseaseDao {
 						 * вытягиваются папка с коректорами для конкретной
 						 * болезни BAC -> FL BAC
 						 */
-						if (dk.getFileName().equals("Lwx2z#owPB/13b940a4-39108191-9feb82f-2e5a942d-f2d8109c.edx")){
-							LOGGER.info("Operation compare took %d ms");
-						}
 						final Map<Pattern, AnalysisSummary> healings = Machine.summarizePatterns(sample, patterns, level);
-
 						LOGGER.info("SummarizePatterns took %d ms", System.currentTimeMillis() - t1);
 
 						allHealings.putAll(healings);

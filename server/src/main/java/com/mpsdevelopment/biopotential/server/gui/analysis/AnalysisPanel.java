@@ -15,34 +15,31 @@ public class AnalysisPanel extends Pane {
 
 	private static final Logger LOGGER = LoggerUtil.getLogger(AnalysisPanel.class);
 
-	private AnalysisPanelController controller;
+	private AnalysisPanelController analysisPanelController;
 
     public AnalysisPanel(File file, String degree) {
 
-//        controller = (AnalysisPanelController) SpringLoaderFXML.load(BioApplication.APP_CONTEXT,AnalysisPanelController.class, "AnalysisPanel.fxml");
+//        analysisPanelController = (AnalysisPanelController) SpringLoaderFXML.load(BioApplication.APP_CONTEXT,AnalysisPanelController.class, "AnalysisPanel.fxml");
         FXMLLoader loader = new FXMLLoader();
 
         try {
             Pane pane = loader.load(this.getClass().getResourceAsStream("AnalysisPanel.fxml"));
-            controller = loader.getController();
-            controller.setView(pane);
-//            controller.setFile(file);
-            controller.setDegree(degree);
-            controller.makeCurrentAnalyze(file);
-
+            analysisPanelController = loader.getController();
+            analysisPanelController.setView(pane);
+            analysisPanelController.setDegree(degree);
+            analysisPanelController.makeCurrentAnalyze(file);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Pane panel = controller.getView();
+        Pane panel = analysisPanelController.getView();
         getChildren().add(panel);
         panel.getStyleClass().clear();
 
     }
 
-
     public void setPrimaryStage(Stage primaryStage) {
-        controller.updatePanel(primaryStage);
+        analysisPanelController.updatePanel(primaryStage);
         primaryStage.initModality(Modality.WINDOW_MODAL);
         primaryStage.show();
     }

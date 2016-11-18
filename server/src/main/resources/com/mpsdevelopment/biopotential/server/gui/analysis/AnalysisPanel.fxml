@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.ScatterChart?>
 <?import javafx.scene.control.Button?>
@@ -9,7 +11,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="722.0" prefWidth="1273.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mpsdevelopment.biopotential.server.gui.analysis.AnalysisPanelController">
    <children>
-      <ScatterChart fx:id="scatterChart" alternativeColumnFillVisible="true" animated="false" layoutX="885.0" layoutY="32.0" legendVisible="false" pickOnBounds="false" prefHeight="641.0" prefWidth="500.0" stylesheets="@../../../../../../scater.css">
+      <ScatterChart fx:id="scatterChart" alternativeColumnFillVisible="true" animated="false" disable="true" layoutX="885.0" layoutY="32.0" legendVisible="false" pickOnBounds="false" prefHeight="641.0" prefWidth="500.0" stylesheets="@../../../../../../scater.css" visible="false">
         <xAxis>
           <NumberAxis animated="false" autoRanging="false" lowerBound="0" prefHeight="0.0" prefWidth="470.0" side="BOTTOM" upperBound="110" />
         </xAxis>
@@ -27,7 +29,7 @@
             <TableColumn prefWidth="72.0" text="Уровень" />
         </columns>
       </TableView>
-      <TableView fx:id="smallTable" layoutX="598.0" layoutY="323.0" prefHeight="341.0" prefWidth="274.0">
+      <TableView fx:id="systemTable" layoutX="598.0" layoutY="323.0" prefHeight="341.0" prefWidth="274.0">
         <columns>
           <TableColumn fx:id="numberSystemColumn" prefWidth="33.0" text="№" />
           <TableColumn fx:id="systemColumn" prefWidth="166.0" text="Система" />
@@ -36,5 +38,13 @@
       </TableView>
       <Button fx:id="continueButton" layoutX="443.0" layoutY="683.0" mnemonicParsing="false" text="Продолжить" />
       <Button layoutX="541.0" layoutY="683.0" mnemonicParsing="false" text="Назад" />
+      <BarChart layoutX="598.0" layoutY="24.0" prefHeight="284.0" prefWidth="500.0">
+        <xAxis>
+          <CategoryAxis side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </BarChart>
    </children>
 </AnchorPane>

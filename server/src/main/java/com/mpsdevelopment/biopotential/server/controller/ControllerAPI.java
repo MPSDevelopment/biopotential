@@ -25,5 +25,5 @@ public class ControllerAPI {
 	public static final String DISEAS_CONTROLLER = "/api/diseas";
 	public static final String DISEAS_CONTROLLER_GET_HEALINGS = "/{degree}/getHealings";
 	public static final String DISEAS_CONTROLLER_GET_DISEASES = "/{degree}/getDiseas";
-	public static final String CONVERT_DB = "/api/convert";
+	public static final String FOLDERS_CONTROLLER = "/api/folders";
 }

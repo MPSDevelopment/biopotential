@@ -1,20 +1,15 @@
 package com.mpsdevelopment.biopotential.server.db;
 
-import com.mpsdevelopment.biopotential.server.JettyServer;
-import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
-import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
-import com.mpsdevelopment.biopotential.server.cmp.machine.*;
+import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
+import com.mpsdevelopment.biopotential.server.cmp.machine.PcmDataSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.arkdb.ArkDBException;
-import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
 import com.mpsdevelopment.biopotential.server.db.dao.*;
 import com.mpsdevelopment.biopotential.server.db.pojo.*;
-import com.mpsdevelopment.biopotential.server.db.pojo.Pattern;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -22,11 +17,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
 
 public class DatabaseCreator {
 
@@ -160,7 +151,6 @@ public class DatabaseCreator {
 
 	public void convertToH2(String url) throws ArkDBException, IOException {
 		connect(url);
-
 		try {
 			while (foldersDb.next()) {
 
@@ -175,12 +165,11 @@ public class DatabaseCreator {
 					foldersDao.save(folder);
 				}
 			}
-
 			while (patternsDb.next()) {
 
 				pattern = patternsDao.getById(patternsDb.getInt("id_pattern"));
 				if (pattern == null) {
-					pattern = new Pattern().setIdPattern(patternsDb.getInt("id_pattern")).setPatternName(patternsDb.getString("pattern_name"))
+					pattern = new com.mpsdevelopment.biopotential.server.db.pojo.Pattern().setIdPattern(patternsDb.getInt("id_pattern")).setPatternName(patternsDb.getString("pattern_name"))
 							.setPatternDescription(patternsDb.getString("pattern_description")).setPatternUid(patternsDb.getString("pattern_uid"))
 							.setSrcHash(patternsDb.getString("src_hash")).setEdxHash(patternsDb.getString("edx_hash")).setDbdtsAdded(patternsDb.getString("dbdts_added"))
 							.setIsInUse(patternsDb.getInt("is_in_use")).setPatternShortDesc(patternsDb.getString("pattern_short_desc"))
@@ -197,17 +186,9 @@ public class DatabaseCreator {
 			}
 
 			while (patternsFoldersDb.next()) {
-				/*
-				 * Long id_folder = patternsFoldersDb.getLong("id_folder"); LOGGER.info("id_folder %s", id_folder); Long id_pattern = patternsFoldersDb.getLong("id_pattern");
-				 * LOGGER.info("id_pattern %s", id_pattern);
-				 */
 
 				folder = foldersDao.getById(patternsFoldersDb.getInt("id_folder"));
 				pattern = patternsDao.getById(patternsFoldersDb.getInt("id_pattern"));
-
-				/*
-				 * folder.getPattern().add(pattern); pattern.getFolder().add(folder);
-				 */
 
 				patternsFolders = new PatternsFolders();
 				patternsFolders.setFolder(folder);
@@ -223,8 +204,8 @@ public class DatabaseCreator {
 			Long bacId = 0L;
 			Long mucId = 0L;
 			Long virId = 0L;
-            Long cardioId =0L, dermaId = 0L,endocrinId = 0L,gastroId=0L,immunId=0L,mentisId=0L,neuralId=0L
-                    ,orthoId=0L,spiritusId=0L,stomatId=0L,urologId=0L,visionId = 0L;
+			Long cardioId =0L, dermaId = 0L,endocrinId = 0L,gastroId=0L,immunId=0L,mentisId=0L,neuralId=0L
+					,orthoId=0L,spiritusId=0L,stomatId=0L,urologId=0L,visionId = 0L;
 			for (Folder folder : folderList) {
 				if (folder.getFolderName().contains("BAC")){bacId = folder.getId();}
 				if (folder.getFolderName().contains("Muc")){mucId = folder.getId();}
@@ -236,15 +217,15 @@ public class DatabaseCreator {
 				if (folder.getFolderName().contains("DERMA COR")){dermaId = folder.getId();}
 				if (folder.getFolderName().contains("ENDOCRIN COR")){endocrinId = folder.getId();}
 				if (folder.getFolderName().contains("GASTRO COR")){gastroId = folder.getId();}
-                if (folder.getFolderName().contains("IMMUN COR")){immunId = folder.getId();}
-                if (folder.getFolderName().contains("MENTIS COR")){mentisId = folder.getId();}
+				if (folder.getFolderName().contains("IMMUN COR")){immunId = folder.getId();}
+				if (folder.getFolderName().contains("MENTIS COR")){mentisId = folder.getId();}
 
-                if (folder.getFolderName().contains("NEURAL COR")){neuralId = folder.getId();}
-                if (folder.getFolderName().contains("ORTHO COR")){orthoId = folder.getId();}
-                if (folder.getFolderName().contains("SPIRITUS COR")){spiritusId = folder.getId();}
-                if (folder.getFolderName().contains("STOMAT COR")){stomatId = folder.getId();}
-                if (folder.getFolderName().contains("UROLOG COR")){urologId = folder.getId();}
-                if (folder.getFolderName().contains("VISION COR")){visionId = folder.getId();}
+				if (folder.getFolderName().contains("NEURAL COR")){neuralId = folder.getId();}
+				if (folder.getFolderName().contains("ORTHO COR")){orthoId = folder.getId();}
+				if (folder.getFolderName().contains("SPIRITUS COR")){spiritusId = folder.getId();}
+				if (folder.getFolderName().contains("STOMAT COR")){stomatId = folder.getId();}
+				if (folder.getFolderName().contains("UROLOG COR")){urologId = folder.getId();}
+				if (folder.getFolderName().contains("VISION COR")){visionId = folder.getId();}
 
 			}
 
@@ -253,48 +234,46 @@ public class DatabaseCreator {
 
 			for (Pattern pattern : patternList) {
 
-				/*for (Folder folder : folderList) {
+				patternsFolders = new PatternsFolders();
+				if (floraDissection != null) {
+					patternsFolders.setFolder(floraDissection);
+				}
+				if (analysis != null) {
+					patternsFolders.setFolder(analysis);
+				}
+//                patternsFolders.setFolder(analysis);
+				patternsFolders.setPattern(pattern);
 
-					if (folder.getIdFolder() == 4328) {*/
-
-						patternsFolders = new PatternsFolders();
-						patternsFolders.setFolder(analysis);
-						patternsFolders.setPattern(pattern);
-						/*if (pattern.getPatternName().contains("BAC "))
-							patternsFolders.setCorrectors(bacId);
-						else if (pattern.getPatternName().contains("Muc "))
-							patternsFolders.setCorrectors(mucId);
-						else if (pattern.getPatternName().contains("VIR "))
-							patternsFolders.setCorrectors(virId);
-                        else */if (pattern.getPatternName().contains("CARDIO♥"))
-                            {patternsFolders.setCorrectors(cardioId);}
-                        else if (pattern.getPatternName().contains("DERMAლ"))
-                            {patternsFolders.setCorrectors(dermaId);}
-                        else if (pattern.getPatternName().contains("Endocrinology♋"))
-                            {patternsFolders.setCorrectors(endocrinId);}
-                        else if (pattern.getPatternName().contains("GASTRO⌘"))
-                        {patternsFolders.setCorrectors(gastroId);}
-                        else if (pattern.getPatternName().contains("IMMUN☂"))
-                        {patternsFolders.setCorrectors(immunId);}
-                        else if (pattern.getPatternName().contains("MENTIS☺"))
-                        {patternsFolders.setCorrectors(mentisId);}
-                        else if (pattern.getPatternName().contains("NEURAL♕"))
-                        {patternsFolders.setCorrectors(neuralId);}
-                        else if (pattern.getPatternName().contains("ORTHO☤"))
-                        {patternsFolders.setCorrectors(orthoId);}
-                        else if (pattern.getPatternName().contains("SPIRITUS✽"))
-                        {patternsFolders.setCorrectors(spiritusId);}
-                        else if (pattern.getPatternName().contains("Stomat〲"))
-                        {patternsFolders.setCorrectors(stomatId);}
-                        else if (pattern.getPatternName().contains("UROLOGÜ"))
-                        {patternsFolders.setCorrectors(urologId);}
-                        else if (pattern.getPatternName().contains("VISION☄"))
-                        {patternsFolders.setCorrectors(visionId);}
-
-
-					/*}
-
-				}*/
+				if (pattern.getPatternName().contains("BAC "))
+					patternsFolders.setCorrectors(bacId);
+				else if (pattern.getPatternName().contains("Muc "))
+					patternsFolders.setCorrectors(mucId);
+				else if (pattern.getPatternName().contains("VIR "))
+					patternsFolders.setCorrectors(virId);
+				else if (pattern.getPatternName().contains("CARDIO♥"))
+				{patternsFolders.setCorrectors(cardioId);}
+				else if (pattern.getPatternName().contains("DERMAლ"))
+				{patternsFolders.setCorrectors(dermaId);}
+				else if (pattern.getPatternName().contains("Endocrinology♋"))
+				{patternsFolders.setCorrectors(endocrinId);}
+				else if (pattern.getPatternName().contains("GASTRO⌘"))
+				{patternsFolders.setCorrectors(gastroId);}
+				else if (pattern.getPatternName().contains("IMMUN☂"))
+				{patternsFolders.setCorrectors(immunId);}
+				else if (pattern.getPatternName().contains("MENTIS☺"))
+				{patternsFolders.setCorrectors(mentisId);}
+				else if (pattern.getPatternName().contains("NEURAL♕"))
+				{patternsFolders.setCorrectors(neuralId);}
+				else if (pattern.getPatternName().contains("ORTHO☤"))
+				{patternsFolders.setCorrectors(orthoId);}
+				else if (pattern.getPatternName().contains("SPIRITUS✽"))
+				{patternsFolders.setCorrectors(spiritusId);}
+				else if (pattern.getPatternName().contains("Stomat〲"))
+				{patternsFolders.setCorrectors(stomatId);}
+				else if (pattern.getPatternName().contains("UROLOGÜ"))
+				{patternsFolders.setCorrectors(urologId);}
+				else if (pattern.getPatternName().contains("VISION☄"))
+				{patternsFolders.setCorrectors(visionId);}
 
 				patternsFolders.getFolder().getPatternsFolders().add(patternsFolders);
 				patternsFolders.getPattern().getPatternsFolders().add(patternsFolders);
@@ -302,22 +281,15 @@ public class DatabaseCreator {
 				patternsFoldersDao.save(patternsFolders);
 			}
 
-
-
 			setChunkSummary();
-
 			LOGGER.info("End");
-			/*
-			 * folder = foldersDao.getById(4328); LOGGER.info("Flora dissection size %s", folder.getPattern().size()); folder = foldersDao.getById(2483); LOGGER.info("BAC size %s",
-			 * folder.getPattern().size()); folder = foldersDao.getById(959); LOGGER.info("Muc size %s", folder.getPattern().size()); folder = foldersDao.getById(490);
-			 * LOGGER.info("VIR size %s", folder.getPattern().size());
-			 */
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
 	}
+
 
 	/**
 	 *
@@ -330,21 +302,6 @@ public class DatabaseCreator {
 		List<Pattern> patternAll = patternsDao.getPatterns(null, null);
 		LOGGER.info("List size %s", patternAll.size());
 
-//		patternAll.forEach(new Consumer<Pattern>() {
-//			@Override
-//			public void accept(Pattern patternsum) {
-//
-//				try {
-//					PcmDataSummary sum = Machine.getPcmData(patternsum.getPatternUid());
-//					patternsum.setChunkSummary(JsonUtils.getJson(sum.getSummary()));
-//					patternsDao.saveOrUpdate(patternsum);
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//
-//		});
-
 		for (Pattern patternsum : patternAll) {
 			try {
 				PcmDataSummary sum = Machine.getPcmData(patternsum.getPatternUid());
@@ -354,6 +311,10 @@ public class DatabaseCreator {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void createUsers() {
+		createAllUsers();
 	}
 
 }
