@@ -39,7 +39,7 @@ public class DiseaseDao {
 	public DiseaseDao() {
 	}
 
-	public Map<Pattern, AnalysisSummary> getDeseases(File file) throws IOException, UnsupportedAudioFileException, SQLException {
+	public Map<Pattern, AnalysisSummary> getDeseases(File file, int degree) throws IOException, UnsupportedAudioFileException, SQLException {
 
 		final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(file)));
 
@@ -49,14 +49,14 @@ public class DiseaseDao {
 		List<EDXPattern> patterns = patternsDao.getFromDatabase();
 
 		// TODO Split summarizePatterns to 2 methods for decease and pattern
-		final Map<Pattern, AnalysisSummary> diseases = Machine.summarizePatterns(sample, patterns);
+		final Map<Pattern, AnalysisSummary> diseases = Machine.summarizePatterns(sample, patterns, degree);
         return diseases;
 	}
 
 	/**
 	 * HashMap<Pattern, AnalysisSummary> allHealings contain's only unique keys define by hashcode method in EDXPattern class
 	 */
-	public Map<Pattern, AnalysisSummary> getHealings(Map<Pattern, AnalysisSummary> diseases, File file) throws IOException, UnsupportedAudioFileException {
+	public Map<Pattern, AnalysisSummary> getHealings(Map<Pattern, AnalysisSummary> diseases, File file, int level) throws IOException, UnsupportedAudioFileException {
 
 		final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(file)));
 
@@ -65,7 +65,7 @@ public class DiseaseDao {
 		HashMap<Pattern, AnalysisSummary> allHealings = new HashMap<>();
 
 		long t1 = System.currentTimeMillis();
-		getHealings(diseases, sample, probableKinds, allHealings);
+		getHealings(diseases, sample, probableKinds, allHealings, level);
 		LOGGER.info("Healing has been found for %d ms",	System.currentTimeMillis() - t1);
 
 		/*long t2 = System.currentTimeMillis();
@@ -81,7 +81,7 @@ public class DiseaseDao {
 	}
 
 	private void getHealings(Map<Pattern, AnalysisSummary> diseases, final List<ChunkSummary> sample, final Map<String, Integer> probableKinds,
-			HashMap<Pattern, AnalysisSummary> allHealings) {
+			HashMap<Pattern, AnalysisSummary> allHealings, int level) {
 		diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
 			@Override
 			public void accept(Pattern dk, AnalysisSummary dv) {
@@ -105,7 +105,7 @@ public class DiseaseDao {
 						if (dk.getFileName().equals("Lwx2z#owPB/13b940a4-39108191-9feb82f-2e5a942d-f2d8109c.edx")){
 							LOGGER.info("Operation compare took %d ms");
 						}
-						final Map<Pattern, AnalysisSummary> healings = Machine.summarizePatterns(sample, patterns);
+						final Map<Pattern, AnalysisSummary> healings = Machine.summarizePatterns(sample, patterns, level);
 
 						LOGGER.info("SummarizePatterns took %d ms", System.currentTimeMillis() - t1);
 

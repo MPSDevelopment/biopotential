@@ -41,13 +41,13 @@ public class DiseaseDaoTest {
 	@Test
 	public void getHealingsTest() throws IOException, UnsupportedAudioFileException {
 		try {
-			diseases = diseaseDao.getDeseases(file);
+			diseases = diseaseDao.getDeseases(file,0);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
 		long t1 = System.currentTimeMillis();
-		Map<Pattern, AnalysisSummary> healings = diseaseDao.getHealings(diseases, file);
+		Map<Pattern, AnalysisSummary> healings = diseaseDao.getHealings(diseases, file,0);
 		LOGGER.info("Total time to get calculate healings %d ms", System.currentTimeMillis() - t1);
 
 		Set<Pattern> keys = new HashSet<>(healings.keySet());

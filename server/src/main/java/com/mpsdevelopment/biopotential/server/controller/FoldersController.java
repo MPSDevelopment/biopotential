@@ -72,8 +72,7 @@ public class FoldersController {
     }
 
     @RequestMapping(value = "/convertDB", method = RequestMethod.POST)
-    public
-    @ResponseBody
+    public @ResponseBody
     ResponseEntity<String> getDiseases(@RequestBody String url) {
         persistUtils.closeSessionFactory();
         persistUtils.setConfigurationDatabaseFilename(url);
@@ -252,11 +251,6 @@ public class FoldersController {
                 {patternsFolders.setCorrectors(urologId);}
                 else if (pattern.getPatternName().contains("VISION☄"))
                 {patternsFolders.setCorrectors(visionId);}
-
-
-					/*}
-
-				}*/
 
                 patternsFolders.getFolder().getPatternsFolders().add(patternsFolders);
                 patternsFolders.getPattern().getPatternsFolders().add(patternsFolders);

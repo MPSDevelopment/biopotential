@@ -89,6 +89,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     private Map<Pattern, AnalysisSummary> allHealings;
 
     private static File outputFile = new File("AudioFiles\\out\\out.wav");
+    private String degree;
 
     public AnalysisPanelController() {
 //        EventBus.subscribe(this);
@@ -182,7 +183,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 //        BioHttpClient bioHttpClient = new BioHttpClient();
         BioHttpClient bioHttpClient = HttpClientFactory.getInstance();
 
-        String json = bioHttpClient.executePostRequest(ControllerAPI.DISEAS_CONTROLLER + "/getDiseas/", file);
+        String json = bioHttpClient.executePostRequest("/api/diseas/" + degree + "/getDiseas", file);
 
         Type typeOfHashMap = new TypeToken<Map<EDXPattern, AnalysisSummary>>() { }.getType();
         Map<Pattern, AnalysisSummary> diseases = JsonUtils.fromJson(typeOfHashMap, json);
@@ -200,7 +201,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         LOGGER.info("Total time for calculate diseases %d ms", System.currentTimeMillis() - t2);
         long t1 = System.currentTimeMillis();
 
-        String heal = bioHttpClient.executePostRequest(ControllerAPI.DISEAS_CONTROLLER + "/getHealings/",file);
+        String heal = bioHttpClient.executePostRequest("/api/diseas/" + degree + "/getHealings",file);
         typeOfHashMap = new TypeToken<Map<EDXPattern, AnalysisSummary>>() { }.getType();
         /*Map<Pattern, AnalysisSummary> */allHealings = JsonUtils.fromJson(typeOfHashMap, heal);
 
@@ -354,6 +355,10 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setDegree(String degree) {
+        this.degree = degree;
     }
 
     /*

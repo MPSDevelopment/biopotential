@@ -11,10 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -41,32 +38,40 @@ public class DiseasController {
     public DiseasController() {
     }
 
-    @RequestMapping(value = "/getDiseas", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    ResponseEntity<String> getDiseases(@RequestParam("file") MultipartFile file) {
+    @RequestMapping(value = ControllerAPI.DISEAS_CONTROLLER_GET_DISEASES, method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseEntity<String> getDiseases(@RequestParam("file") MultipartFile file,  @PathVariable(value = "degree") String currentDegree) {
         String name = file.getOriginalFilename();
+        String degree = currentDegree;
+        int level = 0;
+        if (degree.equals("Po")) {
+            level = -2147483648;
+        }
         requestHeaders = new HttpHeaders();
         requestHeaders.add("Content-Type", "text/html; charset=utf-8");
         diseases = new HashMap<>();
 
-        getDiseas(file, name);
+        getDiseas(file, name,level);
 
         LOGGER.info("diseases '%s' ", diseases.size());
         return new ResponseEntity<>(JsonUtils.getJson(diseases), requestHeaders, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/getHealings", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    ResponseEntity<String> getHealings(@RequestParam("file") MultipartFile file) {
+    @RequestMapping(value = ControllerAPI.DISEAS_CONTROLLER_GET_HEALINGS, method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseEntity<String> getHealings(@RequestParam("file") MultipartFile file, @PathVariable(value = "degree") String currentDegree) {
         String name = file.getOriginalFilename();
+        String degree = currentDegree;
+        int level = 0;
+        if (degree.equals("Po")) {
+            level = -2147483648;
+        }
         allHealings = new HashMap<>();
 
-        getDiseas(file, name);
+        getDiseas(file, name,level);
 
         try {
-            allHealings.putAll(diseaseDao.getHealings(diseases, multipartToFile(name, file)));
+            allHealings.putAll(diseaseDao.getHealings(diseases, multipartToFile(name, file),level));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (UnsupportedAudioFileException e) {
@@ -77,9 +82,9 @@ public class DiseasController {
         return new ResponseEntity<>(JsonUtils.getJson(allHealings), requestHeaders, HttpStatus.OK);
     }
 
-    private Map<Pattern, AnalysisSummary> getDiseas(MultipartFile file, String name) {
+    private Map<Pattern, AnalysisSummary> getDiseas(MultipartFile file, String name,int degree) {
         try {
-            diseases.putAll(diseaseDao.getDeseases(multipartToFile(name, file)));
+            diseases.putAll(diseaseDao.getDeseases(multipartToFile(name, file),degree));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (UnsupportedAudioFileException e) {

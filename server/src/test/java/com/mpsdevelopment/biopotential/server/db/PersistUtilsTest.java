@@ -1,10 +1,13 @@
 package com.mpsdevelopment.biopotential.server.db;
 
+import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
 import com.mpsdevelopment.biopotential.server.db.dao.FoldersDao;
 import com.mpsdevelopment.biopotential.server.db.dao.PatternsDao;
 import com.mpsdevelopment.biopotential.server.db.dao.UserDao;
 import com.mpsdevelopment.biopotential.server.db.pojo.Folder;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
+import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
+import com.mpsdevelopment.biopotential.server.httpclient.HttpClientFactory;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
@@ -94,20 +97,18 @@ public class PersistUtilsTest {
 
         Assert.assertEquals(132,patternsDao.getFromDatabase().size());
 
-
         persistUtils.closeSessionFactory();
-        sessionManager.getSession().getSessionFactory().close();
-
         persistUtils.setConfigurationDatabaseFilename("./testfiles/test.arkdb");
         SessionFactory sessionFactory = persistUtils.configureSessionFactory();
         Session session = sessionFactory.openSession();
         sessionManager.setSession(session);
 
+        BioHttpClient httpClient = HttpClientFactory.getInstance();
+        httpClient.executePostRequest(ControllerAPI.CONVERT_DB + "/convertDB/", "./testfiles/test.arkdb");
+
         Assert.assertEquals(44,patternsDao.getFromDatabase().size());
 
         persistUtils.closeSessionFactory();
-        sessionManager.getSession().getSessionFactory().close();
-
         persistUtils.setConfigurationDatabaseFilename("./testfiles/db_cutted.db");
         sessionFactory = persistUtils.configureSessionFactory();
         session = sessionFactory.openSession();

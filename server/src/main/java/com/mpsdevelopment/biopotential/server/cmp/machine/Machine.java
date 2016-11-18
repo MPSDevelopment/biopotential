@@ -36,14 +36,15 @@ public class Machine {
 	private static final String EDX_FILE_FOLDER = "data/edxfiles/";
 //	private static final String EDX_FILE_FOLDER = "D:/MPS/IDEA/Biopotential material's/база автомат/my_super_puper_db_Storage/";
 
-	public static Map<Pattern, AnalysisSummary> summarizePatterns(List<ChunkSummary> sampleSummary, List<EDXPattern> patterns) {
+	public static Map<Pattern, AnalysisSummary> summarizePatterns(List<ChunkSummary> sampleSummary, List<EDXPattern> patterns, int degree) {
 		final Map<Pattern, AnalysisSummary> summaries = new HashMap<>();
 		AnalysisSummary summary;
 		for (Pattern pattern : patterns) {
 //			long t1 = System.currentTimeMillis();
 			summary = Analyzer.compare(sampleSummary, pattern.getSummary());
 //			LOGGER.info("Operation compare took %d ms", System.currentTimeMillis() - t1);
-			if (summary != null && summary.getDegree() == 0) {
+//            LOGGER.info("summary getDegree %s",summary.getDegree());
+            if (summary != null && summary.getDegree() == degree) {
 				summaries.put(pattern, summary);
 			}
 		}
@@ -59,9 +60,12 @@ public class Machine {
 				counters.put(k.getKind(), counters.getOrDefault(k.getKind(), 0) + 1);
 			}
 		});
-		counters.forEach((k, v) -> {
-			if (condition.test(k, v)) {
-				result.put(k, v);
+		counters.forEach(new BiConsumer<String, Integer>() {
+			@Override
+			public void accept(String k, Integer v) {
+				if (condition.test(k, v)) {
+					result.put(k, v);
+				}
 			}
 		});
 		return result;
