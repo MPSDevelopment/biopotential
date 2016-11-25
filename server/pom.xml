@@ -530,6 +530,10 @@
 
 					<jetHome>${jet32.home}</jetHome>
 
+					<jvmArgs>
+						<jvmArg>-Xmx1g</jvmArg>
+					</jvmArgs>
+
 					<outputName>BioApplication</outputName>
 					<product>Biopotential</product>
 					<vendor>${jet.vendor}</vendor>
