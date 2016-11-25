@@ -528,6 +528,9 @@
 					<!-- <globalOptimizer>true</globalOptimizer> -->
 					<packageFilesDir>${jet.output.directory}/temp</packageFilesDir>
 
+					<inlineExpansion>low</inlineExpansion>
+					<protectData>true</protectData>
+
 					<jetHome>${jet32.home}</jetHome>
 
 					<jvmArgs>
