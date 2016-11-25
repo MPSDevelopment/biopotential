@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.mpsdevelopment.biopotential</groupId>
 	<artifactId>server</artifactId>
@@ -18,7 +19,8 @@
 		<jet.vendor>MPS Development</jet.vendor>
 		<jet32.home>c:\Program Files (x86)\ExcelsiorJet</jet32.home>
 		<jet64.home>c:\Program Files\ExcelsiorJet</jet64.home>
-		<jet.expire.message>Program has stopped working. Contact an administrator</jet.expire.message>
+		<jet.expire.message>Program has stopped working. Contact an
+			administrator</jet.expire.message>
 
 		<replacer.plugin.version>1.5.2</replacer.plugin.version>
 		<excelsiorjet.plugin.version>0.8.0</excelsiorjet.plugin.version>
@@ -65,11 +67,8 @@
 	</properties>
 	<dependencies>
 
-		<!--<dependency>
-			<groupId>net.engio</groupId>
-			<artifactId>mbassador</artifactId>
-			<version>${mbassador.version}</version>
-		</dependency>-->
+		<!--<dependency> <groupId>net.engio</groupId> <artifactId>mbassador</artifactId> 
+			<version>${mbassador.version}</version> </dependency> -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpmime</artifactId>
@@ -523,7 +522,7 @@
 					<!-- <packaging>excelsior-installer</packaging> -->
 					<icon>${project.basedir}/build/bio.ico</icon>
 					<installerSplash>${project.basedir}/build/splash.png</installerSplash>
-					<!-- 					<splash>${project.basedir}/build/splash.png</splash> -->
+					<!-- <splash>${project.basedir}/build/splash.png</splash> -->
 
 					<hideConsole>true</hideConsole>
 					<!-- <globalOptimizer>true</globalOptimizer> -->
@@ -531,6 +530,7 @@
 
 					<jetHome>${jet32.home}</jetHome>
 
+					<outputName>BioApplication</outputName>
 					<product>Biopotential</product>
 					<vendor>${jet.vendor}</vendor>
 					<version>${jet.version}</version>
