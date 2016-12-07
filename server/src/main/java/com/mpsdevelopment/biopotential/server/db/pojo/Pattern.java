@@ -53,7 +53,7 @@ public class Pattern extends BaseObject {
 
     /*@ManyToMany(fetch = FetchType.LAZY, mappedBy= "patterns")
     private List<Folder> folders = new ArrayList<>();*/
-    @OneToMany(mappedBy = "pattern")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "pattern")
     private List<PatternsFolders> patternsFolders = new ArrayList<>();
 
     public Pattern() {

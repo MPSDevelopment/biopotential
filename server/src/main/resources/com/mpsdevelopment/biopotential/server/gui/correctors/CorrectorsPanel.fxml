@@ -19,7 +19,8 @@
         </columns>
       </TableView>
       <Button fx:id="createFileCorrection" layoutX="603.0" layoutY="683.0" mnemonicParsing="false" text="Создать файл коррекции" />
-      <Button layoutX="767.0" layoutY="683.0" mnemonicParsing="false" text="Назад" />
+      <Button layoutX="860.0" layoutY="683.0" mnemonicParsing="false" text="Назад" />
       <Button fx:id="addCorrectorButton" layoutX="465.0" layoutY="683.0" mnemonicParsing="false" text="Добавить корректор" />
+      <Button fx:id="selectAllButton" layoutX="768.0" layoutY="683.0" mnemonicParsing="false" text="Выбрать все" />
    </children>
 </AnchorPane>

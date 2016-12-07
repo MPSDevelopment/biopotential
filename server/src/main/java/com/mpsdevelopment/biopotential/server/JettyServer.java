@@ -1,7 +1,8 @@
 package com.mpsdevelopment.biopotential.server;
 
 import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.arkdb.ArkDBException;
-import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
+import com.mpsdevelopment.biopotential.server.db.*;
+import com.mpsdevelopment.biopotential.server.db.SessionManager;
 import com.mpsdevelopment.biopotential.server.gui.BioApplication;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
@@ -14,6 +15,8 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -61,6 +64,13 @@ public class JettyServer {
 	public void start() throws ServletException {
 
 //		DatabaseCreator databaseCreator = BioApplication.APP_CONTEXT.getBean(DatabaseCreator.class);
+		/*PersistUtils persistUtils = WEB_CONTEXT.getBean(PersistUtils.class);
+		SessionManager sessionManager = WEB_CONTEXT.getBean(SessionManager.class);
+
+		persistUtils.setConfigurationDatabaseFilename(serverSettings.getDbPath());
+		SessionFactory sessionFactory = persistUtils.configureSessionFactory();
+		Session session = sessionFactory.openSession();
+		sessionManager.setSession(session);*/
 
 		server = new Server();
 		ServerConnector connector = new ServerConnector(server);

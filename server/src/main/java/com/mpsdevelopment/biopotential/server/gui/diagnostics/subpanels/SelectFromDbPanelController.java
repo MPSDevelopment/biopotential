@@ -2,7 +2,6 @@ package com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels;
 
 import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
-import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
@@ -29,14 +28,10 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
-import net.engio.mbassy.listener.Handler;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.jws.soap.SOAPBinding;
 import java.net.URL;
 import java.util.*;
-
-import static javassist.util.proxy.FactoryHelper.dataSize;
 
 public class SelectFromDbPanelController extends AbstractController implements Subscribable {
 

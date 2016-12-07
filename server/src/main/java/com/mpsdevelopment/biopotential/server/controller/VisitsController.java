@@ -36,11 +36,11 @@ public class VisitsController {
 	@Autowired
 	private UserDao userDao;
 
-    @Autowired
+    /*@Autowired
     private PersistUtils persistUtils;
 
     @Autowired
-    private SessionManager sessionManager;
+    private SessionManager sessionManager;*/
 
 	public VisitsController() {
 	}
@@ -66,6 +66,7 @@ public class VisitsController {
     @RequestMapping(value = ControllerAPI.VISITS_CONTROLLER_GET_ALL, method = RequestMethod.GET, produces = "text/json;charset=UTF-8")
     @ResponseBody
     public ResponseEntity<String> getAllUsers() throws ParseException {
+
         List<Visit> visits = visitDao.getVisits(null, null);
         LOGGER.info("Has been loaded '%s' users", visits.size());
         return new ResponseEntity<>(JsonUtils.getJson(visits),

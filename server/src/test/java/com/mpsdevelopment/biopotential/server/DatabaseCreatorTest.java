@@ -17,6 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = SpringockitoContextLoader.class, locations = { "classpath:/webapp/app-context-test.xml", "classpath:/webapp/web-context.xml" })
@@ -34,7 +35,7 @@ public class DatabaseCreatorTest {
 	private PatternsDao patternsDao;
 
 	@Test
-	public void convertToH2Test() throws ArkDBException, IOException {
+	public void convertToH2Test() throws ArkDBException, IOException, SQLException {
 
 		LOGGER.info("databaseCreator %s", databaseCreator);
 

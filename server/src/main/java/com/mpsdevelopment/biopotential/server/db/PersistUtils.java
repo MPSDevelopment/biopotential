@@ -50,14 +50,19 @@ public class PersistUtils {
 
 	private String configurationDatabaseFilename = null;
 
+	@Autowired
+	private ServerSettings serverSettings;
 	// @Autowired(required = true)
 	// private ServerSettings serverSettings;
 
 	public synchronized SessionFactory configureSessionFactory() throws HibernateException {
-		LOGGER.info("Creating session factory");
+        LOGGER.info("Creating session factory %s", configurationFilename);
 		Configuration configuration = getOrCreateConfiguration(configurationFilename);
 
 		Properties properties = configuration.getProperties();
+		if (configurationDatabaseFilename == null) {
+            configurationDatabaseFilename = serverSettings.getDbPath();
+        }
 
         if(configurationDatabaseFilename != null) {
             properties.setProperty("hibernate.connection.url",
@@ -66,6 +71,7 @@ public class PersistUtils {
         }
 		sessionFactory = configuration.buildSessionFactory();
 		eventListenerRegistry = ((SessionFactoryImpl) sessionFactory).getServiceRegistry().getService(EventListenerRegistry.class);
+		LOGGER.info("Session factory created");
 		return sessionFactory;
 	}
 

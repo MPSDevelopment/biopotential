@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.persistence.Lob;
 import java.io.IOException;
+import java.sql.SQLException;
 
 @RequestMapping(ControllerAPI.FOLDERS_CONTROLLER)
 @Controller
@@ -35,11 +37,12 @@ public class FoldersController {
     private DatabaseCreator databaseCreator;
 
     public FoldersController() {
+        LOGGER.info("Create FoldersController");
     }
 
     @RequestMapping(value = "/convertDB", method = RequestMethod.POST)
     public @ResponseBody
-    ResponseEntity<String> getDiseases(@RequestBody String url) {
+    ResponseEntity<String> getDiseases(@RequestBody String url) throws SQLException {
 
         restartSessionManager(url);
         try {

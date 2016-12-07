@@ -64,6 +64,9 @@ public class CorrectorsPanelController extends AbstractController implements Sub
     @FXML
     private Button addCorrectorButton;
 
+    @FXML
+    private Button selectAllButton;
+
     private Stage primaryStage;
     private static Map<Pattern,AnalysisSummary> healingsMap;
 
@@ -88,6 +91,13 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         });
         numberColumn.setSortable(false);
         numberColumn.setStyle("-fx-alignment: CENTER;");
+
+        selectAllButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                сorrectorsTable.getSelectionModel().selectAll();
+            }
+        });
 
         deseaseName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
             @Override

@@ -26,19 +26,20 @@
             <TableColumn prefWidth="93.0" text="Группа" />
             <TableColumn prefWidth="96.0" text="Система" />
             <TableColumn fx:id="diseaseLevel" prefWidth="74.0" text="Дисперсия" />
-            <TableColumn prefWidth="72.0" text="Уровень" />
+            <TableColumn fx:id="automaticsLevelColumn" prefWidth="72.0" text="Уровень" />
         </columns>
       </TableView>
-      <TableView fx:id="systemTable" layoutX="598.0" layoutY="323.0" prefHeight="341.0" prefWidth="274.0">
+      <TableView fx:id="systemTable" layoutX="598.0" layoutY="323.0" prefHeight="341.0" prefWidth="349.0">
         <columns>
           <TableColumn fx:id="numberSystemColumn" prefWidth="33.0" text="№" />
           <TableColumn fx:id="systemColumn" prefWidth="166.0" text="Система" />
-            <TableColumn fx:id="levelColumn" prefWidth="74.0" text="Уровень" />
+            <TableColumn fx:id="maxLevelColumn" prefWidth="74.0" text="Max" />
+            <TableColumn fx:id="poLevelColumn" prefWidth="74.0" text="Po" />
         </columns>
       </TableView>
       <Button fx:id="continueButton" layoutX="443.0" layoutY="683.0" mnemonicParsing="false" text="Продолжить" />
       <Button layoutX="541.0" layoutY="683.0" mnemonicParsing="false" text="Назад" />
-      <BarChart layoutX="598.0" layoutY="24.0" prefHeight="284.0" prefWidth="500.0">
+      <BarChart fx:id="histogramBarChart" layoutX="598.0" layoutY="24.0" prefHeight="284.0" prefWidth="500.0">
         <xAxis>
           <CategoryAxis side="BOTTOM" />
         </xAxis>

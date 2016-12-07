@@ -26,11 +26,15 @@ public class AutomaticsPanelController extends AbstractController implements Sub
 
     private static final Logger LOGGER = LoggerUtil.getLogger(AutomaticsPanelController.class);
     ObservableList<String> items = FXCollections.observableArrayList("Max", "Po");
+    ObservableList<String> item = FXCollections.observableArrayList("2");
 
     private File file;
 
     @FXML
     private ComboBox whatShowComboBox;
+
+    @FXML
+    private ComboBox whatShowComboBox1;
 
     @FXML
     private ComboBox criterionComboBox;
@@ -58,14 +62,20 @@ public class AutomaticsPanelController extends AbstractController implements Sub
 
         whatShowComboBox.setItems(items);
         whatShowComboBox.setValue("Max");
+        whatShowComboBox1.setItems(items);
+        whatShowComboBox1.setValue("Po");
+        criterionComboBox.setItems(item);
+        criterionComboBox.setValue("2");
 
         makeAnalyzerButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                String degree = null;
-                degree = (String) whatShowComboBox.getValue();
+                String degree1 = null;
+                String degree2 = null;
+                degree1 = (String) whatShowComboBox.getValue();
+                degree2 = (String) whatShowComboBox1.getValue();
 
-                AnalysisPanel panel = new AnalysisPanel(file,degree);
+                AnalysisPanel panel = new AnalysisPanel(file,degree1,degree2);
                 Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Результат анализа").setClazz(panel.getClass()).setHeight(752d).setWidth(1172d).setHeightPanel(722d).setWidthPanel(1172d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
                 panel.setPrimaryStage(stage);
                 close();

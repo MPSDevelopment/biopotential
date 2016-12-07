@@ -35,6 +35,8 @@ public class BioApplication extends Application {
             LOGGER.info("Server started");
 
             LogbackConfigureLoader.initializeLogging(resourceManager, "logback.xml", "jul.properties");
+            System.setErr(LoggerUtil.getRedirectedToLoggerErrPrintStream(System.err));
+            System.setOut(LoggerUtil.getRedirectedToLoggerOutPrintStream(System.out));
             launch(args);
 
             server.join();

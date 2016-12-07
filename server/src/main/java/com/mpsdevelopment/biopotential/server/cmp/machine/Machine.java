@@ -120,9 +120,9 @@ public class Machine {
 			for (byte b : sects.get(".orig   ").contents) {
 				pcmData.add((double) (byte) (b ^ 0x80) / 128.0);
 			}
-			long t1 = System.currentTimeMillis();
+//			long t1 = System.currentTimeMillis();
 			summary = Analyzer.summarize(pcmData);
-			LOGGER.info("Time for get summurize %d ms", System.currentTimeMillis() - t1);
+//			LOGGER.info("Time for get summurize %d ms", System.currentTimeMillis() - t1);
 
 		} else {
 			pcmData = null;

@@ -5,6 +5,7 @@ import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
+import com.mpsdevelopment.biopotential.server.db.pojo.SystemDataTable;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
@@ -25,8 +26,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.chart.ScatterChart;
-import javafx.scene.chart.XYChart;
+import javafx.scene.chart.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -49,6 +49,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     private static final Logger LOGGER = LoggerUtil.getLogger(AnalysisPanelController.class);
     public static final int patternWeight = 10;
     private ObservableList<DataTable> analysisData;
+    ObservableList<DataTable> data = FXCollections.observableArrayList();
     private ObservableList<String> level;
 
     @FXML
@@ -58,7 +59,8 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     private TableView<DataTable> healthConditionTable;
 
     @FXML
-    private TableView<Map.Entry<String,Integer>> systemTable;
+//    private TableView<Map.Entry<String,Integer>> systemTable;
+    private TableView<SystemDataTable> systemTable;
 
     @FXML
     private TableColumn<DataTable, String> diseaseName;
@@ -73,13 +75,23 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     private TableColumn numberSystemColumn;
 
     @FXML
-    private TableColumn<Map.Entry<String, Integer>, String> systemColumn;
+//    private TableColumn<Map.Entry<String, Integer>, String> systemColumn;
+    private TableColumn<SystemDataTable, String> systemColumn;
 
     @FXML
-    private TableColumn levelColumn;
+    private TableColumn<SystemDataTable, String> maxLevelColumn;
+
+    @FXML
+    private TableColumn<SystemDataTable, String> poLevelColumn;
+
+    @FXML
+    private TableColumn automaticsLevelColumn;
 
     @FXML
     private Button continueButton;
+
+    @FXML
+    private BarChart<Number, Number> histogramBarChart;
 
     private Stage primaryStage;
     private File file;
@@ -87,7 +99,13 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     private Map<Pattern, AnalysisSummary> allHealings;
 
     private static File outputFile = new File("AudioFiles\\out\\out.wav");
-    private String degree;
+    private String degree1;
+    private String degree2;
+    private SystemDataTable systemDataTable;
+
+    public void setDegree2(String degree2) {
+        this.degree2 = degree2;
+    }
 
     public AnalysisPanelController() {
 //        EventBus.subscribe(this);
@@ -101,6 +119,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         allHealings = new HashMap<>();
 
         healthConditionTable.setItems(analysisData);
+
 
         numberColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
             @Override
@@ -129,6 +148,13 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             }
         });
 
+        automaticsLevelColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> p) {
+                return new ReadOnlyObjectWrapper(p.getValue().getDegree());
+            }
+        });
+
         numberSystemColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Map.Entry<String, Integer>, String>, ObservableValue<String>>() {
 
             @Override
@@ -138,20 +164,29 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             }
         });
 
-        systemColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Map.Entry<String, Integer>, String>, ObservableValue<String>>() {
+        systemColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<SystemDataTable, String>, ObservableValue<String>>() {
 
             @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Map.Entry<String, Integer>, String> p) {
-                return new SimpleStringProperty(p.getValue().getKey());
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<SystemDataTable, String> p) {
+                return new SimpleStringProperty(p.getValue().getName());
             }
         });
 
 
-        levelColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Map.Entry<String, Integer>, String>, ObservableValue<String>>() {
+        maxLevelColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<SystemDataTable, String>, ObservableValue<String>>() {
 
             @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Map.Entry<String, Integer>, String> p) {
-                return new SimpleStringProperty(Integer.toString(p.getValue().getValue())+ " %");
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<SystemDataTable, String> p) {
+                return new SimpleStringProperty(Integer.toString(p.getValue().getMaxLevel())+ " %");
+            }
+        });
+
+        poLevelColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<SystemDataTable, String>, ObservableValue<String>>() {
+
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<SystemDataTable, String> p) {
+//                p.getValue().getKey().
+                return new SimpleStringProperty(Integer.toString(p.getValue().getPoLevel())+ " %");
             }
         });
 
@@ -173,32 +208,63 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         scatterChart.getStylesheets().add("scater.css");
         scatterChart.getData().addAll(series1);
 
+        automaticsLevelColumn.setSortable(true);
+        healthConditionTable.getSortOrder().add(automaticsLevelColumn); // sort cell'a by name
+
     }
 
     private void makeAnalyze(File file) throws UnsupportedAudioFileException, IOException, SQLException {
+
+        automaticsLevelColumn.setSortable(true);
+        healthConditionTable.getSortOrder().add(automaticsLevelColumn); // sort cell'a by name
+
         long t2 = System.currentTimeMillis();
 
         BioHttpClient bioHttpClient = HttpClientFactory.getInstance();
 
-        String json = bioHttpClient.executePostRequest("/api/diseas/" + degree + "/getDiseas", file);
+        String json = bioHttpClient.executePostRequest("/api/diseas/" + degree1 + "/getDiseas", file);
 
         Type typeOfHashMap = new TypeToken<Map<EDXPattern, AnalysisSummary>>() { }.getType();
-        Map<Pattern, AnalysisSummary> diseases = JsonUtils.fromJson(typeOfHashMap, json);
+        Map<Pattern, AnalysisSummary> diseases1 = JsonUtils.fromJson(typeOfHashMap, json);
 
-//        diseases.putAll(diseaseDao.getDeseases(file));
-        diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
+        ///////////////////////// add second condition
+
+        json = bioHttpClient.executePostRequest("/api/diseas/" + degree2 + "/getDiseas", file);
+
+        Map<Pattern, AnalysisSummary> diseases2 = JsonUtils.fromJson(typeOfHashMap, json);
+
+        diseases.putAll(diseases1);
+        diseases.putAll(diseases2);
+       /* diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
             @Override
             public void accept(Pattern k, AnalysisSummary v) {
                 LOGGER.info("d: %s\t%f\n", k.getName(), v.getDispersion());
                 analysisData.add(DataTable.createDataTableObject(k, v));
             }
-        });
+        });*/
+
+        /////////////////////////
+
+
+
+
+//        diseases.putAll(diseaseDao.getDeseases(file));
+//        analysisData.addAll(diseasToAnalysisData(diseases, analysisData));
+        diseasToAnalysisData(diseases, analysisData);
+//        Set<DataTable> sortedSelectedItems = sortSelected(analysisData);
+
         LOGGER.info("Total time for calculate diseases %d ms", System.currentTimeMillis() - t2);
         long t1 = System.currentTimeMillis();
 
-        String heal = bioHttpClient.executePostRequest("/api/diseas/" + degree + "/getHealings",file);
+        String heal = bioHttpClient.executePostRequest("/api/diseas/" + degree1 + "/getHealings",file);
         typeOfHashMap = new TypeToken<Map<EDXPattern, AnalysisSummary>>() { }.getType();
         allHealings = JsonUtils.fromJson(typeOfHashMap, heal);
+
+        //
+        heal = bioHttpClient.executePostRequest("/api/diseas/" + degree2 + "/getHealings",file);
+        Map<Pattern, AnalysisSummary> allHealings1 = JsonUtils.fromJson(typeOfHashMap, heal);
+        allHealings.putAll(allHealings1);
+        //
 
 //        allHealings.putAll(diseaseDao.getHealings(diseases, file));
         LOGGER.info("Total time for calculate healings %d ms", System.currentTimeMillis() - t1);
@@ -206,25 +272,92 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         EventBus.publishEvent(new HealingsMapEvent(allHealings));
 
         // sortedSelectedItems set with contains system which diseas appear > than 1 time
-        Set<DataTable> sortedSelectedItems = new HashSet<>();
-        char [] str = new char[5];
-        char [] cmp = new char[5];
-        // check how many diseas from same system have been received from analysis
-        for (DataTable dataTable: analysisData) {
-            int count=0;
-            dataTable.getName().getChars(0,4,str,0);
-            for (DataTable temp: analysisData) {
-                temp.getName().getChars(0,4,cmp,0);
-                if(Arrays.equals(str,cmp)){
-                    count++;
-                }
-                if (count > 1) {
-                    sortedSelectedItems.add(dataTable);
-                }
-            }
-        }
 
-        // Map with constant values for systemtable
+        ObservableList<DataTable> analysisData1 = FXCollections.observableArrayList();
+        diseasToAnalysisData(diseases1,analysisData1);
+        Set<DataTable> sortedSelectedItems1 = sortSelected(analysisData1);
+
+        ObservableList<DataTable> analysisData2 = FXCollections.observableArrayList();
+        diseasToAnalysisData(diseases2, analysisData2);
+        Set<DataTable> sortedSelectedItems2 = sortSelected(analysisData2);
+
+
+        Map<String, Integer> systemMap1 = getSystemMap(sortedSelectedItems1);
+        Map<String, Integer> systemMap2 = getSystemMap(sortedSelectedItems2);
+        /*List<SystemDataTable> systemDataTables = new ArrayList<>();
+        systemDataTable = null;
+
+        systemMap1.forEach(new BiConsumer<String, Integer>() {
+            @Override
+            public void accept(String s, Integer integer) {
+                systemDataTable = new SystemDataTable();
+                systemDataTable.setName(s);
+                systemDataTable.setMaxLevel(integer);
+                systemMap2.forEach(new BiConsumer<String, Integer>() {
+                    @Override
+                    public void accept(String ss, Integer integer1) {
+                        if (s.equals(ss)) {
+                            systemDataTable.setPoLevel(integer1);
+                        }
+                    }
+                });
+                systemDataTables.add(systemDataTable);
+            }
+        });*/
+
+        ObservableList<SystemDataTable> datas = FXCollections.observableArrayList();
+        datas.addAll(SystemDataTable.createDataTableObject(systemMap1,systemMap2));
+
+        String[] systems = {"CARDIO система","DERMA система","Endocrinology система", "GASTRO система", "IMMUN система", "MENTIS система", "NEURAL система", "ORTHO система",
+                "SPIRITUS система", "Stomat система", "UROLOG система", "VISION система"};
+        ObservableList<XYChart.Series<Number, Number>> barChartData = FXCollections.observableArrayList(
+                new BarChart.Series("Max", FXCollections.observableArrayList(
+                        new BarChart.Data(systems[0], systemMap1.get("CARDIO система")),
+                        new BarChart.Data(systems[1], systemMap1.get("DERMA система")),
+                        new BarChart.Data(systems[2], systemMap1.get("Endocrinology система")),
+                        new BarChart.Data(systems[3], systemMap1.get("GASTRO система")),
+                        new BarChart.Data(systems[4], systemMap1.get("IMMUN система")),
+                        new BarChart.Data(systems[5], systemMap1.get("MENTIS система")),
+                        new BarChart.Data(systems[6], systemMap1.get("NEURAL система")),
+                        new BarChart.Data(systems[7], systemMap1.get("ORTHO система")),
+                        new BarChart.Data(systems[8], systemMap1.get("SPIRITUS система")),
+                        new BarChart.Data(systems[9], systemMap1.get("Stomat система")),
+                        new BarChart.Data(systems[10], systemMap1.get("UROLOG система")),
+                        new BarChart.Data(systems[11], systemMap1.get("VISION система"))
+                )),
+                new BarChart.Series("Po", FXCollections.observableArrayList(
+                        new BarChart.Data(systems[0], systemMap2.get("CARDIO система")),
+                        new BarChart.Data(systems[1], systemMap2.get("DERMA система")),
+                        new BarChart.Data(systems[2], systemMap2.get("Endocrinology система")),
+                        new BarChart.Data(systems[3], systemMap2.get("GASTRO система")),
+                        new BarChart.Data(systems[4], systemMap2.get("IMMUN система")),
+                        new BarChart.Data(systems[5], systemMap2.get("MENTIS система")),
+                        new BarChart.Data(systems[6], systemMap2.get("NEURAL система")),
+                        new BarChart.Data(systems[7], systemMap2.get("ORTHO система")),
+                        new BarChart.Data(systems[8], systemMap2.get("SPIRITUS система")),
+                        new BarChart.Data(systems[9], systemMap2.get("Stomat система")),
+                        new BarChart.Data(systems[10], systemMap2.get("UROLOG система")),
+                        new BarChart.Data(systems[11], systemMap2.get("VISION система"))
+
+                )));
+
+        histogramBarChart.getYAxis().setLabel("%");
+        histogramBarChart.getYAxis().setStyle("-fx-fill: #171eb2;");
+        histogramBarChart.getData().addAll(barChartData);
+
+        /*ObservableList<Map.Entry<String,Integer>> result1 = FXCollections.observableArrayList(systemMap1.entrySet());
+        systemTable.setItems(result1);*/
+        systemTable.setItems(datas);
+        systemColumn.setSortable(true);
+        systemTable.getSortOrder().add(systemColumn); // sort cell'a by name
+
+        healthConditionTable.setItems(analysisData);
+        automaticsLevelColumn.setSortable(true);
+        healthConditionTable.getSortOrder().add(automaticsLevelColumn); // sort cell'a by name
+
+    }
+
+    private Map<String, Integer> getSystemMap(Set<DataTable> sortedSelectedItems) {
         Map<String,Integer> systemMap = new HashMap<>();
         systemMap.put("CARDIO система",0);
         systemMap.put("DERMA система",0);
@@ -292,11 +425,40 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             }
 
         }
+        return systemMap;
+    }
 
-        ObservableList<Map.Entry<String,Integer>> result = FXCollections.observableArrayList(systemMap.entrySet());
-        systemTable.setItems(result);
-        systemColumn.setSortable(true);
-        systemTable.getSortOrder().add(systemColumn); // sort cell'a by name
+    private Set<DataTable> sortSelected(ObservableList<DataTable> data) {
+        Set<DataTable> sortedSelectedItems = new HashSet<>();
+        char [] str = new char[5];
+        char [] cmp = new char[5];
+        // check how many diseas from same system have been received from analysis
+        for (DataTable dataTable: data) {
+            int count=0;
+            dataTable.getName().getChars(0,4,str,0);
+            for (DataTable temp: data) {
+                temp.getName().getChars(0,4,cmp,0);
+                if(Arrays.equals(str,cmp)){
+                    count++;
+                }
+                if (count > 1) {
+                    sortedSelectedItems.add(dataTable);
+                }
+            }
+        }
+        return sortedSelectedItems;
+    }
+
+    private ObservableList<DataTable> diseasToAnalysisData(Map<Pattern, AnalysisSummary> map, ObservableList<DataTable> analysisData) {
+
+        map.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
+            @Override
+            public void accept(Pattern k, AnalysisSummary v) {
+                LOGGER.info("d: %s\t%f\n", k.getName(), v.getDispersion());
+                analysisData.add(DataTable.createDataTableObject(k, v));
+            }
+        });
+        return analysisData;
     }
 
     public void updatePanel(Stage primaryStage) {
@@ -343,8 +505,8 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         }
     }
 
-    public void setDegree(String degree) {
-        this.degree = degree;
+    public void setDegree1(String degree1) {
+        this.degree1 = degree1;
     }
 
 }

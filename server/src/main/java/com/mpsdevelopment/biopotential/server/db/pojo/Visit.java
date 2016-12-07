@@ -11,7 +11,7 @@ import java.util.Date;
 public class Visit extends BaseObject{
 
     @Expose
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(/*fetch = FetchType.LAZY,*/cascade = CascadeType.ALL)
     @JoinColumn(name = "User")
     private User user;
 

@@ -7,6 +7,15 @@ public class DataTable {
     private String name;
     private double dispersion;;
     private String filename;
+    private String degree;
+
+    public String getDegree() {
+        return degree;
+    }
+
+    public void setDegree(String degree) {
+        this.degree = degree;
+    }
 
     public String getName() {
         return name;
@@ -37,6 +46,12 @@ public class DataTable {
         dataTable.setName(k.getName());
         dataTable.setDispersion(v.getDispersion());
         dataTable.setFilename(k.getFileName());
+        if (v.getDegree() == 0) {
+            dataTable.setDegree("Max");
+        }
+        else if (v.getDegree() == -2147483648) {
+            dataTable.setDegree("Po");
+        }
         return dataTable;
     }
 

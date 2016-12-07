@@ -5,11 +5,15 @@ import com.mpsdevelopment.biopotential.server.cmp.machine.PcmDataSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.arkdb.ArkDBException;
 import com.mpsdevelopment.biopotential.server.db.dao.*;
 import com.mpsdevelopment.biopotential.server.db.pojo.*;
+import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
+import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
+import com.mpsdevelopment.biopotential.server.eventbus.event.ProgressBarEvent;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.sqlite.jdbc4.JDBC4ResultSet;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -22,7 +26,8 @@ import java.util.List;
 public class DatabaseCreator {
 
 	public DatabaseCreator() {
-		LOGGER.info("Create constructor DatabaseCreator");
+        EventBus.subscribe(this);
+        LOGGER.info("Create constructor DatabaseCreator");
 	}
 
 	private static final Logger LOGGER = LoggerUtil.getLogger(DatabaseCreator.class);
@@ -64,7 +69,9 @@ public class DatabaseCreator {
 	private ResultSet patternsDb;
 	private ResultSet patternsFoldersDb;
 
-	public void initialization() throws IOException, URISyntaxException, DaoException {
+	public void initialization() throws IOException, URISyntaxException, DaoException, SQLException {
+        System.setErr(LoggerUtil.getRedirectedToLoggerErrPrintStream(System.err));
+        System.setOut(LoggerUtil.getRedirectedToLoggerOutPrintStream(System.out));
 		LOGGER.info("databaseCreator initialization ");
 		List<User> users = userDao.findAll();
 		if (users.size() < 10) {
@@ -73,6 +80,7 @@ public class DatabaseCreator {
 
 			try {
 				convertToH2("./data/test.arkdb");
+//				convertToH2("./data/db_cutted.db");
 			} catch (ArkDBException e) {
 				e.printStackTrace();
 			}
@@ -131,27 +139,46 @@ public class DatabaseCreator {
 	}
 
 	public void connect(String url) throws ArkDBException {
+		LOGGER.info("Connect to %s", url);
 		try {
 			Class.forName("org.sqlite.JDBC");
 		} catch (ClassNotFoundException e) {
 			throw new ArkDBException("ClassNotFoundException: " + e.getMessage());
 		}
 
-		try {
-			this.db = DriverManager.getConnection("jdbc:sqlite:" + url);
-			this.foldersDb = this.db.createStatement().executeQuery("SELECT * FROM folders");
-			this.patternsDb = this.db.createStatement().executeQuery("SELECT * FROM patterns");
-			this.patternsFoldersDb = this.db.createStatement().executeQuery("SELECT * FROM link_patterns_to_folders");
+        executeStatement(url);
 
-		} catch (SQLException e) {
-			throw new ArkDBException("SQLException: " + e.getMessage());
-		}
+    }
 
-	}
+    private void executeStatement(String url) throws ArkDBException {
+        try {
+            this.db = DriverManager.getConnection("jdbc:sqlite:" + url);
+            this.foldersDb = this.db.createStatement().executeQuery("SELECT * FROM folders");
+            this.patternsDb = this.db.createStatement().executeQuery("SELECT * FROM patterns");
+            this.patternsFoldersDb = this.db.createStatement().executeQuery("SELECT * FROM link_patterns_to_folders");
 
-	public void convertToH2(String url) throws ArkDBException, IOException {
+        } catch (SQLException e) {
+            throw new ArkDBException("SQLException: " + e.getMessage());
+        }
+    }
+
+    public void convertToH2(String url) throws ArkDBException, IOException, SQLException {
+		long t1 = System.currentTimeMillis();
 		connect(url);
-		try {
+        double clock = 0;
+        double delta = 0;
+        int foldersRows =0,  patternsRows = 0, patternsFoldersRows = 0;
+
+        try {
+             foldersRows = calcRows(foldersDb);
+             patternsRows = calcRows(patternsDb);
+             patternsFoldersRows = calcRows(patternsFoldersDb);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        executeStatement(url);
+        delta = 0.2/(foldersRows+patternsRows+patternsFoldersRows);
+        try {
 			while (foldersDb.next()) {
 
 				folder = foldersDao.getById(foldersDb.getInt("id_folder"));
@@ -164,12 +191,15 @@ public class DatabaseCreator {
 					LOGGER.info("foldersDao %s", folder);
 					foldersDao.save(folder);
 				}
-			}
+                clock = delta * foldersDb.getRow();
+                EventBus.publishEvent(new ProgressBarEvent(clock));
+
+            }
 			while (patternsDb.next()) {
 
 				pattern = patternsDao.getById(patternsDb.getInt("id_pattern"));
 				if (pattern == null) {
-					pattern = new com.mpsdevelopment.biopotential.server.db.pojo.Pattern().setIdPattern(patternsDb.getInt("id_pattern")).setPatternName(patternsDb.getString("pattern_name"))
+					pattern = new Pattern().setIdPattern(patternsDb.getInt("id_pattern")).setPatternName(patternsDb.getString("pattern_name"))
 							.setPatternDescription(patternsDb.getString("pattern_description")).setPatternUid(patternsDb.getString("pattern_uid"))
 							.setSrcHash(patternsDb.getString("src_hash")).setEdxHash(patternsDb.getString("edx_hash")).setDbdtsAdded(patternsDb.getString("dbdts_added"))
 							.setIsInUse(patternsDb.getInt("is_in_use")).setPatternShortDesc(patternsDb.getString("pattern_short_desc"))
@@ -182,8 +212,12 @@ public class DatabaseCreator {
 
 					LOGGER.info("%s", pattern.getPatternName());
 					patternsDao.save(pattern);
+
+//                    clock = clock + delta * patternsDb.getRow();
+                    EventBus.publishEvent(new ProgressBarEvent(clock + delta * patternsDb.getRow()));
 				}
 			}
+            clock = clock + delta * patternsRows;
 
 			while (patternsFoldersDb.next()) {
 
@@ -196,8 +230,10 @@ public class DatabaseCreator {
 				patternsFolders.setCorrectors(null);
 
 				patternsFoldersDao.save(patternsFolders);
+                EventBus.publishEvent(new ProgressBarEvent(clock + delta * patternsFoldersDb.getRow()));
 
-			}
+            }
+            clock = clock + delta * patternsFoldersRows;
 
 			List<Folder> folderList = foldersDao.findAll();
 			List<Pattern> patternList = patternsDao.findAll();
@@ -206,7 +242,12 @@ public class DatabaseCreator {
 			Long virId = 0L;
 			Long cardioId =0L, dermaId = 0L,endocrinId = 0L,gastroId=0L,immunId=0L,mentisId=0L,neuralId=0L
 					,orthoId=0L,spiritusId=0L,stomatId=0L,urologId=0L,visionId = 0L;
-			for (Folder folder : folderList) {
+            Long DiId = 0L, BoId = 0L,AlId = 0L, DtId = 0L;
+
+
+
+            // work with correctors
+            for (Folder folder : folderList) {
 				if (folder.getFolderName().contains("BAC")){bacId = folder.getId();}
 				if (folder.getFolderName().contains("Muc")){mucId = folder.getId();}
 				if (folder.getFolderName().contains("VIR")){virId = folder.getId();}
@@ -226,13 +267,25 @@ public class DatabaseCreator {
 				if (folder.getFolderName().contains("STOMAT COR")){stomatId = folder.getId();}
 				if (folder.getFolderName().contains("UROLOG COR")){urologId = folder.getId();}
 				if (folder.getFolderName().contains("VISION COR")){visionId = folder.getId();}
+//712ms
+                // add new condition
+                if (folder.getFolderName().contains("Disrupt")){DiId = folder.getId();}
+                if (folder.getFolderName().contains("Bо")){BoId = folder.getId();}
+                if (folder.getFolderName().contains("AL ALLERGY")){AlId = folder.getId();}
+                if (folder.getFolderName().contains("Dt DETOKC")){DtId = folder.getId();}
 
 			}
-
+            long t2 = System.currentTimeMillis();
 			Folder floraDissection = foldersDao.getById(4328);
 			Folder analysis = foldersDao.getById(4550);
+			Folder actually = foldersDao.getById(4616);
+			Folder body = foldersDao.getById(4553);
+			Folder allergy = foldersDao.getById(375);
+			Folder detokc = foldersDao.getById(492);
+            delta = 0.1/(patternList.size());
 
-			for (Pattern pattern : patternList) {
+
+            for (Pattern pattern : patternList) {
 
 				patternsFolders = new PatternsFolders();
 				if (floraDissection != null) {
@@ -240,6 +293,21 @@ public class DatabaseCreator {
 				}
 				if (analysis != null) {
 					patternsFolders.setFolder(analysis);
+				}
+                if (actually != null) {
+                    patternsFolders.setFolder(actually);
+                }
+                if (body != null) {
+                    patternsFolders.setFolder(body);
+                }
+				if (body != null) {
+					patternsFolders.setFolder(body);
+				}
+				if (allergy != null) {
+					patternsFolders.setFolder(allergy);
+				}
+				if (detokc != null) {
+					patternsFolders.setFolder(detokc);
 				}
 //                patternsFolders.setFolder(analysis);
 				patternsFolders.setPattern(pattern);
@@ -274,15 +342,34 @@ public class DatabaseCreator {
 				{patternsFolders.setCorrectors(urologId);}
 				else if (pattern.getPatternName().contains("VISION☄"))
 				{patternsFolders.setCorrectors(visionId);}
+                else if (pattern.getPatternName().contains("ACTUALLY") || pattern.getPatternName().contains("D\\") || pattern.getPatternName().contains("ENERGY"))
+                {patternsFolders.setCorrectors(DiId);}
+                else if (pattern.getPatternName().contains("Bо"))
+                {patternsFolders.setCorrectors(BoId);}
+				/*else if (pattern.getPatternName().contains("AL"))
+				{patternsFolders.setCorrectors(AlId);}
+				else if (pattern.getPatternName().contains("Dt"))
+				{patternsFolders.setCorrectors(DtId);}*/
 
 				patternsFolders.getFolder().getPatternsFolders().add(patternsFolders);
 				patternsFolders.getPattern().getPatternsFolders().add(patternsFolders);
 
 				patternsFoldersDao.save(patternsFolders);
-			}
 
+//                clock = clock + delta * patternsFoldersDb.getRow();
+                EventBus.publishEvent(new ProgressBarEvent(clock + delta * patternList.indexOf(pattern)));
+
+            }
+            clock = clock + delta * patternList.size();
+
+            LOGGER.info("patternsFolders took %s ms", System.currentTimeMillis() - t2);
+            LOGGER.info("Convert table's took %s ms", System.currentTimeMillis() - t1);
+			long t3 = System.currentTimeMillis();
 			setChunkSummary();
-			LOGGER.info("End");
+			LOGGER.info("Chunk summary took %s ms", System.currentTimeMillis() - t3);
+            LOGGER.info("Overall convert process took %s ms", System.currentTimeMillis() - t1);
+            EventBus.publishEvent(new ProgressBarEvent(1));
+            LOGGER.info("End");
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -290,24 +377,44 @@ public class DatabaseCreator {
 
 	}
 
+    private int calcRows(ResultSet set) throws SQLException {
+        long t1 = System.currentTimeMillis();
 
-	/**
+        int i = 0;
+        while(set.next()) {
+            i++;
+        }
+        LOGGER.info("Table size %s", String.valueOf(i));
+        LOGGER.info("%d ms",System.currentTimeMillis() - t1);
+        return i;
+    }
+
+
+    /**
 	 *
 	 * @throws IOException
 	 * @throws SQLException
-	 *             setChunkSummary add to Pattern table column ChunkSummary pre-calculated lis of meandeviation and dispersion
+	 * setChunkSummary add to Pattern table column ChunkSummary pre-calculated lis of meandeviation and dispersion
 	 */
 
 	private void setChunkSummary() throws IOException, SQLException {
 		List<Pattern> patternAll = patternsDao.getPatterns(null, null);
 		LOGGER.info("List size %s", patternAll.size());
+        double clock = 0.3;
+        double delta = 0.7/(patternAll.size());
 
-		for (Pattern patternsum : patternAll) {
+        for (Pattern patternsum : patternAll) {
 			try {
+                long t1 = System.currentTimeMillis();
 				PcmDataSummary sum = Machine.getPcmData(patternsum.getPatternUid());
 				patternsum.setChunkSummary(JsonUtils.getJson(sum.getSummary()));
 				patternsDao.saveOrUpdate(patternsum);
-			} catch (IOException e) {
+                LOGGER.info("Time for get summarize %d ms", System.currentTimeMillis() - t1);
+
+                EventBus.publishEvent(new ProgressBarEvent(clock + delta * patternAll.indexOf(patternsum)));
+
+
+            } catch (IOException e) {
 				e.printStackTrace();
 			}
 		}

@@ -1,13 +1,6 @@
 package com.mpsdevelopment.biopotential.server.db.pojo;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "Patterns_Folders")
@@ -18,11 +11,11 @@ public class PatternsFolders extends BaseObject{
     public static final String CORRECTORS = "correctors";
 
 //    private long id;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "Folder_ID")
     private Folder folder;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "Pattern_ID")
     private Pattern pattern;
 

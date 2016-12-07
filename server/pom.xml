@@ -17,7 +17,7 @@
 		<jet.output.directory>target/jet</jet.output.directory>
 		<jet.version>0.1</jet.version>
 		<jet.vendor>MPS Development</jet.vendor>
-		<jet32.home>c:\Program Files (x86)\ExcelsiorJet</jet32.home>
+		<jet32.home>c:\Program Files\ExcelsiorJet</jet32.home>
 		<jet64.home>c:\Program Files\ExcelsiorJet</jet64.home>
 		<jet.expire.message>Program has stopped working. Contact an
 			administrator</jet.expire.message>
@@ -63,9 +63,14 @@
 		<bouncycastle.version>1.46</bouncycastle.version>
 		<lib.property>lib</lib.property>
 		<mbassador.version>1.2.4</mbassador.version>
-
+		<lwjgl.version>2.9.0</lwjgl.version>
 	</properties>
 	<dependencies>
+		<dependency>
+		 <groupId>org.lwjgl.lwjgl</groupId>
+		 <artifactId>lwjgl</artifactId>
+		 <version>${lwjgl.version}</version>
+		 </dependency>
 
 		<!--<dependency> <groupId>net.engio</groupId> <artifactId>mbassador</artifactId> 
 			<version>${mbassador.version}</version> </dependency> -->
@@ -397,8 +402,13 @@
 			<artifactId>jts</artifactId>
 			<version>1.13</version>
 		</dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl</artifactId>
+            <version>3.0.0b</version>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 
 	<build>
 		<finalName>server</finalName>
@@ -531,10 +541,10 @@
 					<inlineExpansion>low</inlineExpansion>
 					<protectData>true</protectData>
 
-					<jetHome>${jet32.home}</jetHome>
+					<jetHome>${jet64.home}</jetHome>
 
 					<jvmArgs>
-						<jvmArg>-Xmx1g</jvmArg>
+						<jvmArg>-Xmx6g</jvmArg>
 					</jvmArgs>
 
 					<outputName>BioApplication</outputName>

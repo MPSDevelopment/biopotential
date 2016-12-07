@@ -10,6 +10,7 @@ import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
 import com.mpsdevelopment.biopotential.server.eventbus.event.SelectUserEvent;
+import com.mpsdevelopment.biopotential.server.gui.converter.ConverterPanel;
 import com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.AutomaticsPanel;
 import com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.SelectFromDbPanel;
 import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
@@ -164,6 +165,9 @@ public class DiagPanelController extends AbstractController implements Subscriba
 
     @FXML
     private Button chooseStorageButton;
+
+    @FXML
+    private Button converterButton;
 
     @FXML
     private DatePicker datePicker;
@@ -375,7 +379,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
             @Override
             public void handle(ActionEvent event) {
                 FileChooser fileChooser = new FileChooser();
-                fileChooser.setInitialDirectory(new File("testfiles"));
+                fileChooser.setInitialDirectory(new File("data"));
                 File selectedFile = fileChooser.showOpenDialog(null);
 
                 if (!selectedFile.getPath().contains(".mv.db")) {
@@ -421,6 +425,17 @@ public class DiagPanelController extends AbstractController implements Subscriba
                 String body = JsonUtils.getJson(visit);
                 LOGGER.info("User - Visit %s", body);
                 httpClient.executePutRequest(ControllerAPI.VISITS_CONTROLLER + ControllerAPI.VISITS_CONTROLLER_PUT_CREATE_VISIT, body);
+
+            }
+        });
+
+        converterButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                LOGGER.info("Open ConverterPanel");
+                ConverterPanel panel = new ConverterPanel();
+                Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Конвертор базы").setClazz(panel.getClass()).setHeight(260d).setWidth(370d).setHeightPanel(250d).setWidthPanel(370d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+                panel.setPrimaryStage(stage);
 
             }
         });

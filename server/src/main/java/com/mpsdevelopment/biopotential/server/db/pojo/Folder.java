@@ -34,7 +34,7 @@ public class Folder extends BaseObject {
     /*@JoinTable(name="Folders_Patterns",
             joinColumns={@JoinColumn(name=Folder.ID_FIELD)},
             inverseJoinColumns={@JoinColumn(name=Pattern.ID_FIELD)})*/
-    @OneToMany(mappedBy = "folder")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "folder")
     private List<PatternsFolders> patternsFolders = new ArrayList<>();
 
 

@@ -18,8 +18,10 @@ public class SessionAdvice implements MethodBeforeAdvice, AfterReturningAdvice {
 
 	@Override
 	public void before(Method method, Object[] objects, Object o) throws Throwable {
-		// LOGGER.info("Invoked before aop method");
-		sessionManager.openSession();
+//		if (method.isAnnotationPresent(Adviceable.class)) {
+			// LOGGER.info("Invoked before aop method");
+			sessionManager.openSession();
+//		}
 	}
 
 	@Override
