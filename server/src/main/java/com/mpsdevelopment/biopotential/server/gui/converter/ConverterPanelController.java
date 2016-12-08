@@ -93,8 +93,8 @@ public class ConverterPanelController extends AbstractController implements Subs
 
 
 
-        persistUtils = ConverterApplication.WEB_CONTEXT.getBean(PersistUtils.class);
-        sessionManager = ConverterApplication.WEB_CONTEXT.getBean(SessionManager.class);
+        persistUtils = ConverterApplication.APP_CONTEXT.getBean(PersistUtils.class);
+        sessionManager = ConverterApplication.APP_CONTEXT.getBean(SessionManager.class);
 
         /*progressBar.progressProperty().unbind();
         copyTask = new CopyTask();
