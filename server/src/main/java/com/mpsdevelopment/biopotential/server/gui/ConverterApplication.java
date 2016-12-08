@@ -1,5 +1,6 @@
 package com.mpsdevelopment.biopotential.server.gui;
 
+import com.mpsdevelopment.biopotential.server.JettyServer;
 import com.mpsdevelopment.biopotential.server.gui.converter.ConverterPanel;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
 import com.mpsdevelopment.biopotential.server.utils.StageUtils;
@@ -20,7 +21,6 @@ public class ConverterApplication extends Application{
 
     private static final Logger LOGGER = LoggerUtil.getLogger(BioApplication.class);
     private static ClasspathResourceManager resourceManager = ClasspathResourceManager.getResourceManager();
-    
     public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/app-context.xml", "webapp/web-context.xml");
 
     public static void main(String[] args) {
@@ -34,6 +34,12 @@ public class ConverterApplication extends Application{
     @Override
     public void start(Stage stage) throws Exception {
         addMainPanel();
+    }
+
+    @Override
+    public void stop() {
+
+        System.exit(0);
     }
 
     private void addMainPanel() {
