@@ -13,6 +13,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<jdk.version>1.8</jdk.version>
+		<jre.version>1.8.0.74</jre.version>
 
 		<jet.output.directory>target/jet</jet.output.directory>
 		<jet.version>0.1</jet.version>
@@ -24,7 +25,7 @@
 
 		<replacer.plugin.version>1.5.2</replacer.plugin.version>
 		<excelsiorjet.plugin.version>0.8.0</excelsiorjet.plugin.version>
-		<resources.plugin.version>2.7</resources.plugin.version>
+		<resources.plugin.version>3.0.1</resources.plugin.version>
 		<compiler.plugin.version>3.3</compiler.plugin.version>
 		<surefire.plugin.version>2.18.1</surefire.plugin.version>
 		<dependency.plugin.version>2.10</dependency.plugin.version>
@@ -67,10 +68,10 @@
 	</properties>
 	<dependencies>
 		<dependency>
-		 <groupId>org.lwjgl.lwjgl</groupId>
-		 <artifactId>lwjgl</artifactId>
-		 <version>${lwjgl.version}</version>
-		 </dependency>
+			<groupId>org.lwjgl.lwjgl</groupId>
+			<artifactId>lwjgl</artifactId>
+			<version>${lwjgl.version}</version>
+		</dependency>
 
 		<!--<dependency> <groupId>net.engio</groupId> <artifactId>mbassador</artifactId> 
 			<version>${mbassador.version}</version> </dependency> -->
@@ -402,13 +403,13 @@
 			<artifactId>jts</artifactId>
 			<version>1.13</version>
 		</dependency>
-        <dependency>
-            <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl</artifactId>
-            <version>3.0.0b</version>
-        </dependency>
+		<dependency>
+			<groupId>org.lwjgl</groupId>
+			<artifactId>lwjgl</artifactId>
+			<version>3.0.0b</version>
+		</dependency>
 
-    </dependencies>
+	</dependencies>
 
 	<build>
 		<finalName>server</finalName>
@@ -454,24 +455,53 @@
 							<stripVersion>true</stripVersion>
 						</configuration>
 					</execution>
+					<execution>
+						<id>copy</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>oracle</groupId>
+									<artifactId>jre-win32</artifactId>
+									<version>${jre.version}</version>
+									<type>zip</type>
+									<overWrite>false</overWrite>
+									<outputDirectory>${project.build.directory}/jre</outputDirectory>
+								</artifactItem>
+							</artifactItems>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
+			<!-- <plugin> -->
+			<!-- <groupId>org.apache.maven.plugins</groupId> -->
+			<!-- <artifactId>maven-jar-plugin</artifactId> -->
+			<!-- <version>${jar.plugin.version}</version> -->
+			<!-- <configuration> -->
+			<!-- <outputDirectory>${project.build.directory}</outputDirectory> -->
+			<!-- <archive> -->
+			<!-- <manifest> -->
+			<!-- <addClasspath>true</addClasspath> -->
+			<!-- <classpathLayoutType>custom</classpathLayoutType> -->
+			<!-- <customClasspathLayout> -->
+			<!-- ${lib.property}/${artifact.artifactId}${artifact.dashClassifier?}.${artifact.extension} -->
+			<!-- </customClasspathLayout> -->
+			<!-- </manifest> -->
+			<!-- </archive> -->
+			<!-- <finalName>${project.artifactId}</finalName> -->
+			<!-- </configuration> -->
+			<!-- </plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>${jar.plugin.version}</version>
 				<configuration>
-					<outputDirectory>${project.build.directory}</outputDirectory>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathLayoutType>custom</classpathLayoutType>
-							<customClasspathLayout>
-								${lib.property}/${artifact.artifactId}${artifact.dashClassifier?}.${artifact.extension}
-							</customClasspathLayout>
-						</manifest>
-					</archive>
-					<finalName>${project.artifactId}</finalName>
+					<!-- <outputDirectory>${project.build.directory}/${our.lib.property}</outputDirectory> -->
 				</configuration>
 			</plugin>
 			<plugin>
@@ -553,6 +583,66 @@
 					<version>${jet.version}</version>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>${maven.antrun.plugin.version}</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<configuration>
+							<target>
+								<copy file="build/app.j2e" tofile="${project.build.directory}/app.bat" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>${exec.maven.plugin.version}</version>
+				<executions>
+					<execution>
+						<id>app</id>
+						<phase>package</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<workingDirectory>target</workingDirectory>
+							<executable>target/app.bat</executable>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>${assembly.plugin.version}</version>
+				<configuration>
+					<descriptors>
+						<descriptor>zip.xml</descriptor>
+					</descriptors>
+					<archiverConfig>
+						<compress>true</compress>
+					</archiverConfig>
+					<recompressZippedFiles>true</recompressZippedFiles>
+					<outputDirectory>${output.directory}</outputDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 		<resources>
 			<resource>
@@ -578,12 +668,11 @@
 				<targetPath>${project.build.directory}/config/</targetPath>
 			</resource>
 			<resource>
-				<directory></directory>
-				<targetPath>${project.build.directory}</targetPath>
-				<includes>
-					<include>*.sh</include>
-					<include>*.bat</include>
-				</includes>
+				<directory>build</directory>
+				<excludes>
+					<exclude>*.j2e</exclude>
+				</excludes>
+				<targetPath>${project.build.directory}/</targetPath>
 			</resource>
 		</resources>
 	</build>

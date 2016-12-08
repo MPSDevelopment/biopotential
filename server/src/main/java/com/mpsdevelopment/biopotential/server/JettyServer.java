@@ -121,25 +121,10 @@ public class JettyServer {
 			WEB_CONTEXT.setConfigLocations(SPRING_CONTEXT_FILENAME);
 			WEB_CONTEXT.setParent(BioApplication.APP_CONTEXT);
 
-			// // Specify the Session ID Manager
-			// HashSessionIdManager idmanager = new HashSessionIdManager();
-			// server.setSessionIdManager(idmanager);
-			//
-			// // Create the SessionHandler (wrapper) to handle the sessions
-			// HashSessionManager manager = new HashSessionManager();
-			// SessionHandler sessions = new SessionHandler(manager);
-			// contextHandler.setHandler(sessions);
-
-			// // Put dump inside of SessionHandler
-			// sessions.setHandler(dump);
-
 			ServletHolder mvcServletHolder = new ServletHolder(MVC_SERVLET_NAME, new DispatcherServlet(WEB_CONTEXT));
 			mvcServletHolder.setInitParameter("useFileMappedBuffer", "false");
 			contextHandler.addServlet(mvcServletHolder, "/");
-
-			// Add spring security
-//			contextHandler.addFilter(new FilterHolder(new DelegatingFilterProxy("springSecurityFilterChain")), "/*", EnumSet.allOf(DispatcherType.class));
-
+			
 			contextHandler.setResourceBase(getBaseUrl());
 
 			int contentSize = contextHandler.getMaxFormContentSize();
@@ -152,61 +137,20 @@ public class JettyServer {
 		return contextHandler;
 	}
 
-	// public ServletContextHandler getServletHandler() {
-	// if (contextHandler == null) {
-	// File tempDirectory = new File(serverSettings.getTempDirectory());
-	// if (!tempDirectory.exists()) {
-	// tempDirectory.mkdirs();
-	// }
-	//
-	// contextHandler = new
-	// ServletContextHandler(ServletContextHandler.SESSIONS);
-	// contextHandler.setAttribute("javax.servlet.context.tempdir",
-	// tempDirectory);
-	// contextHandler.setClassLoader(Thread.currentThread().getContextClassLoader());
-	//
-	// WEB_CONTEXT = new XmlWebApplicationContext();
-	// WEB_CONTEXT.setConfigLocations(SPRING_CONTEXT_FILENAME);
-	// WEB_CONTEXT.setParent(APP_CONTEXT);
-	//
-	// ServletHolder mvcServletHolder = new ServletHolder(MVC_SERVLET_NAME, new
-	// DispatcherServlet(WEB_CONTEXT));
-	// contextHandler.addServlet(mvcServletHolder, "/");
-	//
-	// contextHandler.addFilter(AuthorizationFilter.class, "/*",
-	// EnumSet.of(DispatcherType.INCLUDE, DispatcherType.REQUEST));
-	// contextHandler.setResourceBase(getBaseUrl());
-	//
-	// int contentSize = contextHandler.getMaxFormContentSize();
-	// int maxContentSize = 500 * 1000 * 1000;
-	// contextHandler.setMaxFormContentSize(maxContentSize);
-	//
-	// LOGGER.info("Max content size will be changed from %s to %s",
-	// contentSize, maxContentSize);
-	//
-	// }
-	// return contextHandler;
-	// }
-
 	public void join() throws InterruptedException {
 		server.join();
 	}
 
 	public void stop() throws Exception {
-
-		// TODO Check This - PersistUtils.openSessionsCounter
-		// if (PersistUtils.openSessionsCounter > 0) {
-		// throw new Exception(String.format("Two much open sessions
-		// exception!!! Open sessions count: %s",
-		// PersistUtils.openSessionsCounter));
-		// }
 		server.stop();
 	}
 
 	private String getBaseUrl() {
-		URL webInfUrl = JettyServer.class.getClassLoader().getResource(SPRING_ROOT);
+		URL webInfUrl = Thread.currentThread().getContextClassLoader().getResource(SPRING_ROOT);
 		if (webInfUrl == null) {
 			throw new RuntimeException("Failed to find web application root: " + SPRING_ROOT);
+		} else {
+			LOGGER.info("Jetty spring base url is %s", webInfUrl);
 		}
 		return webInfUrl.toExternalForm();
 	}
