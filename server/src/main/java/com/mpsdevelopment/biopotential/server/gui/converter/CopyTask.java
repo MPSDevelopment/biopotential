@@ -7,6 +7,7 @@ import com.mpsdevelopment.biopotential.server.db.dao.UserDao;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.event.ProgressBarEvent;
+import com.mpsdevelopment.biopotential.server.gui.ConverterApplication;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.concurrent.Task;
@@ -37,8 +38,8 @@ public class CopyTask extends Task<Void> {
         protected Void call() throws Exception {
             LOGGER.info("Void call() method ");
 
-            databaseCreator = JettyServer.WEB_CONTEXT.getBean(DatabaseCreator.class);
-            userDao = JettyServer.WEB_CONTEXT.getBean(UserDao.class);
+            databaseCreator = ConverterApplication.APP_CONTEXT.getBean(DatabaseCreator.class);
+            userDao = ConverterApplication.APP_CONTEXT.getBean(UserDao.class);
             try {
                 List<User> users = userDao.findAll();
                 if (users.size() < 10) {

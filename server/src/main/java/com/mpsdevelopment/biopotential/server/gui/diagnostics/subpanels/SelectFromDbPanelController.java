@@ -50,7 +50,7 @@ public class SelectFromDbPanelController extends AbstractController implements S
     @FXML
     private ProgressIndicator progressIndicator;
 
-    @Autowired
+//    @Autowired
     private BioHttpClient deviceBioHttpClient;
 
     @Autowired
