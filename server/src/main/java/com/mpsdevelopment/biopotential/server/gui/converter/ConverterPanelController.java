@@ -13,6 +13,7 @@ import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.ProgressBarEvent;
 import com.mpsdevelopment.biopotential.server.eventbus.event.SelectUserEvent;
 import com.mpsdevelopment.biopotential.server.gui.BioApplication;
+import com.mpsdevelopment.biopotential.server.gui.ConverterApplication;
 import com.mpsdevelopment.biopotential.server.gui.analysis.AnalysisPanel;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
@@ -92,8 +93,8 @@ public class ConverterPanelController extends AbstractController implements Subs
 
 
 
-        persistUtils = JettyServer.WEB_CONTEXT.getBean(PersistUtils.class);
-        sessionManager = JettyServer.WEB_CONTEXT.getBean(SessionManager.class);
+        persistUtils = ConverterApplication.WEB_CONTEXT.getBean(PersistUtils.class);
+        sessionManager = ConverterApplication.WEB_CONTEXT.getBean(SessionManager.class);
 
         /*progressBar.progressProperty().unbind();
         copyTask = new CopyTask();

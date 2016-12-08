@@ -271,7 +271,7 @@ public class DatabaseCreator {
                 // add new condition
                 if (folder.getFolderName().contains("Disrupt")){DiId = folder.getId();}
                 if (folder.getFolderName().contains("Bо")){BoId = folder.getId();}
-                if (folder.getFolderName().contains("AL ALLERGY")){AlId = folder.getId();}
+                if (folder.getFolderName().contains("AL en")){AlId = folder.getId();}
                 if (folder.getFolderName().contains("Dt DETOKC")){DtId = folder.getId();}
 
 			}
@@ -346,10 +346,10 @@ public class DatabaseCreator {
                 {patternsFolders.setCorrectors(DiId);}
                 else if (pattern.getPatternName().contains("Bо"))
                 {patternsFolders.setCorrectors(BoId);}
-				/*else if (pattern.getPatternName().contains("AL"))
+				else if (pattern.getPatternName().contains("AL"))
 				{patternsFolders.setCorrectors(AlId);}
 				else if (pattern.getPatternName().contains("Dt"))
-				{patternsFolders.setCorrectors(DtId);}*/
+				{patternsFolders.setCorrectors(DtId);}
 
 				patternsFolders.getFolder().getPatternsFolders().add(patternsFolders);
 				patternsFolders.getPattern().getPatternsFolders().add(patternsFolders);

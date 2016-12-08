@@ -1,9 +1,9 @@
 {
   "host": "localhost",
-  "port": 8098,
-  "filesPath": "data/files",
-  "tempDirectory": "data/tmp/webapp",
   "cookieHost": "",
   "cookieMaxAge": 86400,
-  "dbPath" : "./data/db_cutted"
+  "port": 8098,
+  "tempDirectory": "data/tmp/webapp",
+  "filesPath": "data/files",
+  "dbPath": "D:/MPS/IDEA/Biopotential material's/Export AKT/AKT"
 }
