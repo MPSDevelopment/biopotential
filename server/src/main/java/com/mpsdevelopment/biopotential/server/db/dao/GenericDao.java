@@ -17,6 +17,8 @@ import com.mpsdevelopment.biopotential.server.db.SessionManager;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 
+import javax.annotation.Resource;
+
 public abstract class GenericDao<T, ID extends Serializable> {
 
 	private static final Logger LOGGER = LoggerUtil.getLogger(GenericDao.class);
@@ -25,8 +27,8 @@ public abstract class GenericDao<T, ID extends Serializable> {
 
 	private Class<T> persistentClass;
 
-	@Autowired
-	private SessionManager sessionManager;
+	@Resource
+	protected SessionManager sessionManager;
 
 	protected void setSession(Session session) {
 		sessionManager.setSession(session);

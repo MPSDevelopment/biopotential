@@ -196,7 +196,7 @@ public class ConverterPanelController extends AbstractController implements Subs
             name = nameTextField.getText();
         }
 
-        ServerSettings fileSettings = BioApplication.APP_CONTEXT.getBean(ServerSettings.class);
+        ServerSettings fileSettings = ConverterApplication.APP_CONTEXT.getBean(ServerSettings.class);
         fileSettings.setDbPath(url+name);
         String json = JsonUtils.getJson(fileSettings);
         JsonUtils.writeJsonToFile(json.replace("\\\\","/"),"config/server.json");

@@ -13,7 +13,7 @@
 	<import resource="spring-security.xml" />
 
 	<!--<context:component-scan base-package="com.mpsdevelopment.biopotential.server.db.advice" />-->
-	<!--<context:component-scan base-package="com.mpsdevelopment.biopotential.server.db.dao" />-->
+	<context:component-scan base-package="com.mpsdevelopment.biopotential.server.db.dao" />
 	<!--<context:component-scan base-package="com.mpsdevelopment.biopotential.server.scheduler" />-->
 
     <bean id="serverSettings" class="com.mpsdevelopment.biopotential.server.settings.ServerSettings" init-method="init">
@@ -41,7 +41,9 @@
 	<bean id="diseasController" class="com.mpsdevelopment.biopotential.server.controller.DiseasController" />
 	<bean id="foldersController" class="com.mpsdevelopment.biopotential.server.controller.FoldersController" />
 
-	<bean id="userDao" class="com.mpsdevelopment.biopotential.server.db.dao.UserDao" depends-on="sessionManager"/>
+	<bean id="genericDao" class="com.mpsdevelopment.biopotential.server.db.dao.GenericDao" autowire="byName" abstract="true" depends-on="sessionManager"/>
+
+	<bean id="userDao" class="com.mpsdevelopment.biopotential.server.db.dao.UserDao" autowire="byName" depends-on="sessionManager"/>
 	<bean id="foldersDao" class="com.mpsdevelopment.biopotential.server.db.dao.FoldersDao" depends-on="sessionManager"/>
 	<bean id="patternsDao" class="com.mpsdevelopment.biopotential.server.db.dao.PatternsDao" depends-on="sessionManager"/>
 	<bean id="patternsFoldersDao" class="com.mpsdevelopment.biopotential.server.db.dao.PatternsFoldersDao" depends-on="sessionManager"/>
@@ -58,7 +60,7 @@
 
 	<bean id="databaseCreatorProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
 		<property name="target">
-			<bean id="databaseCreator" class="com.mpsdevelopment.biopotential.server.db.DatabaseCreator" init-method="initialization" autowire="byName"/>
+			<bean id="databaseCreator" class="com.mpsdevelopment.biopotential.server.db.DatabaseCreator" autowire="byName"/>
 		</property>
 		<property name="interceptorNames">
 			<list>
