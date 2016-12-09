@@ -1,3 +1,4 @@
+<!--
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
 	xmlns:sec="http://www.springframework.org/schema/security" xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
@@ -27,7 +28,7 @@
 	<bean id="persistUtils" class="com.mpsdevelopment.biopotential.server.db.PersistUtils" init-method="configureSessionFactory" autowire="byName" />
 
 	<bean id="sessionManager" class="com.mpsdevelopment.biopotential.server.db.SessionManager" autowire="byName" />
-	<!-- <bean id="securityUtils" class="com.mpsdevelopment.biopotential.server.utils.SecurityUtils" autowire="byName" /> -->
+	&lt;!&ndash; <bean id="securityUtils" class="com.mpsdevelopment.biopotential.server.utils.SecurityUtils" autowire="byName" /> &ndash;&gt;
 
 	<bean id="springContextHolder" class="com.mpsdevelopment.biopotential.server.SpringContextHolder" />
 
@@ -35,7 +36,7 @@
 
 	<bean id="sessionAdviceBean" class="com.mpsdevelopment.biopotential.server.db.advice.SessionAdvice" />
 	<bean id="annotationSessionAdviceBean" class="com.mpsdevelopment.biopotential.server.db.advice.AnnotationSessionAdvice" />
-	<!-- <bean id="protectedApiSessionAdvice" class="com.mpsdevelopment.biopotential.server.db.advice.ProtectedApiSessionAdvice" /> -->
+	&lt;!&ndash; <bean id="protectedApiSessionAdvice" class="com.mpsdevelopment.biopotential.server.db.advice.ProtectedApiSessionAdvice" /> &ndash;&gt;
 	<bean id="diseasController" class="com.mpsdevelopment.biopotential.server.controller.DiseasController" />
 	<bean id="foldersController" class="com.mpsdevelopment.biopotential.server.controller.FoldersController" />
 
@@ -108,22 +109,22 @@
 
 
 
-	<!-- This bean we need for uploading file from http client -->
+	&lt;!&ndash; This bean we need for uploading file from http client &ndash;&gt;
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		<!-- max upload size in bytes -->
+		&lt;!&ndash; max upload size in bytes &ndash;&gt;
 		<property name="maxUploadSize" value="500000000" />
-		<!-- max size of file in memory (in bytes) -->
+		&lt;!&ndash; max size of file in memory (in bytes) &ndash;&gt;
 		<property name="maxInMemorySize" value="500000000" />
 	</bean>
 	<mvc:annotation-driven />
 
-	<!-- <aop:aspectj-autoproxy /> -->
+	&lt;!&ndash; <aop:aspectj-autoproxy /> &ndash;&gt;
 
-	<!-- тег для описания Расписаний (timer) -->
+	&lt;!&ndash; тег для описания Расписаний (timer) &ndash;&gt;
 	<task:annotation-driven executor="executor" scheduler="scheduler" />
 	<task:executor id="executor" pool-size="5" />
 	<task:scheduler id="scheduler" pool-size="10" />
 
 
 
-</beans>
+</beans>-->

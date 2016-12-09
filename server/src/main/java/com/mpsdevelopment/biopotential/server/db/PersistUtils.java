@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Properties;
 
+import com.mpsdevelopment.biopotential.server.gui.ConverterApplication;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.plexus.util.StringUtils;
@@ -52,10 +53,20 @@ public class PersistUtils {
 
 	@Autowired
 	private ServerSettings serverSettings;
-	// @Autowired(required = true)
-	// private ServerSettings serverSettings;
+//	 @Autowired(required = true)
+//	 private ServerSettings serverSettings;
 
-	public synchronized SessionFactory configureSessionFactory() throws HibernateException {
+    public ServerSettings getServerSettings() {
+        return serverSettings;
+    }
+
+    public void setServerSettings(ServerSettings serverSettings) {
+        this.serverSettings = serverSettings;
+    }
+
+    public synchronized SessionFactory configureSessionFactory() throws HibernateException {
+//        serverSettings = ConverterApplication.APP_CONTEXT.getBean(ServerSettings.class);
+
         LOGGER.info("Creating session factory %s", configurationFilename);
 		Configuration configuration = getOrCreateConfiguration(configurationFilename);
 

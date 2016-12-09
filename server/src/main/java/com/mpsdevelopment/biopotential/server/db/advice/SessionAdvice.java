@@ -16,6 +16,14 @@ public class SessionAdvice implements MethodBeforeAdvice, AfterReturningAdvice {
 	@Autowired
 	private SessionManager sessionManager;
 
+	public SessionManager getSessionManager() {
+		return sessionManager;
+	}
+
+	public void setSessionManager(SessionManager sessionManager) {
+		this.sessionManager = sessionManager;
+	}
+
 	@Override
 	public void before(Method method, Object[] objects, Object o) throws Throwable {
 //		if (method.isAnnotationPresent(Adviceable.class)) {
