@@ -30,7 +30,15 @@ public abstract class GenericDao<T, ID extends Serializable> {
 	@Resource
 	protected SessionManager sessionManager;
 
-	protected void setSession(Session session) {
+    public SessionManager getSessionManager() {
+        return sessionManager;
+    }
+
+    public void setSessionManager(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
+    }
+
+    protected void setSession(Session session) {
 		sessionManager.setSession(session);
 	}
 

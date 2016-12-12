@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
+import org.springframework.context.annotation.Bean;
+
 
 public class SessionManager {
 

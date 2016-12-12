@@ -10,125 +10,129 @@
         http://www.springframework.org/schema/task
         http://www.springframework.org/schema/task/spring-task.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<import resource="spring-security.xml" />
+    <import resource="spring-security.xml"/>
+    <context:annotation-config/>
 
-	<!--<context:component-scan base-package="com.mpsdevelopment.biopotential.server.db.advice" />-->
-	<context:component-scan base-package="com.mpsdevelopment.biopotential.server.db.dao" />
-	<!--<context:component-scan base-package="com.mpsdevelopment.biopotential.server.scheduler" />-->
+    <!--<context:component-scan base-package="com.mpsdevelopment.biopotential.server.db.advice" />-->
+    <!--<context:component-scan base-package="com.mpsdevelopment.biopotential.server.db.dao" />-->
+    <!--<context:component-scan base-package="com.mpsdevelopment.biopotential.server.scheduler" />-->
+
 
     <bean id="serverSettings" class="com.mpsdevelopment.biopotential.server.settings.ServerSettings" init-method="init">
-        <property name="path" value="config/server.json" />
+        <property name="path" value="config/server.json"/>
     </bean>
 
-	<bean id="persistUtils" class="com.mpsdevelopment.biopotential.server.db.PersistUtils" init-method="configureSessionFactory" autowire="byName">
-        <property name="serverSettings" ref="serverSettings" />
-    </bean>
+    <bean id="persistUtils" class="com.mpsdevelopment.biopotential.server.db.PersistUtils" init-method="configureSessionFactory" autowire="byName"/>
+    <!--<property name="serverSettings" ref="serverSettings" />
+</bean>-->
 
-	<!--<bean id="sessionManager" class="com.mpsdevelopment.biopotential.server.db.SessionManager" autowire="byName" />-->
+    <!--<bean id="sessionManager" class="com.mpsdevelopment.biopotential.server.db.SessionManager" autowire="byName" depends-on="persistUtils"/>-->
     <bean id="sessionManager" class="com.mpsdevelopment.biopotential.server.db.SessionManager" autowire="byName" depends-on="persistUtils" lazy-init="false">
-        <constructor-arg ref="persistUtils" />
+        <constructor-arg ref="persistUtils"/>
     </bean>
-	<!-- <bean id="securityUtils" class="com.mpsdevelopment.biopotential.server.utils.SecurityUtils" autowire="byName" /> -->
+    <!-- <bean id="securityUtils" class="com.mpsdevelopment.biopotential.server.utils.SecurityUtils" autowire="byName" /> -->
 
-	<bean id="springContextHolder" class="com.mpsdevelopment.biopotential.server.SpringContextHolder" />
+    <bean id="springContextHolder" class="com.mpsdevelopment.biopotential.server.SpringContextHolder"/>
 
-	<bean id="tokenUtils" class="com.mpsdevelopment.biopotential.server.utils.TokenUtils" />
+    <bean id="tokenUtils" class="com.mpsdevelopment.biopotential.server.utils.TokenUtils"/>
 
-	<bean id="sessionAdviceBean" class="com.mpsdevelopment.biopotential.server.db.advice.SessionAdvice" />
+    <bean id="sessionAdviceBean" class="com.mpsdevelopment.biopotential.server.db.advice.SessionAdvice" depends-on="sessionManager" autowire="byName"/>
 
-	<bean id="annotationSessionAdviceBean" class="com.mpsdevelopment.biopotential.server.db.advice.AnnotationSessionAdvice" />
-	<!-- <bean id="protectedApiSessionAdvice" class="com.mpsdevelopment.biopotential.server.db.advice.ProtectedApiSessionAdvice" /> -->
-	<bean id="diseasController" class="com.mpsdevelopment.biopotential.server.controller.DiseasController" />
-	<bean id="foldersController" class="com.mpsdevelopment.biopotential.server.controller.FoldersController" />
+    <bean id="annotationSessionAdviceBean" class="com.mpsdevelopment.biopotential.server.db.advice.AnnotationSessionAdvice"/>
+    <!-- <bean id="protectedApiSessionAdvice" class="com.mpsdevelopment.biopotential.server.db.advice.ProtectedApiSessionAdvice" /> -->
+    <bean id="diseasController" class="com.mpsdevelopment.biopotential.server.controller.DiseasController"/>
+    <bean id="foldersController" class="com.mpsdevelopment.biopotential.server.controller.FoldersController"/>
 
-	<bean id="genericDao" class="com.mpsdevelopment.biopotential.server.db.dao.GenericDao" autowire="byName" abstract="true" depends-on="sessionManager"/>
+    <bean id="genericDao" class="com.mpsdevelopment.biopotential.server.db.dao.GenericDao" autowire="byName" abstract="true">
+        <!--<property name="sessionManager" ref="sessionManager"/>-->
+        <constructor-arg ref="sessionManager"/>
+    </bean>
 
-	<bean id="userDao" class="com.mpsdevelopment.biopotential.server.db.dao.UserDao" autowire="byName" depends-on="sessionManager"/>
-	<bean id="foldersDao" class="com.mpsdevelopment.biopotential.server.db.dao.FoldersDao" depends-on="sessionManager"/>
-	<bean id="patternsDao" class="com.mpsdevelopment.biopotential.server.db.dao.PatternsDao" depends-on="sessionManager"/>
-	<bean id="patternsFoldersDao" class="com.mpsdevelopment.biopotential.server.db.dao.PatternsFoldersDao" depends-on="sessionManager"/>
-	<bean id="visitDao" class="com.mpsdevelopment.biopotential.server.db.dao.VisitDao" depends-on="sessionManager"/>
-	<bean id="dіseaseDao" class="com.mpsdevelopment.biopotential.server.db.dao.DiseaseDao" depends-on="sessionManager"/>
+    <bean id="userDao" class="com.mpsdevelopment.biopotential.server.db.dao.UserDao" autowire="byName" />
+    <bean id="foldersDao" class="com.mpsdevelopment.biopotential.server.db.dao.FoldersDao" autowire="byName" depends-on="sessionManager"/>
+    <bean id="patternsDao" class="com.mpsdevelopment.biopotential.server.db.dao.PatternsDao" autowire="byName" depends-on="sessionManager"/>
+    <bean id="patternsFoldersDao" class="com.mpsdevelopment.biopotential.server.db.dao.PatternsFoldersDao" autowire="byName" depends-on="sessionManager"/>
+    <bean id="visitDao" class="com.mpsdevelopment.biopotential.server.db.dao.VisitDao" autowire="byName" depends-on="sessionManager"/>
+    <bean id="dіseaseDao" class="com.mpsdevelopment.biopotential.server.db.dao.DiseaseDao" autowire="byName" depends-on="sessionManager"/>
 
-	<bean id="selectFromDbPanelController" class="com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.SelectFromDbPanelController" />
-	<bean id="diagPanelController" class="com.mpsdevelopment.biopotential.server.gui.diagnostics.DiagPanelController"/>
-	<bean id="automaticsPanelController" class="com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.AutomaticsPanelController" />
-	<bean id="analysisPanelController" class="com.mpsdevelopment.biopotential.server.gui.analysis.AnalysisPanelController" />
-	<bean id="correctorsPanelController" class="com.mpsdevelopment.biopotential.server.gui.correctors.CorrectorsPanelController" />
-	<bean id="addCorrectorController" class="com.mpsdevelopment.biopotential.server.gui.correctors.AddCorrectorController" />
-	<bean id="converterPanelController" class="com.mpsdevelopment.biopotential.server.gui.converter.ConverterPanelController" />
+    <bean id="selectFromDbPanelController" class="com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.SelectFromDbPanelController"/>
+    <bean id="diagPanelController" class="com.mpsdevelopment.biopotential.server.gui.diagnostics.DiagPanelController"/>
+    <bean id="automaticsPanelController" class="com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.AutomaticsPanelController"/>
+    <bean id="analysisPanelController" class="com.mpsdevelopment.biopotential.server.gui.analysis.AnalysisPanelController"/>
+    <bean id="correctorsPanelController" class="com.mpsdevelopment.biopotential.server.gui.correctors.CorrectorsPanelController"/>
+    <bean id="addCorrectorController" class="com.mpsdevelopment.biopotential.server.gui.correctors.AddCorrectorController"/>
+    <bean id="converterPanelController" class="com.mpsdevelopment.biopotential.server.gui.converter.ConverterPanelController"/>
 
-	<bean id="databaseCreatorProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
-		<property name="target">
-			<bean id="databaseCreator" class="com.mpsdevelopment.biopotential.server.db.DatabaseCreator" autowire="byName"/>
-		</property>
-		<property name="interceptorNames">
-			<list>
-				<value>sessionAdviceBean</value>
-			</list>
-		</property>
-	</bean>
+    <bean id="databaseCreatorProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target">
+            <bean id="databaseCreator" class="com.mpsdevelopment.biopotential.server.db.DatabaseCreator" autowire="byName" depends-on="sessionManager"/>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <value>sessionAdviceBean</value>
+            </list>
+        </property>
+    </bean>
 
-	<bean id="usersControllerProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
-		<property name="target">
-			<bean id="usersController" class="com.mpsdevelopment.biopotential.server.controller.UsersController" />
-		</property>
-		<property name="interceptorNames">
-			<list>
-				<value>sessionAdviceBean</value>
-			</list>
-		</property>
-	</bean>
+    <bean id="usersControllerProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target">
+            <bean id="usersController" class="com.mpsdevelopment.biopotential.server.controller.UsersController"/>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <value>sessionAdviceBean</value>
+            </list>
+        </property>
+    </bean>
 
-	<bean id="patternsControllerProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
-		<property name="target">
-			<bean id="usersController" class="com.mpsdevelopment.biopotential.server.controller.PatternsController" />
-		</property>
-		<property name="interceptorNames">
-			<list>
-				<value>sessionAdviceBean</value>
-			</list>
-		</property>
-	</bean>
+    <bean id="patternsControllerProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target">
+            <bean id="usersController" class="com.mpsdevelopment.biopotential.server.controller.PatternsController"/>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <value>sessionAdviceBean</value>
+            </list>
+        </property>
+    </bean>
 
-	<bean id="visitsControllerProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
-		<property name="target">
-			<bean id="usersController" class="com.mpsdevelopment.biopotential.server.controller.VisitsController" />
-		</property>
-		<property name="interceptorNames">
-			<list>
-				<value>sessionAdviceBean</value>
-			</list>
-		</property>
-	</bean>
+    <bean id="visitsControllerProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target">
+            <bean id="usersController" class="com.mpsdevelopment.biopotential.server.controller.VisitsController"/>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <value>sessionAdviceBean</value>
+            </list>
+        </property>
+    </bean>
 
-	<bean id="usersServiceProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
-		<property name="target">
-			<bean id="usersService" class="com.mpsdevelopment.biopotential.server.service.UsersService" />
-		</property>
-		<property name="interceptorNames">
-			<list>
-				<value>sessionAdviceBean</value>
-			</list>
-		</property>
-	</bean>
+    <bean id="usersServiceProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target">
+            <bean id="usersService" class="com.mpsdevelopment.biopotential.server.service.UsersService"/>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <value>sessionAdviceBean</value>
+            </list>
+        </property>
+    </bean>
 
-	<!-- This bean we need for uploading file from http client -->
-	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		<!-- max upload size in bytes -->
-		<property name="maxUploadSize" value="500000000" />
-		<!-- max size of file in memory (in bytes) -->
-		<property name="maxInMemorySize" value="500000000" />
-	</bean>
-	<mvc:annotation-driven />
+    <!-- This bean we need for uploading file from http client -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- max upload size in bytes -->
+        <property name="maxUploadSize" value="500000000"/>
+        <!-- max size of file in memory (in bytes) -->
+        <property name="maxInMemorySize" value="500000000"/>
+    </bean>
+    <mvc:annotation-driven/>
 
-	<!-- <aop:aspectj-autoproxy /> -->
+    <!-- <aop:aspectj-autoproxy /> -->
 
-	<!-- тег для описания Расписаний (timer) -->
-	<task:annotation-driven executor="executor" scheduler="scheduler" />
-	<task:executor id="executor" pool-size="5" />
-	<task:scheduler id="scheduler" pool-size="10" />
-
+    <!-- тег для описания Расписаний (timer) -->
+    <task:annotation-driven executor="executor" scheduler="scheduler"/>
+    <task:executor id="executor" pool-size="5"/>
+    <task:scheduler id="scheduler" pool-size="10"/>
 
 
 </beans>

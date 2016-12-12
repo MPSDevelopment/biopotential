@@ -8,11 +8,15 @@ import com.mpsdevelopment.biopotential.server.db.pojo.*;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
 import com.mpsdevelopment.biopotential.server.eventbus.event.ProgressBarEvent;
+import com.mpsdevelopment.biopotential.server.gui.ConverterApplication;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.sqlite.jdbc4.JDBC4ResultSet;
 
 import java.io.IOException;
@@ -22,7 +26,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
+@Configuration
+@ComponentScan(basePackages = {"com.mpsdevelopment.biopotential.server.db"})
 public class DatabaseCreator {
 
 	public DatabaseCreator() {
@@ -70,6 +75,7 @@ public class DatabaseCreator {
 	private ResultSet patternsFoldersDb;
 
 	public void initialization() throws IOException, URISyntaxException, DaoException, SQLException {
+		userDao = ConverterApplication.APP_CONTEXT.getBean(UserDao.class);
         System.setErr(LoggerUtil.getRedirectedToLoggerErrPrintStream(System.err));
         System.setOut(LoggerUtil.getRedirectedToLoggerOutPrintStream(System.out));
 		LOGGER.info("databaseCreator initialization ");

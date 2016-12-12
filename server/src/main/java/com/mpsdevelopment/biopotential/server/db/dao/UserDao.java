@@ -6,9 +6,10 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-
+@Component
 public class UserDao extends GenericDao<User, Long> {
 	private static final com.mpsdevelopment.plasticine.commons.logging.Logger LOGGER = LoggerUtil.getLogger(UserDao.class);
 
