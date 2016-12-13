@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.mpsdevelopment.biopotential</groupId>
 	<artifactId>server</artifactId>
@@ -64,17 +63,10 @@
 		<bouncycastle.version>1.46</bouncycastle.version>
 		<lib.property>lib</lib.property>
 		<mbassador.version>1.2.4</mbassador.version>
-		<lwjgl.version>2.9.0</lwjgl.version>
 	</properties>
 	<dependencies>
-		<dependency>
-			<groupId>org.lwjgl.lwjgl</groupId>
-			<artifactId>lwjgl</artifactId>
-			<version>${lwjgl.version}</version>
-		</dependency>
 
-		<!--<dependency> <groupId>net.engio</groupId> <artifactId>mbassador</artifactId> 
-			<version>${mbassador.version}</version> </dependency> -->
+		<!--<dependency> <groupId>net.engio</groupId> <artifactId>mbassador</artifactId> <version>${mbassador.version}</version> </dependency> -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpmime</artifactId>
@@ -376,12 +368,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
-			<version>${javax.mail.version}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>javax.transaction</groupId>
 			<artifactId>jta</artifactId>
 			<version>1.1</version>
@@ -402,11 +388,6 @@
 			<groupId>com.vividsolutions</groupId>
 			<artifactId>jts</artifactId>
 			<version>1.13</version>
-		</dependency>
-		<dependency>
-			<groupId>org.lwjgl</groupId>
-			<artifactId>lwjgl</artifactId>
-			<version>3.0.0b</version>
 		</dependency>
 
 	</dependencies>
@@ -557,7 +538,7 @@
 				<artifactId>excelsior-jet-maven-plugin</artifactId>
 				<version>${excelsiorjet.plugin.version}</version>
 				<configuration>
-					<mainClass>com.mpsdevelopment.biopotential.server.gui.BioApplication</mainClass>
+					<mainClass>com.mpsdevelopment.biopotential.server.gui.ConverterApplication</mainClass>
 					<jetOutputDir>${jet.output.directory}</jetOutputDir>
 					<!-- <packaging>excelsior-installer</packaging> -->
 					<icon>${project.basedir}/build/bio.ico</icon>
@@ -574,74 +555,74 @@
 					<jetHome>${jet64.home}</jetHome>
 
 					<jvmArgs>
-						<jvmArg>-Xmx6g</jvmArg>
+						<jvmArg>-Xmx2g</jvmArg>
 					</jvmArgs>
 
-					<outputName>BioApplication</outputName>
+					<outputName>ConverterApplication</outputName>
 					<product>Biopotential</product>
 					<vendor>${jet.vendor}</vendor>
 					<version>${jet.version}</version>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>${maven.antrun.plugin.version}</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<configuration>
-							<target>
-								<copy file="build/app.j2e" tofile="${project.build.directory}/app.bat" />
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>${exec.maven.plugin.version}</version>
-				<executions>
-					<execution>
-						<id>app</id>
-						<phase>package</phase>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-						<configuration>
-							<workingDirectory>target</workingDirectory>
-							<executable>target/app.bat</executable>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>${assembly.plugin.version}</version>
-				<configuration>
-					<descriptors>
-						<descriptor>zip.xml</descriptor>
-					</descriptors>
-					<archiverConfig>
-						<compress>true</compress>
-					</archiverConfig>
-					<recompressZippedFiles>true</recompressZippedFiles>
-					<outputDirectory>${output.directory}</outputDirectory>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+			<!-- <plugin> -->
+			<!-- <groupId>org.apache.maven.plugins</groupId> -->
+			<!-- <artifactId>maven-antrun-plugin</artifactId> -->
+			<!-- <version>${maven.antrun.plugin.version}</version> -->
+			<!-- <executions> -->
+			<!-- <execution> -->
+			<!-- <phase>package</phase> -->
+			<!-- <configuration> -->
+			<!-- <target> -->
+			<!-- <copy file="build/app.j2e" tofile="${project.build.directory}/app.bat" /> -->
+			<!-- </target> -->
+			<!-- </configuration> -->
+			<!-- <goals> -->
+			<!-- <goal>run</goal> -->
+			<!-- </goals> -->
+			<!-- </execution> -->
+			<!-- </executions> -->
+			<!-- </plugin> -->
+			<!-- <plugin> -->
+			<!-- <groupId>org.codehaus.mojo</groupId> -->
+			<!-- <artifactId>exec-maven-plugin</artifactId> -->
+			<!-- <version>${exec.maven.plugin.version}</version> -->
+			<!-- <executions> -->
+			<!-- <execution> -->
+			<!-- <id>app</id> -->
+			<!-- <phase>package</phase> -->
+			<!-- <goals> -->
+			<!-- <goal>exec</goal> -->
+			<!-- </goals> -->
+			<!-- <configuration> -->
+			<!-- <workingDirectory>target</workingDirectory> -->
+			<!-- <executable>target/app.bat</executable> -->
+			<!-- </configuration> -->
+			<!-- </execution> -->
+			<!-- </executions> -->
+			<!-- </plugin> -->
+			<!-- <plugin> -->
+			<!-- <artifactId>maven-assembly-plugin</artifactId> -->
+			<!-- <version>${assembly.plugin.version}</version> -->
+			<!-- <configuration> -->
+			<!-- <descriptors> -->
+			<!-- <descriptor>zip.xml</descriptor> -->
+			<!-- </descriptors> -->
+			<!-- <archiverConfig> -->
+			<!-- <compress>true</compress> -->
+			<!-- </archiverConfig> -->
+			<!-- <recompressZippedFiles>true</recompressZippedFiles> -->
+			<!-- <outputDirectory>${output.directory}</outputDirectory> -->
+			<!-- </configuration> -->
+			<!-- <executions> -->
+			<!-- <execution> -->
+			<!-- <id>make-assembly</id> -->
+			<!-- <phase>package</phase> -->
+			<!-- <goals> -->
+			<!-- <goal>single</goal> -->
+			<!-- </goals> -->
+			<!-- </execution> -->
+			<!-- </executions> -->
+			<!-- </plugin> -->
 
 		</plugins>
 		<resources>
