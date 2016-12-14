@@ -10,6 +10,8 @@ public class PatternsFoldersDao extends GenericDao<PatternsFolders,Long> {
     public PatternsFolders getByPattern(Pattern pattern) {
         Criteria query = getSession().createCriteria(PatternsFolders.class).setCacheable(false);
         query.add(Restrictions.eq(PatternsFolders.PATTERNS, pattern));
-        return (PatternsFolders) query.uniqueResult();
+        PatternsFolders patternsFolders = (PatternsFolders) query.uniqueResult();
+        if (!(patternsFolders == null)) {return patternsFolders;}
+        else return new PatternsFolders();
     }
 }
