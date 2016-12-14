@@ -224,7 +224,7 @@ public class DatabaseCreator {
 				}
 			}
             clock = clock + delta * patternsRows;
-
+            // patterns to Folders table
 			while (patternsFoldersDb.next()) {
 
 				folder = foldersDao.getById(patternsFoldersDb.getInt("id_folder"));
@@ -239,18 +239,14 @@ public class DatabaseCreator {
                 EventBus.publishEvent(new ProgressBarEvent(clock + delta * patternsFoldersDb.getRow()));
 
             }
+            // patterns to Folders table
             clock = clock + delta * patternsFoldersRows;
 
 			List<Folder> folderList = foldersDao.findAll();
 			List<Pattern> patternList = patternsDao.findAll();
-			Long bacId = 0L;
-			Long mucId = 0L;
-			Long virId = 0L;
-			Long cardioId =0L, dermaId = 0L,endocrinId = 0L,gastroId=0L,immunId=0L,mentisId=0L,neuralId=0L
-					,orthoId=0L,spiritusId=0L,stomatId=0L,urologId=0L,visionId = 0L;
+			Long bacId = 0L, mucId = 0L, virId = 0L;;
+			Long cardioId =0L, dermaId = 0L,endocrinId = 0L,gastroId=0L,immunId=0L,mentisId=0L,neuralId=0L,orthoId=0L,spiritusId=0L,stomatId=0L,urologId=0L,visionId = 0L;
             Long DiId = 0L, BoId = 0L,AlId = 0L, DtId = 0L;
-
-
 
             // work with correctors
             for (Folder folder : folderList) {
@@ -283,7 +279,7 @@ public class DatabaseCreator {
 			}
             long t2 = System.currentTimeMillis();
 			Folder floraDissection = foldersDao.getById(4328);
-			Folder analysis = foldersDao.getById(4550);
+			Folder stressAnalys = foldersDao.getById(4550);
 			Folder actually = foldersDao.getById(4616);
 			Folder body = foldersDao.getById(4553);
 			Folder allergy = foldersDao.getById(375);
@@ -294,11 +290,12 @@ public class DatabaseCreator {
             for (Pattern pattern : patternList) {
 
 				patternsFolders = new PatternsFolders();
+				patternsFolders = patternsFoldersDao.getByPattern(pattern);
 				if (floraDissection != null) {
 					patternsFolders.setFolder(floraDissection);
 				}
-				if (analysis != null) {
-					patternsFolders.setFolder(analysis);
+				if (stressAnalys != null) {
+					patternsFolders.setFolder(stressAnalys);
 				}
                 if (actually != null) {
                     patternsFolders.setFolder(actually);
@@ -315,7 +312,7 @@ public class DatabaseCreator {
 				if (detokc != null) {
 					patternsFolders.setFolder(detokc);
 				}
-//                patternsFolders.setFolder(analysis);
+//                patternsFolders.setFolder(stressAnalys);
 				patternsFolders.setPattern(pattern);
 
 				if (pattern.getPatternName().contains("BAC "))
@@ -360,7 +357,7 @@ public class DatabaseCreator {
 				patternsFolders.getFolder().getPatternsFolders().add(patternsFolders);
 				patternsFolders.getPattern().getPatternsFolders().add(patternsFolders);
 
-				patternsFoldersDao.save(patternsFolders);
+				patternsFoldersDao.saveOrUpdate(patternsFolders);
 
 //                clock = clock + delta * patternsFoldersDb.getRow();
                 EventBus.publishEvent(new ProgressBarEvent(clock + delta * patternList.indexOf(pattern)));

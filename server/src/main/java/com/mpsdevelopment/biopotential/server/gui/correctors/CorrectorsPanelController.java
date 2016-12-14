@@ -14,16 +14,18 @@ import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
@@ -59,6 +61,9 @@ public class CorrectorsPanelController extends AbstractController implements Sub
     private TableColumn<DataTable, String> numberColumn;
 
     @FXML
+    private TableColumn<DataTable, Boolean> selectColumn;
+
+    @FXML
     private Button createFileCorrection;
 
     @FXML
@@ -77,12 +82,69 @@ public class CorrectorsPanelController extends AbstractController implements Sub
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        selectColumn.setMinWidth(80);
+//        selectColumn.setCellValueFactory(new PropertyValueFactory<DataTable, Boolean>("checkCar "));
+        selectColumn.setCellFactory(new Callback<TableColumn<DataTable, Boolean>, TableCell<DataTable, Boolean>>()
+        {
+            @Override
+            public TableCell<DataTable, Boolean> call(TableColumn<DataTable, Boolean> tableColumn)
+            {
+                return new BooleanCell();
+            }
+        });
+
+        /*selectColumn.setCellValueFactory( new PropertyValueFactory<DataTable,Boolean>( "checkBoxValue" ) );
+        selectColumn.setCellFactory( new Callback<TableColumn<DataTable,Boolean>, TableCell<DataTable,Boolean>>()
+        {
+            @Override
+            public TableCell<DataTable,Boolean> call( TableColumn<DataTable,Boolean> param )
+            {
+                return new CheckBoxTableCell<DataTable,Boolean>()
+                {
+                    {
+                        setAlignment( Pos.CENTER );
+                    }
+                    @Override
+                    public void updateItem( Boolean item, boolean empty )
+                    {
+                        if ( ! empty )
+                        {
+                            TableRow  row = getTableRow();
+
+                            if ( row != null )
+                            {
+                                int rowNo = row.getIndex();
+                                TableView.TableViewSelectionModel sm = getTableView().getSelectionModel();
+
+                                if ( item )  sm.select( rowNo );
+                                else  sm.clearSelection( rowNo );
+                            }
+                        }
+
+                        super.updateItem( item, empty );
+                    }
+                };
+            }
+        } );
+        selectColumn.setEditable( true );*/
+
+        сorrectorsTable.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                LOGGER.info("Click");
+                сorrectorsTable.getSelectionModel().clearSelection();
+            }
+        });
+
+//        сorrectorsTable.setMouseTransparent(true);
+
+
         correctorsData = FXCollections.observableArrayList();
         getPattersFromHealingsMap();
 
         сorrectorsTable.setItems(correctorsData);
         сorrectorsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // make enable minimize button on window
-        сorrectorsTable.getSelectionModel().setCellSelectionEnabled(true);
+//        сorrectorsTable.getSelectionModel().setCellSelectionEnabled(true);
 
         numberColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
             @Override public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> p) {
@@ -261,7 +323,76 @@ public class CorrectorsPanelController extends AbstractController implements Sub
 
     }
 
-}
+    class BooleanCell extends TableCell<DataTable, Boolean> {
+
+        private CheckBox checkBox;
+        public BooleanCell() {
+            checkBox = new CheckBox();
+//            checkBox.setDisable(false);
+            checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+                @Override
+                public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
+                    if (t1) {
+                        сorrectorsTable.getSelectionModel().select(getTableRow().getIndex());
+
+                    } else {
+                        сorrectorsTable.getSelectionModel().clearSelection(getTableRow().getIndex());
+                    }
+                }
+            });
+            this.setGraphic(checkBox);
+            this.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+            this.setEditable(true);
+            setAlignment(Pos.CENTER);
+        }
+        @Override
+        public void startEdit() {
+            super.startEdit();
+            if (isEmpty()) {
+                return;
+            }
+            checkBox.setDisable(false);
+            checkBox.requestFocus();
+        }
+        @Override
+        public void cancelEdit() {
+            super.cancelEdit();
+            checkBox.setDisable(true);
+        }
+        public void commitEdit(Boolean value) {
+            super.commitEdit(value);
+            checkBox.setDisable(true);
+        }
+        @Override
+        public void updateItem(Boolean item, boolean empty) {
+//            super.updateItem(item, empty);
+            if (!isEmpty()) {
+//                checkBox.setSelected(true);
+            }
+            if ( ! empty )
+            {
+//                TableRow  row = getTableRow();
+
+//                if ( row != null )
+                {
+//                    int rowNo = row.getIndex();
+//                    TableView.TableViewSelectionModel sm = getTableView().getSelectionModel();
+                    /*if ( item )  sm.select( rowNo );
+                    else  sm.clearSelection( rowNo );*/
+                }
+            }
+
+//            super.updateItem( item, empty );
+        }
+
+
+
+
+
+        }
+    }
+
+
 
 
 

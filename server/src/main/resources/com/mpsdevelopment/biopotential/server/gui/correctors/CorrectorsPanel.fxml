@@ -15,7 +15,7 @@
             <TableColumn prefWidth="233.0" text="Система" />
             <TableColumn fx:id="deseaseLevel" prefWidth="133.0" text="Дисперсия" />
             <TableColumn prefWidth="125.0" text="Уровень" />
-            <TableColumn prefWidth="114.0" text="Выбрать" />
+            <TableColumn fx:id="selectColumn" prefWidth="114.0" text="Выбрать" />
         </columns>
       </TableView>
       <Button fx:id="createFileCorrection" layoutX="603.0" layoutY="683.0" mnemonicParsing="false" text="Создать файл коррекции" />
