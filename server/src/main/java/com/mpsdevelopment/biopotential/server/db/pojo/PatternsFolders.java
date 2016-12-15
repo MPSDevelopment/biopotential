@@ -7,8 +7,10 @@ import javax.persistence.*;
 public class PatternsFolders extends BaseObject{
 
     public static final String PATTERNS = "pattern";
-    
-    public static final String CORRECTORS = "correctors";
+    public static final String FOLDER = "folder";
+
+    public static final String CORRECTORS_EN = "correctorsEn";
+    public static final String CORRECTORS_EX = "correctorsEx";
 
 //    private long id;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -20,8 +22,12 @@ public class PatternsFolders extends BaseObject{
     private Pattern pattern;
 
     // additional fields
-    @Column(name = "correctors")
-    private Long correctors;
+    @Column(name = "correctorsEn")
+    private Long correctorsEn;
+
+    // additional fields
+    @Column(name = "correctorsEx")
+    private Long correctorsEx;
 
     /*@Id
     @GeneratedValue
@@ -50,11 +56,19 @@ public class PatternsFolders extends BaseObject{
         this.pattern = pattern;
     }
 
-    public Long getCorrectors() {
-        return correctors;
+    public Long getCorrectorsEn() {
+        return correctorsEn;
     }
 
-    public void setCorrectors(Long paternal) {
-        this.correctors = paternal;
+    public void setCorrectorsEn(Long paternal) {
+        this.correctorsEn = paternal;
+    }
+
+    public Long getCorrectorsEx() {
+        return correctorsEx;
+    }
+
+    public void setCorrectorsEx(Long correctorsEx) {
+        this.correctorsEx = correctorsEx;
     }
 }

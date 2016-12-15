@@ -35,11 +35,17 @@ public class DiseaseDao {
 	public Map<Pattern, AnalysisSummary> getDeseases(File file, int degree) throws IOException, UnsupportedAudioFileException, SQLException {
 
 		final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(file)));
-
+		/*
+		get all patterns from database which have id correctors folders
+		 */
 		List<EDXPattern> patterns = patternsDao.getFromDatabase();
+		List<EDXPattern> patternsNull = patternsDao.getFromDatabase(0);
 
 		// TODO Split summarizePatterns to 2 methods for decease and pattern
 		final Map<Pattern, AnalysisSummary> diseases = Machine.summarizePatterns(sample, patterns, degree);
+		final Map<Pattern, AnalysisSummary> diseasesNull = Machine.summarizePatterns(sample, patternsNull, degree);
+        diseases.putAll(diseasesNull);
+
         return diseases;
 	}
 
@@ -84,7 +90,8 @@ public class DiseaseDao {
 
 					List<EDXPattern> patterns;
 					try {
-						patterns = patternsDao.getFromDatabase(((EDXPattern) dk).getCorrectingFolder());
+						patterns = patternsDao.getFromDatabase(((EDXPattern) dk).getCorrectingFolderEn());
+//						patterns = patternsDao.getFromDatabase(((EDXPattern) dk).getCorrectingFolderEx());
 
 						LOGGER.info("iterForFolder took %d ms", System.currentTimeMillis() - t1);
 

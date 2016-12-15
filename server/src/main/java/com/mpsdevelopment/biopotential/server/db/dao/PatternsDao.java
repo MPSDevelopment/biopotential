@@ -59,7 +59,8 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
                 .add(Projections.property("PATTERN."+Pattern.PATTERN_DESCRIPTION), "description")
                 .add(Projections.property("PATTERN."+Pattern.PATTERN_UID), "fileName")
 				.add(Projections.property("PATTERN."+Pattern.CHUNK_SUMMARY), "summary")
-		 .add(Projections.property("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS), "correctingFolder");
+		 .add(Projections.property("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS_EN), "correctingFolderEn")
+		 .add(Projections.property("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS_EX), "correctingFolderEx");
 
         // TODO remove and fix this shit  ------------------
 		if (getSession().getSessionFactory().isClosed()) {
@@ -76,7 +77,7 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
         // TODO remove and fix this shit  ------------------
 
         List list = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS,"PATTERNS_FOLDERS").createCriteria(PatternsFolders.PATTERNS,"PATTERN")
-				.add(Restrictions.isNotNull("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS))
+				.add(Restrictions.isNotNull("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS_EN))
 				.setProjection(projections)
         .setResultTransformer(Transformers.aliasToBean(EDXPattern.class)).list();
 		
@@ -93,14 +94,14 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
         	            + "     PATTERNUID,"
         	            + "     FOLDERNAME,"
         	            + "     FOLDER_ID,"
-        	            + "     CORRECTORS,"
+        	            + "     CORRECTORS_EN,"
         	            + "     PATTERN_ID\n"
         	            + "FROM MAIN.FOLDER\n"
         	            + "JOIN MAIN.PATTERNS_FOLDERS"
         	            + "     ON FOLDER.ID = PATTERNS_FOLDERS.FOLDER_ID\n"
         	            + "JOIN MAIN.PATTERN"
         	            + "     ON PATTERN.ID = PATTERNS_FOLDERS.PATTERN_ID\n"
-        	            + "WHERE CORRECTORS IS NOT NULL");
+        	            + "WHERE CORRECTORS_EN IS NOT NULL");
         
         List<EDXPattern> patterns = new ArrayList<>();
         ResultSet rs  = ps.executeQuery();
@@ -110,7 +111,7 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
                 rs.getString("PATTERNNAME"),
                 rs.getString("PATTERNDESCRIPTION"),
                 "./data/edxfiles/" + rs.getString("PATTERNUID"),
-                rs.getString("CORRECTORS")));
+                rs.getString("CORRECTORS_EN")));
         }
         return patterns;
         **/
@@ -126,7 +127,7 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
                 .add(Projections.property("PATTERN."+Pattern.PATTERN_DESCRIPTION), "description")
                 .add(Projections.property("PATTERN."+Pattern.PATTERN_UID), "fileName")
 				.add(Projections.property("PATTERN."+Pattern.CHUNK_SUMMARY), "summary")
-        .add(Projections.property("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS), "correctingFolder");
+        .add(Projections.property("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS_EN), "correctingFolderEn");
         
         Criteria query = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS,"PATTERNS_FOLDERS").createCriteria(PatternsFolders.PATTERNS,"PATTERN")
         .add(Restrictions.eq("FOLDER."+Folder.ID_FIELD, filter))
@@ -148,7 +149,7 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
             + "     PATTERNUID,"
             + "     FOLDERNAME,"
             + "     FOLDER_ID,"
-            + "     CORRECTORS,"
+            + "     CORRECTORS_EN,"
             + "     PATTERN_ID\n"
             + "FROM MAIN.FOLDER\n"
             + "JOIN MAIN.PATTERNS_FOLDERS"
@@ -170,7 +171,7 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
                 rs.getString("PATTERNNAME"),
                 rs.getString("PATTERNDESCRIPTION"),
                 "./data/edxfiles/" + rs.getString("PATTERNUID"),
-                rs.getString("CORRECTORS")));
+                rs.getString("CORRECTORS_EN")));
         }
         
         LOGGER.info("Work with iterator took %d ms Result set is %d ", System.currentTimeMillis() - t1, patterns.size());
@@ -178,6 +179,28 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
         return patterns;
         
         **/
+    }
+
+    public List<EDXPattern> getFromDatabase(int i) throws SQLException, IOException {
+
+        long t1 = System.currentTimeMillis();
+
+        ProjectionList projections = Projections.projectionList()
+                .add(Projections.property("FOLDER."+Folder.FOLDER_NAME), "kind")
+                .add(Projections.property("PATTERN."+Pattern.PATTERN_NAME), "name")
+                .add(Projections.property("PATTERN."+Pattern.PATTERN_DESCRIPTION), "description")
+                .add(Projections.property("PATTERN."+Pattern.PATTERN_UID), "fileName")
+                .add(Projections.property("PATTERN."+Pattern.CHUNK_SUMMARY), "summary")
+                .add(Projections.property("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS_EN), "correctingFolderEn");
+
+        List list = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS,"PATTERNS_FOLDERS").createCriteria(PatternsFolders.PATTERNS,"PATTERN")
+                .add(Restrictions.isNull("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS_EN))
+                .setProjection(projections)
+                .setResultTransformer(Transformers.aliasToBean(EDXPattern.class)).list();
+
+        LOGGER.info("Work with iterator took %d ms Result set is %d ", System.currentTimeMillis() - t1, list.size());
+
+        return list;
     }
 
 

@@ -6,7 +6,6 @@ import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.arkdb.ArkDBExcepti
 import com.mpsdevelopment.biopotential.server.db.dao.*;
 import com.mpsdevelopment.biopotential.server.db.pojo.*;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
-import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
 import com.mpsdevelopment.biopotential.server.eventbus.event.ProgressBarEvent;
 import com.mpsdevelopment.biopotential.server.gui.ConverterApplication;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
@@ -16,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-import org.sqlite.jdbc4.JDBC4ResultSet;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -233,7 +230,7 @@ public class DatabaseCreator {
 				patternsFolders = new PatternsFolders();
 				patternsFolders.setFolder(folder);
 				patternsFolders.setPattern(pattern);
-				patternsFolders.setCorrectors(null);
+				patternsFolders.setCorrectorsEn(null);
 
 				patternsFoldersDao.save(patternsFolders);
                 EventBus.publishEvent(new ProgressBarEvent(clock + delta * patternsFoldersDb.getRow()));
@@ -247,6 +244,7 @@ public class DatabaseCreator {
 			Long bacId = 0L, mucId = 0L, virId = 0L;;
 			Long cardioId =0L, dermaId = 0L,endocrinId = 0L,gastroId=0L,immunId=0L,mentisId=0L,neuralId=0L,orthoId=0L,spiritusId=0L,stomatId=0L,urologId=0L,visionId = 0L;
             Long DiId = 0L, BoId = 0L,AlId = 0L, DtId = 0L;
+            Long HelmEn = 0L, HelmEx = 0L, AlEn = 0L, AlEx = 0L, DtEn = 0L, DtEx = 0L, ViEn = 0L, ViEx = 0L;
 
             // work with correctors
             for (Folder folder : folderList) {
@@ -276,22 +274,55 @@ public class DatabaseCreator {
                 if (folder.getFolderName().contains("AL en")){AlId = folder.getId();}
                 if (folder.getFolderName().contains("Dt DETOKC")){DtId = folder.getId();}
 
-			}
+                //add new condition
+                if (folder.getFolderName().contains("He en")){HelmEn = folder.getId();}
+                if (folder.getFolderName().contains("He ex")){HelmEx = folder.getId();}
+
+                if (folder.getFolderName().contains("Al en")){AlEn = folder.getId();}
+                if (folder.getFolderName().contains("Al ex")){AlEx = folder.getId();}
+
+                if (folder.getFolderName().contains("Dt ex Fe")){DtEn = folder.getId();}
+                if (folder.getFolderName().contains("Dt ex Ma")){DtEx = folder.getId();}
+
+                if (folder.getFolderName().contains("Vi en")){ViEn = folder.getId();}
+                if (folder.getFolderName().contains("Vi ex")){ViEx = folder.getId();}
+
+
+            }
             long t2 = System.currentTimeMillis();
-			Folder floraDissection = foldersDao.getById(4328);
-			Folder stressAnalys = foldersDao.getById(4550);
-			Folder actually = foldersDao.getById(4616);
-			Folder body = foldersDao.getById(4553);
-			Folder allergy = foldersDao.getById(375);
-			Folder detokc = foldersDao.getById(492);
+            //  Folder stressAnalys = foldersDao.getById(4550);
+            //  Folder allergy = foldersDao.getById(375);
+//            Folder detokc = foldersDao.getById(492);
+            Folder floraDissection = foldersDao.getById(4328);
+            Folder actually = foldersDao.getById(4616);
+            Folder body = foldersDao.getById(4553);
+
+            Folder stressAnalys = foldersDao.getByName("Stress Analys");
+            Folder destruction = foldersDao.getByName("Di Деструкция");
+            Folder metabolism = foldersDao.getByName("Me Метаболизм");
+            Folder physCond = foldersDao.getByName("Bо Физ кодиции");
+            Folder helminths = foldersDao.getByName("FL He Helminths");
+            Folder allergy = foldersDao.getByName("Al ALLERGY");
+            Folder detokc = foldersDao.getByName("Dt DETOKC");
+            Folder vision = foldersDao.getByName("Vi VISION");
+
+            handlePatternsFolders(stressAnalys, null,null);
+            handlePatternsFolders(destruction, null, null);
+            handlePatternsFolders(metabolism, null, null);
+            handlePatternsFolders(physCond, physCond.getId(), null);
+            handlePatternsFolders(helminths, HelmEn, HelmEx);
+            handlePatternsFolders(allergy, AlEn, AlEx);
+            handlePatternsFolders(detokc, DtEn, DtEx);
+            handlePatternsFolders(vision, ViEn, ViEx);
+
             delta = 0.1/(patternList.size());
 
 
-            for (Pattern pattern : patternList) {
+            /*for (Pattern pattern : patternList) {
 
 				patternsFolders = new PatternsFolders();
-				patternsFolders = patternsFoldersDao.getByPattern(pattern);
-				if (floraDissection != null) {
+//				patternsFolders = patternsFoldersDao.getByPattern(pattern);
+				*//*if (floraDissection != null) {
 					patternsFolders.setFolder(floraDissection);
 				}
 				if (stressAnalys != null) {
@@ -311,48 +342,49 @@ public class DatabaseCreator {
 				}
 				if (detokc != null) {
 					patternsFolders.setFolder(detokc);
-				}
+				}*//*
 //                patternsFolders.setFolder(stressAnalys);
-				patternsFolders.setPattern(pattern);
+                *//*patternsFolders.setFolder(patternsFolders.getFolder());
+				patternsFolders.setPattern(pattern);*//*
 
 				if (pattern.getPatternName().contains("BAC "))
-					patternsFolders.setCorrectors(bacId);
+					patternsFolders.setCorrectorsEn(bacId);
 				else if (pattern.getPatternName().contains("Muc "))
-					patternsFolders.setCorrectors(mucId);
+					patternsFolders.setCorrectorsEn(mucId);
 				else if (pattern.getPatternName().contains("VIR "))
-					patternsFolders.setCorrectors(virId);
+					patternsFolders.setCorrectorsEn(virId);
 				else if (pattern.getPatternName().contains("CARDIO♥"))
-				{patternsFolders.setCorrectors(cardioId);}
+				{patternsFolders.setCorrectorsEn(cardioId);}
 				else if (pattern.getPatternName().contains("DERMAლ"))
-				{patternsFolders.setCorrectors(dermaId);}
+				{patternsFolders.setCorrectorsEn(dermaId);}
 				else if (pattern.getPatternName().contains("Endocrinology♋"))
-				{patternsFolders.setCorrectors(endocrinId);}
+				{patternsFolders.setCorrectorsEn(endocrinId);}
 				else if (pattern.getPatternName().contains("GASTRO⌘"))
-				{patternsFolders.setCorrectors(gastroId);}
+				{patternsFolders.setCorrectorsEn(gastroId);}
 				else if (pattern.getPatternName().contains("IMMUN☂"))
-				{patternsFolders.setCorrectors(immunId);}
+				{patternsFolders.setCorrectorsEn(immunId);}
 				else if (pattern.getPatternName().contains("MENTIS☺"))
-				{patternsFolders.setCorrectors(mentisId);}
+				{patternsFolders.setCorrectorsEn(mentisId);}
 				else if (pattern.getPatternName().contains("NEURAL♕"))
-				{patternsFolders.setCorrectors(neuralId);}
+				{patternsFolders.setCorrectorsEn(neuralId);}
 				else if (pattern.getPatternName().contains("ORTHO☤"))
-				{patternsFolders.setCorrectors(orthoId);}
+				{patternsFolders.setCorrectorsEn(orthoId);}
 				else if (pattern.getPatternName().contains("SPIRITUS✽"))
-				{patternsFolders.setCorrectors(spiritusId);}
+				{patternsFolders.setCorrectorsEn(spiritusId);}
 				else if (pattern.getPatternName().contains("Stomat〲"))
-				{patternsFolders.setCorrectors(stomatId);}
+				{patternsFolders.setCorrectorsEn(stomatId);}
 				else if (pattern.getPatternName().contains("UROLOGÜ"))
-				{patternsFolders.setCorrectors(urologId);}
+				{patternsFolders.setCorrectorsEn(urologId);}
 				else if (pattern.getPatternName().contains("VISION☄"))
-				{patternsFolders.setCorrectors(visionId);}
+				{patternsFolders.setCorrectorsEn(visionId);}
                 else if (pattern.getPatternName().contains("ACTUALLY") || pattern.getPatternName().contains("D\\") || pattern.getPatternName().contains("ENERGY"))
-                {patternsFolders.setCorrectors(DiId);}
+                {patternsFolders.setCorrectorsEn(DiId);}
                 else if (pattern.getPatternName().contains("Bо"))
-                {patternsFolders.setCorrectors(BoId);}
+                {patternsFolders.setCorrectorsEn(BoId);}
 				else if (pattern.getPatternName().contains("AL"))
-				{patternsFolders.setCorrectors(AlId);}
+				{patternsFolders.setCorrectorsEn(AlId);}
 				else if (pattern.getPatternName().contains("Dt"))
-				{patternsFolders.setCorrectors(DtId);}
+				{patternsFolders.setCorrectorsEn(DtId);}
 
 				patternsFolders.getFolder().getPatternsFolders().add(patternsFolders);
 				patternsFolders.getPattern().getPatternsFolders().add(patternsFolders);
@@ -362,7 +394,7 @@ public class DatabaseCreator {
 //                clock = clock + delta * patternsFoldersDb.getRow();
                 EventBus.publishEvent(new ProgressBarEvent(clock + delta * patternList.indexOf(pattern)));
 
-            }
+            }*/
             clock = clock + delta * patternList.size();
 
             LOGGER.info("patternsFolders took %s ms", System.currentTimeMillis() - t2);
@@ -375,10 +407,36 @@ public class DatabaseCreator {
             LOGGER.info("End");
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOGGER.printStackTrace(e);
 		}
 
 	}
+
+    private void handlePatternsFolders(Folder stressAnalys, Long correctorsEn, Long correctorsEx) {
+        if (stressAnalys != null) {
+            List<PatternsFolders> patternsFolderses = patternsFoldersDao.getPatternsByFolder(stressAnalys);
+            for (PatternsFolders unit:patternsFolderses) {
+                patternsFolders = new PatternsFolders();
+                patternsFolders.setFolder(unit.getFolder());
+                patternsFolders.setPattern(unit.getPattern());
+                if (correctorsEn == null) {
+                    patternsFolders.setCorrectorsEn(null);
+                }
+                else {
+                    patternsFolders.setCorrectorsEn(correctorsEn);
+                }
+                if (correctorsEx == null) {
+                    patternsFolders.setCorrectorsEx(null);
+                }
+                else {
+                    patternsFolders.setCorrectorsEx(correctorsEn);
+                }
+                patternsFoldersDao.saveOrUpdate(patternsFolders);
+
+            }
+
+        }
+    }
 
     private int calcRows(ResultSet set) throws SQLException {
         long t1 = System.currentTimeMillis();

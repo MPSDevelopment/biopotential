@@ -18,8 +18,12 @@ public class EDXPattern implements Pattern {
 	private List<ChunkSummary> summary;
 	@Expose
 	private List<Double> pcmData;
+	/*@Expose
+	private Long correctingFolderEn;*/
 	@Expose
-	private Long correctingFolder;
+	private Long correctingFolderEn;
+    @Expose
+    private Long correctingFolderEx;
 	@Expose
 	private String kind;
 	@Expose
@@ -29,19 +33,16 @@ public class EDXPattern implements Pattern {
 	@Expose
 	private String fileName;
 
-	public EDXPattern() {
-
-	}
-
 	public EDXPattern(String kind, String name, String desc, String fileName) throws IOException {
-		this(kind, name, desc, fileName, null);
+		this(kind, name, desc, fileName, null, null);
 	}
 
-	public EDXPattern(String kind, String name, String description, String fileName, Long correctingFolder) throws IOException {
+	public EDXPattern(String kind, String name, String description, String fileName, Long correctingFolderEn, Long correctingFolderEx) throws IOException {
 		this.kind = kind;
 		this.name = name;
 		this.description = description;
-		this.correctingFolder = correctingFolder;
+		this.correctingFolderEn = correctingFolderEn;
+		this.correctingFolderEx = correctingFolderEx;
 		this.fileName = fileName;
 
 		// this.pcmData = Machine.getPcmData(fileName).getPcmData();
@@ -77,15 +78,23 @@ public class EDXPattern implements Pattern {
 		return this.pcmData;
 	}
 
-	public Long getCorrectingFolder() {
-		return correctingFolder;
+	public Long getCorrectingFolderEn() {
+		return correctingFolderEn;
 	}
 
-	public void setCorrectingFolder(Long correctingFolder) {
-		this.correctingFolder = correctingFolder;
+	public void setCorrectingFolderEn(Long correctingFolderEn) {
+		this.correctingFolderEn = correctingFolderEn;
 	}
 
-	public String getKind() {
+    public Long getCorrectingFolderEx() {
+        return correctingFolderEx;
+    }
+
+    public void setCorrectingFolderEx(Long correctingFolderEx) {
+        this.correctingFolderEx = correctingFolderEx;
+    }
+
+    public String getKind() {
 		return kind;
 	}
 
@@ -144,11 +153,11 @@ public class EDXPattern implements Pattern {
 
     //
 	// public boolean hasCorrectingFolder() {
-	// return this.correctingFolder != null;
+	// return this.correctingFolderEn != null;
 	// }
 	//
-	// public String getCorrectingFolder() {
-	// return this.correctingFolder;
+	// public String getCorrectingFolderEn() {
+	// return this.correctingFolderEn;
 	// }
 	//
 	// public String getKind() {
@@ -197,8 +206,8 @@ public class EDXPattern implements Pattern {
 	// this.desc = desc;
 	// }
 	//
-	// public void setCorrectingFolder(String correctingFolder) {
-	// this.correctingFolder = correctingFolder;
+	// public void setCorrectingFolderEn(String correctingFolderEn) {
+	// this.correctingFolderEn = correctingFolderEn;
 	// }
 	//
 	// public void setName(String name) {

@@ -25,6 +25,12 @@ public class FoldersDao extends GenericDao<Folder, Long> {
         return (Folder) query.uniqueResult();
     }
 
+    public Folder getByName(String value) {
+        Criteria query = getSession().createCriteria(Folder.class).setCacheable(false);
+        query.add(Restrictions.eq(Folder.FOLDER_NAME, value));
+        return (Folder) query.uniqueResult();
+    }
+
     public List<Folder> getPatternsFolders(Collection<Integer> filter) {
 
 //                SELECT  * FROM patterns JOIN link_patterns_to_folders ON patterns.id_pattern = link_patterns_to_folders.id_pattern
