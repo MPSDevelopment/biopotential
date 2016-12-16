@@ -243,7 +243,7 @@ public class DatabaseCreator {
 			List<Pattern> patternList = patternsDao.findAll();
 			Long bacId = 0L, mucId = 0L, virId = 0L;;
 			Long cardioId =0L, dermaId = 0L,endocrinId = 0L,gastroId=0L,immunId=0L,mentisId=0L,neuralId=0L,orthoId=0L,spiritusId=0L,stomatId=0L,urologId=0L,visionId = 0L;
-            Long DiId = 0L, BoId = 0L,AlId = 0L, DtId = 0L;
+            Long DiId = 0L, BoEnId = 0L,AlId = 0L, DtId = 0L;
             Long HelmEn = 0L, HelmEx = 0L, AlEn = 0L, AlEx = 0L, DtEn = 0L, DtEx = 0L, ViEn = 0L, ViEx = 0L;
 
             // work with correctors
@@ -270,7 +270,7 @@ public class DatabaseCreator {
 //712ms
                 // add new condition
                 if (folder.getFolderName().contains("Disrupt")){DiId = folder.getId();}
-                if (folder.getFolderName().contains("Bо")){BoId = folder.getId();}
+                if (folder.getFolderName().contains("Bо ex")){BoEnId = folder.getId();}
                 if (folder.getFolderName().contains("AL en")){AlId = folder.getId();}
                 if (folder.getFolderName().contains("Dt DETOKC")){DtId = folder.getId();}
 
@@ -309,7 +309,7 @@ public class DatabaseCreator {
             handlePatternsFolders(stressAnalys, null,null);
             handlePatternsFolders(destruction, null, null);
             handlePatternsFolders(metabolism, null, null);
-            handlePatternsFolders(physCond, physCond.getId(), null);
+            handlePatternsFolders(physCond, BoEnId, null);
             handlePatternsFolders(helminths, HelmEn, HelmEx);
             handlePatternsFolders(allergy, AlEn, AlEx);
             handlePatternsFolders(detokc, DtEn, DtEx);
@@ -380,7 +380,7 @@ public class DatabaseCreator {
                 else if (pattern.getPatternName().contains("ACTUALLY") || pattern.getPatternName().contains("D\\") || pattern.getPatternName().contains("ENERGY"))
                 {patternsFolders.setCorrectorsEn(DiId);}
                 else if (pattern.getPatternName().contains("Bо"))
-                {patternsFolders.setCorrectorsEn(BoId);}
+                {patternsFolders.setCorrectorsEn(BoEnId);}
 				else if (pattern.getPatternName().contains("AL"))
 				{patternsFolders.setCorrectorsEn(AlId);}
 				else if (pattern.getPatternName().contains("Dt"))
@@ -412,26 +412,26 @@ public class DatabaseCreator {
 
 	}
 
-    private void handlePatternsFolders(Folder stressAnalys, Long correctorsEn, Long correctorsEx) {
-        if (stressAnalys != null) {
-            List<PatternsFolders> patternsFolderses = patternsFoldersDao.getPatternsByFolder(stressAnalys);
-            for (PatternsFolders unit:patternsFolderses) {
-                patternsFolders = new PatternsFolders();
-                patternsFolders.setFolder(unit.getFolder());
-                patternsFolders.setPattern(unit.getPattern());
+    private void handlePatternsFolders(Folder folder, Long correctorsEn, Long correctorsEx) {
+        if (folder != null) {
+            List<PatternsFolders> patternsFolderses = patternsFoldersDao.getPatternsByFolder(folder);
+            for (PatternsFolders patternFolder:patternsFolderses) {
+                /*patternsFolders = new PatternsFolders();
+                patternsFolders.setFolder(patternFolder.getFolder());
+                patternsFolders.setPattern(patternFolder.getPattern());*/
                 if (correctorsEn == null) {
-                    patternsFolders.setCorrectorsEn(null);
+                    patternFolder.setCorrectorsEn(null);
                 }
                 else {
-                    patternsFolders.setCorrectorsEn(correctorsEn);
+                    patternFolder.setCorrectorsEn(correctorsEn);
                 }
                 if (correctorsEx == null) {
-                    patternsFolders.setCorrectorsEx(null);
+                    patternFolder.setCorrectorsEx(null);
                 }
                 else {
-                    patternsFolders.setCorrectorsEx(correctorsEn);
+                    patternFolder.setCorrectorsEx(correctorsEx);
                 }
-                patternsFoldersDao.saveOrUpdate(patternsFolders);
+                patternsFoldersDao.saveOrUpdate(patternFolder);
 
             }
 

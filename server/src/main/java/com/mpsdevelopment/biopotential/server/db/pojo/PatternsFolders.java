@@ -25,7 +25,6 @@ public class PatternsFolders extends BaseObject{
     @Column(name = "correctorsEn")
     private Long correctorsEn;
 
-    // additional fields
     @Column(name = "correctorsEx")
     private Long correctorsEx;
 

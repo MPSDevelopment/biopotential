@@ -8,6 +8,7 @@ import com.mpsdevelopment.biopotential.server.cmp.machine.KindCondition;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
+import com.mpsdevelopment.biopotential.server.db.pojo.Folder;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class DiseaseDao {
 	@Autowired
 	private PatternsDao patternsDao;
 
+    @Autowired
+    private FoldersDao foldersDao;
+
 	public DiseaseDao() {
 	}
 
@@ -38,13 +42,30 @@ public class DiseaseDao {
 		/*
 		get all patterns from database which have id correctors folders
 		 */
+        Folder stressAnalys = foldersDao.getByName("Stress Analys");
+        Folder destruction = foldersDao.getByName("Di Деструкция");
+        Folder metabolism = foldersDao.getByName("Me Метаболизм");
+        Folder physCond = foldersDao.getByName("Bо Физ кодиции");
+
 		List<EDXPattern> patterns = patternsDao.getFromDatabase();
-		List<EDXPattern> patternsNull = patternsDao.getFromDatabase(0);
+		List<EDXPattern> patternsStressAnalys = patternsDao.getPatternsFromFolders(stressAnalys);
+		List<EDXPattern> patternsDestruction = patternsDao.getPatternsFromFolders(destruction);
+		List<EDXPattern> patternsMetabolism = patternsDao.getPatternsFromFolders(metabolism);
+		List<EDXPattern> patternsPhysCond = patternsDao.getPatternsFromFolders(physCond);
+
+//		List<EDXPattern> patternsNull = patternsDao.getFromDatabase(0);
 
 		// TODO Split summarizePatterns to 2 methods for decease and pattern
 		final Map<Pattern, AnalysisSummary> diseases = Machine.summarizePatterns(sample, patterns, degree);
-		final Map<Pattern, AnalysisSummary> diseasesNull = Machine.summarizePatterns(sample, patternsNull, degree);
-        diseases.putAll(diseasesNull);
+		final Map<Pattern, AnalysisSummary> diseasesStressAnalys = Machine.summarizePatterns(sample, patternsStressAnalys, degree);
+		final Map<Pattern, AnalysisSummary> diseasesDestruction = Machine.summarizePatterns(sample, patternsDestruction, degree);
+		final Map<Pattern, AnalysisSummary> diseasesMetabolism = Machine.summarizePatterns(sample, patternsMetabolism, degree);
+		final Map<Pattern, AnalysisSummary> diseasesPhysCond = Machine.summarizePatterns(sample, patternsPhysCond, degree);
+
+        diseases.putAll(diseasesStressAnalys);
+        diseases.putAll(diseasesDestruction);
+        diseases.putAll(diseasesMetabolism);
+        diseases.putAll(diseasesPhysCond);
 
         return diseases;
 	}
@@ -88,10 +109,17 @@ public class DiseaseDao {
 
 					long t1 = System.currentTimeMillis();
 
-					List<EDXPattern> patterns;
+					List<EDXPattern> patternsEn;
+					List<EDXPattern> patternsEx;
 					try {
-						patterns = patternsDao.getFromDatabase(((EDXPattern) dk).getCorrectingFolderEn());
-//						patterns = patternsDao.getFromDatabase(((EDXPattern) dk).getCorrectingFolderEx());
+                        /*if (level == -2147483648) {
+                            patternsEn = null;
+                            patternsEx = null;
+                        }
+                        else {*/
+                            patternsEn = patternsDao.getFromDatabase(((EDXPattern) dk).getCorrectingFolderEn());
+                            patternsEx = patternsDao.getFromDatabase(((EDXPattern) dk).getCorrectingFolderEx());
+//                        }
 
 						LOGGER.info("iterForFolder took %d ms", System.currentTimeMillis() - t1);
 
@@ -99,11 +127,13 @@ public class DiseaseDao {
 						 * вытягиваются папка с коректорами для конкретной
 						 * болезни BAC -> FL BAC
 						 */
-						final Map<Pattern, AnalysisSummary> healings = Machine.summarizePatterns(sample, patterns, level);
+						final Map<Pattern, AnalysisSummary> healings = Machine.summarizePatterns(sample, patternsEn, level);
+						final Map<Pattern, AnalysisSummary> healingsEx = Machine.summarizePatterns(sample, patternsEx, -2147483648);
 						LOGGER.info("SummarizePatterns took %d ms", System.currentTimeMillis() - t1);
 
 						allHealings.putAll(healings);
-						LOGGER.info("Healing size %d patterns",allHealings.size());
+						allHealings.putAll(healingsEx);
+						LOGGER.info("Healing size %d patternsEn",allHealings.size());
 
 					} catch (SQLException | IOException e) {
 						e.printStackTrace();

@@ -33,6 +33,9 @@ public class EDXPattern implements Pattern {
 	@Expose
 	private String fileName;
 
+    public EDXPattern() {
+    }
+
 	public EDXPattern(String kind, String name, String desc, String fileName) throws IOException {
 		this(kind, name, desc, fileName, null, null);
 	}

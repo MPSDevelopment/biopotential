@@ -203,6 +203,30 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
         return list;
     }
 
+    public List<EDXPattern> getPatternsFromFolders(Folder folder) throws SQLException, IOException {
+
+        long t1 = System.currentTimeMillis();
+
+        ProjectionList projections = Projections.projectionList()
+                .add(Projections.property("FOLDER."+Folder.FOLDER_NAME), "kind")
+                .add(Projections.property("PATTERN."+Pattern.PATTERN_NAME), "name")
+                .add(Projections.property("PATTERN."+Pattern.PATTERN_DESCRIPTION), "description")
+                .add(Projections.property("PATTERN."+Pattern.PATTERN_UID), "fileName")
+                .add(Projections.property("PATTERN."+Pattern.CHUNK_SUMMARY), "summary")
+                .add(Projections.property("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS_EN), "correctingFolderEn")
+                .add(Projections.property("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS_EX), "correctingFolderEx");
+
+
+        List list = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS,"PATTERNS_FOLDERS").createCriteria(PatternsFolders.PATTERNS,"PATTERN")
+                .add(Restrictions.isNull("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS_EN)).add(Restrictions.eq("PATTERNS_FOLDERS."+PatternsFolders.FOLDER, folder))
+                .setProjection(projections)
+                .setResultTransformer(Transformers.aliasToBean(EDXPattern.class)).list();
+
+        LOGGER.info("Work with iterator took %d ms Result set is %d ", System.currentTimeMillis() - t1, list.size());
+
+        return list;
+    }
+
 
 
 }
