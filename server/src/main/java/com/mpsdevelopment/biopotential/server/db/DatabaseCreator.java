@@ -244,7 +244,9 @@ public class DatabaseCreator {
 			Long bacId = 0L, mucId = 0L, virId = 0L;;
 			Long cardioId =0L, dermaId = 0L,endocrinId = 0L,gastroId=0L,immunId=0L,mentisId=0L,neuralId=0L,orthoId=0L,spiritusId=0L,stomatId=0L,urologId=0L,visionId = 0L;
             Long DiId = 0L, BoEnId = 0L,AlId = 0L, DtId = 0L;
-            Long HelmEn = 0L, HelmEx = 0L, AlEn = 0L, AlEx = 0L, DtEn = 0L, DtEx = 0L, ViEn = 0L, ViEx = 0L;
+            Long HelmEn = 0L, HelmEx = 0L, AlEn = 0L, AlEx = 0L,CaEn = 0L, CaEx = 0L,DeEn = 0L, DeEx = 0L,EnEn = 0L, EnEx = 0L,GaEn = 0L, GaEx = 0L,
+                    ImEn = 0L, ImEx = 0L,NeEn = 0L, NeEx = 0L,OrEn = 0L, OrEx = 0L,SpEn = 0L, SpEx = 0L,StEn = 0L, StEx = 0L,
+                    UrEn = 0L, UrEx = 0L,DtEn = 0L, DtEx = 0L, ViEn = 0L, ViEx = 0L;
 
             // work with correctors
             for (Folder folder : folderList) {
@@ -281,11 +283,45 @@ public class DatabaseCreator {
                 if (folder.getFolderName().contains("Al en")){AlEn = folder.getId();}
                 if (folder.getFolderName().contains("Al ex")){AlEx = folder.getId();}
 
+                if (folder.getFolderName().contains("Ca en")){CaEn = folder.getId();}
+                if (folder.getFolderName().contains("Ca ex")){CaEx = folder.getId();}
+
+                if (folder.getFolderName().contains("De en")){DeEn = folder.getId();}
+                if (folder.getFolderName().contains("De ex")){DeEx = folder.getId();}
+
+                if (folder.getFolderName().contains("En en")){EnEn = folder.getId();}
+                if (folder.getFolderName().contains("En ex")){EnEx = folder.getId();}
+
+                if (folder.getFolderName().contains("Ga en")){GaEn = folder.getId();}
+                if (folder.getFolderName().contains("Ga ex")){GaEx = folder.getId();}
+
+                if (folder.getFolderName().contains("Im en")){ImEn = folder.getId();}
+                if (folder.getFolderName().contains("Im ex")){ImEx = folder.getId();}
+
+                if (folder.getFolderName().contains("Ne en")){NeEn = folder.getId();}
+                if (folder.getFolderName().contains("Ne ex")){NeEx = folder.getId();}
+
+                if (folder.getFolderName().contains("Or en")){OrEn = folder.getId();}
+                if (folder.getFolderName().contains("Or ex")){OrEx = folder.getId();}
+
+                if (folder.getFolderName().contains("Sp en")){SpEn = folder.getId();}
+                if (folder.getFolderName().contains("Sp ex")){SpEx = folder.getId();}
+
+                if (folder.getFolderName().contains("St en")){StEn = folder.getId();}
+                if (folder.getFolderName().contains("St ex")){StEx = folder.getId();}
+
+                if (folder.getFolderName().contains("Ur en")){UrEn = folder.getId();}
+                if (folder.getFolderName().contains("Ur ex")){UrEx = folder.getId();}
+
                 if (folder.getFolderName().contains("Dt ex Fe")){DtEn = folder.getId();}
                 if (folder.getFolderName().contains("Dt ex Ma")){DtEx = folder.getId();}
 
-                if (folder.getFolderName().contains("Vi en")){ViEn = folder.getId();}
-                if (folder.getFolderName().contains("Vi ex")){ViEx = folder.getId();}
+                if (folder.getFolderName().contains("Vi en") && folder.getIsInUse() == 1){
+                    ViEn = folder.getId();
+                }
+                if (folder.getFolderName().contains("Vi ex") && folder.getIsInUse() == 1){
+                    ViEx = folder.getId();
+                }
 
 
             }
@@ -301,9 +337,26 @@ public class DatabaseCreator {
             Folder destruction = foldersDao.getByName("Di Деструкция");
             Folder metabolism = foldersDao.getByName("Me Метаболизм");
             Folder physCond = foldersDao.getByName("Bо Физ кодиции");
-            Folder helminths = foldersDao.getByName("FL He Helminths");
-            Folder allergy = foldersDao.getByName("Al ALLERGY");
             Folder detokc = foldersDao.getByName("Dt DETOKC");
+            Folder acarian = foldersDao.getByName("FL Ac Acarian");
+            Folder bacteria = foldersDao.getByName("FL Ba Bacteria");
+            Folder elementary = foldersDao.getByName("FL El Elementary");
+            Folder helminths = foldersDao.getByName("FL He Helminths");
+            Folder mycosis = foldersDao.getByName("FL My Mycosis");
+            Folder virus = foldersDao.getByName("FL Vi Virus");
+            Folder female = foldersDao.getByName("Fe Family");
+            Folder male = foldersDao.getByName("Ma Man");
+            Folder allergy = foldersDao.getByName("Al ALLERGY");
+            Folder cardio = foldersDao.getByName("Ca CARDIO");
+            Folder derma = foldersDao.getByName("De DERMA");
+            Folder endocrin = foldersDao.getByName("En ENDOKRIN");
+            Folder gastro = foldersDao.getByName("Ga GASTRO");
+            Folder immun = foldersDao.getByName("Im IMMUN");
+            Folder neural = foldersDao.getByName("Ne NEURAL");
+            Folder ortho = foldersDao.getByName("Or ORTHO");
+            Folder spiritus = foldersDao.getByName("Sp SPIRITUS");
+            Folder stomat = foldersDao.getByName("St STOMAT");
+            Folder urolog = foldersDao.getByName("Ur UROLOG");
             Folder vision = foldersDao.getByName("Vi VISION");
 
             handlePatternsFolders(stressAnalys, null,null);
@@ -312,6 +365,16 @@ public class DatabaseCreator {
             handlePatternsFolders(physCond, BoEnId, null);
             handlePatternsFolders(helminths, HelmEn, HelmEx);
             handlePatternsFolders(allergy, AlEn, AlEx);
+            handlePatternsFolders(cardio, CaEn, CaEx);
+            handlePatternsFolders(derma, DeEn, DeEx);
+            handlePatternsFolders(endocrin, EnEn, EnEx);
+            handlePatternsFolders(gastro, GaEn, GaEx);
+            handlePatternsFolders(immun, ImEn, ImEx);
+            handlePatternsFolders(neural, NeEn, NeEx);
+            handlePatternsFolders(ortho, OrEn, OrEx);
+            handlePatternsFolders(spiritus, SpEn, SpEx);
+            handlePatternsFolders(stomat, SpEn, SpEx);
+            handlePatternsFolders(urolog, UrEn, UrEx);
             handlePatternsFolders(detokc, DtEn, DtEx);
             handlePatternsFolders(vision, ViEn, ViEx);
 
@@ -414,28 +477,25 @@ public class DatabaseCreator {
 
     private void handlePatternsFolders(Folder folder, Long correctorsEn, Long correctorsEx) {
         if (folder != null) {
-            List<PatternsFolders> patternsFolderses = patternsFoldersDao.getPatternsByFolder(folder);
-            for (PatternsFolders patternFolder:patternsFolderses) {
+                List<PatternsFolders> patternsFolderses = patternsFoldersDao.getPatternsByFolder(folder);
+                for (PatternsFolders patternFolder : patternsFolderses) {
                 /*patternsFolders = new PatternsFolders();
                 patternsFolders.setFolder(patternFolder.getFolder());
                 patternsFolders.setPattern(patternFolder.getPattern());*/
-                if (correctorsEn == null) {
-                    patternFolder.setCorrectorsEn(null);
-                }
-                else {
-                    patternFolder.setCorrectorsEn(correctorsEn);
-                }
-                if (correctorsEx == null) {
-                    patternFolder.setCorrectorsEx(null);
-                }
-                else {
-                    patternFolder.setCorrectorsEx(correctorsEx);
-                }
-                patternsFoldersDao.saveOrUpdate(patternFolder);
+                    if (correctorsEn == null) {
+                        patternFolder.setCorrectorsEn(null);
+                    } else {
+                        patternFolder.setCorrectorsEn(correctorsEn);
+                    }
+                    if (correctorsEx == null) {
+                        patternFolder.setCorrectorsEx(null);
+                    } else {
+                        patternFolder.setCorrectorsEx(correctorsEx);
+                    }
+                    patternsFoldersDao.saveOrUpdate(patternFolder);
 
+                }
             }
-
-        }
     }
 
     private int calcRows(ResultSet set) throws SQLException {

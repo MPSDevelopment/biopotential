@@ -4,7 +4,9 @@ import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -31,11 +33,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -224,10 +229,11 @@ public class BioHttpClient {
         HttpResponse response = null;
         if (file != null) {
             try {
-                FileBody bin = new FileBody(file, "application/octet-stream");
+                FileBody bin = new FileBody(file, "audio/wav;"+Charset.forName( "UTF-8" )/*"text/html; charset=utf-8"*//*ContentType.create("audio/wav", CharEncoding.UTF_8)*/);
                 StringBody comment = new StringBody("A binary file of some kind", ContentType.TEXT_PLAIN);
-                HttpEntity reqEntity = MultipartEntityBuilder.create().addPart("file", bin).addPart("comment", comment).build();
+                HttpEntity reqEntity = MultipartEntityBuilder.create().addPart("file", bin)/*.setContentType(ContentType.APPLICATION_FORM_URLENCODED)*/.addPart("comment", comment).build();
                 request.setEntity(reqEntity);
+
                 response = httpClient.execute(request);
                 json = getContextResponse(response);
                 LOGGER.info(" POST RESPONSE JSON - %s", json);

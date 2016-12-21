@@ -13,11 +13,11 @@ import java.util.List;
 
 public class FoldersDao extends GenericDao<Folder, Long> {
 
-    public List<Pattern> getAllPatternsByFolder(Folder folder) {
-        Criteria query = getSession().createCriteria(Pattern.class).setCacheable(false);
+    /*public List<Pattern> getAllPatternsByFolder(Folder folder) {
+        Criteria query = getSession().createCriteria(PatternsFolders.class).setCacheable(false);
         query.add(Restrictions.eq(Pattern.ID_PATTERN, folder));
         return query.list();
-    }
+    }*/
 
     public Folder getById(int value) {
         Criteria query = getSession().createCriteria(Folder.class).setCacheable(false);

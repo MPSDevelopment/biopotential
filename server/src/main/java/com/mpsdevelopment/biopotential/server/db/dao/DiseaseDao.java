@@ -48,6 +48,7 @@ public class DiseaseDao {
         Folder physCond = foldersDao.getByName("Bо Физ кодиции");
 
 		List<EDXPattern> patterns = patternsDao.getFromDatabase();
+
 		List<EDXPattern> patternsStressAnalys = patternsDao.getPatternsFromFolders(stressAnalys);
 		List<EDXPattern> patternsDestruction = patternsDao.getPatternsFromFolders(destruction);
 		List<EDXPattern> patternsMetabolism = patternsDao.getPatternsFromFolders(metabolism);
@@ -57,6 +58,7 @@ public class DiseaseDao {
 
 		// TODO Split summarizePatterns to 2 methods for decease and pattern
 		final Map<Pattern, AnalysisSummary> diseases = Machine.summarizePatterns(sample, patterns, degree);
+
 		final Map<Pattern, AnalysisSummary> diseasesStressAnalys = Machine.summarizePatterns(sample, patternsStressAnalys, degree);
 		final Map<Pattern, AnalysisSummary> diseasesDestruction = Machine.summarizePatterns(sample, patternsDestruction, degree);
 		final Map<Pattern, AnalysisSummary> diseasesMetabolism = Machine.summarizePatterns(sample, patternsMetabolism, degree);
@@ -82,7 +84,9 @@ public class DiseaseDao {
 		HashMap<Pattern, AnalysisSummary> allHealings = new HashMap<>();
 
 		long t1 = System.currentTimeMillis();
-		getHealings(diseases, sample, probableKinds, allHealings, level);
+        if (level != -2147483648) {
+            getHealings(diseases, sample, probableKinds, allHealings, level);
+        }
 		LOGGER.info("Healing has been found for %d ms",	System.currentTimeMillis() - t1);
 
 		/*long t2 = System.currentTimeMillis();

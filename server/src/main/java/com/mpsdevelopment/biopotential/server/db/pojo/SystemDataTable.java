@@ -1,7 +1,5 @@
 package com.mpsdevelopment.biopotential.server.db.pojo;
 
-import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
-import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -10,8 +8,8 @@ import java.util.function.BiConsumer;
 
 public class SystemDataTable {
     private String name;
-    private int maxLevel;
-    private int poLevel;
+    private double maxLevel;
+    private double poLevel;
 
     public String getName() {
         return name;
@@ -21,38 +19,38 @@ public class SystemDataTable {
         this.name = name;
     }
 
-    public int getMaxLevel() {
+    public double getMaxLevel() {
         return maxLevel;
     }
 
-    public void setMaxLevel(int maxLevel) {
+    public void setMaxLevel(double maxLevel) {
         this.maxLevel = maxLevel;
     }
 
-    public int getPoLevel() {
+    public double getPoLevel() {
         return poLevel;
     }
 
-    public void setPoLevel(int poLevel) {
+    public void setPoLevel(double poLevel) {
         this.poLevel = poLevel;
     }
 
 
 
-    public static ObservableList<SystemDataTable> createDataTableObject(Map<String, Integer> systemMap1, Map<String, Integer> systemMap2) {
+    public static ObservableList<SystemDataTable> createDataTableObject(Map<String, Double> systemMap1, Map<String, Double> systemMap2) {
         ObservableList<SystemDataTable> systemDataTables = FXCollections.observableArrayList();
 
-        systemMap1.forEach(new BiConsumer<String, Integer>() {
+        systemMap1.forEach(new BiConsumer<String, Double>() {
             @Override
-            public void accept(String s, Integer integer) {
+            public void accept(String s, Double dou) {
                 SystemDataTable systemDataTable = new SystemDataTable();
                 systemDataTable.setName(s);
-                systemDataTable.setMaxLevel(integer);
-                systemMap2.forEach(new BiConsumer<String, Integer>() {
+                systemDataTable.setMaxLevel(dou);
+                systemMap2.forEach(new BiConsumer<String, Double>() {
                     @Override
-                    public void accept(String ss, Integer integer1) {
+                    public void accept(String ss, Double dou1) {
                         if (s.equals(ss)) {
-                            systemDataTable.setPoLevel(integer1);
+                            systemDataTable.setPoLevel(dou1);
                         }
                     }
                 });

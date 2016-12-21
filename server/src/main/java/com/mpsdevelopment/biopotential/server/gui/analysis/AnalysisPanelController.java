@@ -5,6 +5,7 @@ import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
+import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
 import com.mpsdevelopment.biopotential.server.db.pojo.SystemDataTable;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
@@ -103,6 +104,11 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     private String degree2;
     private SystemDataTable systemDataTable;
 
+    public static final String HOST = "localhost";
+    public static final int PORT = 8098;
+    private double alWeight = 0, viWeight = 0, caWeight = 0, deWeight = 0, enWeight = 0, gaWeight = 0, imWeight = 0, neWeight = 0, orWeight = 0, spWeight = 0, stWeight = 0, urWeight = 0;
+
+
     public void setDegree2(String degree2) {
         this.degree2 = degree2;
     }
@@ -177,7 +183,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<SystemDataTable, String> p) {
-                return new SimpleStringProperty(Integer.toString(p.getValue().getMaxLevel())+ " %");
+                return new SimpleStringProperty(Double.toString(p.getValue().getMaxLevel())+ " %");
             }
         });
 
@@ -186,7 +192,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<SystemDataTable, String> p) {
 //                p.getValue().getKey().
-                return new SimpleStringProperty(Integer.toString(p.getValue().getPoLevel())+ " %");
+                return new SimpleStringProperty(Double.toString(p.getValue().getPoLevel())+ " %");
             }
         });
 
@@ -266,6 +272,55 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         allHealings.putAll(allHealings1);
         //
 
+        Type type = new TypeToken<Map<String, Integer>>() { }.getType();
+        Map<String,Integer> sizeMap = new HashMap<>();
+
+        String url = String.format("http://%s:%s%s", HOST, PORT, ControllerAPI.PATTERNS_CONTROLLER + ControllerAPI.PATTERNS_CONTROLLER_GET_PATTERNS_SIZE);
+        String size = bioHttpClient.executeGetRequest(url);
+        sizeMap = JsonUtils.fromJson(type,size);
+
+        sizeMap.forEach(new BiConsumer<String, Integer>() {
+            @Override
+            public void accept(String s, Integer weight) {
+                if (s.contains("Al ALLERGY")) {
+                    alWeight = (double) 100/weight;
+                }
+                if (s.contains("Ca CARDIO")) {
+                    caWeight = (double) 100/weight;
+                }
+                if (s.contains("De DERMA")) {
+                    deWeight = (double) 100/weight;
+                }
+                if (s.contains("En ENDOKRIN")) {
+                    enWeight = (double) 100/weight;
+                }
+                if (s.contains("Ga GASTRO")) {
+                    gaWeight = (double) 100/weight;
+                }
+                if (s.contains("Im IMMUN")) {
+                    imWeight = (double) 100/weight;
+                }
+                if (s.contains("Ne NEURAL")) {
+                    neWeight = (double) 100/weight;
+                }
+                if (s.contains("Or ORTHO")) {
+                    orWeight = (double) 100/weight;
+                }
+                if (s.contains("Sp SPIRITUS")) {
+                    spWeight = (double) 100/weight;
+                }
+                if (s.contains("St STOMAT")) {
+                    stWeight = (double) 100/weight;
+                }
+                if (s.contains("Ur UROLOG")) {
+                    urWeight = (double) 100/weight;
+                }
+                if (s.contains("Vi VISION")) {
+                   viWeight = (double) 100/weight;
+                }
+            }
+        });
+
 //        allHealings.putAll(diseaseDao.getHealings(diseases, file));
         LOGGER.info("Total time for calculate healings %d ms", System.currentTimeMillis() - t1);
         LOGGER.info("healings size %s", allHealings.size());
@@ -282,8 +337,8 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         Set<DataTable> sortedSelectedItems2 = sortSelected(analysisData2);
 
 
-        Map<String, Integer> systemMap1 = getSystemMap(sortedSelectedItems1);
-        Map<String, Integer> systemMap2 = getSystemMap(sortedSelectedItems2);
+        Map<String, Double> systemMap1 = getSystemMap(sortedSelectedItems1);
+        Map<String, Double> systemMap2 = getSystemMap(sortedSelectedItems2);
         /*List<SystemDataTable> systemDataTables = new ArrayList<>();
         systemDataTable = null;
 
@@ -308,36 +363,38 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         ObservableList<SystemDataTable> datas = FXCollections.observableArrayList();
         datas.addAll(SystemDataTable.createDataTableObject(systemMap1,systemMap2));
 
-        String[] systems = {"CARDIO система","DERMA система","Endocrinology система", "GASTRO система", "IMMUN система", "MENTIS система", "NEURAL система", "ORTHO система",
+        String[] systems = {"ALLERGY система","CARDIO система","DERMA система","Endocrinology система", "GASTRO система", "IMMUN система", "MENTIS система", "NEURAL система", "ORTHO система",
                 "SPIRITUS система", "Stomat система", "UROLOG система", "VISION система"};
         ObservableList<XYChart.Series<Number, Number>> barChartData = FXCollections.observableArrayList(
                 new BarChart.Series("Max", FXCollections.observableArrayList(
-                        new BarChart.Data(systems[0], systemMap1.get("CARDIO система")),
-                        new BarChart.Data(systems[1], systemMap1.get("DERMA система")),
-                        new BarChart.Data(systems[2], systemMap1.get("Endocrinology система")),
-                        new BarChart.Data(systems[3], systemMap1.get("GASTRO система")),
-                        new BarChart.Data(systems[4], systemMap1.get("IMMUN система")),
-                        new BarChart.Data(systems[5], systemMap1.get("MENTIS система")),
-                        new BarChart.Data(systems[6], systemMap1.get("NEURAL система")),
-                        new BarChart.Data(systems[7], systemMap1.get("ORTHO система")),
-                        new BarChart.Data(systems[8], systemMap1.get("SPIRITUS система")),
-                        new BarChart.Data(systems[9], systemMap1.get("Stomat система")),
-                        new BarChart.Data(systems[10], systemMap1.get("UROLOG система")),
-                        new BarChart.Data(systems[11], systemMap1.get("VISION система"))
+                        new BarChart.Data(systems[0], systemMap1.get("ALLERGY система")),
+                        new BarChart.Data(systems[1], systemMap1.get("CARDIO система")),
+                        new BarChart.Data(systems[2], systemMap1.get("DERMA система")),
+                        new BarChart.Data(systems[3], systemMap1.get("Endocrinology система")),
+                        new BarChart.Data(systems[4], systemMap1.get("GASTRO система")),
+                        new BarChart.Data(systems[5], systemMap1.get("IMMUN система")),
+                        new BarChart.Data(systems[6], systemMap1.get("MENTIS система")),
+                        new BarChart.Data(systems[7], systemMap1.get("NEURAL система")),
+                        new BarChart.Data(systems[8], systemMap1.get("ORTHO система")),
+                        new BarChart.Data(systems[9], systemMap1.get("SPIRITUS система")),
+                        new BarChart.Data(systems[10], systemMap1.get("Stomat система")),
+                        new BarChart.Data(systems[11], systemMap1.get("UROLOG система")),
+                        new BarChart.Data(systems[12], systemMap1.get("VISION система"))
                 )),
                 new BarChart.Series("Po", FXCollections.observableArrayList(
-                        new BarChart.Data(systems[0], systemMap2.get("CARDIO система")),
-                        new BarChart.Data(systems[1], systemMap2.get("DERMA система")),
-                        new BarChart.Data(systems[2], systemMap2.get("Endocrinology система")),
-                        new BarChart.Data(systems[3], systemMap2.get("GASTRO система")),
-                        new BarChart.Data(systems[4], systemMap2.get("IMMUN система")),
-                        new BarChart.Data(systems[5], systemMap2.get("MENTIS система")),
-                        new BarChart.Data(systems[6], systemMap2.get("NEURAL система")),
-                        new BarChart.Data(systems[7], systemMap2.get("ORTHO система")),
-                        new BarChart.Data(systems[8], systemMap2.get("SPIRITUS система")),
-                        new BarChart.Data(systems[9], systemMap2.get("Stomat система")),
-                        new BarChart.Data(systems[10], systemMap2.get("UROLOG система")),
-                        new BarChart.Data(systems[11], systemMap2.get("VISION система"))
+                        new BarChart.Data(systems[0], systemMap2.get("ALLERGY система")),
+                        new BarChart.Data(systems[1], systemMap2.get("CARDIO система")),
+                        new BarChart.Data(systems[2], systemMap2.get("DERMA система")),
+                        new BarChart.Data(systems[3], systemMap2.get("Endocrinology система")),
+                        new BarChart.Data(systems[4], systemMap2.get("GASTRO система")),
+                        new BarChart.Data(systems[5], systemMap2.get("IMMUN система")),
+                        new BarChart.Data(systems[6], systemMap2.get("MENTIS система")),
+                        new BarChart.Data(systems[7], systemMap2.get("NEURAL система")),
+                        new BarChart.Data(systems[8], systemMap2.get("ORTHO система")),
+                        new BarChart.Data(systems[9], systemMap2.get("SPIRITUS система")),
+                        new BarChart.Data(systems[10], systemMap2.get("Stomat система")),
+                        new BarChart.Data(systems[11], systemMap2.get("UROLOG система")),
+                        new BarChart.Data(systems[12], systemMap2.get("VISION система"))
 
                 )));
 
@@ -357,20 +414,21 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     }
 
-    private Map<String, Integer> getSystemMap(Set<DataTable> sortedSelectedItems) {
-        Map<String,Integer> systemMap = new HashMap<>();
-        systemMap.put("CARDIO система",0);
-        systemMap.put("DERMA система",0);
-        systemMap.put("Endocrinology система",0);
-        systemMap.put("GASTRO система",0);
-        systemMap.put("IMMUN система",0);
-        systemMap.put("MENTIS система",0);
-        systemMap.put("NEURAL система",0);
-        systemMap.put("ORTHO система",0);
-        systemMap.put("SPIRITUS система",0);
-        systemMap.put("Stomat система",0);
-        systemMap.put("UROLOG система",0);
-        systemMap.put("VISION система",0);
+    private Map<String, Double> getSystemMap(Set<DataTable> sortedSelectedItems) {
+        Map<String,Double> systemMap = new HashMap<>();
+        systemMap.put("ALLERGY система",0d);
+        systemMap.put("CARDIO система",0d);
+        systemMap.put("DERMA система",0d);
+        systemMap.put("Endocrinology система",0d);
+        systemMap.put("GASTRO система",0d);
+        systemMap.put("IMMUN система",0d);
+        systemMap.put("MENTIS система",0d);
+        systemMap.put("NEURAL система",0d);
+        systemMap.put("ORTHO система",0d);
+        systemMap.put("SPIRITUS система",0d);
+        systemMap.put("Stomat система",0d);
+        systemMap.put("UROLOG система",0d);
+        systemMap.put("VISION система",0d);
 
         // decode diseas names to system's name's
         int index = 0;
@@ -382,6 +440,17 @@ public class AnalysisPanelController extends AbstractController implements Subsc
                     index = i;
                     break;
                 }
+
+
+            }
+
+            switch (dataTable.getName().substring(0, 2)) {
+                case "AL":
+                    systemMap.put("ALLERGY система",systemMap.get("ALLERGY система")+alWeight);
+                    break;
+                case "Vi":
+                    systemMap.put("VISION система",systemMap.get("VISION система")+viWeight);
+                    break;
             }
 
             switch (dataTable.getName().substring(0, index)) {
