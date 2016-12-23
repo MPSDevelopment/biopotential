@@ -20,7 +20,7 @@
           <NumberAxis autoRanging="false" lowerBound="0" prefHeight="645.0" prefWidth="6.0" side="LEFT" upperBound="110" />
         </yAxis>
       </ScatterChart>
-      <TableView fx:id="healthConditionTable" layoutX="29.0" layoutY="24.0" prefHeight="641.0" prefWidth="557.0">
+      <TableView fx:id="healthConditionTable" layoutX="29.0" layoutY="235.0" prefHeight="430.0" prefWidth="557.0">
         <columns>
           <TableColumn fx:id="numberColumn" prefWidth="30.0" text="№" />
           <TableColumn fx:id="diseaseName" prefWidth="191.0" text="Название" />
@@ -53,5 +53,15 @@
             </TableView>
          </children>
       </Pane>
+      <TableView fx:id="healthConditionTable1" layoutX="29.0" layoutY="32.0" prefHeight="181.0" prefWidth="557.0">
+         <columns>
+            <TableColumn fx:id="numberColumn1" prefWidth="30.0" text="№" />
+            <TableColumn fx:id="diseaseName1" prefWidth="191.0" text="Название" />
+            <TableColumn prefWidth="93.0" text="Группа" />
+            <TableColumn prefWidth="96.0" text="Система" />
+            <TableColumn fx:id="diseaseLevel1" prefWidth="74.0" text="Дисперсия" />
+            <TableColumn fx:id="automaticsLevelColumn1" prefWidth="72.0" text="Уровень" />
+         </columns>
+      </TableView>
    </children>
 </AnchorPane>

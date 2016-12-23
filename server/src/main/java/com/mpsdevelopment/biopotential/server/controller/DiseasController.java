@@ -86,7 +86,7 @@ public class DiseasController {
 
     private Map<Pattern, AnalysisSummary> getDiseas(MultipartFile file, String name,int degree) {
         try {
-            diseases.putAll(diseaseDao.getDeseases(multipartToFile(name, file),degree));
+            diseases.putAll(diseaseDao.getDeseases(multipartToFile(name, file),degree,true));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (UnsupportedAudioFileException e) {

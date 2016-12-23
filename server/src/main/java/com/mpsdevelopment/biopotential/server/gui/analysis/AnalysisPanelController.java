@@ -70,6 +70,9 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     private TableView<DataTable> healthConditionTable;
 
     @FXML
+    private TableView<DataTable> healthConditionTable1;
+
+    @FXML
 //    private TableView<Map.Entry<String,Integer>> systemTable;
     private TableView<SystemDataTable> systemTable;
 
@@ -81,6 +84,15 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     @FXML
     private TableColumn<DataTable, String> numberColumn;
+
+    @FXML
+    private TableColumn<DataTable, String> diseaseName1;
+
+    @FXML
+    private TableColumn<DataTable, String> diseaseLevel1;
+
+    @FXML
+    private TableColumn<DataTable, String> numberColumn1;
 
     @FXML
     private TableColumn numberSystemColumn;
@@ -123,6 +135,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     public static final String HOST = "localhost";
     public static final int PORT = 8098;
     private double alWeight = 0, viWeight = 0, caWeight = 0, deWeight = 0, enWeight = 0, gaWeight = 0, imWeight = 0, neWeight = 0, orWeight = 0, spWeight = 0, stWeight = 0, urWeight = 0;
+    private ObservableList<DataTable> analysisData1;
 
 
     public void setDegree2(String degree2) {
@@ -137,11 +150,13 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     public void initialize(URL location, ResourceBundle resources) {
 
         analysisData = FXCollections.observableArrayList();
+        analysisData1 = FXCollections.observableArrayList();
         level = FXCollections.observableArrayList();
         diseases = new HashMap<>();
         allHealings = new HashMap<>();
 
         healthConditionTable.setItems(analysisData);
+        healthConditionTable1.setItems(analysisData1);
 
         printButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -170,6 +185,33 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             }
         });
         diseaseLevel.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> dataTable) {
+                SimpleStringProperty property = new SimpleStringProperty();
+                property.setValue(String.format("%s", dataTable.getValue().getDispersion()));
+                return property;
+            }
+        });
+
+        numberColumn1.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> p) {
+                return new ReadOnlyObjectWrapper(healthConditionTable1.getItems().indexOf(p.getValue()) + 1 + "");
+            }
+        });
+        numberColumn.setSortable(false);
+        numberColumn.setStyle("-fx-alignment: CENTER;");
+
+        diseaseName1.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> dataTable) {
+                SimpleStringProperty property = new SimpleStringProperty();
+                property.setValue(String.format("%s", dataTable.getValue().getName()));
+
+                return property;
+            }
+        });
+        diseaseLevel1.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> dataTable) {
                 SimpleStringProperty property = new SimpleStringProperty();
@@ -275,7 +317,16 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
         Type typeOfHashMap = new TypeToken<Map<EDXPattern, AnalysisSummary>>() { }.getType();
         Map<Pattern, AnalysisSummary> diseases1 = JsonUtils.fromJson(typeOfHashMap, json);
+        Map<Pattern, AnalysisSummary> diseases0 = new HashMap<>();
 
+        diseases1.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
+            @Override
+            public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
+                if ((pattern.getKind().equals("Stress Analyze")) || (pattern.getKind().equals("Di Деструкция")) || (pattern.getKind().equals("Me Метаболизм")) || (pattern.getKind().equals("Bо Физ кодиции"))) {
+                    diseases0.put(pattern, analysisSummary);
+                }
+            }
+        });
         ///////////////////////// add second condition
 
         json = bioHttpClient.executePostRequest("/api/diseas/" + degree2 + "/getDiseas", file);
@@ -300,6 +351,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 //        diseases.putAll(diseaseDao.getDeseases(file));
 //        analysisData.addAll(diseasToAnalysisData(diseases, analysisData));
         diseasToAnalysisData(diseases, analysisData);
+        diseasToAnalysisData(diseases0, analysisData1);
 //        Set<DataTable> sortedSelectedItems = sortSelected(analysisData);
 
         LOGGER.info("Total time for calculate diseases %d ms", System.currentTimeMillis() - t2);

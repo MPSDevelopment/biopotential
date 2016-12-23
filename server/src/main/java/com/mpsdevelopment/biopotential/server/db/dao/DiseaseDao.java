@@ -36,7 +36,7 @@ public class DiseaseDao {
 	public DiseaseDao() {
 	}
 
-	public Map<Pattern, AnalysisSummary> getDeseases(File file, int degree) throws IOException, UnsupportedAudioFileException, SQLException {
+	public Map<Pattern, AnalysisSummary> getDeseases(File file, int degree, boolean bool) throws IOException, UnsupportedAudioFileException, SQLException {
 
 		final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(file)));
 		/*
@@ -64,12 +64,25 @@ public class DiseaseDao {
 		final Map<Pattern, AnalysisSummary> diseasesMetabolism = Machine.summarizePatterns(sample, patternsMetabolism, degree);
 		final Map<Pattern, AnalysisSummary> diseasesPhysCond = Machine.summarizePatterns(sample, patternsPhysCond, degree);
 
-        diseases.putAll(diseasesStressAnalys);
+        if (bool) {
+            return diseases;
+
+        }
+        else {
+            diseases.clear();
+            diseases.putAll(diseasesStressAnalys);
+            diseases.putAll(diseasesDestruction);
+            diseases.putAll(diseasesMetabolism);
+            diseases.putAll(diseasesPhysCond);
+            return diseases;
+
+        }
+        /*diseases.putAll(diseasesStressAnalys);
         diseases.putAll(diseasesDestruction);
         diseases.putAll(diseasesMetabolism);
-        diseases.putAll(diseasesPhysCond);
+        diseases.putAll(diseasesPhysCond);*/
 
-        return diseases;
+//        return diseases;
 	}
 
 	/**
