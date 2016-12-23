@@ -6,6 +6,7 @@ import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.arkdb.ArkDBExcepti
 import com.mpsdevelopment.biopotential.server.db.dao.*;
 import com.mpsdevelopment.biopotential.server.db.pojo.*;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
+import com.mpsdevelopment.biopotential.server.eventbus.event.EnableButtonEvent;
 import com.mpsdevelopment.biopotential.server.eventbus.event.ProgressBarEvent;
 import com.mpsdevelopment.biopotential.server.gui.ConverterApplication;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
@@ -467,6 +468,7 @@ public class DatabaseCreator {
 			LOGGER.info("Chunk summary took %s ms", System.currentTimeMillis() - t3);
             LOGGER.info("Overall convert process took %s ms", System.currentTimeMillis() - t1);
             EventBus.publishEvent(new ProgressBarEvent(1));
+            EventBus.publishEvent(new EnableButtonEvent(true));
             LOGGER.info("End");
 
 		} catch (SQLException e) {

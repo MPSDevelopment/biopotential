@@ -17,6 +17,7 @@ import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
 import com.mpsdevelopment.biopotential.server.httpclient.HttpClientFactory;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
+import com.mpsdevelopment.biopotential.server.utils.PanelUtils;
 import com.mpsdevelopment.biopotential.server.utils.StageUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
@@ -25,21 +26,30 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.chart.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import net.engio.mbassy.listener.Handler;
 
+import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
@@ -92,6 +102,12 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     private Button continueButton;
 
     @FXML
+    private Button printButton;
+
+    @FXML
+    private Pane pane;
+
+    @FXML
     private BarChart<Number, Number> histogramBarChart;
 
     private Stage primaryStage;
@@ -119,6 +135,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         analysisData = FXCollections.observableArrayList();
         level = FXCollections.observableArrayList();
         diseases = new HashMap<>();
@@ -126,6 +143,13 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
         healthConditionTable.setItems(analysisData);
 
+        printButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                PanelUtils.saveToImage(pane, primaryStage);
+//                saveToImage();
+            }
+        });
 
         numberColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
             @Override
@@ -183,7 +207,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<SystemDataTable, String> p) {
-                return new SimpleStringProperty(Double.toString(p.getValue().getMaxLevel())+ " %");
+                return new SimpleStringProperty(Double.toString(new BigDecimal(p.getValue().getMaxLevel()).setScale(2, RoundingMode.UP).doubleValue())+ " %");
             }
         });
 
@@ -192,7 +216,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<SystemDataTable, String> p) {
 //                p.getValue().getKey().
-                return new SimpleStringProperty(Double.toString(p.getValue().getPoLevel())+ " %");
+                return new SimpleStringProperty(Double.toString(new BigDecimal(p.getValue().getPoLevel()).setScale(2, RoundingMode.UP).doubleValue())+ " %");
             }
         });
 
@@ -218,6 +242,25 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         healthConditionTable.getSortOrder().add(automaticsLevelColumn); // sort cell'a by name
 
     }
+
+    /*private void saveToImage() {
+        Image image = pane.snapshot(new SnapshotParameters(), null);
+
+        FileChooser fileChooser = new FileChooser();
+
+        //Set extension filter
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PNG files (*.png)", "*.png");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        //Show save file dialog
+        File file = fileChooser.showSaveDialog(primaryStage);
+
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }*/
 
     private void makeAnalyze(File file) throws UnsupportedAudioFileException, IOException, SQLException {
 
@@ -277,6 +320,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
         String url = String.format("http://%s:%s%s", HOST, PORT, ControllerAPI.PATTERNS_CONTROLLER + ControllerAPI.PATTERNS_CONTROLLER_GET_PATTERNS_SIZE);
         String size = bioHttpClient.executeGetRequest(url);
+
         sizeMap = JsonUtils.fromJson(type,size);
 
         sizeMap.forEach(new BiConsumer<String, Integer>() {
@@ -363,6 +407,10 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         ObservableList<SystemDataTable> datas = FXCollections.observableArrayList();
         datas.addAll(SystemDataTable.createDataTableObject(systemMap1,systemMap2));
 
+        BarChartPanel panel = new BarChartPanel(systemMap1,systemMap2);
+        Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Bar chart").setClazz(panel.getClass()).setHeight(752d).setWidth(1273d).setHeightPanel(722d).setWidthPanel(1273d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+        panel.setPrimaryStage(stage);
+
         String[] systems = {"ALLERGY система","CARDIO система","DERMA система","Endocrinology система", "GASTRO система", "IMMUN система", "MENTIS система", "NEURAL система", "ORTHO система",
                 "SPIRITUS система", "Stomat система", "UROLOG система", "VISION система"};
         ObservableList<XYChart.Series<Number, Number>> barChartData = FXCollections.observableArrayList(
@@ -447,6 +495,36 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             switch (dataTable.getName().substring(0, 2)) {
                 case "AL":
                     systemMap.put("ALLERGY система",systemMap.get("ALLERGY система")+alWeight);
+                    break;
+                case "Ca":
+                    systemMap.put("CARDIO система",systemMap.get("CARDIO система")+caWeight);
+                    break;
+                case "De":
+                    systemMap.put("DERMA система",systemMap.get("DERMA система")+deWeight);
+                    break;
+                case "En":
+                    systemMap.put("Endocrinology система",systemMap.get("Endocrinology система")+deWeight);
+                    break;
+                case "Ga":
+                    systemMap.put("GASTRO система",systemMap.get("GASTRO система")+gaWeight);
+                    break;
+                case "Im":
+                    systemMap.put("IMMUN система",systemMap.get("IMMUN система")+imWeight);
+                    break;
+                case "Ne":
+                    systemMap.put("NEURAL система",systemMap.get("NEURAL система")+neWeight);
+                    break;
+                case "Or":
+                    systemMap.put("ORTHO система",systemMap.get("ORTHO система")+orWeight);
+                    break;
+                case "Sp":
+                    systemMap.put("SPIRITUS система",systemMap.get("SPIRITUS система")+spWeight);
+                    break;
+                case "St":
+                    systemMap.put("Stomat система",systemMap.get("Stomat система")+stWeight);
+                    break;
+                case "Ur":
+                    systemMap.put("UROLOG система",systemMap.get("UROLOG система")+urWeight);
                     break;
                 case "Vi":
                     systemMap.put("VISION система",systemMap.get("VISION система")+viWeight);

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="208.0" prefWidth="306.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mpsdevelopment.biopotential.server.gui.startPanel.StartPanelController">
+   <children>
+      <Button fx:id="okButton" layoutX="37.0" layoutY="159.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="112.0" text="Ок" />
+      <Button fx:id="cancelButton" layoutX="163.0" layoutY="159.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="112.0" text="Отмена" />
+      <Label layoutX="30.0" layoutY="27.0" prefHeight="25.0" prefWidth="126.0" text="Выберите базу данных" />
+      <Button fx:id="chooseDbButton" layoutX="37.0" layoutY="52.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="112.0" text="Выбор" />
+      <Label fx:id="DbLabel" layoutX="163.0" layoutY="56.0" text="Label" />
+      <Button fx:id="editButton" layoutX="37.0" layoutY="110.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="112.0" text="Редактировать" />
+      <Label layoutX="30.0" layoutY="85.0" prefHeight="25.0" prefWidth="155.0" text="Конфигурационный файл" />
+   </children>
+</AnchorPane>

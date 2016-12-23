@@ -1,30 +1,18 @@
 package com.mpsdevelopment.biopotential.server.gui.converter;
 
 import com.mpsdevelopment.biopotential.server.AbstractController;
-import com.mpsdevelopment.biopotential.server.JettyServer;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
-import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.arkdb.ArkDBException;
-import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
 import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
 import com.mpsdevelopment.biopotential.server.db.PersistUtils;
 import com.mpsdevelopment.biopotential.server.db.SessionManager;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
-import com.mpsdevelopment.biopotential.server.eventbus.event.ProgressBarEvent;
-import com.mpsdevelopment.biopotential.server.eventbus.event.SelectUserEvent;
-import com.mpsdevelopment.biopotential.server.gui.BioApplication;
+import com.mpsdevelopment.biopotential.server.eventbus.event.EnableButtonEvent;
 import com.mpsdevelopment.biopotential.server.gui.ConverterApplication;
-import com.mpsdevelopment.biopotential.server.gui.analysis.AnalysisPanel;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
-import com.mpsdevelopment.biopotential.server.settings.StageSettings;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
-import com.mpsdevelopment.biopotential.server.utils.StageUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -38,7 +26,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -69,6 +56,9 @@ public class ConverterPanelController extends AbstractController implements Subs
     @FXML
     private ProgressBar progressBar;
 
+    @FXML
+    private Label storLabel;
+
     private PersistUtils persistUtils;
     private SessionManager sessionManager;
     private DatabaseCreator databaseCreator;
@@ -84,6 +74,9 @@ public class ConverterPanelController extends AbstractController implements Subs
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        storLabel.setText("");
+        chooseBaseButton.setDisable(true);
 
         progressBar.progressProperty().addListener(observable -> {
             if (progressBar.getProgress() >= 0.99) {
@@ -122,6 +115,7 @@ public class ConverterPanelController extends AbstractController implements Subs
                 Thread thread = new Thread(copyTask, "task-thread");
                 thread.setDaemon(true);
                 thread.start();
+                disableAllButtons();
 
                 /*databaseCreator = JettyServer.WEB_CONTEXT.getBean(DatabaseCreator.class);
                 try {
@@ -144,6 +138,8 @@ public class ConverterPanelController extends AbstractController implements Subs
                 File selectedDirectory = chooser.showDialog(primaryStage);
                 Machine.setEdxFileFolder(selectedDirectory.getAbsolutePath() + "/");
                 LOGGER.info("EDX storage %s", selectedDirectory.getAbsolutePath() + "\\");
+                storLabel.setText(selectedDirectory.getName());
+                chooseBaseButton.setDisable(false);
 
             }
         });
@@ -165,6 +161,14 @@ public class ConverterPanelController extends AbstractController implements Subs
                 JsonUtils.writeJsonToFile(json.replace("\\\\","/"),"config/server.json");*/
             }
         });
+
+    }
+
+    private void disableAllButtons() {
+        chooseBaseButton.setDisable(true);
+        chooseStorageButton.setDisable(true);
+        OkButton.setDisable(true);
+        CancelButton.setDisable(true);
 
     }
 
@@ -192,9 +196,11 @@ public class ConverterPanelController extends AbstractController implements Subs
     private void restartSessionManager(String url) {
         String name = "database";
         persistUtils.closeSessionFactory();
-        if (nameTextField.getText() != null) {
+        /*if (nameTextField.getText() != null) {
             name = nameTextField.getText();
-        }
+        }*/
+
+        name = file.getName();
 
         ServerSettings fileSettings = ConverterApplication.APP_CONTEXT.getBean(ServerSettings.class);
         fileSettings.setDbPath(url+name);
@@ -207,6 +213,13 @@ public class ConverterPanelController extends AbstractController implements Subs
         sessionManager.setSession(session);
 
 
+    }
+
+    @Handler
+    public void handleMessage(EnableButtonEvent event) throws Exception {
+        // TODO this handler appear twice.. fix it!!!
+        LOGGER.info("Enable ok buttons ");
+        OkButton.setDisable(false);
     }
 
     public void updatePanel(Stage primaryStage) {

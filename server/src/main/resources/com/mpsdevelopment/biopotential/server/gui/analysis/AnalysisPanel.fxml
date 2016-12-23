@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="722.0" prefWidth="1273.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mpsdevelopment.biopotential.server.gui.analysis.AnalysisPanelController">
    <children>
@@ -29,23 +30,28 @@
             <TableColumn fx:id="automaticsLevelColumn" prefWidth="72.0" text="Уровень" />
         </columns>
       </TableView>
-      <TableView fx:id="systemTable" layoutX="598.0" layoutY="323.0" prefHeight="341.0" prefWidth="349.0">
-        <columns>
-          <TableColumn fx:id="numberSystemColumn" prefWidth="33.0" text="№" />
-          <TableColumn fx:id="systemColumn" prefWidth="166.0" text="Система" />
-            <TableColumn fx:id="maxLevelColumn" prefWidth="74.0" text="Max" />
-            <TableColumn fx:id="poLevelColumn" prefWidth="74.0" text="Po" />
-        </columns>
-      </TableView>
       <Button fx:id="continueButton" layoutX="443.0" layoutY="683.0" mnemonicParsing="false" text="Продолжить" />
-      <Button layoutX="541.0" layoutY="683.0" mnemonicParsing="false" text="Назад" />
-      <BarChart fx:id="histogramBarChart" layoutX="598.0" layoutY="24.0" prefHeight="284.0" prefWidth="500.0">
-        <xAxis>
-          <CategoryAxis side="BOTTOM" />
-        </xAxis>
-        <yAxis>
-          <NumberAxis side="LEFT" />
-        </yAxis>
-      </BarChart>
+      <Button layoutX="630.0" layoutY="683.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Закрыть" />
+      <Button fx:id="printButton" layoutX="536.0" layoutY="683.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Печать" />
+      <Pane fx:id="pane" layoutX="598.0" layoutY="24.0" prefHeight="650.0" prefWidth="567.0">
+         <children>
+            <BarChart fx:id="histogramBarChart" prefHeight="284.0" prefWidth="500.0">
+              <xAxis>
+                <CategoryAxis side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis side="LEFT" />
+              </yAxis>
+            </BarChart>
+            <TableView fx:id="systemTable" layoutX="14.0" layoutY="284.0" prefHeight="341.0" prefWidth="349.0">
+              <columns>
+                <TableColumn fx:id="numberSystemColumn" prefWidth="33.0" text="№" />
+                <TableColumn fx:id="systemColumn" prefWidth="166.0" text="Система" />
+                  <TableColumn fx:id="maxLevelColumn" prefWidth="74.0" text="Max" />
+                  <TableColumn fx:id="poLevelColumn" prefWidth="74.0" text="Po" />
+              </columns>
+            </TableView>
+         </children>
+      </Pane>
    </children>
 </AnchorPane>

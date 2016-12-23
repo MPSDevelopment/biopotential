@@ -91,34 +91,34 @@ public class PatternsController {
                 map.put("Al ALLERGY", size);
             }
             if (fol.getFolderName().contains("Ca CARDIO")) {
-                map.put("Ca CARDIO", list.size());
+                map.put("Ca CARDIO", size);
             }
             if (fol.getFolderName().contains("De DERMA")) {
-                map.put("De DERMA", list.size());
+                map.put("De DERMA", size);
             }
             if (fol.getFolderName().contains("En ENDOKRIN")) {
-                map.put("En ENDOKRIN", list.size());
+                map.put("En ENDOKRIN", size);
             }
             if (fol.getFolderName().contains("Ga GASTRO")) {
-                map.put("Ga GASTRO", list.size());
+                map.put("Ga GASTRO", size);
             }
             if (fol.getFolderName().contains("Im IMMUN")) {
-                map.put("Im IMMUN", list.size());
+                map.put("Im IMMUN", size);
             }
             if (fol.getFolderName().contains("Ne NEURAL")) {
-                map.put("Ne NEURAL", list.size());
+                map.put("Ne NEURAL", size);
             }
             if (fol.getFolderName().contains("Or ORTHO")) {
-                map.put("Or ORTHO", list.size());
+                map.put("Or ORTHO", size);
             }
             if (fol.getFolderName().contains("Sp SPIRITUS")) {
-                map.put("Sp SPIRITUS", list.size());
+                map.put("Sp SPIRITUS", size);
             }
             if (fol.getFolderName().contains("St STOMAT")) {
-                map.put("St STOMAT", list.size());
+                map.put("St STOMAT", size);
             }
             if (fol.getFolderName().contains("Ur UROLOG")) {
-                map.put("Ur UROLOG", list.size());
+                map.put("Ur UROLOG", size);
             }
             if (fol.getFolderName().contains("Vi VISION")) {
                 map.put("Vi VISION ", size);

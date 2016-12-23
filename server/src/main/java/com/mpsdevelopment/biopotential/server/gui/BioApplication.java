@@ -2,6 +2,7 @@ package com.mpsdevelopment.biopotential.server.gui;
 
 import com.mpsdevelopment.biopotential.server.JettyServer;
 import com.mpsdevelopment.biopotential.server.gui.diagnostics.DiagPanel;
+import com.mpsdevelopment.biopotential.server.gui.startPanel.StartPanel;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
 import com.mpsdevelopment.biopotential.server.utils.StageUtils;
 import com.mpsdevelopment.plasticine.commons.ClasspathResourceManager;
@@ -49,6 +50,7 @@ public class BioApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
+
         addMainPanel();
 
     }
@@ -65,10 +67,16 @@ public class BioApplication extends Application {
     }
 
     private void addMainPanel() {
-        DiagPanel diagPanel = new DiagPanel();
+        StartPanel startPanel =  new StartPanel();
+        LOGGER.info("Start panel");
+        Stage mainPanelStage = StageUtils.createStage(null, startPanel, new StageSettings().setClazz(DiagPanel.class).setHeight(208d).setWidth(306d).setHeightPanel(208d).setWidthPanel(306d));
+        startPanel.setPrimaryStage(mainPanelStage);
+
+
+        /*DiagPanel diagPanel = new DiagPanel();
         LOGGER.info(" Start Diag panel");
         Stage mainPanelStage = StageUtils.createStage(null, diagPanel, new StageSettings().setClazz(DiagPanel.class).setHeight(740d).setWidth(1034d).setHeightPanel(727d).setWidthPanel(1034d));
-        diagPanel.setPrimaryStage(mainPanelStage);
+        diagPanel.setPrimaryStage(mainPanelStage);*/
 
         mainPanelStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent e) {
