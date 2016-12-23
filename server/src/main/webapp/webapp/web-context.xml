@@ -24,7 +24,8 @@
 	<context:component-scan base-package="com.mpsdevelopment.biopotential.server.db.dao" />
 	<context:component-scan base-package="com.mpsdevelopment.biopotential.server.scheduler" />
 
-	<bean id="persistUtils" class="com.mpsdevelopment.biopotential.server.db.PersistUtils" init-method="configureSessionFactory" autowire="byName" />
+	<!--<bean id="persistUtils" class="com.mpsdevelopment.biopotential.server.db.PersistUtils" init-method="configureSessionFactory" autowire="byName" />-->
+	<bean id="persistUtils" class="com.mpsdevelopment.biopotential.server.db.PersistUtils" autowire="byName" />
 
 	<bean id="sessionManager" class="com.mpsdevelopment.biopotential.server.db.SessionManager" autowire="byName" />
 	<!-- <bean id="securityUtils" class="com.mpsdevelopment.biopotential.server.utils.SecurityUtils" autowire="byName" /> -->

@@ -35,15 +35,17 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
+import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.stage.*;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import net.engio.mbassy.listener.Handler;
@@ -223,31 +225,58 @@ public class DiagPanelController extends AbstractController implements Subscriba
             @Override
             public void handle(ActionEvent t) {
 
-                user.setLogin(login.getValue());
-                user.setSurname(surname.getValue());
-                user.setName(name.getValue());
-                user.setPatronymic(patronymic.getValue());
-                user.setTel(tel.getValue());
-                user.setEmail(email.getValue());
-                user.setBornPlace(born.getValue());
-                user.setAdministrator(false);
-
-                LocalDate localDate = datePicker.getValue();
-                if(datePicker.getValue() == null) {
-                    user.setBornDate(null);
+                if (surnameField.getText() == null) {
+                    final Stage dialog = new Stage();
+                    dialog.initModality(Modality.APPLICATION_MODAL);
+                    dialog.initOwner(primaryStage);
+                    VBox dialogVbox = new VBox(20);
+                    Text text = new Text("Введите фамилию пользователя");
+                    dialogVbox.getChildren().add(text);
+                    text.setTextAlignment(TextAlignment.CENTER);
+                    dialogVbox.setAlignment(Pos.CENTER);
+                    Button button = new Button("Ok");
+                    button.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent event) {
+                            dialog.close();
+                        }
+                    });
+                    button.setAlignment(Pos.CENTER);
+                    dialogVbox.getChildren().add(button);
+                    button.setAlignment(Pos.CENTER);
+                    Scene dialogScene = new Scene(dialogVbox, 200, 100);
+                    dialog.setScene(dialogScene);
+                    dialog.show();
                 }
                 else {
-                    Instant instant = localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
-                    Date res = Date.from(instant);
-                    user.setBornDate(res);
+                    user.setLogin(login.getValue());
+                    user.setSurname(surname.getValue());
+                    user.setName(name.getValue());
+                    user.setPatronymic(patronymic.getValue());
+                    user.setTel(tel.getValue());
+                    user.setEmail(email.getValue());
+                    user.setBornPlace(born.getValue());
+                    user.setAdministrator(false);
+
+                    LocalDate localDate = datePicker.getValue();
+                    if(datePicker.getValue() == null) {
+                        user.setBornDate(null);
+                    }
+                    else {
+                        Instant instant = localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
+                        Date res = Date.from(instant);
+                        user.setBornDate(res);
+                    }
+                    user.setGender(gender);
+
+                    String body = JsonUtils.getJson(user);
+
+
+                    httpClient.executePutRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_PUT_CREATE_USER, body);
+                    getUsers();
                 }
-                user.setGender(gender);
-
-                String body = JsonUtils.getJson(user);
 
 
-                httpClient.executePutRequest(ControllerAPI.USER_CONTROLLER + ControllerAPI.USER_CONTROLLER_PUT_CREATE_USER, body);
-                getUsers();
             }
         });
 
