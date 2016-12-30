@@ -25,6 +25,7 @@ class ArkDBIter implements PatternDB {
                             this.patterns.getString("pattern_name"),
                             this.patterns.getString("pattern_description"),
                             this.patterns.getString("pattern_uid"),
+                            this.patterns.getInt("is_can_be_reproduced"),
                             null,null);
                     } catch (IOException e) {
                         e.printStackTrace();

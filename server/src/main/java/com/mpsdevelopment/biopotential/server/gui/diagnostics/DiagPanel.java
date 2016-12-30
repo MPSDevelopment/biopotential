@@ -1,6 +1,7 @@
 package com.mpsdevelopment.biopotential.server.gui.diagnostics;
 
 import com.mpsdevelopment.biopotential.server.SpringLoaderFXML;
+import com.mpsdevelopment.biopotential.server.gui.BioApplication;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.fxml.FXMLLoader;
@@ -23,7 +24,8 @@ public class DiagPanel extends Pane {
         FXMLLoader loader = new FXMLLoader();
         try {
             Pane pane = loader.load(this.getClass().getResourceAsStream("DiagPanel.fxml"));
-            diagPanelController = loader.getController();
+            diagPanelController = BioApplication.APP_CONTEXT.getBean(DiagPanelController.class);
+//            diagPanelController = loader.getController();
             diagPanelController.setView(pane);
 
         } catch (IOException e) {

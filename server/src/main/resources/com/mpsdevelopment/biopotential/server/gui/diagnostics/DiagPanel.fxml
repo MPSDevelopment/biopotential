@@ -89,6 +89,6 @@
       <Label layoutX="751.0" layoutY="33.0" text="История" />
       <Button fx:id="chooseBaseButton" layoutX="325.0" layoutY="199.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Выбрать базу" />
       <Button fx:id="chooseStorageButton" layoutX="325.0" layoutY="229.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Выбрать хранилище" />
-      <Button fx:id="converterButton" layoutX="824.0" layoutY="330.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Конвертор" />
+      <Button fx:id="converterButton" layoutX="824.0" layoutY="330.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Конвертор" visible="false" />
    </children>
 </AnchorPane>

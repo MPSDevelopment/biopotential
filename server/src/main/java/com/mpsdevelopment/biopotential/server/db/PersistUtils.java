@@ -51,6 +51,10 @@ public class PersistUtils {
 
 	private String configurationDatabaseFilename = null;
 
+	public PersistUtils() {
+		LOGGER.info("Create PersistUtils constructor");
+	}
+
 	@Autowired
 	private ServerSettings serverSettings;
 //	 @Autowired(required = true)

@@ -24,7 +24,7 @@ public class ControllerAPI {
 
 	public static final String GET_FROM_DATABASE = "/";
 	public static final String DISEAS_CONTROLLER = "/api/diseas";
-	public static final String DISEAS_CONTROLLER_GET_HEALINGS = "/{degree}/getHealings";
-	public static final String DISEAS_CONTROLLER_GET_DISEASES = "/{degree}/getDiseas";
+	public static final String DISEAS_CONTROLLER_GET_HEALINGS = "/{gender}/{fetch}/{degree}/getHealings";
+	public static final String DISEAS_CONTROLLER_GET_DISEASES = "/{gender}/{fetch}/{degree}/getDiseas";
 	public static final String FOLDERS_CONTROLLER = "/api/folders";
 }

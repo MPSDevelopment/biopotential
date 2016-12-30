@@ -34,56 +34,105 @@ public class DiseaseDao {
     private FoldersDao foldersDao;
 
 	public DiseaseDao() {
+
 	}
 
-	public Map<Pattern, AnalysisSummary> getDeseases(File file, int degree, boolean bool) throws IOException, UnsupportedAudioFileException, SQLException {
+	public Map<Pattern, AnalysisSummary> getDeseases(File file, int degree, String fetch, String gender) throws IOException, UnsupportedAudioFileException, SQLException {
 
 		final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(file)));
 		/*
 		get all patterns from database which have id correctors folders
 		 */
-        Folder stressAnalys = foldersDao.getByName("Stress Analys");
-        Folder destruction = foldersDao.getByName("Di Деструкция");
-        Folder metabolism = foldersDao.getByName("Me Метаболизм");
-        Folder physCond = foldersDao.getByName("Bо Физ кодиции");
-
-		List<EDXPattern> patterns = patternsDao.getFromDatabase();
-
-		List<EDXPattern> patternsStressAnalys = patternsDao.getPatternsFromFolders(stressAnalys);
-		List<EDXPattern> patternsDestruction = patternsDao.getPatternsFromFolders(destruction);
-		List<EDXPattern> patternsMetabolism = patternsDao.getPatternsFromFolders(metabolism);
-		List<EDXPattern> patternsPhysCond = patternsDao.getPatternsFromFolders(physCond);
-
 //		List<EDXPattern> patternsNull = patternsDao.getFromDatabase(0);
-
 		// TODO Split summarizePatterns to 2 methods for decease and pattern
-		final Map<Pattern, AnalysisSummary> diseases = Machine.summarizePatterns(sample, patterns, degree);
 
-		final Map<Pattern, AnalysisSummary> diseasesStressAnalys = Machine.summarizePatterns(sample, patternsStressAnalys, degree);
-		final Map<Pattern, AnalysisSummary> diseasesDestruction = Machine.summarizePatterns(sample, patternsDestruction, degree);
-		final Map<Pattern, AnalysisSummary> diseasesMetabolism = Machine.summarizePatterns(sample, patternsMetabolism, degree);
-		final Map<Pattern, AnalysisSummary> diseasesPhysCond = Machine.summarizePatterns(sample, patternsPhysCond, degree);
+        switch (fetch) {
+            case "corNotNull": {
+                List<EDXPattern> patterns = patternsDao.getFromDatabase();
+                Map<Pattern, AnalysisSummary> diseases = Machine.summarizePatterns(sample, patterns, degree);
+                return diseases;
+            }
 
-        if (bool) {
-            return diseases;
+            case "stress": {
+
+                Folder stressAnalys = foldersDao.getByName("Stress Analyze");
+                Folder destruction = foldersDao.getByName("Di Деструкция");
+                Folder metabolism = foldersDao.getByName("Me Метаболизм");
+                Folder physCond = foldersDao.getByName("Bо Физ кодиции");
+                Folder detokc = foldersDao.getByName("Dt DETOKC");
+
+                List<EDXPattern> patternsStressAnalys = patternsDao.getPatternsFromFoldersCorIsNull(stressAnalys);
+                List<EDXPattern> patternsDestruction = patternsDao.getPatternsFromFoldersCorIsNull(destruction);
+                List<EDXPattern> patternsMetabolism = patternsDao.getPatternsFromFoldersCorIsNull(metabolism);
+                List<EDXPattern> patternsPhysCond = patternsDao.getPatternsFromFoldersCorNotNull(physCond);
+                List<EDXPattern> patternsDetokc = patternsDao.getPatternsFromFoldersCorNotNull(detokc);
+
+                Map<Pattern, AnalysisSummary> diseasesStressAnalys = Machine.summarizePatterns(sample, patternsStressAnalys, degree);
+                Map<Pattern, AnalysisSummary> diseasesDestruction = Machine.summarizePatterns(sample, patternsDestruction, degree);
+                Map<Pattern, AnalysisSummary> diseasesMetabolism = Machine.summarizePatterns(sample, patternsMetabolism, degree);
+                Map<Pattern, AnalysisSummary> diseasesPhysCond = Machine.summarizePatterns(sample, patternsPhysCond, degree);
+                Map<Pattern, AnalysisSummary> diseasesDetokc = Machine.summarizePatterns(sample, patternsDetokc, degree);
+
+                Map<Pattern, AnalysisSummary> diseases = new HashMap<>();
+                diseases.putAll(diseasesStressAnalys);
+                diseases.putAll(diseasesDestruction);
+                diseases.putAll(diseasesMetabolism);
+                diseases.putAll(diseasesPhysCond);
+                diseases.putAll(diseasesDetokc);
+                return diseases;
+            }
+
+            case "hidden": {
+
+                Folder acariasis = foldersDao.getByName("FL Ac Acariasis");
+                Folder bacteria = foldersDao.getByName("FL Ba Bacteria");
+                Folder elementary = foldersDao.getByName("FL El Elementary");
+                Folder helminths = foldersDao.getByName("FL He Helminths");
+                Folder mycosis = foldersDao.getByName("FL My Mycosis");
+                Folder virus = foldersDao.getByName("FL Vi Virus");
+                Folder femely = null;
+                Folder man = null;
+                if (gender.equals("Man")) {
+                    man = foldersDao.getByName("Ma Man");
+                }
+                else if (gender.equals("Woman")) {
+                    femely = foldersDao.getByName("Fe Femely");
+                }
+
+                List<EDXPattern> patternsAcariasis = patternsDao.getPatternsFromFoldersCorNotNull(acariasis);
+                List<EDXPattern> patternsBacteria = patternsDao.getPatternsFromFoldersCorNotNull(bacteria);
+                List<EDXPattern> patternsElementary = patternsDao.getPatternsFromFoldersCorNotNull(elementary);
+                List<EDXPattern> patternsHelminths = patternsDao.getPatternsFromFoldersCorNotNull(helminths);
+                List<EDXPattern> patternsMycosis = patternsDao.getPatternsFromFoldersCorNotNull(mycosis);
+                List<EDXPattern> patternsVirus = patternsDao.getPatternsFromFoldersCorNotNull(virus);
+                List<EDXPattern> patternsFemely = patternsDao.getPatternsFromFoldersCorNotNull(femely);
+                List<EDXPattern> patternsMan = patternsDao.getPatternsFromFoldersCorNotNull(man);
+
+                Map<Pattern, AnalysisSummary> diseasesAcariasis = Machine.summarizePatterns(sample, patternsAcariasis, degree);
+                Map<Pattern, AnalysisSummary> diseasesBacteria = Machine.summarizePatterns(sample, patternsBacteria, degree);
+                Map<Pattern, AnalysisSummary> diseasesElementary = Machine.summarizePatterns(sample, patternsElementary, degree);
+                Map<Pattern, AnalysisSummary> diseasesHelminths = Machine.summarizePatterns(sample, patternsHelminths, degree);
+                Map<Pattern, AnalysisSummary> diseasesMycosis = Machine.summarizePatterns(sample, patternsMycosis, degree);
+                Map<Pattern, AnalysisSummary> diseasesVirus = Machine.summarizePatterns(sample, patternsVirus, degree);
+                Map<Pattern, AnalysisSummary> diseasesFemely = Machine.summarizePatterns(sample, patternsFemely, degree);
+                Map<Pattern, AnalysisSummary> diseasesMan = Machine.summarizePatterns(sample, patternsMan, degree);
+
+                Map<Pattern, AnalysisSummary> diseases = new HashMap<>();
+                diseases.putAll(diseasesAcariasis);
+                diseases.putAll(diseasesBacteria);
+                diseases.putAll(diseasesElementary);
+                diseases.putAll(diseasesHelminths);
+                diseases.putAll(diseasesMycosis);
+                diseases.putAll(diseasesVirus);
+                diseases.putAll(diseasesFemely);
+                diseases.putAll(diseasesMan);
+                return diseases;
+            }
+            default: return null;
 
         }
-        else {
-            diseases.clear();
-            diseases.putAll(diseasesStressAnalys);
-            diseases.putAll(diseasesDestruction);
-            diseases.putAll(diseasesMetabolism);
-            diseases.putAll(diseasesPhysCond);
-            return diseases;
 
-        }
-        /*diseases.putAll(diseasesStressAnalys);
-        diseases.putAll(diseasesDestruction);
-        diseases.putAll(diseasesMetabolism);
-        diseases.putAll(diseasesPhysCond);*/
-
-//        return diseases;
-	}
+    }
 
 	/**
 	 * HashMap<Pattern, AnalysisSummary> allHealings contain's only unique keys define by hashcode method in EDXPattern class

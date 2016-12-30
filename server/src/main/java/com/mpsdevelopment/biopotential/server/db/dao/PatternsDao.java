@@ -49,41 +49,61 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
         return query.list();
     }
     
-	public List<EDXPattern> getFromDatabase() throws SQLException, IOException {
-		
-		 long t1 = System.currentTimeMillis();
-
-		ProjectionList projections = Projections.projectionList()
-                .add(Projections.property("FOLDER."+Folder.FOLDER_NAME), "kind")
-                .add(Projections.property("PATTERN."+Pattern.PATTERN_NAME), "name")
-                .add(Projections.property("PATTERN."+Pattern.PATTERN_DESCRIPTION), "description")
-                .add(Projections.property("PATTERN."+Pattern.PATTERN_UID), "fileName")
-				.add(Projections.property("PATTERN."+Pattern.CHUNK_SUMMARY), "summary")
-		 .add(Projections.property("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS_EN), "correctingFolderEn")
-		 .add(Projections.property("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS_EX), "correctingFolderEx");
-
-        // TODO remove and fix this shit  ------------------
-		if (getSession().getSessionFactory().isClosed()) {
+	public List<EDXPattern> getFromDatabasePat() throws SQLException, IOException {
 
 
-            while (getSession().getSessionFactory().isClosed()) {
-                persistUtils.closeSessionFactory();
+        ProjectionList projections = Projections.projectionList()
+                .add(Projections.property("FOLDER." + Folder.FOLDER_NAME), "kind")
+                .add(Projections.property("PATTERN." + Pattern.PATTERN_NAME), "name")
+                .add(Projections.property("PATTERN." + Pattern.PATTERN_DESCRIPTION), "description")
+                .add(Projections.property("PATTERN." + Pattern.PATTERN_UID), "fileName")
+                .add(Projections.property("PATTERN." + Pattern.CHUNK_SUMMARY), "summary")
+                .add(Projections.property("PATTERN." + Pattern.IS_CAN_BE_REPRODUCED), "isCanBeReproduced");
+
+
+        List list = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS, "PATTERNS_FOLDERS").createCriteria(PatternsFolders.PATTERNS, "PATTERN")
+                .setProjection(projections).add(Restrictions.eq("PATTERN." + Pattern.IS_CAN_BE_REPRODUCED, 1))
+                .setResultTransformer(Transformers.aliasToBean(EDXPattern.class)).list();
+
+
+        return list;
+    }
+
+        public List<EDXPattern> getFromDatabase() throws SQLException, IOException {
+
+            long t1 = System.currentTimeMillis();
+
+            ProjectionList projections = Projections.projectionList()
+                    .add(Projections.property("FOLDER."+Folder.FOLDER_NAME), "kind")
+                    .add(Projections.property("PATTERN."+Pattern.PATTERN_NAME), "name")
+                    .add(Projections.property("PATTERN."+Pattern.PATTERN_DESCRIPTION), "description")
+                    .add(Projections.property("PATTERN."+Pattern.PATTERN_UID), "fileName")
+                    .add(Projections.property("PATTERN."+Pattern.CHUNK_SUMMARY), "summary")
+                    .add(Projections.property("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS_EN), "correctingFolderEn")
+                    .add(Projections.property("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS_EX), "correctingFolderEx");
+
+            // TODO remove and fix this shit  ------------------
+            if (getSession().getSessionFactory().isClosed()) {
+
+
+                while (getSession().getSessionFactory().isClosed()) {
+                    persistUtils.closeSessionFactory();
 //                persistUtils.setConfigurationDatabaseFilename(name);
-                SessionFactory sessionFactory = persistUtils.configureSessionFactory();
-                Session session = sessionFactory.openSession();
-                sessionManager.setSession(session);
+                    SessionFactory sessionFactory = persistUtils.configureSessionFactory();
+                    Session session = sessionFactory.openSession();
+                    sessionManager.setSession(session);
+                }
             }
-        }
-        // TODO remove and fix this shit  ------------------
+            // TODO remove and fix this shit  ------------------
 
-        List list = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS,"PATTERNS_FOLDERS").createCriteria(PatternsFolders.PATTERNS,"PATTERN")
-				.add(Restrictions.isNotNull("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS_EN))
-				.setProjection(projections)
-        .setResultTransformer(Transformers.aliasToBean(EDXPattern.class)).list();
-		
-		LOGGER.info("Work with iterator took %d ms Result set is %d ", System.currentTimeMillis() - t1, list.size());
-		
-		return list;
+            List list = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS,"PATTERNS_FOLDERS").createCriteria(PatternsFolders.PATTERNS,"PATTERN")
+                    .add(Restrictions.isNotNull("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS_EN))
+                    .setProjection(projections)
+                    .setResultTransformer(Transformers.aliasToBean(EDXPattern.class)).list();
+
+            LOGGER.info("Work with iterator took %d ms Result set is %d ", System.currentTimeMillis() - t1, list.size());
+
+            return list;
         
 /**		
 		PreparedStatement ps = db.prepareStatement(
@@ -203,7 +223,7 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
         return list;
     }
 
-    public List<EDXPattern> getPatternsFromFolders(Folder folder) throws SQLException, IOException {
+    public List<EDXPattern> getPatternsFromFoldersCorIsNull(Folder folder) throws SQLException, IOException {
 
         long t1 = System.currentTimeMillis();
 
@@ -226,6 +246,32 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
 
         return list;
     }
+
+    public List<EDXPattern> getPatternsFromFoldersCorNotNull(Folder folder) throws SQLException, IOException {
+
+        long t1 = System.currentTimeMillis();
+
+        ProjectionList projections = Projections.projectionList()
+                .add(Projections.property("FOLDER."+Folder.FOLDER_NAME), "kind")
+                .add(Projections.property("PATTERN."+Pattern.PATTERN_NAME), "name")
+                .add(Projections.property("PATTERN."+Pattern.PATTERN_DESCRIPTION), "description")
+                .add(Projections.property("PATTERN."+Pattern.PATTERN_UID), "fileName")
+                .add(Projections.property("PATTERN."+Pattern.CHUNK_SUMMARY), "summary")
+                .add(Projections.property("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS_EN), "correctingFolderEn")
+                .add(Projections.property("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS_EX), "correctingFolderEx");
+
+
+        List list = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS,"PATTERNS_FOLDERS").createCriteria(PatternsFolders.PATTERNS,"PATTERN")
+                .add(Restrictions.isNotNull("PATTERNS_FOLDERS."+PatternsFolders.CORRECTORS_EN)).add(Restrictions.eq("PATTERNS_FOLDERS."+PatternsFolders.FOLDER, folder))
+                .setProjection(projections)
+                .setResultTransformer(Transformers.aliasToBean(EDXPattern.class)).list();
+
+        LOGGER.info("Work with iterator took %d ms Result set is %d ", System.currentTimeMillis() - t1, list.size());
+
+        return list;
+    }
+
+
 
     public int getPatternsFromFoldersToSystem(Folder folder) throws SQLException, IOException {
 

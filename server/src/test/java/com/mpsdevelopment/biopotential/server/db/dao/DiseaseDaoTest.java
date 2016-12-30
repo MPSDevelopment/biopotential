@@ -41,7 +41,7 @@ public class DiseaseDaoTest {
 	@Test
 	public void getHealingsTest() throws IOException, UnsupportedAudioFileException {
 		try {
-			diseases = diseaseDao.getDeseases(file,0,true);
+			diseases = diseaseDao.getDeseases(file,0,"corNotNull", "M");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

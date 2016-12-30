@@ -6,6 +6,7 @@ import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -40,6 +41,7 @@ public class ConverterPanel extends Pane {
 
     public void setPrimaryStage(Stage primaryStage) {
         converterPanelController.updatePanel(primaryStage);
+        primaryStage.initModality(Modality.WINDOW_MODAL);
         primaryStage.show();
     }
 }

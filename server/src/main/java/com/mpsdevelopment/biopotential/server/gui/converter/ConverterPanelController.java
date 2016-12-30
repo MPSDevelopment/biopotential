@@ -200,7 +200,7 @@ public class ConverterPanelController extends AbstractController implements Subs
             name = nameTextField.getText();
         }*/
 
-        name = file.getName();
+        name = file.getName().replaceAll(".arkdb","");
 
         ServerSettings fileSettings = ConverterApplication.APP_CONTEXT.getBean(ServerSettings.class);
         fileSettings.setDbPath(url+name);

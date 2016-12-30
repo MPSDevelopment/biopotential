@@ -32,6 +32,8 @@ public class ServerSettings {
 	private String filesPath;
 	@Expose
 	private String dbPath;
+	@Expose
+	private String storagePath;
 
 	private void init() {
 		ServerSettings fileSettings = (ServerSettings) JsonUtils.getJsonObjectFromFile(ServerSettings.class, path);
@@ -100,6 +102,14 @@ public class ServerSettings {
 
 	public void setDbPath(String dbPath) {
 		this.dbPath = dbPath;
+	}
+
+	public String getStoragePath() {
+		return storagePath;
+	}
+
+	public void setStoragePath(String storagePath) {
+		this.storagePath = storagePath;
 	}
 
 	public void updateSettings(ServerSettings newSettings) {

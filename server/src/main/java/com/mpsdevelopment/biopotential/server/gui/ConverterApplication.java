@@ -45,7 +45,7 @@ public class ConverterApplication extends Application{
     private void addMainPanel() {
         ConverterPanel converterPanel = new ConverterPanel();
         LOGGER.info(" Start Converter application");
-        Stage mainPanelStage = StageUtils.createStage(null, converterPanel, new StageSettings().setPanelTitle("Конвертор базы").setClazz(converterPanel.getClass()).setHeight(260d).setWidth(370d).setHeightPanel(250d).setWidthPanel(370d)/*.setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY())*/);
+        Stage mainPanelStage = StageUtils.createStage(null, converterPanel, new StageSettings().setPanelTitle("Конвертор базы").setClazz(ConverterPanel.class).setHeight(260d).setWidth(370d).setHeightPanel(250d).setWidthPanel(370d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
         converterPanel.setPrimaryStage(mainPanelStage);
 
         mainPanelStage.setOnCloseRequest(new EventHandler<WindowEvent>() {

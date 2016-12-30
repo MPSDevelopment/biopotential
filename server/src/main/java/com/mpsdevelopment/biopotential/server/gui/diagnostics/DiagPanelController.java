@@ -439,7 +439,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
             @Override
             public void handle(ActionEvent event) {
                 // open automatics panel
-                AutomaticsPanel panel = new AutomaticsPanel(selectedFile);
+                AutomaticsPanel panel = new AutomaticsPanel(selectedFile, getUser().getGender());
                 Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Автомат").setClazz(panel.getClass()).setHeight(250d).setWidth(300d).setHeightPanel(200d).setWidthPanel(300d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
                 panel.setPrimaryStage(stage);
 

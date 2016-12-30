@@ -69,7 +69,8 @@ public class BioApplication extends Application {
     private void addMainPanel() {
         StartPanel startPanel =  new StartPanel();
         LOGGER.info("Start panel");
-        Stage mainPanelStage = StageUtils.createStage(null, startPanel, new StageSettings().setClazz(DiagPanel.class).setHeight(208d).setWidth(306d).setHeightPanel(208d).setWidthPanel(306d));
+        Stage mainPanelStage = StageUtils.createStage(null, startPanel, new StageSettings().setClazz(DiagPanel.class).setHeight(265d).setWidth(400d).setHeightPanel(265d).setWidthPanel(400d)
+                .setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
         startPanel.setPrimaryStage(mainPanelStage);
 
 

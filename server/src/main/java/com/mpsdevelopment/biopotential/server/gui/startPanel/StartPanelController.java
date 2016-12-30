@@ -1,13 +1,14 @@
 package com.mpsdevelopment.biopotential.server.gui.startPanel;
 
 import com.mpsdevelopment.biopotential.server.AbstractController;
+import com.mpsdevelopment.biopotential.server.JettyServer;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
 import com.mpsdevelopment.biopotential.server.db.PersistUtils;
 import com.mpsdevelopment.biopotential.server.db.SessionManager;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
+import com.mpsdevelopment.biopotential.server.gui.BioApplication;
 import com.mpsdevelopment.biopotential.server.gui.ConverterApplication;
-import com.mpsdevelopment.biopotential.server.gui.analysis.AnalysisPanel;
 import com.mpsdevelopment.biopotential.server.gui.diagnostics.DiagPanel;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
@@ -21,8 +22,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -43,7 +44,10 @@ public class StartPanelController extends AbstractController implements Subscrib
     private File file;
 
     @FXML
-    private Label DbLabel;
+    private TextField dbLabel;
+
+    @FXML
+    private TextField storLabel;
 
     @FXML
     private Button cancelButton;
@@ -55,6 +59,9 @@ public class StartPanelController extends AbstractController implements Subscrib
     private Button editButton;
 
     @FXML
+    private Button chooseStorageButton;
+
+    @FXML
     private Button chooseDbButton;
 
     @FXML
@@ -63,6 +70,7 @@ public class StartPanelController extends AbstractController implements Subscrib
     private Stage primaryStage;
     private PersistUtils persistUtils;
     private SessionManager sessionManager;
+    private ServerSettings serverSettings;
 
     public StartPanelController() {
 
@@ -71,11 +79,13 @@ public class StartPanelController extends AbstractController implements Subscrib
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        persistUtils = ConverterApplication.APP_CONTEXT.getBean(PersistUtils.class);
-        sessionManager = ConverterApplication.APP_CONTEXT.getBean(SessionManager.class);
+        persistUtils = JettyServer.WEB_CONTEXT.getBean(PersistUtils.class);
+        serverSettings = JettyServer.WEB_CONTEXT.getBean(ServerSettings.class);
+        sessionManager = JettyServer.WEB_CONTEXT.getBean(SessionManager.class);
 
-        DbLabel.setText("");
-        okButton.setDisable(true);
+        dbLabel.setText(serverSettings.getDbPath());
+        storLabel.setText(serverSettings.getStoragePath());
+        okButton.setDisable(false);
 
         chooseDbButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -84,10 +94,10 @@ public class StartPanelController extends AbstractController implements Subscrib
                 fileChooser.setInitialDirectory(new File("data"));
                 file = fileChooser.showOpenDialog(null);
 
-                DbLabel.setText(file.getName());
+                dbLabel.setText(file.getName());
                 chooseDbButton.setDisable(false);
 
-                restartSessionManager(file.getPath().replaceAll(file.getName(),""));
+                restartSessionManager(file.getPath().replaceAll(file.getName(),"").replaceAll(".mv.db",""));
 
                 /*ServerSettings fileSettings = ConverterApplication.APP_CONTEXT.getBean(ServerSettings.class);
                 fileSettings.setDbPath(file.getPath().replaceAll(file.getName(),""));
@@ -98,35 +108,77 @@ public class StartPanelController extends AbstractController implements Subscrib
             }
         });
 
+        chooseStorageButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                DirectoryChooser chooser = new DirectoryChooser();
+                chooser.setTitle("EDX storage");
+                chooser.setInitialDirectory(new File("data"));
+                File selectedDirectory = chooser.showDialog(primaryStage);
+                Machine.setEdxFileFolder(selectedDirectory.getAbsolutePath() + "/");
+                LOGGER.info("EDX storage %s", selectedDirectory.getAbsolutePath() + "\\");
+                serverSettings.setStoragePath(selectedDirectory.getAbsolutePath() + "/");
+                String json = JsonUtils.getJson(serverSettings);
+                JsonUtils.writeJsonToFile(json.replace("\\\\","/"),"config/server.json");
+                storLabel.setText(selectedDirectory.getName());
+
+            }
+        });
+
         okButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+//                restartSessionManager(serverSettings.getDbPath());
                 DiagPanel diagPanel = new DiagPanel();
                 LOGGER.info(" Start Diag panel");
-                Stage mainPanelStage = StageUtils.createStage(null, diagPanel, new StageSettings().setClazz(DiagPanel.class).setHeight(740d).setWidth(1034d).setHeightPanel(727d).setWidthPanel(1034d));
+                Stage mainPanelStage = StageUtils.createStage(null, diagPanel, new StageSettings().setClazz(DiagPanel.class).setHeight(740d).setWidth(1034d).setHeightPanel(727d).setWidthPanel(1034d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
                 diagPanel.setPrimaryStage(mainPanelStage);
+                close();
 
-                mainPanelStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+
+                /*mainPanelStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                     public void handle(WindowEvent e) {
 //                stop();
                     }
-                });
+                });*/
+            }
+        });
+
+        editButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                ConfigPanel configPanel = new ConfigPanel();
+                LOGGER.info(" Start Config panel");
+                Stage mainPanelStage = StageUtils.createStage(null, configPanel, new StageSettings().setPanelTitle("Файл конфигурации").setClazz(DiagPanel.class).setHeight(310d).setWidth(429d).setHeightPanel(310d).setWidthPanel(429d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+                configPanel.setPrimaryStage(mainPanelStage);
+            }
+        });
+
+        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                close();
             }
         });
     }
 
     private void restartSessionManager(String url) {
         String name = "database";
-        persistUtils.closeSessionFactory();
+//        persistUtils.closeSessionFactory();
 
-        name = file.getName();
+        if (file == null) {
+            name = url;
+        }
+        else {
+            name = file.getName();
+//            ServerSettings fileSettings = ConverterApplication.APP_CONTEXT.getBean(ServerSettings.class);
+            serverSettings.setDbPath(url+name);
+            String json = JsonUtils.getJson(serverSettings);
+            JsonUtils.writeJsonToFile(json.replace("\\\\","/").replace(".mv.db", ""),"config/server.json");
+        }
 
-        ServerSettings fileSettings = ConverterApplication.APP_CONTEXT.getBean(ServerSettings.class);
-        fileSettings.setDbPath(url+name);
-        String json = JsonUtils.getJson(fileSettings);
-        JsonUtils.writeJsonToFile(json.replace("\\\\","/").replace(".mv.db", ""),"config/server.json");
-
-        persistUtils.setConfigurationDatabaseFilename(fileSettings.getDbPath().replace(".mv.db", ""));
+        persistUtils.setConfigurationDatabaseFilename(serverSettings.getDbPath().replace(".mv.db", ""));
         SessionFactory sessionFactory = persistUtils.configureSessionFactory();
         Session session = sessionFactory.openSession();
         sessionManager.setSession(session);

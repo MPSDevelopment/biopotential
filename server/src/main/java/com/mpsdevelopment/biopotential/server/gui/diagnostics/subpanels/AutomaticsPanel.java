@@ -16,7 +16,7 @@ public class AutomaticsPanel extends Pane {
 
 	private AutomaticsPanelController automaticsPanelController;
 
-    public AutomaticsPanel(File file) {
+    public AutomaticsPanel(File file, String gender) {
         FXMLLoader loader = new FXMLLoader();
 //        automaticsPanelController = (AutomaticsPanelController) SpringLoaderFXML.load(BioApplication.APP_CONTEXT,AutomaticsPanelController.class, "AutomaticsPanel.fxml");
         try {
@@ -24,6 +24,7 @@ public class AutomaticsPanel extends Pane {
             automaticsPanelController = loader.getController();
             automaticsPanelController.setView(pane);
             automaticsPanelController.setFile(file);
+            automaticsPanelController.setGender(gender);
         } catch (IOException e) {
             e.printStackTrace();
         }

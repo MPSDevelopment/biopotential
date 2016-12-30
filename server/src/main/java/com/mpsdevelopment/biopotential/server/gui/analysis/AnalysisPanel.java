@@ -17,7 +17,7 @@ public class AnalysisPanel extends Pane {
 
 	private AnalysisPanelController analysisPanelController;
 
-    public AnalysisPanel(File file, String degree1,String degree2) {
+    public AnalysisPanel(File file, String degree1,String degree2, String gender) {
 
 //        analysisPanelController = (AnalysisPanelController) SpringLoaderFXML.load(BioApplication.APP_CONTEXT,AnalysisPanelController.class, "AnalysisPanel.fxml");
         FXMLLoader loader = new FXMLLoader();
@@ -28,6 +28,7 @@ public class AnalysisPanel extends Pane {
             analysisPanelController.setView(pane);
             analysisPanelController.setDegree1(degree1);
             analysisPanelController.setDegree2(degree2);
+            analysisPanelController.setGender(gender);
             analysisPanelController.makeCurrentAnalyze(file);
 
         } catch (IOException e) {

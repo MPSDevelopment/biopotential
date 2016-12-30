@@ -23,7 +23,7 @@
 		<property name="path" value="config/server.json" />
 	</bean>
 
-	<bean id="persistUtils" class="com.mpsdevelopment.biopotential.server.db.PersistUtils" init-method="configureSessionFactory" autowire="byName" />
+	<bean id="persistUtils" class="com.mpsdevelopment.biopotential.server.db.PersistUtils" autowire="byName" />
 	<!--<property name="serverSettings" ref="serverSettings" /> </bean> -->
 
 	<!--<bean id="sessionManager" class="com.mpsdevelopment.biopotential.server.db.SessionManager" autowire="byName" depends-on="persistUtils"/> -->

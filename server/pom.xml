@@ -538,7 +538,7 @@
 				<artifactId>excelsior-jet-maven-plugin</artifactId>
 				<version>${excelsiorjet.plugin.version}</version>
 				<configuration>
-					<mainClass>com.mpsdevelopment.biopotential.server.gui.ConverterApplication</mainClass>
+					<mainClass>com.mpsdevelopment.biopotential.server.gui.BioApplication</mainClass>
 					<jetOutputDir>${jet.output.directory}</jetOutputDir>
 					<!-- <packaging>excelsior-installer</packaging> -->
 					<icon>${project.basedir}/build/bio.ico</icon>
@@ -558,7 +558,7 @@
 						<jvmArg>-Xmx2g</jvmArg>
 					</jvmArgs>
 
-					<outputName>ConverterApplication</outputName>
+					<outputName>BioApplication</outputName>
 					<product>Biopotential</product>
 					<vendor>${jet.vendor}</vendor>
 					<version>${jet.version}</version>

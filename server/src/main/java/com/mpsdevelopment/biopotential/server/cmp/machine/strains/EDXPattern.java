@@ -32,21 +32,24 @@ public class EDXPattern implements Pattern {
 	private String description;
 	@Expose
 	private String fileName;
+	@Expose
+	private int isCanBeReproduced;
 
     public EDXPattern() {
     }
 
-	public EDXPattern(String kind, String name, String desc, String fileName) throws IOException {
-		this(kind, name, desc, fileName, null, null);
+	public EDXPattern(String kind, String name, String desc, String fileName,int isCanBeReproduced) throws IOException {
+		this(kind, name, desc, fileName,isCanBeReproduced, null, null);
 	}
 
-	public EDXPattern(String kind, String name, String description, String fileName, Long correctingFolderEn, Long correctingFolderEx) throws IOException {
+	public EDXPattern(String kind, String name, String description, String fileName,int isCanBeReproduced, Long correctingFolderEn, Long correctingFolderEx) throws IOException {
 		this.kind = kind;
 		this.name = name;
 		this.description = description;
 		this.correctingFolderEn = correctingFolderEn;
 		this.correctingFolderEx = correctingFolderEx;
 		this.fileName = fileName;
+        this.isCanBeReproduced = isCanBeReproduced;
 
 		// this.pcmData = Machine.getPcmData(fileName).getPcmData();
 		// this.summary = Machine.getPcmData(fileName).getSummary();
@@ -133,6 +136,14 @@ public class EDXPattern implements Pattern {
         Type listType = new TypeToken<ArrayList<ChunkSummary>>(){}.getType();
 		this.summary = JsonUtils.fromJson(listType,json);;
 	}
+
+    public int getIsCanBeReproduced() {
+        return isCanBeReproduced;
+    }
+
+    public void setIsCanBeReproduced(int isCanBeReproduced) {
+        this.isCanBeReproduced = isCanBeReproduced;
+    }
 
     @Override
 	public boolean equals(Object o) {

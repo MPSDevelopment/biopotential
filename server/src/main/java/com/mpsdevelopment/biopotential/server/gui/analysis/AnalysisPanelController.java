@@ -12,6 +12,7 @@ import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
 import com.mpsdevelopment.biopotential.server.db.pojo.DataTable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.HealingsMapEvent;
+import com.mpsdevelopment.biopotential.server.gui.converter.ConverterPanel;
 import com.mpsdevelopment.biopotential.server.gui.correctors.CorrectorsPanel;
 import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
 import com.mpsdevelopment.biopotential.server.httpclient.HttpClientFactory;
@@ -26,24 +27,19 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.chart.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import net.engio.mbassy.listener.Handler;
 
-import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
@@ -59,7 +55,11 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     private static final Logger LOGGER = LoggerUtil.getLogger(AnalysisPanelController.class);
     public static final int patternWeight = 10;
+    public static final String STRESS = "stress";
+    public static final String COR_NOT_NULL = "corNotNull";
+    public static final String HIDDEN = "hidden";
     private ObservableList<DataTable> analysisData;
+    private ObservableList<DataTable> analysisHiddenData;
     ObservableList<DataTable> data = FXCollections.observableArrayList();
     private ObservableList<String> level;
 
@@ -70,7 +70,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     private TableView<DataTable> healthConditionTable;
 
     @FXML
-    private TableView<DataTable> healthConditionTable1;
+    private TableView<DataTable> healthConditionStressTable;
 
     @FXML
 //    private TableView<Map.Entry<String,Integer>> systemTable;
@@ -111,10 +111,19 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     private TableColumn automaticsLevelColumn;
 
     @FXML
+    private TableColumn automaticsLevelColumn1;
+
+    @FXML
     private Button continueButton;
 
     @FXML
     private Button printButton;
+
+    @FXML
+    private Button closeButton;
+
+    @FXML
+    private Button hiddenButton;
 
     @FXML
     private Pane pane;
@@ -124,6 +133,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     private Stage primaryStage;
     private File file;
+    private String gender;
     private Map<Pattern, AnalysisSummary> diseases;
     private Map<Pattern, AnalysisSummary> allHealings;
 
@@ -135,7 +145,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     public static final String HOST = "localhost";
     public static final int PORT = 8098;
     private double alWeight = 0, viWeight = 0, caWeight = 0, deWeight = 0, enWeight = 0, gaWeight = 0, imWeight = 0, neWeight = 0, orWeight = 0, spWeight = 0, stWeight = 0, urWeight = 0;
-    private ObservableList<DataTable> analysisData1;
+    private ObservableList<DataTable> analysisStressData;
 
 
     public void setDegree2(String degree2) {
@@ -150,13 +160,25 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     public void initialize(URL location, ResourceBundle resources) {
 
         analysisData = FXCollections.observableArrayList();
-        analysisData1 = FXCollections.observableArrayList();
+        analysisStressData = FXCollections.observableArrayList();
+        analysisHiddenData = FXCollections.observableArrayList();
         level = FXCollections.observableArrayList();
         diseases = new HashMap<>();
         allHealings = new HashMap<>();
 
         healthConditionTable.setItems(analysisData);
-        healthConditionTable1.setItems(analysisData1);
+        healthConditionStressTable.setItems(analysisStressData);
+
+        hiddenButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+//                HiddenPanel hiddenPanel = new HiddenPanel(file,"Max","Po");
+                HiddenPanel hiddenPanel = new HiddenPanel(analysisHiddenData);
+                LOGGER.info(" Start Converter application");
+                Stage mainPanelStage = StageUtils.createStage(null, hiddenPanel, new StageSettings().setPanelTitle("Скрытая таблица").setClazz(hiddenPanel.getClass()).setHeight(444d).setWidth(615d).setHeightPanel(444d).setWidthPanel(615d)/*.setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY())*/);
+                hiddenPanel.setPrimaryStage(mainPanelStage);
+            }
+        });
 
         printButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -193,10 +215,17 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             }
         });
 
+        automaticsLevelColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> p) {
+                return new ReadOnlyObjectWrapper(p.getValue().getDegree());
+            }
+        });
+
         numberColumn1.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> p) {
-                return new ReadOnlyObjectWrapper(healthConditionTable1.getItems().indexOf(p.getValue()) + 1 + "");
+                return new ReadOnlyObjectWrapper(healthConditionStressTable.getItems().indexOf(p.getValue()) + 1 + "");
             }
         });
         numberColumn.setSortable(false);
@@ -220,13 +249,14 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             }
         });
 
-        automaticsLevelColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
+        automaticsLevelColumn1.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> p) {
                 return new ReadOnlyObjectWrapper(p.getValue().getDegree());
             }
         });
 
+        // system table by percent
         numberSystemColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Map.Entry<String, Integer>, String>, ObservableValue<String>>() {
 
             @Override
@@ -270,6 +300,13 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
         });
 
+        closeButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                close();
+            }
+        });
+
         scatterChart.setTitle("Body Overview");
 
         XYChart.Series series1 = new XYChart.Series();
@@ -281,7 +318,9 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         scatterChart.getData().addAll(series1);
 
         automaticsLevelColumn.setSortable(true);
+        automaticsLevelColumn1.setSortable(true);
         healthConditionTable.getSortOrder().add(automaticsLevelColumn); // sort cell'a by name
+        healthConditionStressTable.getSortOrder().add(automaticsLevelColumn1); // sort cell'a by name
 
     }
 
@@ -310,59 +349,78 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         healthConditionTable.getSortOrder().add(automaticsLevelColumn); // sort cell'a by name
 
         long t2 = System.currentTimeMillis();
-
         BioHttpClient bioHttpClient = HttpClientFactory.getInstance();
 
-        String json = bioHttpClient.executePostRequest("/api/diseas/" + degree1 + "/getDiseas", file);
+        // get diseas for stress analyze
+        // degree max
+        String json = bioHttpClient.executePostRequest("/api/diseas/" + gender + "/" + STRESS + "/" + degree1 + "/getDiseas" , file);
 
         Type typeOfHashMap = new TypeToken<Map<EDXPattern, AnalysisSummary>>() { }.getType();
-        Map<Pattern, AnalysisSummary> diseases1 = JsonUtils.fromJson(typeOfHashMap, json);
-        Map<Pattern, AnalysisSummary> diseases0 = new HashMap<>();
+        Map<Pattern, AnalysisSummary> diseasesStress = new HashMap<>();
+        Map<Pattern, AnalysisSummary> diseasesStressMax = JsonUtils.fromJson(typeOfHashMap, json);
 
-        diseases1.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
+        //degree Po
+        json = bioHttpClient.executePostRequest("/api/diseas/" + gender + "/" + STRESS + "/" + degree2 + "/getDiseas" , file);
+        Map<Pattern, AnalysisSummary> diseasesStressPo = JsonUtils.fromJson(typeOfHashMap, json);
+        diseasesStress.putAll(diseasesStressMax);
+        diseasesStress.putAll(diseasesStressPo);
+        diseasToAnalysisData(diseasesStress, analysisStressData);
+
+        // get diseas for systems
+        // degree max
+        json = bioHttpClient.executePostRequest("/api/diseas/" + gender + "/" + COR_NOT_NULL + "/" + degree1 + "/getDiseas", file);
+        Map<Pattern, AnalysisSummary> diseasesSystems = new HashMap<>();
+        Map<Pattern, AnalysisSummary> diseasesSystemsMax = JsonUtils.fromJson(typeOfHashMap, json);
+
+        //degree Po
+        json = bioHttpClient.executePostRequest("/api/diseas/" + gender + "/" + COR_NOT_NULL + "/" + degree2 + "/getDiseas", file);
+        Map<Pattern, AnalysisSummary> diseasesSystemsPo = JsonUtils.fromJson(typeOfHashMap, json);
+
+        diseasesSystems.putAll(diseasesSystemsMax);
+        diseasesSystems.putAll(diseasesSystemsPo);
+
+        Map<Pattern, AnalysisSummary> diseasesTemp = new HashMap<>();
+
+        diseasesSystems.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
             @Override
             public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
-                if ((pattern.getKind().equals("Stress Analyze")) || (pattern.getKind().equals("Di Деструкция")) || (pattern.getKind().equals("Me Метаболизм")) || (pattern.getKind().equals("Bо Физ кодиции"))) {
-                    diseases0.put(pattern, analysisSummary);
+                if (!(pattern.getKind().equals("Dt DETOKC")) &&!(pattern.getKind().equals("Bо Физ кодиции")) && !(pattern.getKind().equals("FL Ac Acariasis")) && !(pattern.getKind().equals("FL Ba Bacteria")) && !(pattern.getKind().equals("FL El Elementary")) &&
+                        !(pattern.getKind().equals("FL He Helminths")) && !(pattern.getKind().equals("FL My Mycosis")) && !(pattern.getKind().equals("FL Vi Virus")) && !(pattern.getKind().equals("Fe Femely")) &&
+                            !(pattern.getKind().equals("Ma Man"))) {
+                    diseasesTemp.put(pattern, analysisSummary);
                 }
             }
         });
-        ///////////////////////// add second condition
+        diseasesSystems.clear();
+        diseasesSystems.putAll(diseasesTemp);
 
-        json = bioHttpClient.executePostRequest("/api/diseas/" + degree2 + "/getDiseas", file);
+        diseasToAnalysisData(diseasesSystems, analysisData);
 
-        Map<Pattern, AnalysisSummary> diseases2 = JsonUtils.fromJson(typeOfHashMap, json);
+        // get diseas for hidden
+        // degree max
+        json = bioHttpClient.executePostRequest("/api/diseas/" + gender + "/" + HIDDEN + "/" + degree1 + "/getDiseas", file);
+        Map<Pattern, AnalysisSummary> diseasesHiden = new HashMap<>();
+        Map<Pattern, AnalysisSummary> diseasesHidenMax = JsonUtils.fromJson(typeOfHashMap, json);
 
-        diseases.putAll(diseases1);
-        diseases.putAll(diseases2);
-       /* diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
-            @Override
-            public void accept(Pattern k, AnalysisSummary v) {
-                LOGGER.info("d: %s\t%f\n", k.getName(), v.getDispersion());
-                analysisData.add(DataTable.createDataTableObject(k, v));
-            }
-        });*/
+        //degree Po
+        json = bioHttpClient.executePostRequest("/api/diseas/" + gender + "/" + HIDDEN + "/" + degree2 + "/getDiseas", file);
+        Map<Pattern, AnalysisSummary> diseasesHidenPo = JsonUtils.fromJson(typeOfHashMap, json);
 
-        /////////////////////////
-
-
+        diseasesHiden.putAll(diseasesHidenMax);
+        diseasesHiden.putAll(diseasesHidenPo);
+        diseasToAnalysisData(diseasesHiden, analysisHiddenData);
 
 
-//        diseases.putAll(diseaseDao.getDeseases(file));
-//        analysisData.addAll(diseasToAnalysisData(diseases, analysisData));
-        diseasToAnalysisData(diseases, analysisData);
-        diseasToAnalysisData(diseases0, analysisData1);
-//        Set<DataTable> sortedSelectedItems = sortSelected(analysisData);
-
+        // Healings
         LOGGER.info("Total time for calculate diseases %d ms", System.currentTimeMillis() - t2);
         long t1 = System.currentTimeMillis();
 
-        String heal = bioHttpClient.executePostRequest("/api/diseas/" + degree1 + "/getHealings",file);
+        String heal = bioHttpClient.executePostRequest("/api/diseas/" + gender + "/" + COR_NOT_NULL + "/"+ degree1 + "/getHealings",file);
         typeOfHashMap = new TypeToken<Map<EDXPattern, AnalysisSummary>>() { }.getType();
         allHealings = JsonUtils.fromJson(typeOfHashMap, heal);
 
         //
-        heal = bioHttpClient.executePostRequest("/api/diseas/" + degree2 + "/getHealings",file);
+        heal = bioHttpClient.executePostRequest("/api/diseas/" + gender + "/" + COR_NOT_NULL + "/" + degree2 + "/getHealings",file);
         Map<Pattern, AnalysisSummary> allHealings1 = JsonUtils.fromJson(typeOfHashMap, heal);
         allHealings.putAll(allHealings1);
         //
@@ -425,11 +483,11 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         // sortedSelectedItems set with contains system which diseas appear > than 1 time
 
         ObservableList<DataTable> analysisData1 = FXCollections.observableArrayList();
-        diseasToAnalysisData(diseases1,analysisData1);
+        diseasToAnalysisData(diseasesSystemsMax,analysisData1);
         Set<DataTable> sortedSelectedItems1 = sortSelected(analysisData1);
 
         ObservableList<DataTable> analysisData2 = FXCollections.observableArrayList();
-        diseasToAnalysisData(diseases2, analysisData2);
+        diseasToAnalysisData(diseasesSystemsPo, analysisData2);
         Set<DataTable> sortedSelectedItems2 = sortSelected(analysisData2);
 
 
@@ -583,7 +641,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
                     break;
             }
 
-            switch (dataTable.getName().substring(0, index)) {
+            /*switch (dataTable.getName().substring(0, index)) {
 
                 case "CARDIO":
                     systemMap.put("CARDIO система",systemMap.get("CARDIO система")+patternWeight);
@@ -621,7 +679,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
                 case "VISION":
                     systemMap.put("VISION система",systemMap.get("VISION система")+ patternWeight);
                     break;
-            }
+            }*/
 
         }
         return systemMap;
@@ -640,9 +698,9 @@ public class AnalysisPanelController extends AbstractController implements Subsc
                 if(Arrays.equals(str,cmp)){
                     count++;
                 }
-                if (count > 1) {
+//                if (count > 1) {
                     sortedSelectedItems.add(dataTable);
-                }
+//                }
             }
         }
         return sortedSelectedItems;
@@ -708,4 +766,11 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         this.degree1 = degree1;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
 }

@@ -2,16 +2,21 @@ package com.mpsdevelopment.biopotential.server.gui.correctors;
 
 import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
+import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.cmp.pcm.PCM;
 import com.mpsdevelopment.biopotential.server.db.pojo.DataTable;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.HealingsMapEvent;
+import com.mpsdevelopment.biopotential.server.eventbus.event.SelectCorrectorEvent;
+import com.mpsdevelopment.biopotential.server.gui.BioApplication;
+import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
 import com.mpsdevelopment.biopotential.server.utils.StageUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -21,11 +26,10 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
@@ -74,27 +78,81 @@ public class CorrectorsPanelController extends AbstractController implements Sub
 
     private Stage primaryStage;
     private static Map<Pattern,AnalysisSummary> healingsMap;
+    private ServerSettings serverSettings;
 
     public CorrectorsPanelController() {
+
         EventBus.subscribe(this);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        serverSettings = BioApplication.APP_CONTEXT.getBean(ServerSettings.class);
+
         selectColumn.setMinWidth(80);
 //        selectColumn.setCellValueFactory(new PropertyValueFactory<DataTable, Boolean>("checkCar "));
-        selectColumn.setCellFactory(new Callback<TableColumn<DataTable, Boolean>, TableCell<DataTable, Boolean>>()
+        /*selectColumn.setCellFactory(new Callback<TableColumn<DataTable, Boolean>, TableCell<DataTable, Boolean>>()
         {
             @Override
             public TableCell<DataTable, Boolean> call(TableColumn<DataTable, Boolean> tableColumn)
             {
                 return new BooleanCell();
+//                return new EditingCell();
+            }
+        });*/
+
+        selectColumn.setCellValueFactory(new PropertyValueFactory<DataTable,Boolean>("check"));
+        selectColumn.setCellFactory(new Callback<TableColumn<DataTable, Boolean>, TableCell<DataTable, Boolean>>() {
+            @Override
+            public TableCell<DataTable, Boolean> call(TableColumn<DataTable, Boolean> column) {
+                return new TableCell<DataTable, Boolean>() {
+                    public void updateItem(Boolean check, boolean empty) {
+//                        super.updateItem(check, empty);
+                        if (check == null || empty) {
+                            setGraphic(null);
+                        } else {
+                            CheckBox box = new CheckBox();
+                            BooleanProperty checked = (BooleanProperty) column.getCellObservableValue(getIndex());
+                            box.setSelected(checked.get());
+                            if (checked.get()) {
+                                сorrectorsTable.getSelectionModel().select(getTableRow().getIndex());
+                            } else {
+                                сorrectorsTable.getSelectionModel().clearSelection(getTableRow().getIndex());
+
+                            }
+                            box.selectedProperty().bindBidirectional(checked);
+                            setGraphic(box);
+                        }
+                    }
+                };
             }
         });
 
-        /*selectColumn.setCellValueFactory( new PropertyValueFactory<DataTable,Boolean>( "checkBoxValue" ) );
-        selectColumn.setCellFactory( new Callback<TableColumn<DataTable,Boolean>, TableCell<DataTable,Boolean>>()
+
+
+
+
+
+
+
+
+        /*selectColumn.setCellFactory(new Callback<TableColumn<DataTable, Boolean>, //
+                TableCell<DataTable, Boolean>>() {
+            @Override
+            public TableCell<DataTable, Boolean> call(TableColumn<DataTable, Boolean> p) {
+                CheckBoxTableCell<DataTable, Boolean> cell = new CheckBoxTableCell<DataTable, Boolean>();
+                cell.setAlignment(Pos.CENTER);
+                return cell;
+            }
+        });*/
+
+        /*selectColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, Boolean>, ObservableValue<Boolean>>() {
+            @Override public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<DataTable, Boolean> p) {
+                return new ReadOnlyObjectWrapper(сorrectorsTable.getItems().get(p.getValue().));
+            }
+        });*/
+        /*selectColumn.setCellFactory( new Callback<TableColumn<DataTable,Boolean>, TableCell<DataTable,Boolean>>()
         {
             @Override
             public TableCell<DataTable,Boolean> call( TableColumn<DataTable,Boolean> param )
@@ -132,7 +190,7 @@ public class CorrectorsPanelController extends AbstractController implements Sub
             @Override
             public void handle(MouseEvent event) {
                 LOGGER.info("Click");
-                сorrectorsTable.getSelectionModel().clearSelection();
+//                сorrectorsTable.getSelectionModel().clearSelection();
             }
         });
 
@@ -187,7 +245,7 @@ public class CorrectorsPanelController extends AbstractController implements Sub
             @Override
             public void handle(ActionEvent event) {
                 AddCorrectorPanel panel = new AddCorrectorPanel();
-                Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Добавить корректор").setClazz(panel.getClass()).setHeight(220d).setWidth(330d).setHeightPanel(208d).setWidthPanel(306d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+                Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Добавить корректор").setClazz(panel.getClass()).setHeight(515d).setWidth(748d).setHeightPanel(515d).setWidthPanel(718d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
                 panel.setPrimaryStage(stage);
             }
         });
@@ -218,6 +276,8 @@ public class CorrectorsPanelController extends AbstractController implements Sub
                 sortedHealings.add(pattern);
             }
         });
+
+        Machine.setEdxFileFolder(serverSettings.getStoragePath());
 
 
         for (DataTable item : sortedSelectedItems) {
@@ -283,12 +343,29 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         healingsMap = event.getMap();
     }
 
+    @Handler
+    public void handleMessage(SelectCorrectorEvent event) throws Exception {
+        LOGGER.info(" GOT correctors ");
+        Set<DataTable> correctorsItems = event.getMap();
+
+        if(correctorsData != null) {
+            correctorsItems.forEach(new Consumer<DataTable>() {
+                @Override
+                public void accept(DataTable dataTable) {
+                    correctorsData.add(dataTable);
+                }
+            });
+
+            сorrectorsTable.setItems(correctorsData);
+        }
+    }
+
 
     public void setHealingsMap(Map<Pattern, AnalysisSummary> healingsMap) {
         this.healingsMap = healingsMap;
     }
 
-    public static void merge(Collection<List<Double>> lists) throws IOException, UnsupportedAudioFileException {
+    public /*static*/ void merge(Collection<List<Double>> lists) throws IOException, UnsupportedAudioFileException {
 
         Collection out;
         out = PCM.merge(lists);
@@ -319,11 +396,23 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
         AudioFormat format = new AudioFormat(22050, 8, 1, true, false);
         AudioInputStream stream = new AudioInputStream(bais, format, buffer.length);
-        AudioSystem.write(stream, AudioFileFormat.Type.WAVE, outputFile);
+
+        FileChooser fileChooser = new FileChooser();
+
+        //Set extension filter
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Wav files (*.wav)", "*.wav");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        //Show save file dialog
+        File file = fileChooser.showSaveDialog(primaryStage);
+
+
+//        AudioSystem.write(stream, AudioFileFormat.Type.WAVE, outputFile);
+        AudioSystem.write(stream, AudioFileFormat.Type.WAVE, file);
 
     }
 
-    class BooleanCell extends TableCell<DataTable, Boolean> {
+    /*class BooleanCell extends TableCell<DataTable, Boolean> {
 
         private CheckBox checkBox;
         public BooleanCell() {
@@ -345,6 +434,8 @@ public class CorrectorsPanelController extends AbstractController implements Sub
             this.setEditable(true);
             setAlignment(Pos.CENTER);
         }
+
+
         @Override
         public void startEdit() {
             super.startEdit();
@@ -365,32 +456,88 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         }
         @Override
         public void updateItem(Boolean item, boolean empty) {
-//            super.updateItem(item, empty);
+            super.updateItem(item, empty);
             if (!isEmpty()) {
-//                checkBox.setSelected(true);
+                checkBox.setSelected(true);
             }
             if ( ! empty )
             {
-//                TableRow  row = getTableRow();
+                TableRow  row = getTableRow();
 
-//                if ( row != null )
+                if ( row != null )
                 {
-//                    int rowNo = row.getIndex();
-//                    TableView.TableViewSelectionModel sm = getTableView().getSelectionModel();
-                    /*if ( item )  sm.select( rowNo );
-                    else  sm.clearSelection( rowNo );*/
+                    *//*int rowNo = row.getIndex();
+                    TableView.TableViewSelectionModel sm = getTableView().getSelectionModel();
+                    if ( item )  sm.select( rowNo );
+                    else  sm.clearSelection( rowNo );*//*
                 }
             }
 
-//            super.updateItem( item, empty );
+            super.updateItem( item, true );
         }
+    }*/
 
+    class BooleanCell extends TableCell<DataTable, Boolean> {
+        private CheckBox checkBox;
+        public BooleanCell() {
+            checkBox = new CheckBox();
+            checkBox.setDisable(false);
 
+            checkBox.selectedProperty().addListener(new ChangeListener<Boolean> () {
+                public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                    if(!isEditing())
+                    {
+//                        commitEdit(newValue == null ? false : newValue);
+                        if (newValue) {
+                            сorrectorsTable.getSelectionModel().select(getTableRow().getIndex());
 
+                        } else {
+                            сorrectorsTable.getSelectionModel().clearSelection(getTableRow().getIndex());
+                        }
+                    }
+                }
+            });
+            this.setGraphic(checkBox);
+            this.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+            this.setEditable(true);
+        }
+        @Override
+        public void startEdit() {
+            super.startEdit();
+            if (isEmpty()) {
+                return;
+            }
+            checkBox.setDisable(false);
+            checkBox.requestFocus();
+        }
+        @Override
+        public void cancelEdit() {
 
-
+            super.cancelEdit();
+            checkBox.setDisable(true);
+        }
+        public void commitEdit(Boolean value) {
+            super.commitEdit(value);
+            checkBox.setDisable(true);
+        }
+        @Override
+        public void updateItem(Boolean item, boolean empty) {
+//            super.updateItem(item, empty);
+            if (!isEmpty()) {
+//                checkBox.setSelected(item);
+            }
         }
     }
+
+
+
+
+
+
+
+
+
+}
 
 
 

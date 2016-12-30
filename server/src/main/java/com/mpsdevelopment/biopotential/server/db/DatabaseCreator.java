@@ -245,9 +245,9 @@ public class DatabaseCreator {
 			Long bacId = 0L, mucId = 0L, virId = 0L;;
 			Long cardioId =0L, dermaId = 0L,endocrinId = 0L,gastroId=0L,immunId=0L,mentisId=0L,neuralId=0L,orthoId=0L,spiritusId=0L,stomatId=0L,urologId=0L,visionId = 0L;
             Long DiId = 0L, BoEnId = 0L,AlId = 0L, DtId = 0L;
-            Long HelmEn = 0L, HelmEx = 0L, AlEn = 0L, AlEx = 0L,CaEn = 0L, CaEx = 0L,DeEn = 0L, DeEx = 0L,EnEn = 0L, EnEx = 0L,GaEn = 0L, GaEx = 0L,
-                    ImEn = 0L, ImEx = 0L,NeEn = 0L, NeEx = 0L,OrEn = 0L, OrEx = 0L,SpEn = 0L, SpEx = 0L,StEn = 0L, StEx = 0L,
-                    UrEn = 0L, UrEx = 0L,DtEn = 0L, DtEx = 0L, ViEn = 0L, ViEx = 0L;
+            Long HelmEn = 0L, HelmEx = 0L, AlEn = 0L, AlEx = 0L,AcEn = 0L, AcEx = 0L,BaEn = 0L, BaEx = 0L,CaEn = 0L, CaEx = 0L,DeEn = 0L, DeEx = 0L,ElEn = 0L, ElEx = 0L,EnEn = 0L, EnEx = 0L,GaEn = 0L, GaEx = 0L,
+                    FeEn = 0L, FeEx = 0L,ImEn = 0L, ImEx = 0L,MaEn = 0L, MaEx = 0L,MyEn = 0L, MyEx = 0L,NeEn = 0L, NeEx = 0L,OrEn = 0L, OrEx = 0L,SpEn = 0L, SpEx = 0L,StEn = 0L, StEx = 0L,
+                    UrEn = 0L, UrEx = 0L,DtEn = 0L, DtEx = 0L,FlViEn = 0L, FlViEx = 0L, ViEn = 0L, ViEx = 0L;
 
             // work with correctors
             for (Folder folder : folderList) {
@@ -284,11 +284,20 @@ public class DatabaseCreator {
                 if (folder.getFolderName().contains("Al en")){AlEn = folder.getId();}
                 if (folder.getFolderName().contains("Al ex")){AlEx = folder.getId();}
 
+				if (folder.getFolderName().contains("Ac en")){AcEn = folder.getId();}
+				if (folder.getFolderName().contains("Ac ex")){AcEx = folder.getId();}
+
+                if (folder.getFolderName().contains("Ba en")){BaEn = folder.getId();}
+                if (folder.getFolderName().contains("Ba ex")){BaEx = folder.getId();}
+
                 if (folder.getFolderName().contains("Ca en")){CaEn = folder.getId();}
                 if (folder.getFolderName().contains("Ca ex")){CaEx = folder.getId();}
 
                 if (folder.getFolderName().contains("De en")){DeEn = folder.getId();}
                 if (folder.getFolderName().contains("De ex")){DeEx = folder.getId();}
+
+                if (folder.getFolderName().contains("El en")){ElEn = folder.getId();}
+                if (folder.getFolderName().contains("El ex")){ElEx = folder.getId();}
 
                 if (folder.getFolderName().contains("En en")){EnEn = folder.getId();}
                 if (folder.getFolderName().contains("En ex")){EnEx = folder.getId();}
@@ -296,11 +305,20 @@ public class DatabaseCreator {
                 if (folder.getFolderName().contains("Ga en")){GaEn = folder.getId();}
                 if (folder.getFolderName().contains("Ga ex")){GaEx = folder.getId();}
 
+                if (folder.getFolderName().contains("Fe en")){FeEn = folder.getId();}
+                if (folder.getFolderName().contains("Fe ex")){FeEx = folder.getId();}
+
                 if (folder.getFolderName().contains("Im en")){ImEn = folder.getId();}
                 if (folder.getFolderName().contains("Im ex")){ImEx = folder.getId();}
 
                 if (folder.getFolderName().contains("Ne en")){NeEn = folder.getId();}
                 if (folder.getFolderName().contains("Ne ex")){NeEx = folder.getId();}
+
+                if (folder.getFolderName().contains("Ma en")){MaEn = folder.getId();}
+                if (folder.getFolderName().contains("Ma ex")){MaEx = folder.getId();}
+
+                if (folder.getFolderName().contains("My en")){MyEn = folder.getId();}
+                if (folder.getFolderName().contains("My ex")){MyEx = folder.getId();}
 
                 if (folder.getFolderName().contains("Or en")){OrEn = folder.getId();}
                 if (folder.getFolderName().contains("Or ex")){OrEx = folder.getId();}
@@ -317,12 +335,11 @@ public class DatabaseCreator {
                 if (folder.getFolderName().contains("Dt ex Fe")){DtEn = folder.getId();}
                 if (folder.getFolderName().contains("Dt ex Ma")){DtEx = folder.getId();}
 
-                if (folder.getFolderName().contains("Vi en") && folder.getIsInUse() == 1){
-                    ViEn = folder.getId();
-                }
-                if (folder.getFolderName().contains("Vi ex") && folder.getIsInUse() == 1){
-                    ViEx = folder.getId();
-                }
+                if (folder.getFolderName().contains("FL Vi en")){FlViEn = folder.getId();}
+                if (folder.getFolderName().contains("FL Vi ex")){FlViEx = folder.getId();}
+
+                if (folder.getFolderName().contains("Vi en") && folder.getIsInUse() == 1){ViEn = folder.getId();}
+                if (folder.getFolderName().contains("Vi ex") && folder.getIsInUse() == 1){ViEx = folder.getId();}
 
 
             }
@@ -334,19 +351,19 @@ public class DatabaseCreator {
             Folder actually = foldersDao.getById(4616);
             Folder body = foldersDao.getById(4553);
 
-            Folder stressAnalys = foldersDao.getByName("Stress Analys");
+            Folder stressAnalys = foldersDao.getByName("Stress Analyze");
             Folder destruction = foldersDao.getByName("Di Деструкция");
             Folder metabolism = foldersDao.getByName("Me Метаболизм");
             Folder physCond = foldersDao.getByName("Bо Физ кодиции");
             Folder detokc = foldersDao.getByName("Dt DETOKC");
-            Folder acarian = foldersDao.getByName("FL Ac Acarian");
+            Folder acariasis = foldersDao.getByName("FL Ac Acariasis");
             Folder bacteria = foldersDao.getByName("FL Ba Bacteria");
             Folder elementary = foldersDao.getByName("FL El Elementary");
             Folder helminths = foldersDao.getByName("FL He Helminths");
             Folder mycosis = foldersDao.getByName("FL My Mycosis");
             Folder virus = foldersDao.getByName("FL Vi Virus");
-            Folder female = foldersDao.getByName("Fe Family");
-            Folder male = foldersDao.getByName("Ma Man");
+            Folder femely = foldersDao.getByName("Fe Femely");
+            Folder man = foldersDao.getByName("Ma Man");
             Folder allergy = foldersDao.getByName("Al ALLERGY");
             Folder cardio = foldersDao.getByName("Ca CARDIO");
             Folder derma = foldersDao.getByName("De DERMA");
@@ -364,7 +381,16 @@ public class DatabaseCreator {
             handlePatternsFolders(destruction, null, null);
             handlePatternsFolders(metabolism, null, null);
             handlePatternsFolders(physCond, BoEnId, null);
+            handlePatternsFolders(detokc, DtEn, DtEx);
+            handlePatternsFolders(acariasis, AcEn, AcEx);
+            handlePatternsFolders(bacteria, BaEn, BaEx);
+            handlePatternsFolders(elementary, ElEn, ElEx);
             handlePatternsFolders(helminths, HelmEn, HelmEx);
+            handlePatternsFolders(mycosis, MyEn, MyEx);
+            handlePatternsFolders(virus, FlViEn, FlViEx);
+            handlePatternsFolders(femely, FeEn, FeEx);
+            handlePatternsFolders(man, MaEn, MaEx);
+
             handlePatternsFolders(allergy, AlEn, AlEx);
             handlePatternsFolders(cardio, CaEn, CaEx);
             handlePatternsFolders(derma, DeEn, DeEx);
@@ -376,7 +402,6 @@ public class DatabaseCreator {
             handlePatternsFolders(spiritus, SpEn, SpEx);
             handlePatternsFolders(stomat, SpEn, SpEx);
             handlePatternsFolders(urolog, UrEn, UrEx);
-            handlePatternsFolders(detokc, DtEn, DtEx);
             handlePatternsFolders(vision, ViEn, ViEx);
 
             delta = 0.1/(patternList.size());

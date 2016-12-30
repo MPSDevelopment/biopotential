@@ -58,9 +58,10 @@ public class PatternsController {
 
     @RequestMapping(value = ControllerAPI.PATTERNS_CONTROLLER_GET_ALL, method = RequestMethod.GET, produces = "text/json;charset=UTF-8")
     @ResponseBody
-    public ResponseEntity<String> getAllUsers() throws ParseException {
+    public ResponseEntity<String> getAllUsers() throws ParseException, IOException, SQLException {
 
-        List<Pattern> patterns = patternsDao.getPatterns(null, null);
+//        List<Pattern> patterns = patternsDao.getPatterns(null, null);
+        List<EDXPattern> patterns  = patternsDao.getFromDatabasePat();
 
         LOGGER.info("Has been loaded '%s' users", patterns.size());
         return new ResponseEntity<>(JsonUtils.getJson(patterns), null, HttpStatus.OK);
@@ -81,7 +82,7 @@ public class PatternsController {
 
             try {
                 size = patternsDao.getPatternsFromFoldersToSystem(fol);
-//                list = patternsDao.getPatternsFromFolders(fol);
+//                list = patternsDao.getPatternsFromFoldersCorIsNull(fol);
             } catch (SQLException e) {
                 e.printStackTrace();
             } catch (IOException e) {

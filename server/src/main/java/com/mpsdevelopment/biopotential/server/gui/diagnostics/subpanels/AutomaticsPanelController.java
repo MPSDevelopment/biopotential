@@ -29,6 +29,7 @@ public class AutomaticsPanelController extends AbstractController implements Sub
     ObservableList<String> item = FXCollections.observableArrayList("2");
 
     private File file;
+    private String gender;
 
     @FXML
     private ComboBox whatShowComboBox;
@@ -37,13 +38,7 @@ public class AutomaticsPanelController extends AbstractController implements Sub
     private ComboBox whatShowComboBox1;
 
     @FXML
-    private ComboBox criterionComboBox;
-
-    @FXML
     private Button whatToShowButton;
-
-    @FXML
-    private Button criterionButton;
 
     @FXML
     private Button makeAnalyzerButton;
@@ -64,8 +59,7 @@ public class AutomaticsPanelController extends AbstractController implements Sub
         whatShowComboBox.setValue("Max");
         whatShowComboBox1.setItems(items);
         whatShowComboBox1.setValue("Po");
-        criterionComboBox.setItems(item);
-        criterionComboBox.setValue("2");
+
 
         makeAnalyzerButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -75,7 +69,7 @@ public class AutomaticsPanelController extends AbstractController implements Sub
                 degree1 = (String) whatShowComboBox.getValue();
                 degree2 = (String) whatShowComboBox1.getValue();
 
-                AnalysisPanel panel = new AnalysisPanel(file,degree1,degree2);
+                AnalysisPanel panel = new AnalysisPanel(file,degree1,degree2,gender);
                 Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Результат анализа").setClazz(panel.getClass()).setHeight(752d).setWidth(1172d).setHeightPanel(722d).setWidthPanel(1172d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
                 panel.setPrimaryStage(stage);
                 close();
@@ -105,5 +99,13 @@ public class AutomaticsPanelController extends AbstractController implements Sub
 
     public void setFile(File file) {
         this.file = file;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }

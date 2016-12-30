@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 @RequestMapping(ControllerAPI.DISEAS_CONTROLLER)
 @Controller
@@ -40,7 +41,8 @@ public class DiseasController {
 
     @RequestMapping(value = ControllerAPI.DISEAS_CONTROLLER_GET_DISEASES, method = RequestMethod.POST)
     public @ResponseBody
-    ResponseEntity<String> getDiseases(@RequestParam("file") MultipartFile file,  @PathVariable(value = "degree") String currentDegree) {
+    ResponseEntity<String> getDiseases(@RequestParam("file") MultipartFile file,  @PathVariable(value = "degree") String currentDegree, @PathVariable(value = "fetch") String fetch,
+                                       @PathVariable(value = "gender") String gender) {
         String name = file.getOriginalFilename();
         String degree = currentDegree;
         int level = getLevel(degree);
@@ -48,7 +50,7 @@ public class DiseasController {
         requestHeaders.add("Content-Type", "text/html; charset=utf-8");
         diseases = new HashMap<>();
 
-        getDiseas(file, name,level);
+        getDiseas(file, name,level,fetch,gender);
 
         LOGGER.info("diseases '%s' ", diseases.size());
         return new ResponseEntity<>(JsonUtils.getJson(diseases), requestHeaders, HttpStatus.OK);
@@ -56,13 +58,34 @@ public class DiseasController {
 
     @RequestMapping(value = ControllerAPI.DISEAS_CONTROLLER_GET_HEALINGS, method = RequestMethod.POST)
     public @ResponseBody
-    ResponseEntity<String> getHealings(@RequestParam("file") MultipartFile file, @PathVariable(value = "degree") String currentDegree) {
+    ResponseEntity<String> getHealings(@RequestParam("file") MultipartFile file, @PathVariable(value = "degree") String currentDegree, @PathVariable(value = "fetch") String fetch,
+                                       @PathVariable(value = "gender") String gender) {
         String name = file.getOriginalFilename();
         String degree = currentDegree;
         int level = getLevel(degree);
         allHealings = new HashMap<>();
 
-        getDiseas(file, name,level);
+        Map<Pattern, AnalysisSummary> temp = new HashMap<>();
+        getDiseas(file, name,level,fetch,gender);
+
+        diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
+            @Override
+            public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
+                if (gender.equals("Woman")) {
+                    if (!pattern.getKind().equals("Ma Man")) {
+                        temp.put(pattern,analysisSummary);
+                    }
+                }
+                else if (gender.equals("Man")) {
+                    if (!pattern.getKind().equals("Fe Femely")) {
+                        temp.put(pattern,analysisSummary);
+                    }
+                }
+
+            }
+        });
+        diseases.clear();
+        diseases.putAll(temp);
 
         try {
             allHealings.putAll(diseaseDao.getHealings(diseases, multipartToFile(name, file),level));
@@ -84,9 +107,9 @@ public class DiseasController {
         return level;
     }
 
-    private Map<Pattern, AnalysisSummary> getDiseas(MultipartFile file, String name,int degree) {
+    private Map<Pattern, AnalysisSummary> getDiseas(MultipartFile file, String name,int degree, String fetch, String gender) {
         try {
-            diseases.putAll(diseaseDao.getDeseases(multipartToFile(name, file),degree,true));
+            diseases.putAll(diseaseDao.getDeseases(multipartToFile(name, file),degree,fetch,gender));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (UnsupportedAudioFileException e) {

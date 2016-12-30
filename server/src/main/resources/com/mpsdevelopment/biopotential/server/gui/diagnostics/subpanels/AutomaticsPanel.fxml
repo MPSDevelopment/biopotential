@@ -10,11 +10,9 @@
       <Button fx:id="whatToShowButton" layoutX="-238.0" layoutY="36.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="112.0" text="Что показывать" />
       <Button fx:id="makeAnalyzerButton" layoutX="37.0" layoutY="159.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="112.0" text="Провести анализ" />
       <Button fx:id="automaticsCancelButton" layoutX="163.0" layoutY="159.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="112.0" text="Отмена" />
-      <ComboBox fx:id="whatShowComboBox" layoutX="142.0" layoutY="19.0" prefWidth="150.0" />
-      <ComboBox fx:id="criterionComboBox" layoutX="142.0" layoutY="108.0" prefWidth="150.0" />
-      <Label layoutX="27.0" layoutY="23.0" text="Фильтр 1" />
-      <Label layoutX="29.0" layoutY="112.0" text="Критерии отбора" />
-      <ComboBox fx:id="whatShowComboBox1" layoutX="142.0" layoutY="62.0" prefWidth="150.0" />
-      <Label layoutX="27.0" layoutY="66.0" text="Фильтр 2" />
+      <ComboBox fx:id="whatShowComboBox" layoutX="142.0" layoutY="44.0" prefWidth="150.0" />
+      <Label layoutX="27.0" layoutY="48.0" text="Фильтр 1" />
+      <ComboBox fx:id="whatShowComboBox1" layoutX="142.0" layoutY="87.0" prefWidth="150.0" />
+      <Label layoutX="27.0" layoutY="91.0" text="Фильтр 2" />
    </children>
 </AnchorPane>
