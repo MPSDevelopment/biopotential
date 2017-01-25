@@ -44,7 +44,7 @@ public class LineChartUtil {
         return series;
     }
 
-    public static XYChart.Series<Number, Number> chart(double[] data,int rate, long sampleRate) {
+    public static XYChart.Series<Number, Number> chart(double[] data, double pre, long sampleRate) {
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
         GeometryFactory gf = new GeometryFactory();
 
@@ -56,7 +56,7 @@ public class LineChartUtil {
         }
         LOGGER.info("Calculate coordinates %d ms", System.currentTimeMillis() - t1);
         Geometry geom = new LineString(new CoordinateArraySequence(coordinates), gf);
-        Geometry simplified = DouglasPeuckerSimplifier.simplify(geom, 0.01);
+        Geometry simplified = DouglasPeuckerSimplifier.simplify(geom, pre);
 
         long t2 = System.currentTimeMillis();
 

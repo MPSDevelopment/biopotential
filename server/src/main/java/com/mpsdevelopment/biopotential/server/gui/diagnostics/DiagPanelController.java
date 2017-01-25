@@ -64,6 +64,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import com.mpsdevelopment.biopotential.server.cmp._SoundIO;
+
 
 public class DiagPanelController extends AbstractController implements Subscribable {
 
@@ -517,32 +519,55 @@ public class DiagPanelController extends AbstractController implements Subscriba
     private void createChart(File selectedFile) {
         NumberAxis x = new NumberAxis();
         NumberAxis y = new NumberAxis();
+        XYChart.Series<Number, Number> numberSeries;
 
         numberLineChart.setTitle("Входной сигнал");
-
+        double[] extractedData = new double[0];
+        long sampleRate = 0;
 //        File file = new File("D:/MPS/Temp/Downloads/test3.wav");
-        WaveFile waveFile = null;
-        try {
-            waveFile = WaveFile.openWavFile(selectedFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (WavFileException e) {
-            e.printStackTrace();
-        }
-        LOGGER.info(String.valueOf(waveFile.getSampleRate()));
-        long sampleRate = waveFile.getSampleRate();
-        if (selectedFile != null) {
-            double[] extractedData = new double[0];
-
+        if (selectedFile.getName().contains(".wav")) {
+            WaveFile waveFile = null;
             try {
-                extractedData = extractWaveform(selectedFile);
+                waveFile = WaveFile.openWavFile(selectedFile);
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (UnsupportedAudioFileException e) {
+            } catch (WavFileException e) {
                 e.printStackTrace();
             }
+            LOGGER.info(String.valueOf(waveFile.getSampleRate()));
+            sampleRate = waveFile.getSampleRate();
+            if (selectedFile != null) {
+
+
+                try {
+                    extractedData = extractWaveform(selectedFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedAudioFileException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        else {
+                try {
+                    extractedData = _SoundIO.extractACT(selectedFile.getAbsolutePath());
+                    sampleRate = 8000;
+                } catch (IOException e) {
+                    LOGGER.printStackTrace(e);
+                }
+
+            }
+
+
             long t1 = System.currentTimeMillis();
-            XYChart.Series<Number, Number> numberSeries = LineChartUtil.chart(extractedData, RATE,sampleRate);
+        if (extractedData.length > 10000) {
+            numberSeries = LineChartUtil.chart(extractedData, 0.01,sampleRate);
+
+        }
+        else {
+            numberSeries = LineChartUtil.chart(extractedData, 0.0005,sampleRate);
+
+        }
 //            XYChart.Series<Number, Number> numberSeries = LineChartUtil.createNumberSeries(extractedData, RATE,sampleRate);
             LOGGER.info("Time create createNumberSeries %s ms", System.currentTimeMillis() - t1);
             numberLineChart.getData().clear();
@@ -561,7 +586,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
             numberLineChart.setCreateSymbols(false);
             numberLineChart.setAxisSortingPolicy(LineChart.SortingPolicy.NONE);
             LOGGER.info("setCreateSymbols %s ms", System.currentTimeMillis() - t3);*/
-        }
+
     }
 
     private Date takeDate() {

@@ -38,8 +38,13 @@ public class DiseaseDao {
 	}
 
 	public Map<Pattern, AnalysisSummary> getDeseases(File file, int degree, String fetch, String gender) throws IOException, UnsupportedAudioFileException, SQLException {
-
-		final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(file)));
+        final List<ChunkSummary> sample;
+        if (file.getName().contains(".wav")) {
+            sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(file)));
+        }
+        else {
+            sample = _SoundIO.getPcmData(file.getAbsolutePath());
+        }
 		/*
 		get all patterns from database which have id correctors folders
 		 */
