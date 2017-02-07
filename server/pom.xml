@@ -6,7 +6,9 @@
 	<version>1.0</version>
 	<name>Biopotential</name>
 	<url>http://maven.apache.org</url>
+
 	<properties>
+
 		<copyright>MPS Development</copyright>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -389,6 +391,16 @@
 			<artifactId>jts</artifactId>
 			<version>1.13</version>
 		</dependency>
+		<dependency>
+			<groupId>com.mpsdevelopment.jave</groupId>
+			<artifactId>jave</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.lame</groupId>
+			<artifactId>lame</artifactId>
+			<version>3.98.4</version>
+		</dependency>
 
 	</dependencies>
 
@@ -410,7 +422,7 @@
 				<version>${surefire.plugin.version}</version>
 				<configuration>
 					<additionalClasspathElements>
-						<additionalClasspathElement>${lib.property}/</additionalClasspathElement>
+						<additionalClasspathElement>libs/</additionalClasspathElement>
 						<additionalClasspathElement>data/</additionalClasspathElement>
 					</additionalClasspathElements>
 				</configuration>
@@ -505,6 +517,8 @@
 										<include>config/**</include>
 										<include>data/**</include>
 										<include>files/**</include>
+										<include>libs/**</include>
+
 									</includes>
 								</resource>
 							</resources>
@@ -526,6 +540,8 @@
 										<include>config/**</include>
 										<include>data/**</include>
 										<include>files/**</include>
+										<include>libs/**</include>
+
 									</includes>
 								</resource>
 							</resources>
@@ -542,9 +558,8 @@
 					<jetOutputDir>${jet.output.directory}</jetOutputDir>
 					<!-- <packaging>excelsior-installer</packaging> -->
 					<icon>${project.basedir}/build/bio.ico</icon>
-					<installerSplash>${project.basedir}/build/splash.png</installerSplash>
+					<!--<installerSplash>${project.basedir}/build/splash.png</installerSplash>-->
 					<!-- <splash>${project.basedir}/build/splash.png</splash> -->
-
 					<hideConsole>true</hideConsole>
 					<!-- <globalOptimizer>true</globalOptimizer> -->
 					<packageFilesDir>${jet.output.directory}/temp</packageFilesDir>
@@ -564,6 +579,48 @@
 					<version>${jet.version}</version>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>2.5.2</version>
+				<executions>
+					<execution>
+						<id>install-external</id>
+						<phase>clean</phase>
+						<configuration>
+							<file>${basedir}/libs/jave-1.0.2.jar</file>
+							<repositoryLayout>default</repositoryLayout>
+							<groupId>it.sauronsoftware.jave</groupId>
+							<artifactId>jave</artifactId>
+							<version>1.0.2</version>
+							<packaging>jar</packaging>
+							<generatePom>true</generatePom>
+						</configuration>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+					</execution>
+
+					<execution>
+						<id>install-external1</id>
+						<phase>clean</phase>
+						<configuration>
+							<file>${basedir}/libs/net.sourceforge.lame-3.98.4.jar</file>
+							<repositoryLayout>default</repositoryLayout>
+							<groupId>net.sourceforge.lame</groupId>
+							<artifactId>lame</artifactId>
+							<version>3.98.4</version>
+							<packaging>jar</packaging>
+							<generatePom>true</generatePom>
+						</configuration>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<!-- <plugin> -->
 			<!-- <groupId>org.apache.maven.plugins</groupId> -->
 			<!-- <artifactId>maven-antrun-plugin</artifactId> -->

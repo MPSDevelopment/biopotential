@@ -5,6 +5,7 @@ import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.cmp.pcm.PCM;
+import com.mpsdevelopment.biopotential.server.db.dao.DiseaseDao;
 import com.mpsdevelopment.biopotential.server.db.pojo.DataTable;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
@@ -36,9 +37,7 @@ import javafx.util.Callback;
 import net.engio.mbassy.listener.Handler;
 
 import javax.sound.sampled.*;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -50,7 +49,7 @@ public class CorrectorsPanelController extends AbstractController implements Sub
     private static final Logger LOGGER = LoggerUtil.getLogger(CorrectorsPanelController.class);
     private ObservableList<DataTable> correctorsData;
 
-    private static File outputFile = new File("data\\out\\out.wav");
+    private static File outputFile = new File("data\\out\\out1.wav");
 
     @FXML
     private TableView<DataTable> сorrectorsTable;
@@ -130,7 +129,7 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         });
 
 
-
+        сorrectorsTable.getSelectionModel().selectAll();
 
 
 
@@ -255,7 +254,9 @@ public class CorrectorsPanelController extends AbstractController implements Sub
      *  Sort correctorsData from duplicate items by filename
      */
     private void createFileCorrection() {
+        сorrectorsTable.getSelectionModel().selectAll();
         ObservableList<DataTable> selectedItems = сorrectorsTable.getSelectionModel().getSelectedItems();
+
         LOGGER.info("Selected item %s", selectedItems.size());
 
         Set<Pattern> sortedHealings = new HashSet<>();
@@ -365,7 +366,7 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         this.healingsMap = healingsMap;
     }
 
-    public /*static*/ void merge(Collection<List<Double>> lists) throws IOException, UnsupportedAudioFileException {
+    public void merge(Collection<List<Double>> lists) throws IOException, UnsupportedAudioFileException {
 
         Collection out;
         out = PCM.merge(lists);
@@ -377,38 +378,41 @@ public class CorrectorsPanelController extends AbstractController implements Sub
             }
         }).toArray();
 
-        double minP =0;
-        boolean flagp = true;
-        for (int i = 0; i < buffer.length; i++) {
-            if (buffer[i] > 0) {
-                if (flagp){minP = buffer[i]; flagp = false;}
-                else if (buffer[i] < minP) {
-                    minP = buffer[i];
-                }
-            }
-        }
         byte[] bytes = new byte[buffer.length];
 
         for (int i=0; i < buffer.length; i++) {
-            bytes[i] = (byte) (((buffer[i]) * 1/minP)/*+128*/);
+            if (((buffer[i]) * 128) >= 127) {
+                bytes[i] = (byte) 0xFF;
+            }
+            else if (((buffer[i]) * 128)  <= -128) {
+                bytes[i] = (byte) 0x01;
+            }
+            else {
+                bytes[i] = (byte) ((byte) ((buffer[i]) * 128) ^ 0x80);
+
+            }
         }
 
-        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-        AudioFormat format = new AudioFormat(22050, 8, 1, true, false);
-        AudioInputStream stream = new AudioInputStream(bais, format, buffer.length);
-
         FileChooser fileChooser = new FileChooser();
-
         //Set extension filter
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Wav files (*.wav)", "*.wav");
-        fileChooser.getExtensionFilters().add(extFilter);
+        FileChooser.ExtensionFilter extFilterMp3 = new FileChooser.ExtensionFilter("Mp3 files (*.mp3)","*.mp3");
+        FileChooser.ExtensionFilter extFilterWav = new FileChooser.ExtensionFilter("Wav files (*.wav)","*.wav");
+        fileChooser.getExtensionFilters().addAll(extFilterMp3, extFilterWav);
 
         //Show save file dialog
         File file = fileChooser.showSaveDialog(primaryStage);
+        if (file.getName().contains(".wav")) {
+            ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+            AudioFormat format = new AudioFormat(22050, 8, 1, false, false);
+            AudioInputStream stream = new AudioInputStream(bais, format, buffer.length);
+            AudioSystem.write(stream, AudioFileFormat.Type.WAVE, file);
 
-
-//        AudioSystem.write(stream, AudioFileFormat.Type.WAVE, outputFile);
-        AudioSystem.write(stream, AudioFileFormat.Type.WAVE, file);
+        }
+        else if (file.getName().contains(".mp3")){
+            OutputStream outstream = new FileOutputStream(file);
+            byte[] data = DiseaseDao.encodePcmToMp3(bytes);
+            outstream.write(data, 0, data.length);
+        }
 
     }
 

@@ -24,6 +24,8 @@ import com.mpsdevelopment.biopotential.server.wave.WavFileExtractor;
 import com.mpsdevelopment.biopotential.server.wave.WaveFile;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
+import com.sun.media.sound.WaveFileReader;
+import it.sauronsoftware.jave.*;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
@@ -50,10 +52,10 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import net.engio.mbassy.listener.Handler;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.File;
-import java.io.IOException;
+import javax.sound.sampled.*;
+import java.io.*;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -68,12 +70,14 @@ import com.mpsdevelopment.biopotential.server.cmp._SoundIO;
 
 
 public class DiagPanelController extends AbstractController implements Subscribable {
+    private static File outputFile = new File("data\\out\\out.wav");
 
     private static final Logger LOGGER = LoggerUtil.getLogger(DiagPanelController.class);
     public static final String HOST = "localhost";
     public static final int PORT = 8098;
 
     private File selectedFile;
+    private File convertFile;
 
     private BioHttpClient httpClient;
 
@@ -395,12 +399,25 @@ public class DiagPanelController extends AbstractController implements Subscriba
 //                fileChooser.setInitialDirectory(new File(System.getProperty("user.dir") + System.getProperty("file.separator")+ "files")); // System.getProperty("file.separator") = "/"
                 fileChooser.setInitialDirectory(new File("files"));
                 selectedFile = fileChooser.showOpenDialog(null);
+                // convert selectedFile (
+                if (selectedFile.getName().contains(".ACT") || selectedFile.getName().contains(".act")) {
+                    try {
+                        convertFile = correctDataSizeValue(selectedFile);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    EventBus.publishEvent(new FileChooserEvent(convertFile));
 
-                EventBus.publishEvent(new FileChooserEvent(selectedFile));
-
-                long t2 = System.currentTimeMillis();
-                createChart(selectedFile);
-                LOGGER.info("createChart took %s ms", System.currentTimeMillis() - t2);
+                    long t2 = System.currentTimeMillis();
+                    createChart(convertFile);
+                    LOGGER.info("createChart took %s ms", System.currentTimeMillis() - t2);
+                }
+                else {
+                    EventBus.publishEvent(new FileChooserEvent(selectedFile));
+                    long t2 = System.currentTimeMillis();
+                    createChart(selectedFile);
+                    LOGGER.info("createChart took %s ms", System.currentTimeMillis() - t2);
+                }
 
             }
         });
@@ -455,7 +472,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
 
                 String body = JsonUtils.getJson(visit);
                 LOGGER.info("User - Visit %s", body);
-                httpClient.executePutRequest(ControllerAPI.VISITS_CONTROLLER + ControllerAPI.VISITS_CONTROLLER_PUT_CREATE_VISIT, body);
+//                httpClient.executePutRequest(ControllerAPI.VISITS_CONTROLLER + ControllerAPI.VISITS_CONTROLLER_PUT_CREATE_VISIT, body);
 
             }
         });
@@ -497,8 +514,75 @@ public class DiagPanelController extends AbstractController implements Subscriba
         });
 
     }
+    /* **
+    calculate's size value of data section *.act audio files, and put new value to file, order bytes LITTLE_ENDIAN
+     */
+    private File correctDataSizeValue(File selectedFile) throws IOException {
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            in = new FileInputStream(selectedFile);
+
+            final byte[] filedata = new byte[(int) (selectedFile.length())]; // buffer with file data
+            int justRead = in.read(filedata,0, (int) (selectedFile.length()));
+            int size = (int) (selectedFile.length() - 0x2C); // size of data section of file, #0x2C start point of data section
+            byte[] datasize = ByteBuffer.allocate(4).putInt(size).array(); // buffer with size value of data section
+            for (int i =0; i < filedata.length; i++) { // data section address 0x28-0x2B
+                if (i == 0x28) {
+                    filedata[i] = datasize[3];
+                }
+                if (i == 0x29) {
+                    filedata[i] = datasize[2];
+                }
+                if (i == 0x2A) {
+                    filedata[i] = datasize[1];
+                }
+                if (i == 0x2B) {
+                    filedata[i] = datasize[0];
+                }
+            }
+            out = new FileOutputStream(selectedFile);
+            out.write(filedata, 0, filedata.length);
+
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return selectedFile;
+    }
 
     // --------------------------------------Methods------------------------------------------
+
+    private void convertWavJave() throws InputFormatException {
+        File target = new File("data\\out\\out.mp3");
+        AudioAttributes audio = new AudioAttributes();
+        audio.setCodec("libmp3lame");
+        audio.setBitRate(new Integer(128000));
+        audio.setChannels(new Integer(1));
+        audio.setSamplingRate(new Integer(22050));
+        EncodingAttributes attrs = new EncodingAttributes();
+        attrs.setFormat("mp3");
+        attrs.setAudioAttributes(audio);
+        Encoder encoder = new Encoder();
+        try {
+            encoder.encode(selectedFile, target, attrs);
+        } catch (EncoderException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void clearFields() {
         login.setValue("");
@@ -695,5 +779,80 @@ public class DiagPanelController extends AbstractController implements Subscriba
         this.user = user;
     }
 
+    public static void convertULawFileToWav(File file) {
+//        File file = new File(filename);
+        if (!file.exists())
+            return;
+        try {
+            long fileSize = file.length();
+            int frameSize = 1;
+            long numFrames = fileSize / frameSize;
+            AudioFormat audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 22050, 8, 1, frameSize, 22050, false);
+            AudioInputStream audioInputStream = new AudioInputStream(new FileInputStream(file), audioFormat, numFrames);
+            AudioSystem.write(audioInputStream, AudioFileFormat.Type.WAVE, new File("D:\\file.wav"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    private void resample() throws IOException, UnsupportedAudioFileException {
+        final String filename = "data\\out\\REC005.ACT";
+//        final File file = File.createTempFile("resampleWaveFile", filename);
+//        final File out = File.createTempFile("resampledWaveFile", filename);
+
+        File filetemp = new File("data\\out\\temp");
+        extractFile(filename, filetemp);
+
+        WaveFileReader reader = new WaveFileReader();
+
+        AudioInputStream sourceStream = reader.getAudioInputStream(filetemp);
+        AudioFormat sourceFormat = sourceStream.getFormat();
+        AudioFormat targetFormat = new AudioFormat(
+                AudioFormat.Encoding.PCM_UNSIGNED,
+                22050f,
+                8,
+                sourceFormat.getChannels(),
+                1,
+                22050f,
+                sourceFormat.isBigEndian()
+        );
+
+        AudioInputStream resampledStream = AudioSystem.getAudioInputStream(targetFormat, sourceStream);
+        AudioSystem.write(resampledStream, AudioFileFormat.Type.WAVE, outputFile);
+
+
+    }
+
+    private void extractFile(final String filename, final File file) throws IOException {
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+//            in = getClass().getResourceAsStream(filename);
+            in = new FileInputStream(filename);
+            out = new FileOutputStream(file);
+            final byte[] buf = new byte[1024*64];
+            int justRead;
+            while ((justRead = in.read(buf)) != -1) {
+                out.write(buf, 0, justRead);
+                System.out.println("justRead " + justRead);
+            }
+            System.out.println(buf.length);
+
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }

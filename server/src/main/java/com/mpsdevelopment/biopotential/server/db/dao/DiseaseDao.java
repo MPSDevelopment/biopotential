@@ -11,12 +11,14 @@ import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
 import com.mpsdevelopment.biopotential.server.db.pojo.Folder;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
+import com.sun.media.sound.WaveFileReader;
+import net.sourceforge.lame.lowlevel.LameEncoder;
+import net.sourceforge.lame.mp3.Lame;
+import net.sourceforge.lame.mp3.MPEGMode;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.File;
-import java.io.IOException;
+import javax.sound.sampled.*;
+import java.io.*;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -26,8 +28,9 @@ import java.util.function.BiConsumer;
 public class DiseaseDao {
 
 	private static final Logger LOGGER = LoggerUtil.getLogger(DiseaseDao.class);
+    private static File outputFile = new File("data\\out\\conv.wav");
 
-	@Autowired
+    @Autowired
 	private PatternsDao patternsDao;
 
     @Autowired
@@ -43,7 +46,30 @@ public class DiseaseDao {
             sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(file)));
         }
         else {
-            sample = _SoundIO.getPcmData(file.getAbsolutePath());
+//            sample = _SoundIO.getPcmData(file.getAbsolutePath());
+
+            File filetemp = new File("data\\out\\temp");
+            extractFile(file.getAbsolutePath(), filetemp);
+
+            final long start = System.currentTimeMillis();
+            WaveFileReader reader = new WaveFileReader();
+
+            final AudioInputStream sourceStream = reader.getAudioInputStream(filetemp);
+            final AudioFormat sourceFormat = sourceStream.getFormat();
+            final AudioFormat targetFormat = new AudioFormat(
+                    AudioFormat.Encoding.PCM_UNSIGNED,
+                    22050f,
+                    8,
+                    sourceFormat.getChannels(),
+                    1,
+                    22050f,
+                    sourceFormat.isBigEndian()
+            );
+
+            AudioInputStream resampledStream = AudioSystem.getAudioInputStream(targetFormat, sourceStream);
+            AudioSystem.write(resampledStream, AudioFileFormat.Type.WAVE, outputFile);
+
+            sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(new File("data\\out\\conv.wav"))));
         }
 		/*
 		get all patterns from database which have id correctors folders
@@ -144,7 +170,7 @@ public class DiseaseDao {
 	 */
 	public Map<Pattern, AnalysisSummary> getHealings(Map<Pattern, AnalysisSummary> diseases, File file, int level) throws IOException, UnsupportedAudioFileException {
 
-		final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(file)));
+		final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(outputFile)));
 
 		final Map<String, Integer> probableKinds = getProbableKinds(diseases);
 
@@ -223,5 +249,64 @@ public class DiseaseDao {
 			}
 		}, diseases);
 	}
+
+    private void extractFile(final String filename, final File file) throws IOException {
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+//            in = getClass().getResourceAsStream(filename);
+            in = new FileInputStream(filename);
+            out = new FileOutputStream(file);
+            final byte[] buf = new byte[1024*64];
+            int justRead;
+            while ((justRead = in.read(buf)) != -1) {
+                out.write(buf, 0, justRead);
+                System.out.println("justRead " + justRead);
+            }
+            System.out.println(buf.length);
+
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    public static byte[] encodePcmToMp3(byte[] pcm) {
+        AudioFormat inputFormat = new AudioFormat(AudioFormat.Encoding.PCM_UNSIGNED,
+                22050,
+                8,
+                1,
+                1,
+                22050,
+                false);
+        LameEncoder encoder = new LameEncoder(inputFormat, 128, MPEGMode.MONO, Lame.QUALITY_HIGHEST, false);
+
+        ByteArrayOutputStream mp3 = new ByteArrayOutputStream();
+        byte[] buffer = new byte[encoder.getPCMBufferSize()];
+
+        int bytesToTransfer = Math.min(buffer.length, pcm.length);
+        int bytesWritten;
+        int currentPcmPosition = 0;
+        while (0 < (bytesWritten = encoder.encodeBuffer(pcm, currentPcmPosition, bytesToTransfer, buffer))) {
+            currentPcmPosition += bytesToTransfer;
+            bytesToTransfer = Math.min(buffer.length, pcm.length - currentPcmPosition);
+
+            mp3.write(buffer, 0, bytesWritten);
+        }
+
+        encoder.close();
+        return mp3.toByteArray();
+    }
 
 }

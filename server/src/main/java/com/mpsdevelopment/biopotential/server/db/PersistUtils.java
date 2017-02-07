@@ -13,7 +13,7 @@ import java.util.Properties;
 import com.mpsdevelopment.biopotential.server.gui.ConverterApplication;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;

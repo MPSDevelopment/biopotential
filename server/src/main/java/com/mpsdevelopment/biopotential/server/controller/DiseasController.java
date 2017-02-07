@@ -68,7 +68,7 @@ public class DiseasController {
         Map<Pattern, AnalysisSummary> temp = new HashMap<>();
         getDiseas(file, name,level,fetch,gender);
 
-        diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
+        /*diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
             @Override
             public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
                 if (gender.equals("Woman")) {
@@ -85,7 +85,7 @@ public class DiseasController {
             }
         });
         diseases.clear();
-        diseases.putAll(temp);
+        diseases.putAll(temp);*/
 
         try {
             allHealings.putAll(diseaseDao.getHealings(diseases, multipartToFile(name, file),level));
