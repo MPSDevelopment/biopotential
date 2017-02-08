@@ -159,6 +159,7 @@ public class HiddenPanelController extends AbstractController implements Subscri
         allHealings = new HashMap<>();
 
         healthConditionHiddenTable.setItems(analysisHiddenData);
+        healthConditionHiddenTable.getStylesheets().add("table.css");
 
         numberColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
             @Override

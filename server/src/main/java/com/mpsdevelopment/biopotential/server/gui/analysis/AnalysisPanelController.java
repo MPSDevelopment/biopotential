@@ -626,6 +626,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         histogramBarChart.getStylesheets().add("barchart.css");
 
         histogramBarChart.setStyle("-fx-border-color: #75c4ff;");
+//        primaryStage.getScene().getStylesheets().add("table.css");
 //        histogramBarChart.getYAxis().setStyle("-fx-fill: #171eb2;");
 
         /*ObservableList<Map.Entry<String,Integer>> result1 = FXCollections.observableArrayList(systemMap1.entrySet());
@@ -633,10 +634,14 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         systemTable.setItems(datas);
         systemColumn.setSortable(true);
         systemTable.getSortOrder().add(systemColumn); // sort cell'a by name
+//        systemTable.getStylesheets().add("table.css");
+//        healthConditionStressTable.getStylesheets().add("table.css");
+//        codeTable.getStylesheets().add("table.css");
 
         healthConditionTable.setItems(analysisData);
         automaticsLevelColumn.setSortable(true);
         healthConditionTable.getSortOrder().add(automaticsLevelColumn); // sort cell'a by name
+//        healthConditionTable.getStylesheets().add("table.css");
 
     }
 
@@ -788,6 +793,8 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     public void updatePanel(Stage primaryStage) {
         this.primaryStage = primaryStage;
+        primaryStage.getScene().getStylesheets().add("table.css");
+
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
