@@ -34,9 +34,9 @@
       <Button fx:id="continueButton" layoutX="443.0" layoutY="690.0" mnemonicParsing="false" text="Продолжить" />
       <Button fx:id="closeButton" layoutX="630.0" layoutY="690.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Закрыть" />
       <Button fx:id="printButton" layoutX="536.0" layoutY="690.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Печать" />
-      <Pane fx:id="pane" layoutX="598.0" layoutY="24.0" prefHeight="650.0" prefWidth="567.0">
+      <Pane fx:id="pane" layoutX="598.0" layoutY="24.0" prefHeight="650.0" prefWidth="614.0">
          <children>
-            <BarChart fx:id="histogramBarChart" prefHeight="284.0" prefWidth="500.0">
+            <BarChart fx:id="histogramBarChart" layoutX="15.0" prefHeight="284.0" prefWidth="500.0">
               <xAxis>
                 <CategoryAxis side="BOTTOM" />
               </xAxis>
@@ -44,12 +44,18 @@
                 <NumberAxis side="LEFT" />
               </yAxis>
             </BarChart>
-            <TableView fx:id="systemTable" layoutX="14.0" layoutY="299.0" prefHeight="341.0" prefWidth="349.0">
+            <TableView fx:id="systemTable" layoutX="14.0" layoutY="299.0" prefHeight="356.0" prefWidth="349.0">
               <columns>
                 <TableColumn fx:id="numberSystemColumn" prefWidth="33.0" text="№" />
                 <TableColumn fx:id="systemColumn" prefWidth="166.0" text="Система" />
                   <TableColumn fx:id="maxLevelColumn" prefWidth="74.0" text="Max" />
                   <TableColumn fx:id="poLevelColumn" prefWidth="74.0" text="Po" />
+              </columns>
+            </TableView>
+            <TableView fx:id="codeTable" layoutX="376.0" layoutY="299.0" prefHeight="356.0" prefWidth="227.0">
+              <columns>
+                <TableColumn fx:id="codename" prefWidth="49.0" text="Код" />
+                <TableColumn fx:id="desc" prefWidth="177.0" text="Описание " />
               </columns>
             </TableView>
          </children>

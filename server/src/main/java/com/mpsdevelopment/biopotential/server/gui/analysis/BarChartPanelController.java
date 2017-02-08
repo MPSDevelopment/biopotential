@@ -35,6 +35,9 @@ public class BarChartPanelController extends AbstractController implements Subsc
 
     private static final Logger LOGGER = LoggerUtil.getLogger(BarChartPanelController.class);
 
+    private static final int AVAILABLE_COLORS = 10;
+    private static final int CASPIAN_COLOR_COUNTS = 8;
+
     private Map<String, Double> mapMax;
     private Map<String, Double> mapPo;
 
@@ -114,38 +117,37 @@ public class BarChartPanelController extends AbstractController implements Subsc
         ObservableList<SystemDataTable> datas = FXCollections.observableArrayList();
         datas.addAll(SystemDataTable.createDataTableObject(mapMax, mapPo));
 
-        String[] systems = {"ALLERGY система", "CARDIO система", "DERMA система", "Endocrinology система", "GASTRO система", "IMMUN система", "MENTIS система", "NEURAL система", "ORTHO система",
-                "SPIRITUS система", "Stomat система", "UROLOG система", "VISION система"};
+        String[] systems = {"AL", "CA", "DE", "En", "GA", "IM", "ME", "NE", "OR", "SP", "St", "UR", "VI"};
         ObservableList<XYChart.Series<Number, Number>> barChartData = FXCollections.observableArrayList(
                 new BarChart.Series("Max", FXCollections.observableArrayList(
-                        new BarChart.Data(systems[0], mapMax.get("ALLERGY система")),
-                        new BarChart.Data(systems[1], mapMax.get("CARDIO система")),
-                        new BarChart.Data(systems[2], mapMax.get("DERMA система")),
-                        new BarChart.Data(systems[3], mapMax.get("Endocrinology система")),
-                        new BarChart.Data(systems[4], mapMax.get("GASTRO система")),
-                        new BarChart.Data(systems[5], mapMax.get("IMMUN система")),
-                        new BarChart.Data(systems[6], mapMax.get("MENTIS система")),
-                        new BarChart.Data(systems[7], mapMax.get("NEURAL система")),
-                        new BarChart.Data(systems[8], mapMax.get("ORTHO система")),
-                        new BarChart.Data(systems[9], mapMax.get("SPIRITUS система")),
-                        new BarChart.Data(systems[10], mapMax.get("Stomat система")),
-                        new BarChart.Data(systems[11], mapMax.get("UROLOG система")),
-                        new BarChart.Data(systems[12], mapMax.get("VISION система"))
+                        new BarChart.Data(systems[0], mapMax.get("AL")),
+                        new BarChart.Data(systems[1], mapMax.get("CA")),
+                        new BarChart.Data(systems[2], mapMax.get("DE")),
+                        new BarChart.Data(systems[3], mapMax.get("En")),
+                        new BarChart.Data(systems[4], mapMax.get("GA")),
+                        new BarChart.Data(systems[5], mapMax.get("IM")),
+                        new BarChart.Data(systems[6], mapMax.get("ME")),
+                        new BarChart.Data(systems[7], mapMax.get("NE")),
+                        new BarChart.Data(systems[8], mapMax.get("OR")),
+                        new BarChart.Data(systems[9], mapMax.get("SP")),
+                        new BarChart.Data(systems[10], mapMax.get("St")),
+                        new BarChart.Data(systems[11], mapMax.get("UR")),
+                        new BarChart.Data(systems[12], mapMax.get("VI"))
                 )),
                 new BarChart.Series("Po", FXCollections.observableArrayList(
-                        new BarChart.Data(systems[0], mapPo.get("ALLERGY система")),
-                        new BarChart.Data(systems[1], mapPo.get("CARDIO система")),
-                        new BarChart.Data(systems[2], mapPo.get("DERMA система")),
-                        new BarChart.Data(systems[3], mapPo.get("Endocrinology система")),
-                        new BarChart.Data(systems[4], mapPo.get("GASTRO система")),
-                        new BarChart.Data(systems[5], mapPo.get("IMMUN система")),
-                        new BarChart.Data(systems[6], mapPo.get("MENTIS система")),
-                        new BarChart.Data(systems[7], mapPo.get("NEURAL система")),
-                        new BarChart.Data(systems[8], mapPo.get("ORTHO система")),
-                        new BarChart.Data(systems[9], mapPo.get("SPIRITUS система")),
-                        new BarChart.Data(systems[10], mapPo.get("Stomat система")),
-                        new BarChart.Data(systems[11], mapPo.get("UROLOG система")),
-                        new BarChart.Data(systems[12], mapPo.get("VISION система"))
+                        new BarChart.Data(systems[0], mapPo.get("AL")),
+                        new BarChart.Data(systems[1], mapPo.get("CA")),
+                        new BarChart.Data(systems[2], mapPo.get("DE")),
+                        new BarChart.Data(systems[3], mapPo.get("En")),
+                        new BarChart.Data(systems[4], mapPo.get("GA")),
+                        new BarChart.Data(systems[5], mapPo.get("IM")),
+                        new BarChart.Data(systems[6], mapPo.get("ME")),
+                        new BarChart.Data(systems[7], mapPo.get("NE")),
+                        new BarChart.Data(systems[8], mapPo.get("OR")),
+                        new BarChart.Data(systems[9], mapPo.get("SP")),
+                        new BarChart.Data(systems[10], mapPo.get("St")),
+                        new BarChart.Data(systems[11], mapPo.get("UR")),
+                        new BarChart.Data(systems[12], mapPo.get("VI"))
 
                 )));
 
@@ -179,7 +181,15 @@ public class BarChartPanelController extends AbstractController implements Subsc
         histogramBarChart.getYAxis().setLabel("%");
         histogramBarChart.getYAxis().setStyle("-fx-fill: #171eb2;");
         histogramBarChart.getData().addAll(barChartData);
+        histogramBarChart.setBarGap(0.0);
 
+        for (int i = 0; i < barChartData.size(); i++) {
+            for (Node node : histogramBarChart.lookupAll(".series" + i)) {
+                node.getStyleClass().remove("default-color" + (i % CASPIAN_COLOR_COUNTS));
+                node.getStyleClass().add("default-color" + (i % AVAILABLE_COLORS));
+            }
+        }
+        histogramBarChart.getStylesheets().add("barchart.css");
 
 
     }
@@ -187,7 +197,7 @@ public class BarChartPanelController extends AbstractController implements Subsc
     /** places a text label with a bar's value above a bar node for a given XYChart.Data */
     private void displayLabelForData(XYChart.Data<Number, Number> data) {
         final Node node = data.getNode();
-        double val = new BigDecimal((Double) data.getYValue()).setScale(2, RoundingMode.UP).doubleValue();
+         double val = new BigDecimal((Double) data.getYValue()).setScale(2, RoundingMode.UP).doubleValue();
         final Text dataText = new Text(val + "");
         node.parentProperty().addListener(new ChangeListener<Parent>() {
             @Override
