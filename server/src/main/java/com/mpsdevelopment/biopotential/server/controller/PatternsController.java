@@ -40,6 +40,7 @@ public class PatternsController {
     private HttpHeaders requestHeaders;
 
     public PatternsController() {
+
     }
 
 	/*@Adviceable
@@ -83,9 +84,7 @@ public class PatternsController {
             try {
                 size = patternsDao.getPatternsFromFoldersToSystem(fol);
 //                list = patternsDao.getPatternsFromFoldersCorIsNull(fol);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+            } catch (SQLException | IOException e) {
                 e.printStackTrace();
             }
             if (fol.getFolderName().contains("Al ALLERGY")) {

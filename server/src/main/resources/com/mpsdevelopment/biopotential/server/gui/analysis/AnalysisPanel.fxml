@@ -11,14 +11,14 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="722.0" prefWidth="1273.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mpsdevelopment.biopotential.server.gui.analysis.AnalysisPanelController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="722.0" prefWidth="1149.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mpsdevelopment.biopotential.server.gui.analysis.AnalysisPanelController">
    <children>
       <ScatterChart fx:id="scatterChart" alternativeColumnFillVisible="true" animated="false" disable="true" layoutX="885.0" layoutY="32.0" legendVisible="false" pickOnBounds="false" prefHeight="641.0" prefWidth="500.0" stylesheets="@../../../../../../scater.css" visible="false">
         <xAxis>
-          <NumberAxis animated="false" autoRanging="false" lowerBound="0" prefHeight="0.0" prefWidth="470.0" side="BOTTOM" upperBound="110" />
+          <NumberAxis animated="false" autoRanging="false" prefHeight="0.0" prefWidth="470.0" side="BOTTOM" upperBound="110" />
         </xAxis>
         <yAxis>
-          <NumberAxis autoRanging="false" lowerBound="0" prefHeight="645.0" prefWidth="6.0" side="LEFT" upperBound="110" />
+          <NumberAxis autoRanging="false" prefHeight="645.0" prefWidth="6.0" side="LEFT" upperBound="110" />
         </yAxis>
       </ScatterChart>
       <TableView fx:id="healthConditionTable" layoutX="29.0" layoutY="249.0" prefHeight="430.0" prefWidth="557.0">
@@ -28,13 +28,13 @@
             <TableColumn prefWidth="93.0" text="Группа" />
             <TableColumn prefWidth="96.0" text="Система" />
             <TableColumn fx:id="diseaseLevel" prefWidth="74.0" text="Дисперсия" />
-            <TableColumn fx:id="automaticsLevelColumn" prefWidth="72.0" text="Уровень" />
+            <TableColumn fx:id="automaticsLevel" prefWidth="72.0" text="Уровень" />
         </columns>
       </TableView>
       <Button fx:id="continueButton" layoutX="443.0" layoutY="690.0" mnemonicParsing="false" text="Продолжить" />
       <Button fx:id="closeButton" layoutX="630.0" layoutY="690.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Закрыть" />
       <Button fx:id="printButton" layoutX="536.0" layoutY="690.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Печать" />
-      <Pane fx:id="pane" layoutX="598.0" layoutY="24.0" prefHeight="650.0" prefWidth="614.0">
+      <Pane fx:id="pane" layoutX="598.0" layoutY="24.0" prefHeight="655.0" prefWidth="548.0">
          <children>
             <BarChart fx:id="histogramBarChart" layoutX="15.0" prefHeight="284.0" prefWidth="500.0">
               <xAxis>
@@ -44,30 +44,25 @@
                 <NumberAxis side="LEFT" />
               </yAxis>
             </BarChart>
-            <TableView fx:id="systemTable" layoutX="14.0" layoutY="299.0" prefHeight="356.0" prefWidth="349.0">
+            <TableView fx:id="systemTable" layoutX="14.0" layoutY="299.0" prefHeight="356.0" prefWidth="425.0">
               <columns>
                 <TableColumn fx:id="numberSystemColumn" prefWidth="33.0" text="№" />
-                <TableColumn fx:id="systemColumn" prefWidth="166.0" text="Система" />
-                  <TableColumn fx:id="maxLevelColumn" prefWidth="74.0" text="Max" />
-                  <TableColumn fx:id="poLevelColumn" prefWidth="74.0" text="Po" />
-              </columns>
-            </TableView>
-            <TableView fx:id="codeTable" layoutX="376.0" layoutY="299.0" prefHeight="356.0" prefWidth="227.0">
-              <columns>
-                <TableColumn fx:id="codename" prefWidth="49.0" text="Код" />
-                <TableColumn fx:id="desc" prefWidth="177.0" text="Описание " />
+                <TableColumn fx:id="systemColumn" prefWidth="74.0" text="Система" />
+                  <TableColumn fx:id="maxLevelColumn" prefWidth="64.0" text="Max" />
+                  <TableColumn fx:id="poLevelColumn" prefWidth="69.0" text="Po" />
+                  <TableColumn fx:id="descColumn" prefWidth="184.0" text="Описание" />
               </columns>
             </TableView>
          </children>
       </Pane>
       <TableView fx:id="healthConditionStressTable" layoutX="29.0" layoutY="17.0" prefHeight="181.0" prefWidth="557.0">
          <columns>
-            <TableColumn fx:id="numberColumn1" prefWidth="30.0" text="№" />
-            <TableColumn fx:id="diseaseName1" prefWidth="191.0" text="Название" />
+            <TableColumn fx:id="numberColumnStress" prefWidth="30.0" text="№" />
+            <TableColumn fx:id="diseaseNameStress" prefWidth="191.0" text="Название" />
             <TableColumn prefWidth="93.0" text="Группа" />
             <TableColumn prefWidth="96.0" text="Система" />
-            <TableColumn fx:id="diseaseLevel1" prefWidth="74.0" text="Дисперсия" />
-            <TableColumn fx:id="automaticsLevelColumn1" prefWidth="72.0" text="Уровень" />
+            <TableColumn fx:id="diseaseLevelStress" prefWidth="74.0" text="Дисперсия" />
+            <TableColumn fx:id="automaticsLevelStress" prefWidth="72.0" text="Уровень" />
          </columns>
       </TableView>
       <Button fx:id="hiddenButton" layoutX="265.0" layoutY="204.0" mnemonicParsing="false" text="Скрытая" />

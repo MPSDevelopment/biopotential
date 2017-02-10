@@ -1,12 +1,14 @@
 package com.mpsdevelopment.biopotential.server.gui.analysis;
 
 import com.mpsdevelopment.biopotential.server.AbstractController;
+import com.mpsdevelopment.biopotential.server.db.pojo.DataTable;
 import com.mpsdevelopment.biopotential.server.db.pojo.SystemDataTable;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.utils.PanelUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -21,10 +23,13 @@ import javafx.scene.Parent;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Callback;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -45,10 +50,52 @@ public class BarChartPanelController extends AbstractController implements Subsc
     private BarChart<Number, Number> histogramBarChart;
 
     @FXML
+    private TableColumn column1;
+
+    @FXML
     private Button printButton;
 
     @FXML
     private Button closeButton;
+
+    @FXML
+    private TextField text1;
+
+    @FXML
+    private TextField text2;
+
+    @FXML
+    private TextField text3;
+
+    @FXML
+    private TextField text4;
+
+    @FXML
+    private TextField text5;
+
+    @FXML
+    private TextField text6;
+
+    @FXML
+    private TextField text7;
+
+    @FXML
+    private TextField text8;
+
+    @FXML
+    private TextField text9;
+
+    @FXML
+    private TextField text10;
+
+    @FXML
+    private TextField text11;
+
+    @FXML
+    private TextField text12;
+
+    @FXML
+    private TextField text13;
 
     @FXML
     private Pane pane;
@@ -59,7 +106,7 @@ public class BarChartPanelController extends AbstractController implements Subsc
         return mapMax;
     }
 
-    public void setMapMax(Map<String, Double> mapMax) {
+    protected void setMapMax(Map<String, Double> mapMax) {
         this.mapMax = mapMax;
     }
 
@@ -67,7 +114,7 @@ public class BarChartPanelController extends AbstractController implements Subsc
         return mapPo;
     }
 
-    public void setMapPo(Map<String, Double> mapPo) {
+    protected void setMapPo(Map<String, Double> mapPo) {
         this.mapPo = mapPo;
     }
 
@@ -78,6 +125,7 @@ public class BarChartPanelController extends AbstractController implements Subsc
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        histogramBarChart.setTitle("График состояния");
         printButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -114,10 +162,28 @@ public class BarChartPanelController extends AbstractController implements Subsc
     }*/
 
     private void display() {
+
         ObservableList<SystemDataTable> datas = FXCollections.observableArrayList();
         datas.addAll(SystemDataTable.createDataTableObject(mapMax, mapPo));
 
         String[] systems = {"AL", "CA", "DE", "En", "GA", "IM", "ME", "NE", "OR", "SP", "St", "UR", "VI"};
+        String[] allsystems = {" - ALLERGY система", " - CARDIO система", " - DERMA система", " - Endocrinology система", " - GASTRO система", " - IMMUN система", " - MENTIS система",
+                " - NEURAL система", " - ORTHO система", " - SPIRITUS система", " - Stomat система", " - UROLOG система", " - VISION система"};
+
+        text1.setText(systems[0] + allsystems[0]);
+        text2.setText(systems[1] + allsystems[1]);
+        text3.setText(systems[2] + allsystems[2]);
+        text4.setText(systems[3] + allsystems[3]);
+        text5.setText(systems[4] + allsystems[4]);
+        text6.setText(systems[5] + allsystems[5]);
+        text7.setText(systems[6] + allsystems[6]);
+        text8.setText(systems[7] + allsystems[7]);
+        text9.setText(systems[8] + allsystems[8]);
+        text10.setText(systems[9] + allsystems[9]);
+        text11.setText(systems[10] + allsystems[10]);
+        text12.setText(systems[11] + allsystems[11]);
+        text13.setText(systems[12] + allsystems[12]);
+
         ObservableList<XYChart.Series<Number, Number>> barChartData = FXCollections.observableArrayList(
                 new BarChart.Series("Max", FXCollections.observableArrayList(
                         new BarChart.Data(systems[0], mapMax.get("AL")),
@@ -220,7 +286,7 @@ public class BarChartPanelController extends AbstractController implements Subsc
         });
     }
 
-    public void displayBar() {
+    protected void displayBar() {
         display();
     }
 

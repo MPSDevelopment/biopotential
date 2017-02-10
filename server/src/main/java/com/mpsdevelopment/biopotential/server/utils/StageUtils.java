@@ -21,7 +21,7 @@ import java.util.Arrays;
 
 public class StageUtils {
 
-	private static Rectangle2D screenBounds = ScreenHelper.getVisualScreenBounds(0);;
+	private static Rectangle2D screenBounds = ScreenHelper.getVisualScreenBounds(0);
 
 	@SuppressWarnings("rawtypes")
 	public static Stage createStage(Stage owner, Pane panel, double widthPanel, double heightPanel, String panelTitle, String panelName, double x, double y, Double width, Double height, Class clazz, String cssFileName, boolean decorated, boolean modal, boolean show) {
@@ -30,11 +30,11 @@ public class StageUtils {
 
 	
 	public static double getCenterX(){
-		return screenBounds.getWidth()/3.0;
+		return screenBounds.getWidth()/4.0;
 	}
 	
 	public static double getCenterY(){
-		return screenBounds.getHeight()/3.0;
+		return screenBounds.getHeight()/4.0;
 	}
 	
 	public static double getHeight(){

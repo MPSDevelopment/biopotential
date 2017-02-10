@@ -130,10 +130,10 @@ public class StartPanelController extends AbstractController implements Subscrib
             @Override
             public void handle(ActionEvent event) {
 //                restartSessionManager(serverSettings.getDbPath());
-                DiagPanel diagPanel = new DiagPanel();
+                /*DiagPanel diagPanel = new DiagPanel();
                 LOGGER.info(" Start Diag panel");
                 Stage mainPanelStage = StageUtils.createStage(null, diagPanel, new StageSettings().setClazz(DiagPanel.class).setHeight(740d).setWidth(1034d).setHeightPanel(727d).setWidthPanel(1034d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
-                diagPanel.setPrimaryStage(mainPanelStage);
+                diagPanel.setPrimaryStage(mainPanelStage);*/
                 close();
 
 

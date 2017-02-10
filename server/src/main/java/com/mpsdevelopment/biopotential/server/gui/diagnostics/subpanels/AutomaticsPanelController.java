@@ -25,7 +25,7 @@ import java.util.ResourceBundle;
 public class AutomaticsPanelController extends AbstractController implements Subscribable {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(AutomaticsPanelController.class);
-    ObservableList<String> items = FXCollections.observableArrayList("Max", "Po");
+    private ObservableList<String> items = FXCollections.observableArrayList("Max", "Po");
     ObservableList<String> item = FXCollections.observableArrayList("2");
 
     private File file;
@@ -64,13 +64,12 @@ public class AutomaticsPanelController extends AbstractController implements Sub
         makeAnalyzerButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                String degree1 = null;
-                String degree2 = null;
-                degree1 = (String) whatShowComboBox.getValue();
-                degree2 = (String) whatShowComboBox1.getValue();
+
+                String degree1 = (String) whatShowComboBox.getValue();
+                String degree2 = (String) whatShowComboBox1.getValue();
 
                 AnalysisPanel panel = new AnalysisPanel(file,degree1,degree2,gender);
-                Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Результат анализа").setClazz(panel.getClass()).setHeight(752d).setWidth(1273d).setHeightPanel(722d).setWidthPanel(1273d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+                Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Результат анализа").setClazz(panel.getClass()).setHeight(752d).setWidth(1150d).setHeightPanel(722d).setWidthPanel(1150d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
                 panel.setPrimaryStage(stage);
                 close();
             }

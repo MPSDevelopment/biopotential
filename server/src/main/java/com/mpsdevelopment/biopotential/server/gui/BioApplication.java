@@ -67,17 +67,17 @@ public class BioApplication extends Application {
     }
 
     private void addMainPanel() {
-        StartPanel startPanel =  new StartPanel();
+        /*StartPanel startPanel =  new StartPanel();
         LOGGER.info("Start panel");
         Stage mainPanelStage = StageUtils.createStage(null, startPanel, new StageSettings().setClazz(DiagPanel.class).setHeight(265d).setWidth(400d).setHeightPanel(265d).setWidthPanel(400d)
                 .setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
-        startPanel.setPrimaryStage(mainPanelStage);
+        startPanel.setPrimaryStage(mainPanelStage);*/
 
 
-        /*DiagPanel diagPanel = new DiagPanel();
+        DiagPanel diagPanel = new DiagPanel();
         LOGGER.info(" Start Diag panel");
-        Stage mainPanelStage = StageUtils.createStage(null, diagPanel, new StageSettings().setClazz(DiagPanel.class).setHeight(740d).setWidth(1034d).setHeightPanel(727d).setWidthPanel(1034d));
-        diagPanel.setPrimaryStage(mainPanelStage);*/
+        Stage mainPanelStage = StageUtils.createStage(null, diagPanel, new StageSettings().setClazz(DiagPanel.class).setHeight(740d).setWidth(1034d).setHeightPanel(727d).setWidthPanel(1034d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+        diagPanel.setPrimaryStage(mainPanelStage);
 
         mainPanelStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent e) {

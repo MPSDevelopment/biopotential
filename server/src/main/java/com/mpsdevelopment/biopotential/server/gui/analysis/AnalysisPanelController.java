@@ -7,13 +7,13 @@ import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
 import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
 import com.mpsdevelopment.biopotential.server.db.pojo.CodeTable;
+import com.mpsdevelopment.biopotential.server.db.pojo.DataTable;
 import com.mpsdevelopment.biopotential.server.db.pojo.SystemDataTable;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
-import com.mpsdevelopment.biopotential.server.db.pojo.DataTable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.HealingsMapEvent;
-import com.mpsdevelopment.biopotential.server.gui.converter.ConverterPanel;
+import com.mpsdevelopment.biopotential.server.gui.ModalWindow;
 import com.mpsdevelopment.biopotential.server.gui.correctors.CorrectorsPanel;
 import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
 import com.mpsdevelopment.biopotential.server.httpclient.HttpClientFactory;
@@ -31,18 +31,26 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.chart.*;
+import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.ScatterChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import net.engio.mbassy.listener.Handler;
 
-import javax.sound.sampled.*;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -60,9 +68,9 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     private static final Logger LOGGER = LoggerUtil.getLogger(AnalysisPanelController.class);
     public static final int patternWeight = 10;
-    public static final String STRESS = "stress";
-    public static final String COR_NOT_NULL = "corNotNull";
-    public static final String HIDDEN = "hidden";
+    private static final String STRESS = "stress";
+    private static final String COR_NOT_NULL = "corNotNull";
+    private static final String HIDDEN = "hidden";
     private ObservableList<DataTable> analysisData;
     private ObservableList<DataTable> analysisHiddenData;
     ObservableList<DataTable> data = FXCollections.observableArrayList();
@@ -78,17 +86,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     private TableView<DataTable> healthConditionStressTable;
 
     @FXML
-//    private TableView<Map.Entry<String,Integer>> systemTable;
     private TableView<SystemDataTable> systemTable;
-
-    @FXML
-    private TableView<CodeTable> codeTable;
-
-    @FXML
-    private TableColumn<CodeTable, String> codename;
-
-    @FXML
-    private TableColumn<CodeTable, String> desc;
 
     @FXML
     private TableColumn<DataTable, String> diseaseName;
@@ -100,19 +98,18 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     private TableColumn<DataTable, String> numberColumn;
 
     @FXML
-    private TableColumn<DataTable, String> diseaseName1;
+    private TableColumn<DataTable, String> diseaseNameStress;
 
     @FXML
-    private TableColumn<DataTable, String> diseaseLevel1;
+    private TableColumn<DataTable, String> diseaseLevelStress;
 
     @FXML
-    private TableColumn<DataTable, String> numberColumn1;
+    private TableColumn<DataTable, String> numberColumnStress;
 
     @FXML
     private TableColumn numberSystemColumn;
 
     @FXML
-//    private TableColumn<Map.Entry<String, Integer>, String> systemColumn;
     private TableColumn<SystemDataTable, String> systemColumn;
 
     @FXML
@@ -122,10 +119,13 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     private TableColumn<SystemDataTable, String> poLevelColumn;
 
     @FXML
-    private TableColumn automaticsLevelColumn;
+    private TableColumn<SystemDataTable, String> descColumn;
 
     @FXML
-    private TableColumn automaticsLevelColumn1;
+    private TableColumn automaticsLevel;
+
+    @FXML
+    private TableColumn automaticsLevelStress;
 
     @FXML
     private Button continueButton;
@@ -156,13 +156,13 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     private String degree2;
     private SystemDataTable systemDataTable;
 
-    public static final String HOST = "localhost";
-    public static final int PORT = 8098;
+    private static final String HOST = "localhost";
+    private static final int PORT = 8098;
     private double alWeight = 0, viWeight = 0, caWeight = 0, deWeight = 0, enWeight = 0, gaWeight = 0, imWeight = 0, neWeight = 0, orWeight = 0, spWeight = 0, stWeight = 0, urWeight = 0;
     private ObservableList<DataTable> analysisStressData;
 
 
-    public void setDegree2(String degree2) {
+    protected void setDegree2(String degree2) {
         this.degree2 = degree2;
     }
 
@@ -201,7 +201,6 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 //                saveToImage();
             }
         });
-
         numberColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> p) {
@@ -221,7 +220,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             }
         });
 
-        codename.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<CodeTable, String>, ObservableValue<String>>() {
+        /*codename.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<CodeTable, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<CodeTable, String> dataTable) {
                 SimpleStringProperty property = new SimpleStringProperty();
@@ -229,11 +228,11 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
                 return property;
             }
-        });
+        });*/
 
-        desc.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<CodeTable, String>, ObservableValue<String>>() {
+        descColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<SystemDataTable, String>, ObservableValue<String>>() {
             @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<CodeTable, String> dataTable) {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<SystemDataTable, String> dataTable) {
                 SimpleStringProperty property = new SimpleStringProperty();
                 property.setValue(String.format("%s", dataTable.getValue().getDescription()));
 
@@ -250,14 +249,14 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             }
         });
 
-        automaticsLevelColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
+        automaticsLevel.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> p) {
                 return new ReadOnlyObjectWrapper(p.getValue().getDegree());
             }
         });
 
-        numberColumn1.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
+        numberColumnStress.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> p) {
                 return new ReadOnlyObjectWrapper(healthConditionStressTable.getItems().indexOf(p.getValue()) + 1 + "");
@@ -266,7 +265,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         numberColumn.setSortable(false);
         numberColumn.setStyle("-fx-alignment: CENTER;");
 
-        diseaseName1.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
+        diseaseNameStress.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> dataTable) {
                 SimpleStringProperty property = new SimpleStringProperty();
@@ -275,7 +274,8 @@ public class AnalysisPanelController extends AbstractController implements Subsc
                 return property;
             }
         });
-        diseaseLevel1.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
+
+        diseaseLevelStress.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> dataTable) {
                 SimpleStringProperty property = new SimpleStringProperty();
@@ -284,7 +284,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             }
         });
 
-        automaticsLevelColumn1.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
+        automaticsLevelStress.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> p) {
                 return new ReadOnlyObjectWrapper(p.getValue().getDegree());
@@ -352,10 +352,29 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         scatterChart.getStylesheets().add("scater.css");
         scatterChart.getData().addAll(series1);
 
-        automaticsLevelColumn.setSortable(true);
-        automaticsLevelColumn1.setSortable(true);
-        healthConditionTable.getSortOrder().add(automaticsLevelColumn); // sort cell'a by name
-        healthConditionStressTable.getSortOrder().add(automaticsLevelColumn1); // sort cell'a by name
+        /*automaticsLevel.setSortable(true);
+        automaticsLevelStress.setSortable(true);
+        healthConditionTable.getSortOrder().add(automaticsLevel); // sort cell'a by name*/
+
+
+        /*healthConditionStressTable.getSortOrder().clear();
+        healthConditionStressTable.getSortOrder().add(diseaseNameStress);
+        diseaseNameStress.setSortType(TableColumn.SortType.ASCENDING);
+        healthConditionStressTable.getSortOrder().add(diseaseNameStress); // sort cell'a by name
+        healthConditionStressTable.sort();*/
+
+        /*SortedList<DataTable> sortedList = new SortedList<>(analysisStressData,
+                (DataTable stock1, DataTable stock2) -> {
+                   return stock1.getName().compareTo(stock2.getName());
+                });
+
+        healthConditionStressTable.setItems(sortedList);*/
+
+//        diseaseNameStress.setSortable(true);
+//        healthConditionStressTable.getSortOrder().add(diseaseNameStress);
+        /*diseaseNameStress.setSortType(TableColumn.SortType.ASCENDING);
+        diseaseNameStress.setComparator(new myComp());
+        healthConditionStressTable.getSortOrder().setAll(diseaseNameStress);*/
 
     }
 
@@ -380,8 +399,6 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     private void makeAnalyze(File file) throws UnsupportedAudioFileException, IOException, SQLException {
 
-        automaticsLevelColumn.setSortable(true);
-        healthConditionTable.getSortOrder().add(automaticsLevelColumn); // sort cell'a by name
 
         long t2 = System.currentTimeMillis();
         BioHttpClient bioHttpClient = HttpClientFactory.getInstance();
@@ -461,12 +478,11 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         //
 
         Type type = new TypeToken<Map<String, Integer>>() { }.getType();
-        Map<String,Integer> sizeMap = new HashMap<>();
 
         String url = String.format("http://%s:%s%s", HOST, PORT, ControllerAPI.PATTERNS_CONTROLLER + ControllerAPI.PATTERNS_CONTROLLER_GET_PATTERNS_SIZE);
         String size = bioHttpClient.executeGetRequest(url);
 
-        sizeMap = JsonUtils.fromJson(type,size);
+        Map<String,Integer> sizeMap = JsonUtils.fromJson(type,size);
 
         sizeMap.forEach(new BiConsumer<String, Integer>() {
             @Override
@@ -527,11 +543,11 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         codeMap.put("UR","UROLOG система");
         codeMap.put("VI","VISION система");
 
-        ObservableList<CodeTable> datacode = FXCollections.observableArrayList();
+        /*ObservableList<CodeTable> datacode = FXCollections.observableArrayList();
         datacode.addAll(CodeTable.createDataTableObject(codeMap));
         codeTable.setItems(datacode);
         codename.setSortable(true);
-        codeTable.getSortOrder().add(codename); // sort cell'a by name
+        codeTable.getSortOrder().add(codename); // sort cell'a by name*/
 
         LOGGER.info("Total time for calculate healings %d ms", System.currentTimeMillis() - t1);
         LOGGER.info("healings size %s", allHealings.size());
@@ -575,7 +591,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         datas.addAll(SystemDataTable.createDataTableObject(systemMap1,systemMap2));
 
         BarChartPanel panel = new BarChartPanel(systemMap1,systemMap2);
-        Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Bar chart").setClazz(panel.getClass()).setHeight(752d).setWidth(1273d).setHeightPanel(722d).setWidthPanel(1273d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+        Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Bar chart").setClazz(panel.getClass()).setHeight(815d).setWidth(1308d).setHeightPanel(815d).setWidthPanel(1308d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
         panel.setPrimaryStage(stage);
 
         String[] systems = {"AL","CA","DE","En", "GA", "IM", "ME", "NE", "OR", "SP", "St", "UR", "VI"};
@@ -631,16 +647,41 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
         /*ObservableList<Map.Entry<String,Integer>> result1 = FXCollections.observableArrayList(systemMap1.entrySet());
         systemTable.setItems(result1);*/
+
         systemTable.setItems(datas);
         systemColumn.setSortable(true);
         systemTable.getSortOrder().add(systemColumn); // sort cell'a by name
-//        systemTable.getStylesheets().add("table.css");
-//        healthConditionStressTable.getStylesheets().add("table.css");
-//        codeTable.getStylesheets().add("table.css");
+        descColumn.setSortable(true);
+        systemTable.getSortOrder().add(descColumn); // sort cell'a by system's name
+
+
+
+        healthConditionTable.getSortOrder().add(automaticsLevel); // sort cell'a by name
+        automaticsLevel.setSortable(true);
+        automaticsLevel.setSortType(TableColumn.SortType.ASCENDING);
+
+        diseaseName.setSortable(true);
+        diseaseName.setSortType(TableColumn.SortType.ASCENDING);
+        healthConditionTable.getSortOrder().add(diseaseName); // sort cell'a by name
 
         healthConditionTable.setItems(analysisData);
-        automaticsLevelColumn.setSortable(true);
-        healthConditionTable.getSortOrder().add(automaticsLevelColumn); // sort cell'a by name
+
+
+
+        healthConditionStressTable.getSortOrder().add(automaticsLevelStress);
+
+        diseaseNameStress.setSortable(true);
+        diseaseNameStress.setSortType(TableColumn.SortType.ASCENDING);
+        healthConditionStressTable.getSortOrder().add(diseaseNameStress); // sort cell'a by name
+
+        automaticsLevelStress.setSortable(true);
+        automaticsLevelStress.setSortType(TableColumn.SortType.ASCENDING);
+//        healthConditionStressTable.getSortOrder().add(automaticsLevelStress); // sort cell'a by name
+
+        healthConditionStressTable.setItems(analysisStressData);
+
+
+
 //        healthConditionTable.getStylesheets().add("table.css");
 
     }
@@ -662,13 +703,11 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         systemMap.put("VI",0d);
 
         // decode diseas names to system's name's
-        int index = 0;
         for (DataTable dataTable: sortedSelectedItems) {
             for (int i = 0 ; i < dataTable.getName().length(); i++) {
                 if ((dataTable.getName().charAt(i) == '♥') || (dataTable.getName().charAt(i) == 'ლ') || (dataTable.getName().charAt(i) == '♋') || (dataTable.getName().charAt(i) == '⌘')
                         || (dataTable.getName().charAt(i) == '☂') || (dataTable.getName().charAt(i) == '☺') || (dataTable.getName().charAt(i) == '♕') || (dataTable.getName().charAt(i) == '☤')
                         || (dataTable.getName().charAt(i) == '✽') || (dataTable.getName().charAt(i) == '〲') || (dataTable.getName().charAt(i) == 'Ü') || (dataTable.getName().charAt(i) == '☄')) {
-                    index = i;
                     break;
                 }
 
@@ -713,47 +752,6 @@ public class AnalysisPanelController extends AbstractController implements Subsc
                     systemMap.put("VI",systemMap.get("VI")+viWeight);
                     break;
             }
-
-            /*switch (dataTable.getCodename().substring(0, index)) {
-
-                case "CARDIO":
-                    systemMap.put("CARDIO система",systemMap.get("CARDIO система")+patternWeight);
-                    break;
-                case "DERMA":
-                    systemMap.put("DERMA система",systemMap.get("DERMA система")+patternWeight);
-                    break;
-                case "Endocrinology":
-                    systemMap.put("Endocrinology система",systemMap.get("Endocrinology система")+patternWeight);
-                    break;
-                case "GASTRO":
-                    systemMap.put("GASTRO система",systemMap.get("GASTRO система")+ patternWeight);
-                    break;
-                case "IMMUN":
-                    systemMap.put("IMMUN система",systemMap.get("IMMUN система")+ patternWeight);
-                    break;
-                case "MENTIS":
-                    systemMap.put("MENTIS система",systemMap.get("MENTIS система")+ patternWeight);
-                    break;
-                case "NEURAL":
-                    systemMap.put("NEURAL система",systemMap.get("NEURAL система")+ patternWeight);
-                    break;
-                case "ORTHO":
-                    systemMap.put("ORTHO система",systemMap.get("ORTHO система")+ patternWeight);
-                    break;
-                case "SPIRITUS":
-                    systemMap.put("SPIRITUS система",systemMap.get("SPIRITUS система")+ patternWeight);
-                    break;
-                case "Stomat":
-                    systemMap.put("Stomat система",systemMap.get("Stomat система")+ patternWeight);
-                    break;
-                case "UROLOG":
-                    systemMap.put("UROLOG система",systemMap.get("UROLOG система")+ patternWeight);
-                    break;
-                case "VISION":
-                    systemMap.put("VISION система",systemMap.get("VISION система")+ patternWeight);
-                    break;
-            }*/
-
         }
         return systemMap;
     }
@@ -793,7 +791,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     public void updatePanel(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        primaryStage.getScene().getStylesheets().add("table.css");
+        this.primaryStage.getScene().getStylesheets().add("table.css");
 
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -825,19 +823,49 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         this.file = file;
     }
 
-    public void makeCurrentAnalyze(File file) {
-        try {
-            makeAnalyze(file);
-        } catch (UnsupportedAudioFileException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
+    protected void makeCurrentAnalyze(File file) {
+
+        if (file == null) {
+            ModalWindow.makepopup(primaryStage, "Введите фамилию пользователя");
+
+            /*final Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.initOwner(primaryStage);
+            VBox dialogVbox = new VBox(20);
+            Text text = new Text("Введите фамилию пользователя");
+            dialogVbox.getChildren().add(text);
+            text.setTextAlignment(TextAlignment.CENTER);
+            dialogVbox.setAlignment(Pos.CENTER);
+            Button button = new Button("Ok");
+            button.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    dialog.close();
+                }
+            });
+            button.setAlignment(Pos.CENTER);
+            dialogVbox.getChildren().add(button);
+            button.setAlignment(Pos.CENTER);
+            Scene dialogScene = new Scene(dialogVbox, 200, 100);
+            dialog.setScene(dialogScene);
+            dialog.show();*/
         }
+        else {
+            try {
+                makeAnalyze(file);
+            } catch (UnsupportedAudioFileException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+
     }
 
-    public void setDegree1(String degree1) {
+    protected void setDegree1(String degree1) {
         this.degree1 = degree1;
     }
 
@@ -848,4 +876,6 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     public void setGender(String gender) {
         this.gender = gender;
     }
+
 }
+

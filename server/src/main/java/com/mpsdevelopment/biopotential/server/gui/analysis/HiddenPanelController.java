@@ -62,17 +62,7 @@ public class HiddenPanelController extends AbstractController implements Subscri
     private ObservableList<String> level;
 
     @FXML
-    private ScatterChart<Number, Number> scatterChart;
-
-    @FXML
-    private TableView<DataTable> healthConditionTable;
-
-    @FXML
     private TableView<DataTable> healthConditionHiddenTable;
-
-    @FXML
-//    private TableView<Map.Entry<String,Integer>> systemTable;
-    private TableView<SystemDataTable> systemTable;
 
     @FXML
     private TableColumn<DataTable, String> diseaseName;
@@ -84,47 +74,11 @@ public class HiddenPanelController extends AbstractController implements Subscri
     private TableColumn<DataTable, String> numberColumn;
 
     @FXML
-    private TableColumn<DataTable, String> diseaseName1;
-
-    @FXML
-    private TableColumn<DataTable, String> diseaseLevel1;
-
-    @FXML
-    private TableColumn<DataTable, String> numberColumn1;
-
-    @FXML
-    private TableColumn numberSystemColumn;
-
-    @FXML
-//    private TableColumn<Map.Entry<String, Integer>, String> systemColumn;
-    private TableColumn<SystemDataTable, String> systemColumn;
-
-    @FXML
-    private TableColumn<SystemDataTable, String> maxLevelColumn;
-
-    @FXML
-    private TableColumn<SystemDataTable, String> poLevelColumn;
-
-    @FXML
     private TableColumn automaticsLevelColumn;
-
-    @FXML
-    private TableColumn automaticsLevelColumn1;
-
-    @FXML
-    private Button continueButton;
-
-    @FXML
-    private Button printButton;
 
     @FXML
     private Button closeButton;
 
-    @FXML
-    private Pane pane;
-
-    @FXML
-    private BarChart<Number, Number> histogramBarChart;
 
     private Stage primaryStage;
     private File file;
@@ -202,15 +156,12 @@ public class HiddenPanelController extends AbstractController implements Subscri
             }
         });
 
-        automaticsLevelColumn.setSortable(true);
-        healthConditionHiddenTable.getSortOrder().add(automaticsLevelColumn); // sort cell'a by name
+        /*automaticsLevelColumn.setSortable(true);
+        healthConditionHiddenTable.getSortOrder().add(automaticsLevelColumn); // sort cell'a by name*/
 
     }
 
     private void makeAnalyze(ObservableList<DataTable> data) throws UnsupportedAudioFileException, IOException, SQLException {
-
-        automaticsLevelColumn.setSortable(true);
-        healthConditionHiddenTable.getSortOrder().add(automaticsLevelColumn); // sort cell'a by name
 
         /*long t2 = System.currentTimeMillis();
         BioHttpClient bioHttpClient = HttpClientFactory.getInstance();
@@ -237,10 +188,16 @@ public class HiddenPanelController extends AbstractController implements Subscri
         healthConditionTable.setItems(analysisData);
         automaticsLevelColumn.setSortable(true);
         healthConditionTable.getSortOrder().add(automaticsLevelColumn); // sort cell'a by name*/
-
         healthConditionHiddenTable.setItems(data);
-        automaticsLevelColumn.setSortable(true);
+
         healthConditionHiddenTable.getSortOrder().add(automaticsLevelColumn); // sort cell'a by name
+        automaticsLevelColumn.setSortable(true);
+        automaticsLevelColumn.setSortType(TableColumn.SortType.ASCENDING);
+
+        diseaseName.setSortable(true);
+        diseaseName.setSortType(TableColumn.SortType.ASCENDING);
+        healthConditionHiddenTable.getSortOrder().add(diseaseName); // sort cell'a by name
+
     }
 
 

@@ -5,6 +5,6 @@
   "port": 8098,
   "tempDirectory": "data/tmp/webapp",
   "filesPath": "data/files",
-  "dbPath": "D:/MPS/IDEA/Biopotential material's/Export21.12.16/ExportDb_2016_12_21_11_58",
-  "storagePath": "D:/MPS/IDEA/Biopotential material's/Export21.12.16/ExportDb_2016_12_21_11_58_Storage/"
+  "dbPath": "./data/database",
+  "storagePath": "./data/edxfiles/"
 }

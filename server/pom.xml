@@ -422,7 +422,7 @@
 				<version>${surefire.plugin.version}</version>
 				<configuration>
 					<additionalClasspathElements>
-						<additionalClasspathElement>libs/</additionalClasspathElement>
+						<!--<additionalClasspathElement>libs/</additionalClasspathElement>-->
 						<additionalClasspathElement>data/</additionalClasspathElement>
 					</additionalClasspathElements>
 				</configuration>
@@ -517,7 +517,8 @@
 										<include>config/**</include>
 										<include>data/**</include>
 										<include>files/**</include>
-										<include>libs/**</include>
+										<!--<include>libs/**</include>-->
+										<exclude>data/edxfiles</exclude>
 
 									</includes>
 								</resource>
@@ -539,8 +540,10 @@
 										<include>web/**</include>
 										<include>config/**</include>
 										<include>data/**</include>
+										<exclude>data/edxfiles</exclude>
+
 										<include>files/**</include>
-										<include>libs/**</include>
+										<!--<include>libs/**</include>-->
 
 									</includes>
 								</resource>

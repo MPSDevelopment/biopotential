@@ -37,15 +37,20 @@ public class DiseasController {
     private Map<Pattern, AnalysisSummary> allHealings;
 
     public DiseasController() {
+
     }
 
+    /* *
+        fetch = {"corNotNull", "stress", "hidden"}
+        degree = {"Max", "Min"}
+     */
     @RequestMapping(value = ControllerAPI.DISEAS_CONTROLLER_GET_DISEASES, method = RequestMethod.POST)
     public @ResponseBody
     ResponseEntity<String> getDiseases(@RequestParam("file") MultipartFile file,  @PathVariable(value = "degree") String currentDegree, @PathVariable(value = "fetch") String fetch,
                                        @PathVariable(value = "gender") String gender) {
         String name = file.getOriginalFilename();
-        String degree = currentDegree;
-        int level = getLevel(degree);
+//        String degree = currentDegree;
+        int level = getLevel(currentDegree);
         requestHeaders = new HttpHeaders();
         requestHeaders.add("Content-Type", "text/html; charset=utf-8");
         diseases = new HashMap<>();
@@ -61,8 +66,8 @@ public class DiseasController {
     ResponseEntity<String> getHealings(@RequestParam("file") MultipartFile file, @PathVariable(value = "degree") String currentDegree, @PathVariable(value = "fetch") String fetch,
                                        @PathVariable(value = "gender") String gender) {
         String name = file.getOriginalFilename();
-        String degree = currentDegree;
-        int level = getLevel(degree);
+//        String degree = currentDegree;
+        int level = getLevel(currentDegree);
         allHealings = new HashMap<>();
 
         Map<Pattern, AnalysisSummary> temp = new HashMap<>();
@@ -89,9 +94,7 @@ public class DiseasController {
 
         try {
             allHealings.putAll(diseaseDao.getHealings(diseases, multipartToFile(name, file),level));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (UnsupportedAudioFileException e) {
+        } catch (IOException | UnsupportedAudioFileException e) {
             e.printStackTrace();
         }
 
@@ -110,11 +113,7 @@ public class DiseasController {
     private Map<Pattern, AnalysisSummary> getDiseas(MultipartFile file, String name,int degree, String fetch, String gender) {
         try {
             diseases.putAll(diseaseDao.getDeseases(multipartToFile(name, file),degree,fetch,gender));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (UnsupportedAudioFileException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
+        } catch (IOException | UnsupportedAudioFileException | SQLException e) {
             e.printStackTrace();
         }
         return diseases;

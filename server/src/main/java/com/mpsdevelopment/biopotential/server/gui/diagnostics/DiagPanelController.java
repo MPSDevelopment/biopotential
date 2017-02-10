@@ -10,9 +10,11 @@ import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
 import com.mpsdevelopment.biopotential.server.eventbus.event.SelectUserEvent;
+import com.mpsdevelopment.biopotential.server.gui.ModalWindow;
 import com.mpsdevelopment.biopotential.server.gui.converter.ConverterPanel;
 import com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.AutomaticsPanel;
 import com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.SelectFromDbPanel;
+import com.mpsdevelopment.biopotential.server.gui.startPanel.StartPanel;
 import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
 import com.mpsdevelopment.biopotential.server.httpclient.HttpClientFactory;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
@@ -73,8 +75,8 @@ public class DiagPanelController extends AbstractController implements Subscriba
     private static File outputFile = new File("data\\out\\out.wav");
 
     private static final Logger LOGGER = LoggerUtil.getLogger(DiagPanelController.class);
-    public static final String HOST = "localhost";
-    public static final int PORT = 8098;
+    protected static final String HOST = "localhost";
+    protected static final int PORT = 8098;
 
     private File selectedFile;
     private File convertFile;
@@ -169,10 +171,10 @@ public class DiagPanelController extends AbstractController implements Subscriba
     private Button automaticButton;
 
     @FXML
-    private Button chooseBaseButton;
+    private Button configButton;
 
-    @FXML
-    private Button chooseStorageButton;
+    /*@FXML
+    private Button chooseStorageButton;*/
 
     @FXML
     private Button converterButton;
@@ -232,7 +234,9 @@ public class DiagPanelController extends AbstractController implements Subscriba
             public void handle(ActionEvent t) {
 
                 if (surnameField.getText() == null) {
-                    final Stage dialog = new Stage();
+                    ModalWindow.makepopup(primaryStage, "Введите фамилию пользователя");
+
+                    /*final Stage dialog = new Stage();
                     dialog.initModality(Modality.APPLICATION_MODAL);
                     dialog.initOwner(primaryStage);
                     VBox dialogVbox = new VBox(20);
@@ -252,7 +256,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
                     button.setAlignment(Pos.CENTER);
                     Scene dialogScene = new Scene(dialogVbox, 200, 100);
                     dialog.setScene(dialogScene);
-                    dialog.show();
+                    dialog.show();*/
                 }
                 else {
                     user.setLogin(login.getValue());
@@ -400,7 +404,10 @@ public class DiagPanelController extends AbstractController implements Subscriba
                 fileChooser.setInitialDirectory(new File("files"));
                 selectedFile = fileChooser.showOpenDialog(null);
                 // convert selectedFile (
-                if (selectedFile.getName().contains(".ACT") || selectedFile.getName().contains(".act")) {
+                if (selectedFile == null) {
+                    numberLineChart.getData().clear();
+                }
+                else if (selectedFile.getName().contains(".ACT") || selectedFile.getName().contains(".act")) {
                     try {
                         convertFile = correctDataSizeValue(selectedFile);
                     } catch (IOException e) {
@@ -422,7 +429,7 @@ public class DiagPanelController extends AbstractController implements Subscriba
             }
         });
 
-        // choose DB
+        /*// choose DB
         chooseBaseButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -451,6 +458,17 @@ public class DiagPanelController extends AbstractController implements Subscriba
                 LOGGER.info("EDX storage %s", selectedDirectory.getAbsolutePath() + "\\");
 
             }
+        });*/
+
+        configButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                StartPanel startPanel =  new StartPanel();
+                LOGGER.info("Start panel");
+                Stage mainPanelStage = StageUtils.createStage(null, startPanel, new StageSettings().setClazz(DiagPanel.class).setHeight(265d).setWidth(400d).setHeightPanel(265d).setWidthPanel(400d)
+                        .setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+                startPanel.setPrimaryStage(mainPanelStage);
+            }
         });
 
         // "Автомат" button
@@ -458,21 +476,28 @@ public class DiagPanelController extends AbstractController implements Subscriba
             @Override
             public void handle(ActionEvent event) {
                 // open automatics panel
-                AutomaticsPanel panel = new AutomaticsPanel(selectedFile, getUser().getGender());
-                Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Автомат").setClazz(panel.getClass()).setHeight(250d).setWidth(300d).setHeightPanel(200d).setWidthPanel(300d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
-                panel.setPrimaryStage(stage);
+                if (selectedFile == null) {
+                    ModalWindow.makepopup(primaryStage, "Выберите файл для анализа");
 
-                Visit visit = new Visit();
-                LOGGER.info("User automatics - Id %s", user.getId());
-                visit.setUser(getUser());
+                }
+                else {
+                    AutomaticsPanel panel = new AutomaticsPanel(selectedFile, getUser().getGender());
+                    Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Автомат").setClazz(panel.getClass()).setHeight(250d).setWidth(300d).setHeightPanel(200d).setWidthPanel(300d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+                    panel.setPrimaryStage(stage);
 
-                Date date = new Date();
-                visit.setDate(date);
-                getUser().getVisits().add(visit);
+                    Visit visit = new Visit();
+                    LOGGER.info("User automatics - Id %s", user.getId());
+                    visit.setUser(getUser());
 
-                String body = JsonUtils.getJson(visit);
-                LOGGER.info("User - Visit %s", body);
+                    Date date = new Date();
+                    visit.setDate(date);
+                    getUser().getVisits().add(visit);
+
+                    String body = JsonUtils.getJson(visit);
+                    LOGGER.info("User - Visit %s", body);
 //                httpClient.executePutRequest(ControllerAPI.VISITS_CONTROLLER + ControllerAPI.VISITS_CONTROLLER_PUT_CREATE_VISIT, body);
+                }
+
 
             }
         });
@@ -570,9 +595,9 @@ public class DiagPanelController extends AbstractController implements Subscriba
         File target = new File("data\\out\\out.mp3");
         AudioAttributes audio = new AudioAttributes();
         audio.setCodec("libmp3lame");
-        audio.setBitRate(new Integer(128000));
-        audio.setChannels(new Integer(1));
-        audio.setSamplingRate(new Integer(22050));
+        audio.setBitRate(128000);
+        audio.setChannels(1);
+        audio.setSamplingRate(22050);
         EncodingAttributes attrs = new EncodingAttributes();
         attrs.setFormat("mp3");
         attrs.setAudioAttributes(audio);
@@ -613,11 +638,10 @@ public class DiagPanelController extends AbstractController implements Subscriba
             WaveFile waveFile = null;
             try {
                 waveFile = WaveFile.openWavFile(selectedFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (WavFileException e) {
+            } catch (IOException | WavFileException e) {
                 e.printStackTrace();
             }
+            assert waveFile != null;
             LOGGER.info(String.valueOf(waveFile.getSampleRate()));
             sampleRate = waveFile.getSampleRate();
             if (selectedFile != null) {

@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="727.0" prefWidth="1034.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mpsdevelopment.biopotential.server.gui.diagnostics.DiagPanelController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="686.0" prefWidth="1034.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mpsdevelopment.biopotential.server.gui.diagnostics.DiagPanelController">
    <children>
       <AnchorPane />
       <Pane layoutY="-1.0" prefHeight="31.0" prefWidth="1041.0" style="-fx-background-color: #E9E9E9;">
@@ -23,36 +23,36 @@
             <Label layoutX="497.0" layoutY="6.0" text="Анализ" />
          </children>
       </Pane>
-      <TextField fx:id="loginField" layoutX="164.0" layoutY="54.0" />
-      <TextField fx:id="surnameField" layoutX="164.0" layoutY="83.0" />
-      <TextField fx:id="nameField" layoutX="164.0" layoutY="112.0" />
-      <TextField fx:id="patronymicField" layoutX="164.0" layoutY="141.0" />
-      <TextField fx:id="telField" layoutX="164.0" layoutY="170.0" />
-      <TextField fx:id="emailField" layoutX="164.0" layoutY="200.0" />
-      <TextField fx:id="bornField" layoutX="164.0" layoutY="230.0" />
-      <TextField fx:id="dateField" layoutX="164.0" layoutY="260.0" prefHeight="25.0" prefWidth="32.0" />
-      <TextField fx:id="monthField" layoutX="201.0" layoutY="260.0" prefHeight="25.0" prefWidth="39.0" />
-      <TextField fx:id="yearField" layoutX="245.0" layoutY="260.0" prefHeight="25.0" prefWidth="67.0" />
-      <RadioButton fx:id="manRadioButton" layoutX="164.0" layoutY="296.0" mnemonicParsing="false" text="Мужчина">
+      <TextField fx:id="loginField" layoutX="164.0" layoutY="66.0" />
+      <TextField fx:id="surnameField" layoutX="164.0" layoutY="95.0" />
+      <TextField fx:id="nameField" layoutX="164.0" layoutY="124.0" />
+      <TextField fx:id="patronymicField" layoutX="164.0" layoutY="153.0" />
+      <TextField fx:id="telField" layoutX="164.0" layoutY="182.0" />
+      <TextField fx:id="emailField" layoutX="164.0" layoutY="212.0" />
+      <TextField fx:id="bornField" layoutX="164.0" layoutY="242.0" />
+      <TextField fx:id="dateField" layoutX="164.0" layoutY="272.0" prefHeight="25.0" prefWidth="32.0" />
+      <TextField fx:id="monthField" layoutX="201.0" layoutY="272.0" prefHeight="25.0" prefWidth="39.0" />
+      <TextField fx:id="yearField" layoutX="245.0" layoutY="272.0" prefHeight="25.0" prefWidth="67.0" />
+      <RadioButton fx:id="manRadioButton" layoutX="164.0" layoutY="308.0" mnemonicParsing="false" text="Мужчина">
          <toggleGroup>
             <ToggleGroup fx:id="genderGroup" />
          </toggleGroup></RadioButton>
-      <RadioButton fx:id="womanRadioButton" layoutX="245.0" layoutY="296.0" mnemonicParsing="false" text="Женщина" toggleGroup="$genderGroup" />
-      <Button fx:id="sensorrButton" layoutX="263.0" layoutY="330.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="92.0" text="Датчик" />
-      <Button fx:id="stopRecButton" layoutX="363.0" layoutY="330.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="126.0" text="Остановить запись" />
-      <Button fx:id="openFileButton" layoutX="162.0" layoutY="330.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="92.0" text="Файл" />
-      <Button fx:id="saveAsrButton" layoutX="496.0" layoutY="330.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="126.0" text="Сохранить как" />
-      <Button fx:id="addButton" layoutX="325.0" layoutY="84.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Внести в базу" />
-      <Button fx:id="showHistoryButton" layoutX="325.0" layoutY="112.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Посмотреть историю" />
-      <Button fx:id="selectFromDbButton" layoutX="325.0" layoutY="141.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Выбрать из базы..." />
-      <Button fx:id="deleteButton" layoutX="325.0" layoutY="170.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Удалить из базы" />
-      <Label layoutX="44.0" layoutY="87.0" text="Фамилия" />
-      <Label layoutX="44.0" layoutY="116.0" text="Имя" />
-      <Label layoutX="44.0" layoutY="145.0" text="Отчество" />
-      <Label layoutX="44.0" layoutY="334.0" text="Выбрать источник" />
-      <StackPane fx:id="stackpane" layoutX="574.0" layoutY="53.0" prefHeight="203.0" prefWidth="400.0">
+      <RadioButton fx:id="womanRadioButton" layoutX="245.0" layoutY="308.0" mnemonicParsing="false" text="Женщина" toggleGroup="$genderGroup" />
+      <Button fx:id="sensorrButton" disable="true" layoutX="263.0" layoutY="342.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="92.0" text="Датчик" visible="false" />
+      <Button fx:id="stopRecButton" disable="true" layoutX="363.0" layoutY="342.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="126.0" text="Остановить запись" visible="false" />
+      <Button fx:id="openFileButton" layoutX="325.0" layoutY="242.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Файл" />
+      <Button fx:id="saveAsrButton" disable="true" layoutX="496.0" layoutY="342.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="126.0" text="Сохранить как" visible="false" />
+      <Button fx:id="addButton" layoutX="325.0" layoutY="66.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Внести в базу" />
+      <Button fx:id="showHistoryButton" layoutX="325.0" layoutY="95.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Посмотреть историю" />
+      <Button fx:id="selectFromDbButton" layoutX="325.0" layoutY="124.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Выбрать из базы..." />
+      <Button fx:id="deleteButton" layoutX="325.0" layoutY="153.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Удалить из базы" />
+      <Label layoutX="44.0" layoutY="99.0" text="Фамилия" />
+      <Label layoutX="44.0" layoutY="128.0" text="Имя" />
+      <Label layoutX="44.0" layoutY="157.0" text="Отчество" />
+      <Label layoutX="342.0" layoutY="216.0" text="Выбрать источник" />
+      <StackPane fx:id="stackpane" layoutX="517.0" layoutY="66.0" prefHeight="232.0" prefWidth="484.0">
          <children>
-            <TableView fx:id="historyTableUsers" prefHeight="204.0" prefWidth="400.0">
+            <TableView fx:id="historyTableUsers" prefHeight="232.0" prefWidth="484.0">
                <placeholder>
                   <Label text="Нет данных для отображения" />
                </placeholder>
@@ -70,15 +70,15 @@
             </TableView>
          </children>
       </StackPane>
-      <Label layoutX="44.0" layoutY="174.0" text="Телефон" />
-      <Label layoutX="44.0" layoutY="204.0" text="Электронная почта" />
-      <Label layoutX="44.0" layoutY="234.0" text="Место рождения" />
-      <Label layoutX="44.0" layoutY="264.0" text="Дата рождения" />
-      <Label layoutX="44.0" layoutY="296.0" text="Пол" />
-      <Button fx:id="automaticButton" disable="false" layoutX="677.0" layoutY="330.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Автомат" />
-      <DatePicker fx:id="datePicker" layoutX="325.0" layoutY="260.0" />
-      <Label layoutX="44.0" layoutY="58.0" text="Логин/Пседоним" />
-      <LineChart fx:id="numberLineChart" layoutX="33.0" layoutY="377.0" prefHeight="327.0" prefWidth="968.0">
+      <Label layoutX="44.0" layoutY="186.0" text="Телефон" />
+      <Label layoutX="44.0" layoutY="216.0" text="Электронная почта" />
+      <Label layoutX="44.0" layoutY="246.0" text="Место рождения" />
+      <Label layoutX="44.0" layoutY="276.0" text="Дата рождения" />
+      <Label layoutX="44.0" layoutY="308.0" text="Пол" />
+      <Button fx:id="automaticButton" disable="false" layoutX="692.0" layoutY="313.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Автомат" />
+      <DatePicker fx:id="datePicker" layoutX="325.0" layoutY="272.0" />
+      <Label layoutX="44.0" layoutY="70.0" text="Логин/Пседоним" />
+      <LineChart fx:id="numberLineChart" layoutX="33.0" layoutY="347.0" prefHeight="327.0" prefWidth="968.0">
         <xAxis>
           <NumberAxis side="BOTTOM" />
         </xAxis>
@@ -86,9 +86,8 @@
           <NumberAxis side="LEFT" />
         </yAxis>
       </LineChart>
-      <Label layoutX="751.0" layoutY="33.0" text="История" />
-      <Button fx:id="chooseBaseButton" layoutX="325.0" layoutY="199.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Выбрать базу" />
-      <Button fx:id="chooseStorageButton" layoutX="325.0" layoutY="229.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Выбрать хранилище" />
-      <Button fx:id="converterButton" layoutX="824.0" layoutY="330.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Конвертор" visible="false" />
+      <Label layoutX="759.0" layoutY="48.0" text="История" />
+      <Button fx:id="configButton" layoutX="886.0" layoutY="35.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Настройки" />
+      <Button fx:id="converterButton" layoutX="824.0" layoutY="342.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="134.0" text="Конвертор" visible="false" />
    </children>
 </AnchorPane>
