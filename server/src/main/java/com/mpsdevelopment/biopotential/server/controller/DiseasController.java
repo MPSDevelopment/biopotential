@@ -68,6 +68,7 @@ public class DiseasController {
         String name = file.getOriginalFilename();
 //        String degree = currentDegree;
         int level = getLevel(currentDegree);
+        diseases = new HashMap<>();
         allHealings = new HashMap<>();
 
         Map<Pattern, AnalysisSummary> temp = new HashMap<>();
