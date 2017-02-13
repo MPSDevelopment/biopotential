@@ -80,6 +80,5 @@ public class DiseasControllerTest {
         LOGGER.info("%s", healingsMap.size());
         Assert.assertEquals(6, healingsMap.size());
 
-
     }
 }

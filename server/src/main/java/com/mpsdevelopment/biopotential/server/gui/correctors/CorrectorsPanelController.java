@@ -75,6 +75,9 @@ public class CorrectorsPanelController extends AbstractController implements Sub
     @FXML
     private Button selectAllButton;
 
+    @FXML
+    private Label patLabel;
+
     private Stage primaryStage;
     private static Map<Pattern,AnalysisSummary> healingsMap;
     private ServerSettings serverSettings;
@@ -198,6 +201,7 @@ public class CorrectorsPanelController extends AbstractController implements Sub
 
         correctorsData = FXCollections.observableArrayList();
         getPattersFromHealingsMap();
+        patLabel.setText("Pattern's: " + correctorsData.size());
 
         сorrectorsTable.setItems(correctorsData);
         сorrectorsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // make enable minimize button on window
