@@ -1,18 +1,27 @@
 package com.mpsdevelopment.biopotential.server.controller;
 
+import com.auth0.jwt.JWTVerifyException;
 import com.google.gson.reflect.TypeToken;
 import com.mpsdevelopment.biopotential.server.JettyServer;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
+import com.mpsdevelopment.biopotential.server.db.pojo.Token.Role;
 import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
 import com.mpsdevelopment.biopotential.server.httpclient.HttpClientFactory;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
+import com.mpsdevelopment.biopotential.server.utils.TokenUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kubek2k.springockito.annotations.ReplaceWithMock;
+import org.kubek2k.springockito.annotations.SpringockitoContextLoader;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +35,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:/webapp/app-context.xml", "classpath:/webapp/web-context.xml" })
+@ContextConfiguration(loader = SpringockitoContextLoader.class, locations = { "classpath:/webapp/app-context.xml", "classpath:/webapp/web-context.xml" })
 @Configurable
 public class DiseasControllerTest {
 
@@ -41,6 +53,16 @@ public class DiseasControllerTest {
     private static final String STRESS = "stress";
     private static final String COR_NOT_NULL = "corNotNull";
     private static final String HIDDEN = "hidden";
+    
+	@Mock
+	@ReplaceWithMock
+	@Autowired
+	private TokenUtils tokenUtils;
+
+	@Before
+	public void setUp() throws InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException, IOException, JWTVerifyException {
+		Mockito.when(tokenUtils.getRoleFromToken(Matchers.anyString())).thenReturn(Role.ADMIN);
+	}
 
     public DiseasControllerTest() {
 
@@ -56,8 +78,8 @@ public class DiseasControllerTest {
 
         ResponseEntity<String> diseases= diseasController.getDiseases(fstmp,degree,STRESS,gender);
 
-        Type typeOfHashMap = new TypeToken<Map<EDXPattern, AnalysisSummary>>() { }.getType();
-        Map<Pattern, AnalysisSummary> diseasesStressMax = JsonUtils.fromJson(typeOfHashMap, diseases.getBody().toString());
+//        Type typeOfHashMap = new TypeToken<Map<EDXPattern, AnalysisSummary>>() { }.getType();
+        Map<Pattern, AnalysisSummary> diseasesStressMax = JsonUtils.fromJson(Map.class, diseases.getBody().toString());
         LOGGER.info("%s", diseasesStressMax.size());
         Assert.assertEquals(63, diseasesStressMax.size());
 
