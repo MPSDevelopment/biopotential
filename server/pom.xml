@@ -25,7 +25,7 @@
 			administrator</jet.expire.message>
 
 		<replacer.plugin.version>1.5.2</replacer.plugin.version>
-		<excelsiorjet.plugin.version>0.8.0</excelsiorjet.plugin.version>
+		<excelsiorjet.plugin.version>0.9.5</excelsiorjet.plugin.version>
 		<resources.plugin.version>3.0.1</resources.plugin.version>
 		<compiler.plugin.version>3.3</compiler.plugin.version>
 		<surefire.plugin.version>2.18.1</surefire.plugin.version>
@@ -66,6 +66,22 @@
 		<lib.property>lib</lib.property>
 		<mbassador.version>1.2.4</mbassador.version>
 	</properties>
+    <profiles>
+        <profile>
+            <id>Windows</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                </os>
+            </activation>
+            <properties>
+                <exe.extension>.exe</exe.extension>
+                <dll.extension>.dll</dll.extension>
+                <dll.prefix></dll.prefix>
+            </properties>
+        </profile>
+
+    </profiles>
 	<dependencies>
 
 		<!--<dependency> <groupId>net.engio</groupId> <artifactId>mbassador</artifactId> <version>${mbassador.version}</version> </dependency> -->
@@ -517,10 +533,10 @@
 										<include>config/**</include>
 										<include>data/**</include>
 										<include>files/**</include>
-										<!--<include>libs/**</include>-->
-										<exclude>data/edxfiles</exclude>
-
 									</includes>
+                                    <excludes>
+                                        <exclude>data/edxfiles</exclude>
+                                    </excludes>
 								</resource>
 							</resources>
 						</configuration>
@@ -540,12 +556,11 @@
 										<include>web/**</include>
 										<include>config/**</include>
 										<include>data/**</include>
-										<exclude>data/edxfiles</exclude>
-
-										<include>files/**</include>
-										<!--<include>libs/**</include>-->
-
+                                        <include>files/**</include>
 									</includes>
+                                    <excludes>
+                                        <exclude>data/edxfiles</exclude>
+                                    </excludes>
 								</resource>
 							</resources>
 						</configuration>
@@ -559,7 +574,31 @@
 				<configuration>
 					<mainClass>com.mpsdevelopment.biopotential.server.gui.BioApplication</mainClass>
 					<jetOutputDir>${jet.output.directory}</jetOutputDir>
-					<!-- <packaging>excelsior-installer</packaging> -->
+					 <packaging>excelsior-installer</packaging>
+                    <profileStartup>false</profileStartup>
+                    <excelsiorInstaller>
+                        <language>russian</language>
+                        <cleanupAfterUninstall>true</cleanupAfterUninstall>
+                        <compressionLevel>fast</compressionLevel>
+                        <afterInstallRunnable>
+                            <target>BioApplication${exe.extension}</target>
+                        </afterInstallRunnable>
+                        <installationDirectory>
+                            <type>absolute-path</type>
+                            <path>/MPS Development</path>
+                            <fixed>true</fixed>
+                        </installationDirectory>
+                    </excelsiorInstaller>
+                    <shortcuts>
+                        <shortcut>
+                            <location>desktop</location>
+                            <target>BioApplication${exe.extension}</target>
+                            <name>Biopotential</name>
+                            <icon>
+                                <path>${project.basedir}/build/bio.ico</path>
+                            </icon>
+                        </shortcut>
+                    </shortcuts>
 					<icon>${project.basedir}/build/bio.ico</icon>
 					<!--<installerSplash>${project.basedir}/build/splash.png</installerSplash>-->
 					<!-- <splash>${project.basedir}/build/splash.png</splash> -->
@@ -583,7 +622,7 @@
 				</configuration>
 			</plugin>
 
-			<plugin>
+			<!--<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-install-plugin</artifactId>
 				<version>2.5.2</version>
@@ -622,7 +661,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>-->
 
 			<!-- <plugin> -->
 			<!-- <groupId>org.apache.maven.plugins</groupId> -->
