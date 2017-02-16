@@ -65,23 +65,9 @@
 		<bouncycastle.version>1.46</bouncycastle.version>
 		<lib.property>lib</lib.property>
 		<mbassador.version>1.2.4</mbassador.version>
+        <exe.extension>.exe</exe.extension>
 	</properties>
-    <profiles>
-        <profile>
-            <id>Windows</id>
-            <activation>
-                <os>
-                    <family>Windows</family>
-                </os>
-            </activation>
-            <properties>
-                <exe.extension>.exe</exe.extension>
-                <dll.extension>.dll</dll.extension>
-                <dll.prefix></dll.prefix>
-            </properties>
-        </profile>
 
-    </profiles>
 	<dependencies>
 
 		<!--<dependency> <groupId>net.engio</groupId> <artifactId>mbassador</artifactId> <version>${mbassador.version}</version> </dependency> -->
@@ -572,43 +558,42 @@
 				<artifactId>excelsior-jet-maven-plugin</artifactId>
 				<version>${excelsiorjet.plugin.version}</version>
 				<configuration>
-					<mainClass>com.mpsdevelopment.biopotential.server.gui.BioApplication</mainClass>
-					<jetOutputDir>${jet.output.directory}</jetOutputDir>
-					 <packaging>excelsior-installer</packaging>
+                    <mainClass>com.mpsdevelopment.biopotential.server.gui.BioApplication</mainClass>
+                    <jetOutputDir>${jet.output.directory}</jetOutputDir>
+                    <packaging>excelsior-installer</packaging>
                     <profileStartup>false</profileStartup>
                     <excelsiorInstaller>
                         <language>russian</language>
                         <cleanupAfterUninstall>true</cleanupAfterUninstall>
                         <compressionLevel>fast</compressionLevel>
-                        <afterInstallRunnable>
+                        <!--<afterInstallRunnable>
                             <target>BioApplication${exe.extension}</target>
-                        </afterInstallRunnable>
+                        </afterInstallRunnable>-->
                         <installationDirectory>
-                            <type>absolute-path</type>
+                            <type>system-drive</type>
                             <path>/MPS Development</path>
                             <fixed>true</fixed>
                         </installationDirectory>
-                    </excelsiorInstaller>
-                    <shortcuts>
-                        <shortcut>
-                            <location>desktop</location>
-                            <target>BioApplication${exe.extension}</target>
-                            <name>Biopotential</name>
-                            <icon>
-                                <path>${project.basedir}/build/bio.ico</path>
-                            </icon>
-                        </shortcut>
-                    </shortcuts>
-					<icon>${project.basedir}/build/bio.ico</icon>
-					<!--<installerSplash>${project.basedir}/build/splash.png</installerSplash>-->
-					<!-- <splash>${project.basedir}/build/splash.png</splash> -->
-					<hideConsole>true</hideConsole>
-					<!-- <globalOptimizer>true</globalOptimizer> -->
-					<packageFilesDir>${jet.output.directory}/temp</packageFilesDir>
+                        <shortcuts>
+                            <shortcut>
+                                <location>desktop</location>
+                                <target>BioApplication${exe.extension}</target>
+                                <name>Biopotential</name>
+                                <icon>
+                                    <path>${project.basedir}/build/bio.ico</path>
+                                </icon>
+                            </shortcut>
+                        </shortcuts>
+						<installerSplash>${project.basedir}/build/splash.png</installerSplash>
+					</excelsiorInstaller>
 
-					<inlineExpansion>low</inlineExpansion>
+                    <splash>${project.basedir}/build/splash.png</splash>
+                    <icon>${project.basedir}/build/bio.ico</icon>
+
+                    <hideConsole>true</hideConsole>
+                    <packageFilesDir>${jet.output.directory}/temp</packageFilesDir>
+                    <inlineExpansion>low</inlineExpansion>
 					<protectData>true</protectData>
-
 					<jetHome>${jet64.home}</jetHome>
 
 					<jvmArgs>
@@ -619,7 +604,9 @@
 					<product>Biopotential</product>
 					<vendor>${jet.vendor}</vendor>
 					<version>${jet.version}</version>
-				</configuration>
+                    <!-- <globalOptimizer>true</globalOptimizer> -->
+
+                </configuration>
 			</plugin>
 
 			<!--<plugin>
