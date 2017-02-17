@@ -168,7 +168,7 @@ public class DiseaseDao {
 	/**
 	 * HashMap<Pattern, AnalysisSummary> allHealings contain's only unique keys define by hashcode method in EDXPattern class
 	 */
-	public Map<Pattern, AnalysisSummary> getHealings(Map<Pattern, AnalysisSummary> diseases, File file, int level) throws IOException, UnsupportedAudioFileException {
+	public Map<Pattern, AnalysisSummary> getHealings(Map<Pattern, AnalysisSummary> diseases, int level) throws IOException, UnsupportedAudioFileException {
 
 		final List<ChunkSummary> sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(outputFile)));
 
@@ -195,14 +195,14 @@ public class DiseaseDao {
 	}
 
 	private void getHealings(Map<Pattern, AnalysisSummary> diseases, final List<ChunkSummary> sample, final Map<String, Integer> probableKinds,
-			HashMap<Pattern, AnalysisSummary> allHealings, int level) {
-		diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
-			@Override
-			public void accept(Pattern dk, AnalysisSummary dv) {
+                             HashMap<Pattern, AnalysisSummary> allHealings, int level) {
+        diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
+            @Override
+            public void accept(Pattern dk, AnalysisSummary dv) {
 
-				LOGGER.info("heals for %s %s\n", dk.getKind(), dk.getName());
+                LOGGER.info("heals for %s %s\n", dk.getKind(), dk.getName());
 
-				if (probableKinds.containsKey(dk.getKind())) {
+                if (probableKinds.containsKey(dk.getKind())) {
 
 					long t1 = System.currentTimeMillis();
 

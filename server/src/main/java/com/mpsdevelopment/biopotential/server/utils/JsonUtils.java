@@ -1,6 +1,7 @@
 package com.mpsdevelopment.biopotential.server.utils;
 
 import com.google.gson.*;
+import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 
@@ -78,7 +79,5 @@ public class JsonUtils {
 		result.addProperty("error", isError);
 		return new ResponseEntity<>(result.toString(), status);
 	}
-
-
 
 }

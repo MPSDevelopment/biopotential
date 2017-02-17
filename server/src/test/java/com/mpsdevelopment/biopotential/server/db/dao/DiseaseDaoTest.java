@@ -28,8 +28,8 @@ public class DiseaseDaoTest {
 	private DiseaseDao diseaseDao;
 
 	private static final Logger LOGGER = LoggerUtil.getLogger(DiseaseDaoTest.class);
-	Map<Pattern, AnalysisSummary> allHealings;
-	Map<Pattern, AnalysisSummary> diseases;
+	private Map<Pattern, AnalysisSummary> allHealings;
+	private Map<Pattern, AnalysisSummary> diseases;
 	private File file;
 
 	public DiseaseDaoTest() {
@@ -47,7 +47,7 @@ public class DiseaseDaoTest {
 		}
 
 		long t1 = System.currentTimeMillis();
-		Map<Pattern, AnalysisSummary> healings = diseaseDao.getHealings(diseases, file,0);
+		Map<Pattern, AnalysisSummary> healings = diseaseDao.getHealings(diseases, 0);
 		LOGGER.info("Total time to get calculate healings %d ms", System.currentTimeMillis() - t1);
 
 		Set<Pattern> keys = new HashSet<>(healings.keySet());

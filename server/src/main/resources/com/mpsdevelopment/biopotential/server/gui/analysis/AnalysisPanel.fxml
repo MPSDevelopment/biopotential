@@ -13,7 +13,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="722.0" prefWidth="1149.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mpsdevelopment.biopotential.server.gui.analysis.AnalysisPanelController">
    <children>
-      <ScatterChart fx:id="scatterChart" alternativeColumnFillVisible="true" animated="false" disable="true" layoutX="885.0" layoutY="32.0" legendVisible="false" pickOnBounds="false" prefHeight="641.0" prefWidth="500.0" stylesheets="@../../../../../../scater.css" visible="false">
+      <ScatterChart fx:id="scatterChart" alternativeColumnFillVisible="true" animated="false" disable="true" layoutX="885.0" layoutY="32.0" legendVisible="false" pickOnBounds="false" prefHeight="641.0" prefWidth="500.0" visible="false">
         <xAxis>
           <NumberAxis animated="false" autoRanging="false" prefHeight="0.0" prefWidth="470.0" side="BOTTOM" upperBound="110" />
         </xAxis>
@@ -44,7 +44,7 @@
                 <NumberAxis side="LEFT" />
               </yAxis>
             </BarChart>
-            <TableView fx:id="systemTable" layoutX="14.0" layoutY="299.0" prefHeight="356.0" prefWidth="425.0">
+            <TableView fx:id="overallTable" layoutX="14.0" layoutY="299.0" prefHeight="356.0" prefWidth="425.0">
               <columns>
                 <TableColumn fx:id="numberSystemColumn" prefWidth="33.0" text="№" />
                 <TableColumn fx:id="systemColumn" prefWidth="74.0" text="Система" />

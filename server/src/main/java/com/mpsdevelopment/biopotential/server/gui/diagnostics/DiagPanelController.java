@@ -75,8 +75,8 @@ public class DiagPanelController extends AbstractController implements Subscriba
     private static File outputFile = new File("data\\out\\out.wav");
 
     private static final Logger LOGGER = LoggerUtil.getLogger(DiagPanelController.class);
-    protected static final String HOST = "localhost";
-    protected static final int PORT = 8098;
+    private static final String HOST = "localhost";
+    private static final int PORT = 8098;
 
     private File selectedFile;
     private File convertFile;
@@ -481,7 +481,13 @@ public class DiagPanelController extends AbstractController implements Subscriba
 
                 }
                 else {
-                    AutomaticsPanel panel = new AutomaticsPanel(selectedFile, getUser().getGender());
+                    String gender = getUser().getGender();
+                    StringBuilder stringBuilder = new StringBuilder();
+                    stringBuilder.append("/");
+                    stringBuilder.append(gender);
+                    stringBuilder.append("/");
+
+                    AutomaticsPanel panel = new AutomaticsPanel(selectedFile, stringBuilder.toString());
                     Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Автомат").setClazz(panel.getClass()).setHeight(250d).setWidth(300d).setHeightPanel(200d).setWidthPanel(300d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
                     panel.setPrimaryStage(stage);
 

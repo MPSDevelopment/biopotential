@@ -1,6 +1,9 @@
 package com.mpsdevelopment.biopotential.server.httpclient;
 
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
+import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
+import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import org.apache.commons.io.IOUtils;
@@ -110,7 +113,7 @@ public class BioHttpClient {
     public String executeGetRequest(String uri) {
         HttpGet request = new HttpGet(uri);
         String json = null;
-        HttpResponse response = null;
+        HttpResponse response;
         try {
             response = httpClient.execute(request);
             json = getContextResponse(response);
@@ -127,7 +130,7 @@ public class BioHttpClient {
     public byte[] executeGetBytesRequest(String uri) {
         HttpGet request = new HttpGet(uri);
         byte[] answer = null;
-        HttpResponse response = null;
+        HttpResponse response;
         try {
             response = httpClient.execute(request);
             answer = getContextAsByteArrayResponse(response);
@@ -174,7 +177,7 @@ public class BioHttpClient {
         LOGGER.info("Url - %s", url);
         HttpPost request = new HttpPost(url);
         String json = null;
-        HttpResponse response = null;
+        HttpResponse response;
         if (StringUtils.isNotBlank(body)) {
             StringEntity entity;
             try {
@@ -200,7 +203,7 @@ public class BioHttpClient {
         LOGGER.info("Url - %s", url);
         HttpPost request = new HttpPost(url);
         String json = null;
-        HttpResponse response = null;
+        HttpResponse response;
         LOGGER.info(" POST Request  - %s", file.getName());
 
         HttpEntity entity = MultipartEntityBuilder
@@ -226,7 +229,7 @@ public class BioHttpClient {
         String url = String.format("%s%s", mainUrl, uri);
         HttpPost request = new HttpPost(url);
         String json = null;
-        HttpResponse response = null;
+        HttpResponse response;
         if (file != null) {
             try {
                 FileBody bin = new FileBody(file, "audio/wav;"+Charset.forName( "UTF-8" )/*"text/html; charset=utf-8"*//*ContentType.create("audio/wav", CharEncoding.UTF_8)*/);
@@ -237,10 +240,6 @@ public class BioHttpClient {
                 response = httpClient.execute(request);
                 json = getContextResponse(response);
                 LOGGER.info(" POST RESPONSE JSON - %s", json);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -249,32 +248,58 @@ public class BioHttpClient {
     }
 
 
-
     public String executePostRequest(String uri, String body, Map<String, String> params) {
         HttpPost request = new HttpPost(uri);
         String json = null;
-        HttpResponse response = null;
-        ArrayList<NameValuePair> postParameters = null;
+        HttpResponse response;
+        ArrayList<NameValuePair> postParameters;
         if (StringUtils.isNotBlank(body)) {
-            UrlEncodedFormEntity entity;
-            try {
-                postParameters = new ArrayList<NameValuePair>();
-                for (String key : params.keySet()) {
-                    postParameters.add(new BasicNameValuePair(key, params.get(key)));
-                }
-                entity = new UrlEncodedFormEntity(postParameters, ENCODING_NAME);
-                request.setEntity(entity);
-                response = httpClient.execute(request);
-                json = getContextResponse(response);
-                LOGGER.debug(" POST Request JSON - %s", json);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+        UrlEncodedFormEntity entity;
+        try {
+            postParameters = new ArrayList<>();
+            for (String key : params.keySet()) {
+                postParameters.add(new BasicNameValuePair(key, params.get(key)));
             }
+            entity = new UrlEncodedFormEntity(postParameters, ENCODING_NAME);
+            request.setEntity(entity);
+            response = httpClient.execute(request);
+            json = getContextResponse(response);
+            LOGGER.debug(" POST Request JSON - %s", json);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        }
+        return json;
+    }
+
+    public String executePostRequest(String uri, Map<Pattern, AnalysisSummary> params) {
+        String url = String.format("%s%s", mainUrl, uri);
+        HttpPost request = new HttpPost(url);
+        String json = null;
+        HttpResponse response;
+        ArrayList<NameValuePair> postParameters;
+//        if (StringUtils.isNotBlank(body)) {
+        UrlEncodedFormEntity entity;
+        try {
+            postParameters = new ArrayList<>();
+            for (Pattern key : params.keySet()) {
+                String keyString = JsonUtils.getJson(key);
+                String valueString = JsonUtils.getJson(params.get(key));
+                postParameters.add(new BasicNameValuePair(keyString, valueString));
+            }
+            entity = new UrlEncodedFormEntity(postParameters, ENCODING_NAME);
+            request.setEntity(entity);
+            response = httpClient.execute(request);
+            json = getContextResponse(response);
+            LOGGER.debug(" POST Request JSON - %s", json);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        }
         return json;
     }
 

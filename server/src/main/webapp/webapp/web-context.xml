@@ -37,7 +37,7 @@
 	<bean id="sessionAdviceBean" class="com.mpsdevelopment.biopotential.server.db.advice.SessionAdvice" />
 	<bean id="annotationSessionAdviceBean" class="com.mpsdevelopment.biopotential.server.db.advice.AnnotationSessionAdvice" />
 	<!-- <bean id="protectedApiSessionAdvice" class="com.mpsdevelopment.biopotential.server.db.advice.ProtectedApiSessionAdvice" /> -->
-	<bean id="diseasController" class="com.mpsdevelopment.biopotential.server.controller.DiseasController" />
+	<bean id="diseasController" class="com.mpsdevelopment.biopotential.server.controller.DiseaseController" />
 	<bean id="foldersController" class="com.mpsdevelopment.biopotential.server.controller.FoldersController" />
 
 	<bean id="userDao" class="com.mpsdevelopment.biopotential.server.db.dao.UserDao" />

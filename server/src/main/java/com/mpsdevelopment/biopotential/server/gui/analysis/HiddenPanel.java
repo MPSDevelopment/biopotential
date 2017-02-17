@@ -10,7 +10,6 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.io.IOException;
 
 public class HiddenPanel extends Pane {
@@ -28,9 +27,7 @@ public class HiddenPanel extends Pane {
             Pane pane = loader.load(this.getClass().getResourceAsStream("HiddenPanel.fxml"));
             hiddenPanelController = loader.getController();
             hiddenPanelController.setView(pane);
-            /*hiddenPanelController.setDegree1(degree1);
-            hiddenPanelController.setDegree2(degree2);*/
-            hiddenPanelController.makeCurrentAnalyze(data);
+            hiddenPanelController.putDataToTable(data);
 
         } catch (IOException e) {
             e.printStackTrace();

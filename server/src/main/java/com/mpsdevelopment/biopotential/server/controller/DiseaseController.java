@@ -2,6 +2,7 @@ package com.mpsdevelopment.biopotential.server.controller;
 
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
+import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
 import com.mpsdevelopment.biopotential.server.db.dao.DiseaseDao;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
@@ -24,9 +25,9 @@ import java.util.function.BiConsumer;
 
 @RequestMapping(ControllerAPI.DISEAS_CONTROLLER)
 @Controller
-public class DiseasController {
+public class DiseaseController {
 
-    private static final Logger LOGGER = LoggerUtil.getLogger(DiseasController.class);
+    private static final Logger LOGGER = LoggerUtil.getLogger(DiseaseController.class);
     private static final String PATH_FOR_RECORD = "data/upload/files";
 
     @Autowired
@@ -36,7 +37,7 @@ public class DiseasController {
     private HttpHeaders requestHeaders;
     private Map<Pattern, AnalysisSummary> allHealings;
 
-    public DiseasController() {
+    public DiseaseController() {
 
     }
 
@@ -49,7 +50,6 @@ public class DiseasController {
     ResponseEntity<String> getDiseases(@RequestParam("file") MultipartFile file,  @PathVariable(value = "degree") String currentDegree, @PathVariable(value = "fetch") String fetch,
                                        @PathVariable(value = "gender") String gender) {
         String name = file.getOriginalFilename();
-//        String degree = currentDegree;
         int level = getLevel(currentDegree);
         requestHeaders = new HttpHeaders();
         requestHeaders.add("Content-Type", "text/html; charset=utf-8");
@@ -66,7 +66,6 @@ public class DiseasController {
     ResponseEntity<String> getHealings(@RequestParam("file") MultipartFile file, @PathVariable(value = "degree") String currentDegree, @PathVariable(value = "fetch") String fetch,
                                        @PathVariable(value = "gender") String gender) {
         String name = file.getOriginalFilename();
-//        String degree = currentDegree;
         int level = getLevel(currentDegree);
         diseases = new HashMap<>();
         allHealings = new HashMap<>();
@@ -74,6 +73,7 @@ public class DiseasController {
         Map<Pattern, AnalysisSummary> temp = new HashMap<>();
         getDiseas(file, name,level,fetch,gender);
 
+        // separate getDisease for man and woman
         /*diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
             @Override
             public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
@@ -94,7 +94,7 @@ public class DiseasController {
         diseases.putAll(temp);*/
 
         try {
-            allHealings.putAll(diseaseDao.getHealings(diseases, multipartToFile(name, file),level));
+            allHealings.putAll(diseaseDao.getHealings(diseases, level));
         } catch (IOException | UnsupportedAudioFileException e) {
             e.printStackTrace();
         }
@@ -102,6 +102,34 @@ public class DiseasController {
         LOGGER.info("allHealings '%s' ", allHealings.size());
         return new ResponseEntity<>(JsonUtils.getJson(allHealings), requestHeaders, HttpStatus.OK);
     }
+
+    @RequestMapping(value = ControllerAPI.DISEAS_CONTROLLER_GET_HEALINGS_MAP, method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseEntity<String> getHealingsMap(@RequestParam Map<String, String> map, @PathVariable(value = "degree") String currentDegree,
+                                       @PathVariable(value = "gender") String gender) {
+        LOGGER.info("Got Map");
+        Map<Pattern,AnalysisSummary> healingsmap = new HashMap<>();
+        allHealings = new HashMap<>();
+        map.forEach(new BiConsumer<String, String>() {
+            @Override
+            public void accept(String s, String s2) {
+                EDXPattern edxPattern = JsonUtils.fromJson(EDXPattern.class, s);
+                AnalysisSummary analysisSummary = JsonUtils.fromJson(AnalysisSummary.class, s2);
+                healingsmap.put(edxPattern,analysisSummary);
+            }
+        });
+
+        int level = getLevel(currentDegree);
+        try {
+            allHealings.putAll(diseaseDao.getHealings(healingsmap, level));
+        } catch (IOException | UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        }
+
+        LOGGER.info("allHealings '%s' ", allHealings.size());
+        return new ResponseEntity<>(JsonUtils.getJson(allHealings), requestHeaders, HttpStatus.OK);
+    }
+
 
     private int getLevel(String degree) {
         int level = 0;

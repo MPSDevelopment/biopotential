@@ -286,7 +286,7 @@ public class BarChartPanelController extends AbstractController implements Subsc
         });
     }
 
-    protected void displayBar() {
+    public void displayBar() {
         display();
     }
 

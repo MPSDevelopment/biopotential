@@ -2,13 +2,10 @@ package com.mpsdevelopment.biopotential.server.controller;
 
 import com.auth0.jwt.JWTVerifyException;
 import com.google.gson.reflect.TypeToken;
-import com.mpsdevelopment.biopotential.server.JettyServer;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
 import com.mpsdevelopment.biopotential.server.db.pojo.Token.Role;
-import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
-import com.mpsdevelopment.biopotential.server.httpclient.HttpClientFactory;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.biopotential.server.utils.TokenUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
@@ -32,7 +29,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import javax.servlet.ServletException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.security.InvalidKeyException;
@@ -45,10 +41,10 @@ import java.util.Map;
 @Configurable
 public class DiseasControllerTest {
 
-    private static final Logger LOGGER = LoggerUtil.getLogger(DiseasController.class);
+    private static final Logger LOGGER = LoggerUtil.getLogger(DiseaseController.class);
 
     @Autowired
-    private DiseasController diseasController;
+    private DiseaseController diseaseController;
 
     private static final String STRESS = "stress";
     private static final String COR_NOT_NULL = "corNotNull";
@@ -76,14 +72,14 @@ public class DiseasControllerTest {
         FileInputStream fileInputStream = new FileInputStream(file);
         MockMultipartFile fstmp = new MockMultipartFile("upload", file.getName(), "multipart/form-data",fileInputStream);
 
-        ResponseEntity<String> diseases= diseasController.getDiseases(fstmp,degree,STRESS,gender);
+        ResponseEntity<String> diseases= diseaseController.getDiseases(fstmp,degree,STRESS,gender);
+        Type typeOfHashMap = new TypeToken<Map<EDXPattern, AnalysisSummary>>() { }.getType();
 
-//        Type typeOfHashMap = new TypeToken<Map<EDXPattern, AnalysisSummary>>() { }.getType();
-        Map<Pattern, AnalysisSummary> diseasesStressMax = JsonUtils.fromJson(Map.class, diseases.getBody().toString());
+        Map<Pattern, AnalysisSummary> diseasesStressMax = JsonUtils.fromJson(typeOfHashMap, diseases.getBody());
         LOGGER.info("%s", diseasesStressMax.size());
         Assert.assertEquals(63, diseasesStressMax.size());
 
-        ResponseEntity<String> healings = diseasController.getDiseases(fstmp,degree,STRESS,gender);
+        ResponseEntity<String> healings = diseaseController.getDiseases(fstmp,degree,STRESS,gender);
 
     }
 
@@ -95,10 +91,10 @@ public class DiseasControllerTest {
         FileInputStream fileInputStream = new FileInputStream(file);
         MockMultipartFile fstmp = new MockMultipartFile("upload", file.getName(), "multipart/form-data",fileInputStream);
 
-        ResponseEntity<String> healings= diseasController.getHealings(fstmp,degree,STRESS,gender);
-
+        ResponseEntity<String> healings= diseaseController.getHealings(fstmp,degree,STRESS,gender);
         Type typeOfHashMap = new TypeToken<Map<EDXPattern, AnalysisSummary>>() { }.getType();
-        Map<Pattern, AnalysisSummary> healingsMap = JsonUtils.fromJson(typeOfHashMap, healings.getBody().toString());
+
+        Map<Pattern, AnalysisSummary> healingsMap = JsonUtils.fromJson(typeOfHashMap, healings.getBody());
         LOGGER.info("%s", healingsMap.size());
         Assert.assertEquals(6, healingsMap.size());
 

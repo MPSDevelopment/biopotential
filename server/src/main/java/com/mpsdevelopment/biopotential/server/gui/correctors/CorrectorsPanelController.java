@@ -93,16 +93,6 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         serverSettings = BioApplication.APP_CONTEXT.getBean(ServerSettings.class);
 
         selectColumn.setMinWidth(80);
-//        selectColumn.setCellValueFactory(new PropertyValueFactory<DataTable, Boolean>("checkCar "));
-        /*selectColumn.setCellFactory(new Callback<TableColumn<DataTable, Boolean>, TableCell<DataTable, Boolean>>()
-        {
-            @Override
-            public TableCell<DataTable, Boolean> call(TableColumn<DataTable, Boolean> tableColumn)
-            {
-                return new BooleanCell();
-//                return new EditingCell();
-            }
-        });*/
 
         selectColumn.setCellValueFactory(new PropertyValueFactory<DataTable,Boolean>("check"));
         selectColumn.setCellFactory(new Callback<TableColumn<DataTable, Boolean>, TableCell<DataTable, Boolean>>() {
@@ -134,60 +124,6 @@ public class CorrectorsPanelController extends AbstractController implements Sub
 
         сorrectorsTable.getSelectionModel().selectAll();
 
-
-
-
-
-
-        /*selectColumn.setCellFactory(new Callback<TableColumn<DataTable, Boolean>, //
-                TableCell<DataTable, Boolean>>() {
-            @Override
-            public TableCell<DataTable, Boolean> call(TableColumn<DataTable, Boolean> p) {
-                CheckBoxTableCell<DataTable, Boolean> cell = new CheckBoxTableCell<DataTable, Boolean>();
-                cell.setAlignment(Pos.CENTER);
-                return cell;
-            }
-        });*/
-
-        /*selectColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, Boolean>, ObservableValue<Boolean>>() {
-            @Override public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<DataTable, Boolean> p) {
-                return new ReadOnlyObjectWrapper(сorrectorsTable.getItems().get(p.getValue().));
-            }
-        });*/
-        /*selectColumn.setCellFactory( new Callback<TableColumn<DataTable,Boolean>, TableCell<DataTable,Boolean>>()
-        {
-            @Override
-            public TableCell<DataTable,Boolean> call( TableColumn<DataTable,Boolean> param )
-            {
-                return new CheckBoxTableCell<DataTable,Boolean>()
-                {
-                    {
-                        setAlignment( Pos.CENTER );
-                    }
-                    @Override
-                    public void updateItem( Boolean item, boolean empty )
-                    {
-                        if ( ! empty )
-                        {
-                            TableRow  row = getTableRow();
-
-                            if ( row != null )
-                            {
-                                int rowNo = row.getIndex();
-                                TableView.TableViewSelectionModel sm = getTableView().getSelectionModel();
-
-                                if ( item )  sm.select( rowNo );
-                                else  sm.clearSelection( rowNo );
-                            }
-                        }
-
-                        super.updateItem( item, empty );
-                    }
-                };
-            }
-        } );
-        selectColumn.setEditable( true );*/
-
         сorrectorsTable.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -195,8 +131,6 @@ public class CorrectorsPanelController extends AbstractController implements Sub
 //                сorrectorsTable.getSelectionModel().clearSelection();
             }
         });
-
-//        сorrectorsTable.setMouseTransparent(true);
 
 
         correctorsData = FXCollections.observableArrayList();
@@ -313,7 +247,7 @@ public class CorrectorsPanelController extends AbstractController implements Sub
     /**
      * getPatterns from healingsMap and put to сorrectorsTable
      */
-    public void getPattersFromHealingsMap()  {
+    private void getPattersFromHealingsMap()  {
 
         healingsMap.forEach((pattern, analysisSummary) -> {
             LOGGER.info("%s %s\n", pattern.getKind(), pattern.getName(), analysisSummary.getDispersion());
@@ -370,7 +304,7 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         this.healingsMap = healingsMap;
     }
 
-    public void merge(Collection<List<Double>> lists) throws IOException, UnsupportedAudioFileException {
+    private void merge(Collection<List<Double>> lists) throws IOException, UnsupportedAudioFileException {
 
         Collection out;
         out = PCM.merge(lists);
@@ -419,71 +353,6 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         }
 
     }
-
-    /*class BooleanCell extends TableCell<DataTable, Boolean> {
-
-        private CheckBox checkBox;
-        public BooleanCell() {
-            checkBox = new CheckBox();
-//            checkBox.setDisable(false);
-            checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-                @Override
-                public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
-                    if (t1) {
-                        сorrectorsTable.getSelectionModel().select(getTableRow().getIndex());
-
-                    } else {
-                        сorrectorsTable.getSelectionModel().clearSelection(getTableRow().getIndex());
-                    }
-                }
-            });
-            this.setGraphic(checkBox);
-            this.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-            this.setEditable(true);
-            setAlignment(Pos.CENTER);
-        }
-
-
-        @Override
-        public void startEdit() {
-            super.startEdit();
-            if (isEmpty()) {
-                return;
-            }
-            checkBox.setDisable(false);
-            checkBox.requestFocus();
-        }
-        @Override
-        public void cancelEdit() {
-            super.cancelEdit();
-            checkBox.setDisable(true);
-        }
-        public void commitEdit(Boolean value) {
-            super.commitEdit(value);
-            checkBox.setDisable(true);
-        }
-        @Override
-        public void updateItem(Boolean item, boolean empty) {
-            super.updateItem(item, empty);
-            if (!isEmpty()) {
-                checkBox.setSelected(true);
-            }
-            if ( ! empty )
-            {
-                TableRow  row = getTableRow();
-
-                if ( row != null )
-                {
-                    *//*int rowNo = row.getIndex();
-                    TableView.TableViewSelectionModel sm = getTableView().getSelectionModel();
-                    if ( item )  sm.select( rowNo );
-                    else  sm.clearSelection( rowNo );*//*
-                }
-            }
-
-            super.updateItem( item, true );
-        }
-    }*/
 
     class BooleanCell extends TableCell<DataTable, Boolean> {
         private CheckBox checkBox;
