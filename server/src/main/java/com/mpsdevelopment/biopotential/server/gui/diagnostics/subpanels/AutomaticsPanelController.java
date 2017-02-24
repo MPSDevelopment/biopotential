@@ -69,7 +69,7 @@ public class AutomaticsPanelController extends AbstractController implements Sub
                 String degree2 = (String) whatShowComboBox1.getValue();
 
                 AnalysisPanel panel = new AnalysisPanel(file,degree1,degree2,gender);
-                Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Результат анализа").setClazz(panel.getClass()).setHeight(752d).setWidth(1150d).setHeightPanel(722d).setWidthPanel(1150d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+                Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Результат анализа").setClazz(panel.getClass()).setHeight(752d).setWidth(1608d).setHeightPanel(722d).setWidthPanel(1608d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
                 panel.setPrimaryStage(stage);
                 close();
             }

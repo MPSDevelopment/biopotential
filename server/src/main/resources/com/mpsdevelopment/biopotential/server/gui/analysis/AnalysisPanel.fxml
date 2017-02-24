@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
@@ -11,16 +12,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="722.0" prefWidth="1149.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mpsdevelopment.biopotential.server.gui.analysis.AnalysisPanelController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="722.0" prefWidth="1608.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mpsdevelopment.biopotential.server.gui.analysis.AnalysisPanelController">
    <children>
-      <ScatterChart fx:id="scatterChart" alternativeColumnFillVisible="true" animated="false" disable="true" layoutX="885.0" layoutY="32.0" legendVisible="false" pickOnBounds="false" prefHeight="641.0" prefWidth="500.0" visible="false">
-        <xAxis>
-          <NumberAxis animated="false" autoRanging="false" prefHeight="0.0" prefWidth="470.0" side="BOTTOM" upperBound="110" />
-        </xAxis>
-        <yAxis>
-          <NumberAxis autoRanging="false" prefHeight="645.0" prefWidth="6.0" side="LEFT" upperBound="110" />
-        </yAxis>
-      </ScatterChart>
       <TableView fx:id="healthConditionTable" layoutX="29.0" layoutY="249.0" prefHeight="430.0" prefWidth="557.0">
         <columns>
           <TableColumn fx:id="numberColumn" prefWidth="30.0" text="№" />
@@ -68,5 +61,16 @@
       <Button fx:id="hiddenButton" layoutX="265.0" layoutY="204.0" mnemonicParsing="false" text="Скрытая" />
       <Label layoutX="273.0" prefHeight="17.0" prefWidth="86.0" text="Stress Analyze" />
       <Label layoutX="238.0" layoutY="230.0" prefHeight="17.0" prefWidth="155.0" text="Системы органов челоека" />
+      <ScatterChart fx:id="scatterChart" alternativeColumnFillVisible="true" disable="true" layoutX="1172.0" layoutY="31.0" legendVisible="false" pickOnBounds="false" prefHeight="641.0" prefWidth="500.0">
+        <xAxis>
+          <NumberAxis animated="false" autoRanging="false" prefHeight="0.0" prefWidth="470.0" side="BOTTOM" upperBound="110" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis autoRanging="false" prefHeight="645.0" prefWidth="6.0" side="LEFT" upperBound="110" />
+        </yAxis>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ScatterChart>
    </children>
 </AnchorPane>

@@ -31,9 +31,10 @@
 
 */
 .chart-plot-background {
-    -fx-background-image: url("Image-of-the-human-body.jpg");
+    -fx-background-image: url("human.jpg");
     -fx-background-repeat: no-repeat;
     -fx-background-color: #FFFFFF;
+    -fx-background-size: cover;
 }
 
 .chart-vertical-grid-lines {

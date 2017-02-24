@@ -48,7 +48,7 @@ public class AnalyzeService {
         json = bioHttpClient.executePostRequest(url2 , file);
         Map<Pattern, AnalysisSummary> diseasesPo = JsonUtils.fromJson(typeOfHashMap, json);
         diseases.putAll(diseasesMax);
-        diseases.putAll(diseasesPo);
+//        diseases.putAll(diseasesPo);
         return diseases;
     }
 

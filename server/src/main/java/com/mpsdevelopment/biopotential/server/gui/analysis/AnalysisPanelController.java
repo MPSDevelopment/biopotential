@@ -5,6 +5,7 @@ import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
 import com.mpsdevelopment.biopotential.server.db.pojo.DataTable;
+import com.mpsdevelopment.biopotential.server.db.pojo.HumanPoints;
 import com.mpsdevelopment.biopotential.server.db.pojo.SystemDataTable;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
@@ -25,6 +26,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.ScatterChart;
@@ -32,6 +34,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -46,6 +49,7 @@ import java.math.RoundingMode;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 public class AnalysisPanelController extends AbstractController implements Subscribable {
 
@@ -174,6 +178,8 @@ public class AnalysisPanelController extends AbstractController implements Subsc
                 hiddenPanel.setPrimaryStage(mainPanelStage);
             }
         });
+
+
 
         printButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -314,18 +320,27 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             }
         });
 
-        scatterChart.setTitle("Body Overview");
 
-        XYChart.Series series1 = new XYChart.Series();
-        series1.getData().add(new XYChart.Data(15.0, 90));
-        series1.getData().add(new XYChart.Data(2.8, 33.6));
-        series1.getData().add(new XYChart.Data(1.8, 81.4));
+        /*scatterChart.setTitle("Body Overview");
 
-        scatterChart.getStylesheets().add("scater.css");
-        scatterChart.getData().addAll(series1);
+        XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        series.getData().add(new XYChart.Data<>(15.0, 90));
+        series.getData().add(new XYChart.Data<>(2.8, 33.6));
+        series.getData().add(new XYChart.Data<>(1.8, 81.4));
 
+//        scatterChart.getStylesheets().add("scater.css");
+        scatterChart.getData().addAll(series);
 
+        for (XYChart.Data<Number, Number> item: series.getData()) {
+                Node node = item.getNode() ;
+                node.setCursor(Cursor.HAND);
+                item.getNode().setOnMouseClicked((MouseEvent event) -> {
+                    System.out.println("you clicked " + item.toString());
+                });
+            }
+*/
     }
+
 
     private void makeAnalyze(File file) throws UnsupportedAudioFileException, IOException, SQLException {
 
@@ -339,6 +354,11 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         String urlPo = ControllerAPI.DISEAS_CONTROLLER + gender + STRESS + degree2 + GET_DISEAS;
         Map<Pattern, AnalysisSummary> diseasesStress = AnalyzeService.getDiseases(urlMax, urlPo, file);
         AnalyzeService.diseasToAnalysisData(diseasesStress, analysisStressData);
+
+        HumanPanel humanPanel = new HumanPanel(diseasesStress);
+        Stage humanStage = StageUtils.createStage(null, humanPanel, new StageSettings().setPanelTitle("Тело человека").setClazz(humanPanel.getClass()).setHeight(748d).setWidth(1470d)
+                .setHeightPanel(748d).setWidthPanel(1470d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+        humanPanel.setPrimaryStage(humanStage);
 
         // get diseases for systems
         // degree max
@@ -473,6 +493,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         healthConditionStressTable.setItems(analysisStressData);
 
     }
+
 
     void makeCurrentAnalyze(File file) {
         try {
