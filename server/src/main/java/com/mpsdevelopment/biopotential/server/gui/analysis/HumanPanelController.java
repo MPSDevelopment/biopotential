@@ -20,6 +20,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Tooltip;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
@@ -408,11 +409,11 @@ public class HumanPanelController extends AbstractController implements Subscrib
 
         // XValue, YValue for points on human body
         poitsMap = new HashMap<>();
-        poitsMap.put("001", new DataPoints(12.0, 94.0));
-        poitsMap.put("005", new DataPoints(14.0, 87.0));
-        poitsMap.put("008", new DataPoints(10.0, 75.0));
-        poitsMap.put("015", new DataPoints(8.0, 70.0));
-        poitsMap.put("020", new DataPoints(18.0, 70.0));
+        poitsMap.put("001 ", new DataPoints(12.0, 94.0));
+        poitsMap.put("005 ", new DataPoints(14.0, 87.0));
+        poitsMap.put("008 ", new DataPoints(10.0, 75.0));
+        poitsMap.put("015 ", new DataPoints(8.0, 70.0));
+        poitsMap.put("020 ", new DataPoints(18.0, 70.0));
 
         shapeMap = new HashMap<>();
         shapeMap.put("001 ", shape001); shapeMap.put("101", shape101);
@@ -491,13 +492,13 @@ public class HumanPanelController extends AbstractController implements Subscrib
                 /*poitsMap.forEach(new BiConsumer<String, DataPoints>() {
                     @Override
                     public void accept(String s, DataPoints dataPoints) {
-                        LOGGER.info("pattern name %s", pattern.getName().substring(3,6));
-                        if (s.equals(pattern.getName().substring(3,6))) {
+                        LOGGER.info("pattern name %s", pattern.getName().substring(3,7));
+                        if (s.equals(pattern.getName().substring(3,7))) {
                             series.getData().add(new XYChart.Data<>(dataPoints.getxValue(), dataPoints.getyValue()));
 
-                            shapeIt(pattern.getName().substring(3,6));
+                            shapeIt(pattern.getName().substring(3,7));
 
-                            addSectionToList(pattern, analysisSummary, pattern.getName().substring(3,6));
+                            addSectionToList(pattern, analysisSummary, pattern.getName().substring(3,7));
 
                         }
                     }
@@ -574,6 +575,8 @@ public class HumanPanelController extends AbstractController implements Subscrib
                 Number y = (Number) scatterChart.getYAxis().getValueForDisplay(yAxisLoc);
                 data.setXValue(x);
                 data.setYValue(y);*/
+                Tooltip tooltip = new Tooltip('('+data.getXValue().toString()+';'+data.getYValue().toString()+')');
+                Tooltip.install(node, tooltip);
                 displayPointOnBody((double)data.getXValue(), (double)data.getYValue());
             });
 

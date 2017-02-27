@@ -13,6 +13,10 @@
 		<property name="path" value="config/server.json" />
 	</bean>
 
+	 <bean id="configSettings" class="com.mpsdevelopment.biopotential.server.settings.ConfigSettings" init-method="init">
+        <property name="path" value="config/config.json" />
+    </bean>
+
 	<bean id="selectFromDbPanelController" class="com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.SelectFromDbPanelController" />
 	<bean id="diagPanelController" class="com.mpsdevelopment.biopotential.server.gui.diagnostics.DiagPanelController"/>
 	<bean id="automaticsPanelController" class="com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.AutomaticsPanelController" />

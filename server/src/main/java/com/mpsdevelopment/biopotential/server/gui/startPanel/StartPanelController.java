@@ -150,7 +150,7 @@ public class StartPanelController extends AbstractController implements Subscrib
             public void handle(ActionEvent event) {
                 ConfigPanel configPanel = new ConfigPanel();
                 LOGGER.info(" Start Config panel");
-                Stage mainPanelStage = StageUtils.createStage(null, configPanel, new StageSettings().setPanelTitle("Файл конфигурации").setClazz(DiagPanel.class).setHeight(310d).setWidth(429d).setHeightPanel(310d).setWidthPanel(429d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+                Stage mainPanelStage = StageUtils.createStage(null, configPanel, new StageSettings().setPanelTitle("Файл конфигурации").setClazz(DiagPanel.class).setHeight(483d).setWidth(632d).setHeightPanel(483d).setWidthPanel(632d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
                 configPanel.setPrimaryStage(mainPanelStage);
             }
         });
