@@ -43,6 +43,8 @@ import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import net.engio.mbassy.listener.Handler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.stereotype.Component;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
@@ -53,7 +55,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.function.BiConsumer;
-
+@Component
 public class AnalysisPanelController extends AbstractController implements Subscribable {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(AnalysisPanelController.class);
@@ -160,6 +162,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     public AnalysisPanelController() {
 //        EventBus.subscribe(this);
+        LOGGER.info("AnalysisPanelController created");
     }
 
     @Override

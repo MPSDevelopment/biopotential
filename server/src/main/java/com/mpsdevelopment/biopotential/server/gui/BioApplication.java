@@ -22,7 +22,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class BioApplication extends Application {
 
-    public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/app-context.xml");
+    public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/javafx-context.xml");
 
     private static ClasspathResourceManager resourceManager = ClasspathResourceManager.getResourceManager();
 

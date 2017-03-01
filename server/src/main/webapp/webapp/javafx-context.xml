@@ -13,7 +13,7 @@
 		<property name="path" value="config/server.json" />
 	</bean>
 
-	 <!--<bean id="configSettings" class="com.mpsdevelopment.biopotential.server.settings.ConfigSettings" init-method="init">
+	 <bean id="configSettings" class="com.mpsdevelopment.biopotential.server.settings.ConfigSettings" init-method="init">
         <property name="path" value="config/config.json" />
     </bean>
     <context:annotation-config/>
@@ -28,6 +28,6 @@
 	<bean id="correctorsPanelController" class="com.mpsdevelopment.biopotential.server.gui.correctors.CorrectorsPanelController" />
 	<bean id="addCorrectorController" class="com.mpsdevelopment.biopotential.server.gui.correctors.AddCorrectorController" />
 	<bean id="converterPanelController" class="com.mpsdevelopment.biopotential.server.gui.converter.ConverterPanelController" />
-	<bean id="barChartPanelController" class="com.mpsdevelopment.biopotential.server.gui.analysis.BarChartPanelController" />-->
+	<bean id="barChartPanelController" class="com.mpsdevelopment.biopotential.server.gui.analysis.BarChartPanelController" />
 
 </beans>

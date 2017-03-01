@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import java.io.File;
 import java.io.IOException;
-@Configurable
 public class AnalysisPanel extends Pane {
 
 	private static final Logger LOGGER = LoggerUtil.getLogger(AnalysisPanel.class);
