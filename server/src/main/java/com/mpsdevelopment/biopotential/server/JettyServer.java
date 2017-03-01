@@ -119,7 +119,8 @@ public class JettyServer {
 
 			WEB_CONTEXT = new XmlWebApplicationContext();
 			WEB_CONTEXT.setConfigLocations(SPRING_CONTEXT_FILENAME);
-			WEB_CONTEXT.setParent(BioApplication.APP_CONTEXT);
+//			WEB_CONTEXT.setParent(BioApplication.APP_CONTEXT);
+			WEB_CONTEXT.setParent(new ClassPathXmlApplicationContext("webapp/app-context.xml"));
 
 			ServletHolder mvcServletHolder = new ServletHolder(MVC_SERVLET_NAME, new DispatcherServlet(WEB_CONTEXT));
 			mvcServletHolder.setInitParameter("useFileMappedBuffer", "false");
