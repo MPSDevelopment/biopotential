@@ -10,10 +10,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import java.io.File;
 import java.io.IOException;
-
+@Configurable
 public class AnalysisPanel extends Pane {
 
 	private static final Logger LOGGER = LoggerUtil.getLogger(AnalysisPanel.class);
