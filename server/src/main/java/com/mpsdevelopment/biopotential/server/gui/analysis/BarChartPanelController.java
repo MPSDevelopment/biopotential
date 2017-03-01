@@ -166,7 +166,7 @@ public class BarChartPanelController extends AbstractController implements Subsc
         ObservableList<SystemDataTable> datas = FXCollections.observableArrayList();
         datas.addAll(SystemDataTable.createDataTableObject(mapMax, mapPo));
 
-        String[] systems = {"AL", "CA", "DE", "En", "GA", "IM", "ME", "NE", "OR", "SP", "St", "UR", "VI"};
+        String[] systems = {"Al", "Ca", "De", "En", "Ga", "Im", "Me", "Ne", "Or", "Sp", "St", "Ur", "Vi"};
         String[] allsystems = {" - ALLERGY система", " - CARDIO система", " - DERMA система", " - Endocrinology система", " - GASTRO система", " - IMMUN система", " - MENTIS система",
                 " - NEURAL система", " - ORTHO система", " - SPIRITUS система", " - Stomat система", " - UROLOG система", " - VISION система"};
 
@@ -186,34 +186,34 @@ public class BarChartPanelController extends AbstractController implements Subsc
 
         ObservableList<XYChart.Series<Number, Number>> barChartData = FXCollections.observableArrayList(
                 new BarChart.Series("Max", FXCollections.observableArrayList(
-                        new BarChart.Data(systems[0], mapMax.get("AL")),
-                        new BarChart.Data(systems[1], mapMax.get("CA")),
-                        new BarChart.Data(systems[2], mapMax.get("DE")),
+                        new BarChart.Data(systems[0], mapMax.get("Al")),
+                        new BarChart.Data(systems[1], mapMax.get("Ca")),
+                        new BarChart.Data(systems[2], mapMax.get("De")),
                         new BarChart.Data(systems[3], mapMax.get("En")),
-                        new BarChart.Data(systems[4], mapMax.get("GA")),
-                        new BarChart.Data(systems[5], mapMax.get("IM")),
-                        new BarChart.Data(systems[6], mapMax.get("ME")),
-                        new BarChart.Data(systems[7], mapMax.get("NE")),
-                        new BarChart.Data(systems[8], mapMax.get("OR")),
-                        new BarChart.Data(systems[9], mapMax.get("SP")),
+                        new BarChart.Data(systems[4], mapMax.get("Ga")),
+                        new BarChart.Data(systems[5], mapMax.get("Im")),
+                        new BarChart.Data(systems[6], mapMax.get("Me")),
+                        new BarChart.Data(systems[7], mapMax.get("Ne")),
+                        new BarChart.Data(systems[8], mapMax.get("Or")),
+                        new BarChart.Data(systems[9], mapMax.get("Sp")),
                         new BarChart.Data(systems[10], mapMax.get("St")),
-                        new BarChart.Data(systems[11], mapMax.get("UR")),
-                        new BarChart.Data(systems[12], mapMax.get("VI"))
+                        new BarChart.Data(systems[11], mapMax.get("Ur")),
+                        new BarChart.Data(systems[12], mapMax.get("Vi"))
                 )),
                 new BarChart.Series("Po", FXCollections.observableArrayList(
-                        new BarChart.Data(systems[0], mapPo.get("AL")),
-                        new BarChart.Data(systems[1], mapPo.get("CA")),
-                        new BarChart.Data(systems[2], mapPo.get("DE")),
+                        new BarChart.Data(systems[0], mapPo.get("Al")),
+                        new BarChart.Data(systems[1], mapPo.get("Ca")),
+                        new BarChart.Data(systems[2], mapPo.get("De")),
                         new BarChart.Data(systems[3], mapPo.get("En")),
-                        new BarChart.Data(systems[4], mapPo.get("GA")),
-                        new BarChart.Data(systems[5], mapPo.get("IM")),
-                        new BarChart.Data(systems[6], mapPo.get("ME")),
-                        new BarChart.Data(systems[7], mapPo.get("NE")),
-                        new BarChart.Data(systems[8], mapPo.get("OR")),
-                        new BarChart.Data(systems[9], mapPo.get("SP")),
+                        new BarChart.Data(systems[4], mapPo.get("Ga")),
+                        new BarChart.Data(systems[5], mapPo.get("Im")),
+                        new BarChart.Data(systems[6], mapPo.get("Me")),
+                        new BarChart.Data(systems[7], mapPo.get("Ne")),
+                        new BarChart.Data(systems[8], mapPo.get("Or")),
+                        new BarChart.Data(systems[9], mapPo.get("Sp")),
                         new BarChart.Data(systems[10], mapPo.get("St")),
-                        new BarChart.Data(systems[11], mapPo.get("UR")),
-                        new BarChart.Data(systems[12], mapPo.get("VI"))
+                        new BarChart.Data(systems[11], mapPo.get("Ur")),
+                        new BarChart.Data(systems[12], mapPo.get("Vi"))
 
                 )));
 

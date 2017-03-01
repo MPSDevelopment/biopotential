@@ -1,6 +1,9 @@
 package com.mpsdevelopment.biopotential.server.gui.analysis;
 
 
+import com.mpsdevelopment.biopotential.server.SpringLoaderFXML;
+import com.mpsdevelopment.biopotential.server.gui.BioApplication;
+import com.mpsdevelopment.biopotential.server.gui.diagnostics.DiagPanelController;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.fxml.FXMLLoader;
@@ -19,12 +22,12 @@ public class AnalysisPanel extends Pane {
 
     public AnalysisPanel(File file, String degree1,String degree2, String gender) {
 
-//        analysisPanelController = (AnalysisPanelController) SpringLoaderFXML.load(BioApplication.APP_CONTEXT,AnalysisPanelController.class, "AnalysisPanel.fxml");
+        analysisPanelController = BioApplication.APP_CONTEXT.getBean(AnalysisPanelController.class);
         FXMLLoader loader = new FXMLLoader();
 
         try {
             Pane pane = loader.load(this.getClass().getResourceAsStream("AnalysisPanel.fxml"));
-            analysisPanelController = loader.getController();
+//            analysisPanelController = loader.getController();
             analysisPanelController.setView(pane);
             analysisPanelController.setDegree1(degree1);
             analysisPanelController.setDegree2(degree2);

@@ -1,6 +1,7 @@
 package com.mpsdevelopment.biopotential.server.gui.service;
 
 import com.google.gson.reflect.TypeToken;
+import com.mpsdevelopment.biopotential.server.JettyServer;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
@@ -9,10 +10,12 @@ import com.mpsdevelopment.biopotential.server.controller.DiseaseController;
 import com.mpsdevelopment.biopotential.server.db.pojo.DataTable;
 import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
 import com.mpsdevelopment.biopotential.server.httpclient.HttpClientFactory;
+import com.mpsdevelopment.biopotential.server.settings.ConfigSettings;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.collections.ObservableList;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -21,11 +24,17 @@ import java.util.function.BiConsumer;
 
 public class AnalyzeService {
 
-    private static final String HOST = "localhost";
-    private static final int PORT = 8098;
-    private static double alWeight = 0, viWeight = 0, caWeight = 0, deWeight = 0, enWeight = 0, gaWeight = 0, imWeight = 0, neWeight = 0, orWeight = 0, spWeight = 0, stWeight = 0, urWeight = 0;
+    private /*static*/ final String HOST = "localhost";
+    private /*static*/ final int PORT = 8098;
+    private /*static*/ double alWeight = 0, viWeight = 0, caWeight = 0, deWeight = 0, enWeight = 0, gaWeight = 0, imWeight = 0, neWeight = 0, orWeight = 0, spWeight = 0, stWeight = 0, urWeight = 0;
 
     private static final Logger LOGGER = LoggerUtil.getLogger(DiseaseController.class);
+
+    @Autowired
+    private ConfigSettings configSettings;
+
+    public AnalyzeService() {
+    }
 
     /**
      *
@@ -34,7 +43,7 @@ public class AnalyzeService {
      * @param file  input audio file
      * @return   Map<Pattern, AnalysisSummary>
      */
-    public static Map<Pattern, AnalysisSummary> getDiseases(String url1, String url2, File file) {
+    public /*static*/ Map<Pattern, AnalysisSummary> getDiseases(String url1, String url2, File file) {
 
         BioHttpClient bioHttpClient = HttpClientFactory.getInstance();
 
@@ -48,7 +57,7 @@ public class AnalyzeService {
         json = bioHttpClient.executePostRequest(url2 , file);
         Map<Pattern, AnalysisSummary> diseasesPo = JsonUtils.fromJson(typeOfHashMap, json);
         diseases.putAll(diseasesMax);
-//        diseases.putAll(diseasesPo);
+        diseases.putAll(diseasesPo);
         return diseases;
     }
 
@@ -58,7 +67,7 @@ public class AnalyzeService {
      * @param file
      * @return
      */
-    public static Map<Pattern, AnalysisSummary> getDiseasesByDegree(String url, File file) {
+    public /*static*/ Map<Pattern, AnalysisSummary> getDiseasesByDegree(String url, File file) {
         Map<Pattern, AnalysisSummary> diseases = getPostRequest(url, file);
         return diseases;
     }
@@ -71,7 +80,7 @@ public class AnalyzeService {
      * @param diseasePo map with diseases by Po degree
      * @return  healings map Map<Pattern, AnalysisSummary> with healings by Max and Po degree's
      */
-    public static Map<Pattern, AnalysisSummary> getHealings(String urlMax, String urlPo, Map<Pattern, AnalysisSummary> diseaseMax, Map<Pattern, AnalysisSummary> diseasePo) {
+    public /*static*/ Map<Pattern, AnalysisSummary> getHealings(String urlMax, String urlPo, Map<Pattern, AnalysisSummary> diseaseMax, Map<Pattern, AnalysisSummary> diseasePo) {
 
         Map<Pattern, AnalysisSummary> healingsMax = getPostRequest(urlMax, diseaseMax);
 //        Map<Pattern, AnalysisSummary> healingsPo = getPostRequest(urlPo, diseasePo);
@@ -87,7 +96,7 @@ public class AnalyzeService {
      * @param disease
      * @return
      */
-    private static Map<Pattern, AnalysisSummary> getPostRequest(String url, Map<Pattern, AnalysisSummary> disease) {
+    private /*static*/ Map<Pattern, AnalysisSummary> getPostRequest(String url, Map<Pattern, AnalysisSummary> disease) {
         BioHttpClient bioHttpClient = HttpClientFactory.getInstance();
         String heal = bioHttpClient.executePostRequest(url,disease);
         Type typeOfHashMap = new TypeToken<Map<EDXPattern, AnalysisSummary>>() { }.getType();
@@ -102,7 +111,7 @@ public class AnalyzeService {
      * @param file
      * @return
      */
-    private static Map<Pattern, AnalysisSummary> getPostRequest(String url, File file) {
+    private /*static*/ Map<Pattern, AnalysisSummary> getPostRequest(String url, File file) {
         BioHttpClient bioHttpClient = HttpClientFactory.getInstance();
 
         String json = bioHttpClient.executePostRequest(url , file);
@@ -110,7 +119,7 @@ public class AnalyzeService {
         return JsonUtils.fromJson(typeOfHashMap, json);
     }
 
-    public static void getPatternsSize() {
+    public /*static*/ void getPatternsSize() {
         clearSystemsWeight();
 
         Type type = new TypeToken<Map<String, Integer>>() { }.getType();
@@ -124,7 +133,7 @@ public class AnalyzeService {
         sizeMap.forEach(new BiConsumer<String, Integer>() {
             @Override
             public void accept(String s, Integer weight) {
-                if (s.contains("Al ALLERGY")) {
+                if (s.contains(configSettings.getLiteral1() + configSettings.getSystemName1())) {
                     alWeight = (double) 100/weight;
                 }
                 if (s.contains("Ca CARDIO")) {
@@ -166,7 +175,7 @@ public class AnalyzeService {
 //        return sizeMap;
     }
 
-    private static void clearSystemsWeight() {
+    private /*static*/ void clearSystemsWeight() {
         alWeight = 0;
         viWeight = 0;
         caWeight = 0;
@@ -187,7 +196,7 @@ public class AnalyzeService {
      * @param analysisData output ObservableList<DataTable> for javafx tables
      * @return ObservableList<DataTable>
      */
-    public static ObservableList<DataTable> diseasToAnalysisData(Map<Pattern, AnalysisSummary> map, ObservableList<DataTable> analysisData) {
+    public /*static*/ ObservableList<DataTable> diseasToAnalysisData(Map<Pattern, AnalysisSummary> map, ObservableList<DataTable> analysisData) {
 
         map.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
             @Override
@@ -203,7 +212,7 @@ public class AnalyzeService {
      * sort Map<Pattern, AnalysisSummary> with disease's only for pattern's which belong's to system folder's
      * @param diseasesSystems
      */
-    public static void sortBySystem(Map<Pattern, AnalysisSummary> diseasesSystems) {
+    public /*static*/ void sortBySystem(Map<Pattern, AnalysisSummary> diseasesSystems) {
         Map<Pattern, AnalysisSummary> diseasesTemp = new HashMap<>();
 
         diseasesSystems.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
@@ -225,22 +234,22 @@ public class AnalyzeService {
      * @param sortedSelectedItems sorted Set with diseases
      * @return Map<String, Double>
      */
-    public static Map<String, Double> getSystemMap(Set<DataTable> sortedSelectedItems) {
+    public /*static*/ Map<String, Double> getSystemMap(Set<DataTable> sortedSelectedItems) {
 
         Map<String,Double> systemMap = new HashMap<>();
-        systemMap.put("AL",0d);
-        systemMap.put("CA",0d);
-        systemMap.put("DE",0d);
+        systemMap.put("Al",0d);
+        systemMap.put("Ca",0d);
+        systemMap.put("De",0d);
         systemMap.put("En",0d);
-        systemMap.put("GA",0d);
-        systemMap.put("IM",0d);
-        systemMap.put("ME",0d);
-        systemMap.put("NE",0d);
-        systemMap.put("OR",0d);
-        systemMap.put("SP",0d);
+        systemMap.put("Ga",0d);
+        systemMap.put("Im",0d);
+        systemMap.put("Me",0d);
+        systemMap.put("Ne",0d);
+        systemMap.put("Or",0d);
+        systemMap.put("Sp",0d);
         systemMap.put("St",0d);
-        systemMap.put("UR",0d);
-        systemMap.put("VI",0d);
+        systemMap.put("Ur",0d);
+        systemMap.put("Vi",0d);
 
         // decode diseas names to system's name's
         for (DataTable dataTable: sortedSelectedItems) {
@@ -251,43 +260,43 @@ public class AnalyzeService {
                     break;
                 }
             }
-
+        // check pattern name by system prefix (literal
             switch (dataTable.getName().substring(0, 2)) {
                 case "AL":
-                    systemMap.put("AL",systemMap.get("AL")+alWeight);
+                    systemMap.put("Al",systemMap.get("Al")+alWeight);
                     break;
                 case "Ca":
-                    systemMap.put("CA",systemMap.get("CA")+caWeight);
+                    systemMap.put("Ca",systemMap.get("Ca")+caWeight);
                     break;
                 case "De":
-                    systemMap.put("DE",systemMap.get("DE")+deWeight);
+                    systemMap.put("De",systemMap.get("De")+deWeight);
                     break;
                 case "En":
                     systemMap.put("En",systemMap.get("En")+deWeight);
                     break;
                 case "Ga":
-                    systemMap.put("GA",systemMap.get("GA")+gaWeight);
+                    systemMap.put("Ga",systemMap.get("Ga")+gaWeight);
                     break;
                 case "Im":
-                    systemMap.put("IM",systemMap.get("IM")+imWeight);
+                    systemMap.put("Im",systemMap.get("Im")+imWeight);
                     break;
                 case "Ne":
-                    systemMap.put("NE",systemMap.get("NE")+neWeight);
+                    systemMap.put("Ne",systemMap.get("Ne")+neWeight);
                     break;
                 case "Or":
-                    systemMap.put("OR",systemMap.get("OR")+orWeight);
+                    systemMap.put("Or",systemMap.get("Or")+orWeight);
                     break;
                 case "Sp":
-                    systemMap.put("SP",systemMap.get("SP")+spWeight);
+                    systemMap.put("Sp",systemMap.get("Sp")+spWeight);
                     break;
                 case "St":
                     systemMap.put("St",systemMap.get("St")+stWeight);
                     break;
                 case "Ur":
-                    systemMap.put("UR",systemMap.get("UR")+urWeight);
+                    systemMap.put("Ur",systemMap.get("Ur")+urWeight);
                     break;
                 case "Vi":
-                    systemMap.put("VI",systemMap.get("VI")+viWeight);
+                    systemMap.put("Vi",systemMap.get("Vi")+viWeight);
                     break;
             }
         }
@@ -299,7 +308,7 @@ public class AnalyzeService {
      * @param data
      * @return
      */
-    public static Set<DataTable> sortSelected(ObservableList<DataTable> data) {
+    public /*static*/ Set<DataTable> sortSelected(ObservableList<DataTable> data) {
         Set<DataTable> sortedSelectedItems = new HashSet<>();
         char [] str = new char[5];
         char [] cmp = new char[5];

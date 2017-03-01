@@ -76,51 +76,51 @@ public class PatternsController {
         Map<String,Integer> map = new HashMap<>();
 
         List<Folder> folders = foldersDao.findAll();
-        for (Folder fol : folders) {
+        for (Folder folder : folders) {
 //            List<EDXPattern> list = foldersDao.getAllPatternsByFolder(fol);
             int size = 0;
             List<EDXPattern> list = null;
 
             try {
-                size = patternsDao.getPatternsFromFoldersToSystem(fol);
+                size = patternsDao.getPatternsFromFoldersToSystem(folder);
 //                list = patternsDao.getPatternsFromFoldersCorIsNull(fol);
             } catch (SQLException | IOException e) {
                 e.printStackTrace();
             }
-            if (fol.getFolderName().contains("Al ALLERGY")) {
+            if (folder.getFolderName().contains("Al ALLERGY")) {
                 map.put("Al ALLERGY", size);
             }
-            if (fol.getFolderName().contains("Ca CARDIO")) {
+            if (folder.getFolderName().contains("Ca CARDIO")) {
                 map.put("Ca CARDIO", size);
             }
-            if (fol.getFolderName().contains("De DERMA")) {
+            if (folder.getFolderName().contains("De DERMA")) {
                 map.put("De DERMA", size);
             }
-            if (fol.getFolderName().contains("En ENDOKRIN")) {
+            if (folder.getFolderName().contains("En ENDOKRIN")) {
                 map.put("En ENDOKRIN", size);
             }
-            if (fol.getFolderName().contains("Ga GASTRO")) {
+            if (folder.getFolderName().contains("Ga GASTRO")) {
                 map.put("Ga GASTRO", size);
             }
-            if (fol.getFolderName().contains("Im IMMUN")) {
+            if (folder.getFolderName().contains("Im IMMUN")) {
                 map.put("Im IMMUN", size);
             }
-            if (fol.getFolderName().contains("Ne NEURAL")) {
+            if (folder.getFolderName().contains("Ne NEURAL")) {
                 map.put("Ne NEURAL", size);
             }
-            if (fol.getFolderName().contains("Or ORTHO")) {
+            if (folder.getFolderName().contains("Or ORTHO")) {
                 map.put("Or ORTHO", size);
             }
-            if (fol.getFolderName().contains("Sp SPIRITUS")) {
+            if (folder.getFolderName().contains("Sp SPIRITUS")) {
                 map.put("Sp SPIRITUS", size);
             }
-            if (fol.getFolderName().contains("St STOMAT")) {
+            if (folder.getFolderName().contains("St STOMAT")) {
                 map.put("St STOMAT", size);
             }
-            if (fol.getFolderName().contains("Ur UROLOG")) {
+            if (folder.getFolderName().contains("Ur UROLOG")) {
                 map.put("Ur UROLOG", size);
             }
-            if (fol.getFolderName().contains("Vi VISION")) {
+            if (folder.getFolderName().contains("Vi VISION")) {
                 map.put("Vi VISION ", size);
             }
         }

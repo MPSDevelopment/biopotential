@@ -1,6 +1,7 @@
 package com.mpsdevelopment.biopotential.server.gui.analysis;
 
 import com.mpsdevelopment.biopotential.server.AbstractController;
+import com.mpsdevelopment.biopotential.server.JettyServer;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
@@ -13,6 +14,7 @@ import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
 import com.mpsdevelopment.biopotential.server.eventbus.event.HealingsMapEvent;
 import com.mpsdevelopment.biopotential.server.gui.correctors.CorrectorsPanel;
 import com.mpsdevelopment.biopotential.server.gui.service.AnalyzeService;
+import com.mpsdevelopment.biopotential.server.settings.ConfigSettings;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
 import com.mpsdevelopment.biopotential.server.utils.PanelUtils;
 import com.mpsdevelopment.biopotential.server.utils.StageUtils;
@@ -40,6 +42,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import net.engio.mbassy.listener.Handler;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
@@ -62,6 +65,12 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     private ObservableList<DataTable> analysisData;
     private ObservableList<DataTable> analysisHiddenData;
     private ObservableList<String> level;
+
+    @Autowired
+    private AnalyzeService analyzeService;
+
+    @Autowired
+    private ConfigSettings configSettings;
 
     @FXML
     private ScatterChart<Number, Number> scatterChart;
@@ -140,6 +149,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     private String degree1;
     private String degree2;
+//    private ConfigSettings configSettings;
 
     private ObservableList<DataTable> analysisStressData;
 
@@ -154,6 +164,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+//        configSettings = JettyServer.WEB_CONTEXT.getBean(ConfigSettings.class);
         /**
          * (system folder) analysisData - disease (patterns) from all folder's in which corrector's cell is not null (all folders which correcting sub-folder's )
          * (stress analyze) analysisStressData - disease (patterns) from folder's: Stress Analyze, Di Деструкция, Me Метаболизм, Bo Физ кондиции, Dt DETOKC
@@ -352,8 +363,8 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         // degree Po
         String urlMax = ControllerAPI.DISEAS_CONTROLLER + gender + STRESS + degree1 + GET_DISEAS;
         String urlPo = ControllerAPI.DISEAS_CONTROLLER + gender + STRESS + degree2 + GET_DISEAS;
-        Map<Pattern, AnalysisSummary> diseasesStress = AnalyzeService.getDiseases(urlMax, urlPo, file);
-        AnalyzeService.diseasToAnalysisData(diseasesStress, analysisStressData);
+        Map<Pattern, AnalysisSummary> diseasesStress = analyzeService.getDiseases(urlMax, urlPo, file);
+        analyzeService.diseasToAnalysisData(diseasesStress, analysisStressData);
 
         HumanPanel humanPanel = new HumanPanel(diseasesStress);
         Stage humanStage = StageUtils.createStage(null, humanPanel, new StageSettings().setPanelTitle("Тело человека").setClazz(humanPanel.getClass()).setHeight(748d).setWidth(1470d)
@@ -365,23 +376,23 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         // degree Po
         urlMax = ControllerAPI.DISEAS_CONTROLLER + gender + COR_NOT_NULL + degree1 + GET_DISEAS;
         urlPo = ControllerAPI.DISEAS_CONTROLLER + gender + COR_NOT_NULL + degree2 + GET_DISEAS;
-        Map<Pattern, AnalysisSummary> diseasesSystemsMax = AnalyzeService.getDiseasesByDegree(urlMax, file);
-        Map<Pattern, AnalysisSummary> diseasesSystemsPo = AnalyzeService.getDiseasesByDegree(urlPo, file);
+        Map<Pattern, AnalysisSummary> diseasesSystemsMax = analyzeService.getDiseasesByDegree(urlMax, file);
+        Map<Pattern, AnalysisSummary> diseasesSystemsPo = analyzeService.getDiseasesByDegree(urlPo, file);
         Map<Pattern, AnalysisSummary> diseasesSystems = new HashMap<>();
         diseasesSystems.putAll(diseasesSystemsMax);
         diseasesSystems.putAll(diseasesSystemsPo);
 
         // sort by system folder
-        AnalyzeService.sortBySystem(diseasesSystems);
-        AnalyzeService.diseasToAnalysisData(diseasesSystems, analysisData);
+        analyzeService.sortBySystem(diseasesSystems);
+        analyzeService.diseasToAnalysisData(diseasesSystems, analysisData);
 
         // get diseases for hidden
         // degree max
         // degree Po
         urlMax = ControllerAPI.DISEAS_CONTROLLER + gender + HIDDEN + degree1 + GET_DISEAS;
         urlPo = ControllerAPI.DISEAS_CONTROLLER + gender + HIDDEN + degree2 + GET_DISEAS;
-        Map<Pattern, AnalysisSummary> diseasesHidden = AnalyzeService.getDiseases(urlMax, urlPo, file);
-        AnalyzeService.diseasToAnalysisData(diseasesHidden, analysisHiddenData);
+        Map<Pattern, AnalysisSummary> diseasesHidden = analyzeService.getDiseases(urlMax, urlPo, file);
+        analyzeService.diseasToAnalysisData(diseasesHidden, analysisHiddenData);
         LOGGER.info("Total time for calculate diseases %d ms", System.currentTimeMillis() - t2);
 
         //----------------------------------- GET HEALING'S-------------------------------------------------
@@ -389,9 +400,9 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         long t1 = System.currentTimeMillis();
         urlMax = ControllerAPI.DISEAS_CONTROLLER + gender + degree1 + GET_HEALINGS;
         urlPo = ControllerAPI.DISEAS_CONTROLLER + gender + degree2 + GET_HEALINGS;
-        allHealings = AnalyzeService.getHealings(urlMax, urlPo, diseasesSystemsMax,diseasesSystemsPo);
+        allHealings = analyzeService.getHealings(urlMax, urlPo, diseasesSystemsMax,diseasesSystemsPo);
 
-        AnalyzeService.getPatternsSize();
+        analyzeService.getPatternsSize();
         LOGGER.info("Total time for calculate healings %d ms", System.currentTimeMillis() - t1);
         LOGGER.info("healings size %s", allHealings.size());
 
@@ -399,17 +410,17 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
         //---------------------------------- SORT ----------------------------------//
         ObservableList<DataTable> analysisDataByMax = FXCollections.observableArrayList();
-        AnalyzeService.diseasToAnalysisData(diseasesSystemsMax,analysisDataByMax);
-        Set<DataTable> sortedSelectedItemsByMax = AnalyzeService.sortSelected(analysisDataByMax);
+        analyzeService.diseasToAnalysisData(diseasesSystemsMax,analysisDataByMax);
+        Set<DataTable> sortedSelectedItemsByMax = analyzeService.sortSelected(analysisDataByMax);
 
         ObservableList<DataTable> analysisDataByPo = FXCollections.observableArrayList();
-        AnalyzeService.diseasToAnalysisData(diseasesSystemsPo,analysisDataByPo);
-        Set<DataTable> sortedSelectedItemsByPo = AnalyzeService.sortSelected(analysisDataByPo);
+        analyzeService.diseasToAnalysisData(diseasesSystemsPo,analysisDataByPo);
+        Set<DataTable> sortedSelectedItemsByPo = analyzeService.sortSelected(analysisDataByPo);
         //---------------------------------- SORT ----------------------------------//
 
         //---------------------------------- MAP FOR BAR CHART-----------------------//
-        Map<String, Double> systemMapMax = AnalyzeService.getSystemMap(sortedSelectedItemsByMax);
-        Map<String, Double> systemMapPo = AnalyzeService.getSystemMap(sortedSelectedItemsByPo);
+        Map<String, Double> systemMapMax = analyzeService.getSystemMap(sortedSelectedItemsByMax);
+        Map<String, Double> systemMapPo = analyzeService.getSystemMap(sortedSelectedItemsByPo);
         //---------------------------------- MAP FOR BAR CHART-----------------------//
 
         ObservableList<SystemDataTable> diseaseSystemTable = FXCollections.observableArrayList();
@@ -419,7 +430,9 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("График состояния").setClazz(panel.getClass()).setHeight(815d).setWidth(1308d).setHeightPanel(815d).setWidthPanel(1308d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
         panel.setPrimaryStage(stage);
 
-        String[] systems = {"AL","CA","DE","En", "GA", "IM", "ME", "NE", "OR", "SP", "St", "UR", "VI"};
+        String[] systems = {configSettings.getLiteral1(),configSettings.getLiteral2(),configSettings.getLiteral3(),configSettings.getLiteral4(), configSettings.getLiteral5(),
+                configSettings.getLiteral6(), "Me", configSettings.getLiteral7(), configSettings.getLiteral8(), configSettings.getLiteral9(),
+                configSettings.getLiteral10(), configSettings.getLiteral11(), configSettings.getLiteral12()};
         ObservableList<XYChart.Series<Number, Number>> barChartData = FXCollections.observableArrayList(
                 new BarChart.Series("Max", FXCollections.observableArrayList(
                         new BarChart.Data(systems[0], systemMapMax.get(systems[0])),
@@ -495,7 +508,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
     }
 
 
-    void makeCurrentAnalyze(File file) {
+    public void makeCurrentAnalyze(File file) {
         try {
             makeAnalyze(file);
         } catch (UnsupportedAudioFileException | IOException | SQLException e) {

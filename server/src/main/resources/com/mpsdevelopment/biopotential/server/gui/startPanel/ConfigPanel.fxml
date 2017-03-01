@@ -5,56 +5,75 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="483.0" prefWidth="632.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mpsdevelopment.biopotential.server.gui.startPanel.ConfigPanelController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="483.0" prefWidth="492.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mpsdevelopment.biopotential.server.gui.startPanel.ConfigPanelController">
    <children>
-      <Button fx:id="okButton" layoutX="168.0" layoutY="434.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="126.0" text="Ок" />
-      <Button fx:id="cancelButton" layoutX="300.0" layoutY="434.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="126.0" text="Отмена" />
+      <Button fx:id="okButton" layoutX="43.0" layoutY="432.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="126.0" text="Ок" />
+      <Button fx:id="cancelButton" layoutX="175.0" layoutY="432.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="126.0" text="Отмена" />
       <Label layoutX="309.0" layoutY="2.0" prefHeight="25.0" prefWidth="53.0" text="Системы" />
       <TextField fx:id="threshold1" layoutX="399.0" layoutY="55.0" prefHeight="25.0" prefWidth="53.0" />
       <Label fx:id="label1" layoutX="38.0" layoutY="55.0" prefHeight="25.0" prefWidth="112.0" text="ALLERGY Система" />
       <TextField fx:id="threshold2" layoutX="399.0" layoutY="85.0" prefHeight="25.0" prefWidth="53.0" />
       <Label fx:id="label2" layoutX="38.0" layoutY="85.0" prefHeight="25.0" prefWidth="112.0" text="CARDIO Система" />
-      <TextField fx:id="deTextField" layoutX="154.0" layoutY="115.0" prefHeight="25.0" prefWidth="53.0" />
-      <Label layoutX="38.0" layoutY="115.0" prefHeight="25.0" prefWidth="112.0" text="DERMA Система" />
-      <TextField fx:id="enTextField" layoutX="154.0" layoutY="145.0" prefHeight="25.0" prefWidth="53.0" />
-      <Label layoutX="38.0" layoutY="145.0" prefHeight="25.0" prefWidth="112.0" text="ENDOCRIN Система" />
-      <TextField fx:id="gaTextField" layoutX="154.0" layoutY="175.0" prefHeight="25.0" prefWidth="53.0" />
-      <Label layoutX="38.0" layoutY="175.0" prefHeight="25.0" prefWidth="112.0" text="GASTRO Система" />
-      <TextField fx:id="imTextField" layoutX="154.0" layoutY="205.0" prefHeight="25.0" prefWidth="53.0" />
-      <Label layoutX="38.0" layoutY="205.0" prefHeight="25.0" prefWidth="112.0" text="IMMUN Система" />
-      <TextField fx:id="neTextField" layoutX="154.0" layoutY="235.0" prefHeight="25.0" prefWidth="53.0" />
-      <Label layoutX="38.0" layoutY="235.0" prefHeight="25.0" prefWidth="112.0" text="NEURAL Система" />
-      <TextField fx:id="orTextField" layoutX="154.0" layoutY="265.0" prefHeight="25.0" prefWidth="53.0" />
-      <Label layoutX="38.0" layoutY="265.0" prefHeight="25.0" prefWidth="112.0" text="ORTHO Система" />
-      <TextField fx:id="spTextField" layoutX="154.0" layoutY="295.0" prefHeight="25.0" prefWidth="53.0" />
-      <Label layoutX="38.0" layoutY="295.0" prefHeight="25.0" prefWidth="112.0" text="SPIRITUS Система" />
-      <TextField fx:id="stTextField" layoutX="154.0" layoutY="325.0" prefHeight="25.0" prefWidth="53.0" />
-      <Label layoutX="38.0" layoutY="325.0" prefHeight="25.0" prefWidth="112.0" text="STOMAT Система" />
-      <TextField fx:id="urTextField" layoutX="154.0" layoutY="355.0" prefHeight="25.0" prefWidth="53.0" />
-      <Label layoutX="38.0" layoutY="355.0" prefHeight="25.0" prefWidth="112.0" text="UROLOG Система" />
-      <TextField fx:id="viTextField" layoutX="154.0" layoutY="385.0" prefHeight="25.0" prefWidth="53.0" />
-      <Label layoutX="38.0" layoutY="385.0" prefHeight="25.0" prefWidth="112.0" text="VISION Система" />
+      <Label fx:id="label3" layoutX="38.0" layoutY="115.0" prefHeight="25.0" prefWidth="112.0" text="DERMA Система" />
+      <Label fx:id="label4" layoutX="38.0" layoutY="145.0" prefHeight="25.0" prefWidth="112.0" text="ENDOCRIN Система" />
+      <Label fx:id="label5" layoutX="38.0" layoutY="175.0" prefHeight="25.0" prefWidth="112.0" text="GASTRO Система" />
+      <Label fx:id="label6" layoutX="38.0" layoutY="205.0" prefHeight="25.0" prefWidth="112.0" text="IMMUN Система" />
+      <Label fx:id="label7" layoutX="38.0" layoutY="235.0" prefHeight="25.0" prefWidth="112.0" text="NEURAL Система" />
+      <Label fx:id="label8" layoutX="38.0" layoutY="265.0" prefHeight="25.0" prefWidth="112.0" text="ORTHO Система" />
+      <Label fx:id="label9" layoutX="38.0" layoutY="295.0" prefHeight="25.0" prefWidth="112.0" text="SPIRITUS Система" />
+      <Label fx:id="label10" layoutX="38.0" layoutY="325.0" prefHeight="25.0" prefWidth="112.0" text="STOMAT Система" />
+      <Label fx:id="label11" layoutX="38.0" layoutY="355.0" prefHeight="25.0" prefWidth="112.0" text="UROLOG Система" />
+      <Label fx:id="label12" layoutX="38.0" layoutY="385.0" prefHeight="25.0" prefWidth="112.0" text="VISION Система" />
       <Label layoutX="455.0" layoutY="59.0" text="\%" />
       <Label layoutX="455.0" layoutY="88.0" text="\%" />
-      <Label layoutX="210.0" layoutY="120.0" text="\%" />
-      <Label layoutX="210.0" layoutY="149.0" text="\%" />
-      <Label layoutX="210.0" layoutY="179.0" text="\%" />
-      <Label layoutX="210.0" layoutY="209.0" text="\%" />
-      <Label layoutX="213.0" layoutY="238.0" text="\%" />
-      <Label layoutX="213.0" layoutY="267.0" text="\%" />
-      <Label layoutX="213.0" layoutY="299.0" text="\%" />
-      <Label layoutX="213.0" layoutY="328.0" text="\%" />
-      <Label layoutX="213.0" layoutY="358.0" text="\%" />
-      <Label layoutX="213.0" layoutY="388.0" text="\%" />
       <Label layoutX="38.0" layoutY="29.0" prefHeight="25.0" prefWidth="112.0" text="Название системы" />
       <TextField fx:id="editField1" layoutX="154.0" layoutY="55.0" prefHeight="25.0" prefWidth="171.0" />
       <TextField fx:id="lT1" layoutX="335.0" layoutY="55.0" prefHeight="25.0" prefWidth="53.0" />
-      <Button fx:id="saveButton1" layoutX="480.0" layoutY="55.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="126.0" text="Сохранить" />
+      <Button fx:id="saveButton" layoutX="310.0" layoutY="432.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="126.0" text="Сохранить" />
       <Label layoutX="192.0" layoutY="29.0" prefHeight="25.0" prefWidth="112.0" text="Редактировать" />
       <Label layoutX="330.0" layoutY="29.0" prefHeight="25.0" prefWidth="63.0" text="Литералы" />
       <Label layoutX="399.0" layoutY="29.0" prefHeight="25.0" prefWidth="53.0" text="Предел" />
       <TextField fx:id="editField2" layoutX="154.0" layoutY="85.0" prefHeight="25.0" prefWidth="171.0" />
       <TextField fx:id="lT2" layoutX="335.0" layoutY="85.0" prefHeight="25.0" prefWidth="53.0" />
-      <Button fx:id="saveButton2" layoutX="480.0" layoutY="85.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="126.0" text="Сохранить" />
+      <TextField fx:id="threshold3" layoutX="399.0" layoutY="115.0" prefHeight="25.0" prefWidth="53.0" />
+      <TextField fx:id="threshold4" layoutX="399.0" layoutY="145.0" prefHeight="25.0" prefWidth="53.0" />
+      <Label layoutX="455.0" layoutY="119.0" text="\%" />
+      <Label layoutX="455.0" layoutY="148.0" text="\%" />
+      <TextField fx:id="editField3" layoutX="154.0" layoutY="115.0" prefHeight="25.0" prefWidth="171.0" />
+      <TextField fx:id="lT3" layoutX="335.0" layoutY="115.0" prefHeight="25.0" prefWidth="53.0" />
+      <TextField fx:id="editField4" layoutX="154.0" layoutY="145.0" prefHeight="25.0" prefWidth="171.0" />
+      <TextField fx:id="lT4" layoutX="335.0" layoutY="145.0" prefHeight="25.0" prefWidth="53.0" />
+      <TextField fx:id="threshold5" layoutX="399.0" layoutY="176.0" prefHeight="25.0" prefWidth="53.0" />
+      <TextField fx:id="threshold6" layoutX="399.0" layoutY="206.0" prefHeight="25.0" prefWidth="53.0" />
+      <Label layoutX="455.0" layoutY="180.0" text="\%" />
+      <Label layoutX="455.0" layoutY="209.0" text="\%" />
+      <TextField fx:id="editField5" layoutX="154.0" layoutY="176.0" prefHeight="25.0" prefWidth="171.0" />
+      <TextField fx:id="lT5" layoutX="335.0" layoutY="176.0" prefHeight="25.0" prefWidth="53.0" />
+      <TextField fx:id="editField6" layoutX="154.0" layoutY="206.0" prefHeight="25.0" prefWidth="171.0" />
+      <TextField fx:id="lT6" layoutX="335.0" layoutY="206.0" prefHeight="25.0" prefWidth="53.0" />
+      <TextField fx:id="threshold7" layoutX="399.0" layoutY="236.0" prefHeight="25.0" prefWidth="53.0" />
+      <TextField fx:id="threshold8" layoutX="399.0" layoutY="266.0" prefHeight="25.0" prefWidth="53.0" />
+      <Label layoutX="455.0" layoutY="240.0" text="\%" />
+      <Label layoutX="455.0" layoutY="269.0" text="\%" />
+      <TextField fx:id="editField7" layoutX="154.0" layoutY="236.0" prefHeight="25.0" prefWidth="171.0" />
+      <TextField fx:id="lT7" layoutX="335.0" layoutY="236.0" prefHeight="25.0" prefWidth="53.0" />
+      <TextField fx:id="editField8" layoutX="154.0" layoutY="266.0" prefHeight="25.0" prefWidth="171.0" />
+      <TextField fx:id="lT8" layoutX="335.0" layoutY="266.0" prefHeight="25.0" prefWidth="53.0" />
+      <TextField fx:id="threshold9" layoutX="399.0" layoutY="296.0" prefHeight="25.0" prefWidth="53.0" />
+      <TextField fx:id="threshold10" layoutX="399.0" layoutY="326.0" prefHeight="25.0" prefWidth="53.0" />
+      <Label layoutX="455.0" layoutY="300.0" text="\%" />
+      <Label layoutX="455.0" layoutY="329.0" text="\%" />
+      <TextField fx:id="editField9" layoutX="154.0" layoutY="296.0" prefHeight="25.0" prefWidth="171.0" />
+      <TextField fx:id="lT9" layoutX="335.0" layoutY="296.0" prefHeight="25.0" prefWidth="53.0" />
+      <TextField fx:id="editField10" layoutX="154.0" layoutY="326.0" prefHeight="25.0" prefWidth="171.0" />
+      <TextField fx:id="lT10" layoutX="335.0" layoutY="326.0" prefHeight="25.0" prefWidth="53.0" />
+      <TextField fx:id="threshold11" layoutX="399.0" layoutY="356.0" prefHeight="25.0" prefWidth="53.0" />
+      <TextField fx:id="threshold12" layoutX="399.0" layoutY="386.0" prefHeight="25.0" prefWidth="53.0" />
+      <Label layoutX="455.0" layoutY="360.0" text="\%" />
+      <Label layoutX="455.0" layoutY="389.0" text="\%" />
+      <TextField fx:id="editField11" layoutX="154.0" layoutY="356.0" prefHeight="25.0" prefWidth="171.0" />
+      <TextField fx:id="lT11" layoutX="335.0" layoutY="356.0" prefHeight="25.0" prefWidth="53.0" />
+      <TextField fx:id="editField12" layoutX="154.0" layoutY="386.0" prefHeight="25.0" prefWidth="171.0" />
+      <TextField fx:id="lT12" layoutX="335.0" layoutY="386.0" prefHeight="25.0" prefWidth="53.0" />
    </children>
 </AnchorPane>

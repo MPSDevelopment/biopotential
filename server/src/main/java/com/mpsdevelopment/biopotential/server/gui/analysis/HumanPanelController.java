@@ -528,12 +528,13 @@ public class HumanPanelController extends AbstractController implements Subscrib
 
                         }
 
-                        if (pattern.getName().substring(7,11).equals(s)) {
+                        if (pattern.getName().length() > 11) {
+                            if (pattern.getName().substring(7,11).equals(s)) {
 
-                            shapeIt(pattern.getName().substring(7,11));
+                            shapeIt(pattern.getName().substring(7, 11));
 
-                            addSectionToList(pattern, analysisSummary, pattern.getName().substring(7,11));
-
+                            addSectionToList(pattern, analysisSummary, pattern.getName().substring(7, 11));
+                            }
                         }
 
                         if (pattern.getName().length() > 15) {
