@@ -1,10 +1,13 @@
 package com.mpsdevelopment.biopotential.server.gui.correctors;
 
+import com.google.gson.reflect.TypeToken;
 import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
+import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
 import com.mpsdevelopment.biopotential.server.cmp.pcm.PCM;
+import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
 import com.mpsdevelopment.biopotential.server.db.dao.DiseaseDao;
 import com.mpsdevelopment.biopotential.server.db.pojo.DataTable;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
@@ -12,8 +15,11 @@ import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.HealingsMapEvent;
 import com.mpsdevelopment.biopotential.server.eventbus.event.SelectCorrectorEvent;
 import com.mpsdevelopment.biopotential.server.gui.BioApplication;
+import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
+import com.mpsdevelopment.biopotential.server.httpclient.HttpClientFactory;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
+import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.biopotential.server.utils.StageUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
@@ -39,6 +45,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sound.sampled.*;
 import java.io.*;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -195,6 +202,7 @@ public class CorrectorsPanelController extends AbstractController implements Sub
      *  Sort correctorsData from duplicate items by filename
      */
     private void createFileCorrection() {
+        Long t1 = System.currentTimeMillis();
         сorrectorsTable.getSelectionModel().selectAll();
         ObservableList<DataTable> selectedItems = сorrectorsTable.getSelectionModel().getSelectedItems();
 
@@ -221,23 +229,40 @@ public class CorrectorsPanelController extends AbstractController implements Sub
 
         Machine.setEdxFileFolder(serverSettings.getStoragePath());
 
+        BioHttpClient bioHttpClient = HttpClientFactory.getInstance();
+        String url = String.format("http://%s:%s%s", "localhost", 8098, ControllerAPI.PATTERNS_CONTROLLER + ControllerAPI.PATTERNS_CONTROLLER_GET_ALL);
+        String json = bioHttpClient.executeGetRequest(url);
 
-        for (DataTable item : sortedSelectedItems) {
-            sortedHealings.forEach(new Consumer<Pattern>() {
+        Type typeOfHashMap = new TypeToken<List<EDXPattern>>() { }.getType();
+        List<EDXPattern> patterns = JsonUtils.fromJson(typeOfHashMap, json);
+
+        patterns.forEach(new Consumer<EDXPattern>() {
+            @Override
+            public void accept(EDXPattern edxPattern) {
+                selList.add(edxPattern.getPcmData());
+            }
+        });
+
+        selList.removeIf(o -> o == null);
+
+
+//        for (DataTable item : sortedSelectedItems) {
+            /*sortedHealings.forEach(new Consumer<Pattern>() {
                 @Override
                 public void accept(Pattern pattern) {
-                    if (item.getFilename().equals(pattern.getFileName())) {
+//                    if (item.getFilename().equals(pattern.getFileName())) {
                         if (selList.add(pattern.getPcmData())) {
-                            LOGGER.info("%s", pattern.getName());
-                            LOGGER.info("%s", item.getFilename());
+                            *//*LOGGER.info("%s", pattern.getName());
+                            LOGGER.info("%s", item.getFilename());*//*
 
                         }
-                    }
+//                    }
                 }
-            });
-        }
-
+            });*/
+//        }
+        LOGGER.info("time before %s ms", System.currentTimeMillis() - t1);
         LOGGER.info("Added correctors %s", selList.size());
+
         try {
             merge(selList);
         } catch (IOException e) {
@@ -245,6 +270,8 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         } catch (UnsupportedAudioFileException e) {
             e.printStackTrace();
         }
+
+
     }
 
     /**
@@ -310,7 +337,9 @@ public class CorrectorsPanelController extends AbstractController implements Sub
     private void merge(Collection<List<Double>> lists) throws IOException, UnsupportedAudioFileException {
 
         Collection out;
+        Long t1 = System.currentTimeMillis();
         out = PCM.merge(lists);
+//        LOGGER.info("merge takes %s ms", System.currentTimeMillis() - t1);
 
         double[] buffer = out.stream().mapToDouble(new ToDoubleFunction<Double>() {
             @Override
@@ -333,7 +362,7 @@ public class CorrectorsPanelController extends AbstractController implements Sub
 
             }
         }
-
+        LOGGER.info("total file creation time %s ms", System.currentTimeMillis() - t1);
         FileChooser fileChooser = new FileChooser();
         //Set extension filter
         FileChooser.ExtensionFilter extFilterMp3 = new FileChooser.ExtensionFilter("Mp3 files (*.mp3)","*.mp3");
