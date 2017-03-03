@@ -585,8 +585,8 @@
                             </shortcut>
                         </shortcuts>
 						<installerSplash>${project.basedir}/build/splash.png</installerSplash>
+						<noDefaultPostInstallActions>true</noDefaultPostInstallActions>
 					</excelsiorInstaller>
-
                     <splash>${project.basedir}/build/splash.png</splash>
                     <icon>${project.basedir}/build/bio.ico</icon>
 
