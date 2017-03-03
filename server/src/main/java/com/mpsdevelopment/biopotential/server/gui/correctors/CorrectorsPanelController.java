@@ -35,6 +35,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import net.engio.mbassy.listener.Handler;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sound.sampled.*;
 import java.io.*;
@@ -50,6 +51,9 @@ public class CorrectorsPanelController extends AbstractController implements Sub
     private ObservableList<DataTable> correctorsData;
 
     private static File outputFile = new File("data\\out\\out1.wav");
+
+    @Autowired
+    private ServerSettings serverSettings;
 
     @FXML
     private TableView<DataTable> сorrectorsTable;
@@ -80,7 +84,6 @@ public class CorrectorsPanelController extends AbstractController implements Sub
 
     private Stage primaryStage;
     private static Map<Pattern,AnalysisSummary> healingsMap;
-    private ServerSettings serverSettings;
 
     public CorrectorsPanelController() {
 
@@ -90,7 +93,7 @@ public class CorrectorsPanelController extends AbstractController implements Sub
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        serverSettings = BioApplication.APP_CONTEXT.getBean(ServerSettings.class);
+//        serverSettings = BioApplication.APP_CONTEXT.getBean(ServerSettings.class);
 
         selectColumn.setMinWidth(80);
 

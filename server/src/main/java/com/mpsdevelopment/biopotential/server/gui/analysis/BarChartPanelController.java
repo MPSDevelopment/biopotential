@@ -166,7 +166,7 @@ public class BarChartPanelController extends AbstractController implements Subsc
         ObservableList<SystemDataTable> datas = FXCollections.observableArrayList();
         datas.addAll(SystemDataTable.createDataTableObject(mapMax, mapPo));
 
-        String[] systems = {"Al", "Ca", "De", "En", "Ga", "Im", "Me", "Ne", "Or", "Sp", "St", "Ur", "Vi"};
+        String[] systems = {"AL", "Ca", "De", "En", "Ga", "Im", "Me", "Ne", "Or", "Sp", "St", "Ur", "Vi"};
         String[] allsystems = {" - ALLERGY система", " - CARDIO система", " - DERMA система", " - Endocrinology система", " - GASTRO система", " - IMMUN система", " - MENTIS система",
                 " - NEURAL система", " - ORTHO система", " - SPIRITUS система", " - Stomat система", " - UROLOG система", " - VISION система"};
 

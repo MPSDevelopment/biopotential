@@ -133,7 +133,8 @@ public class AnalyzeService {
         sizeMap.forEach(new BiConsumer<String, Integer>() {
             @Override
             public void accept(String s, Integer weight) {
-                if (s.contains(configSettings.getLiteral1() + configSettings.getSystemName1())) {
+//                if (s.contains(configSettings.getLiteral1() + " " + configSettings.getSystemName1())) {
+                if (s.contains("Al ALLERGY")) {
                     alWeight = (double) 100/weight;
                 }
                 if (s.contains("Ca CARDIO")) {

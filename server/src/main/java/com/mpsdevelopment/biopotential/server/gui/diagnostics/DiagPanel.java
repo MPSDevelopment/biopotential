@@ -1,6 +1,5 @@
 package com.mpsdevelopment.biopotential.server.gui.diagnostics;
 
-import com.mpsdevelopment.biopotential.server.SpringLoaderFXML;
 import com.mpsdevelopment.biopotential.server.gui.BioApplication;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
@@ -8,7 +7,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.io.IOException;
 
@@ -17,8 +15,6 @@ public class DiagPanel extends Pane {
     private static final Logger LOGGER = LoggerUtil.getLogger(DiagPanel.class);
 
     private DiagPanelController diagPanelController;
-
-    SpringLoaderFXML loaderFXML = new SpringLoaderFXML();
 
     public DiagPanel() {
         FXMLLoader loader = new FXMLLoader();

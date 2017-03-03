@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -68,7 +69,12 @@ public class AutomaticsPanelController extends AbstractController implements Sub
                 String degree1 = (String) whatShowComboBox.getValue();
                 String degree2 = (String) whatShowComboBox1.getValue();
 
-                AnalysisPanel panel = new AnalysisPanel(file,degree1,degree2,gender);
+                AnalysisPanel panel = null;
+                try {
+                    panel = new AnalysisPanel(file,degree1,degree2,gender);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 Stage stage = StageUtils.createStage(null, panel, new StageSettings().setPanelTitle("Результат анализа").setClazz(panel.getClass()).setHeight(752d).setWidth(1608d).setHeightPanel(722d).setWidthPanel(1608d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
                 panel.setPrimaryStage(stage);
                 close();

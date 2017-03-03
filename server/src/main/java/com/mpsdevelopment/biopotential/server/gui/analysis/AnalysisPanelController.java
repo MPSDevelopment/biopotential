@@ -55,7 +55,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.function.BiConsumer;
-@Component
+//@Component
 public class AnalysisPanelController extends AbstractController implements Subscribable {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(AnalysisPanelController.class);
@@ -188,7 +188,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             public void handle(ActionEvent event) {
                 HiddenPanel hiddenPanel = new HiddenPanel(analysisHiddenData);
                 LOGGER.info(" Start Converter application");
-                Stage mainPanelStage = StageUtils.createStage(null, hiddenPanel, new StageSettings().setPanelTitle("Скрытая таблица").setClazz(hiddenPanel.getClass()).setHeight(444d).setWidth(615d).setHeightPanel(444d).setWidthPanel(615d)/*.setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY())*/);
+                Stage mainPanelStage = StageUtils.createStage(null, hiddenPanel, new StageSettings().setPanelTitle("Скрытая таблица").setClazz(hiddenPanel.getClass()).setHeight(444d).setWidth(615d).setHeightPanel(444d).setWidthPanel(615d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
                 hiddenPanel.setPrimaryStage(mainPanelStage);
             }
         });
@@ -354,6 +354,8 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             }
 */
     }
+
+
 
 
     private void makeAnalyze(File file) throws UnsupportedAudioFileException, IOException, SQLException {

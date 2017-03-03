@@ -52,8 +52,8 @@ public class SystemDataTable {
     public static ObservableList<SystemDataTable> createDataTableObject(Map<String, Double> systemMap1, Map<String, Double> systemMap2) {
         ObservableList<SystemDataTable> systemDataTables = FXCollections.observableArrayList();
 
-        String[] systems = {"ALLERGY система", "CARDIO система","DERMA система","Endocrinology система", "GASTRO система","IMMUN система","MENTIS система","NEURAL система"
-                ,"ORTHO система","SPIRITUS система","Stomat система","UROLOG система","VISION система"};
+        String[] systems = {"ALLERGY система", "CARDIO система","DERMA система","ENDOCRINOLOGY система", "GASTRO система","IMMUN система","MENTIS система","NEURAL система"
+                ,"ORTHO система","SPIRITUS система","STOMAT система","UROLOG система","VISION система"};
 
         systemMap1.forEach(new BiConsumer<String, Double>() {
             @Override
@@ -77,7 +77,7 @@ public class SystemDataTable {
             @Override
             public void accept(SystemDataTable systemDataTable) {
                 for (String system : systems) {
-                    if (system.substring(0,2).contains(systemDataTable.getName().substring(0,2))) {
+                    if (system.substring(0,2).contains(systemDataTable.getName().substring(0,2).toUpperCase())) {
                         systemDataTable.setDescription(system);
 
                     }

@@ -4,6 +4,7 @@ import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.JettyServer;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
+import com.mpsdevelopment.biopotential.server.gui.BioApplication;
 import com.mpsdevelopment.biopotential.server.gui.diagnostics.DiagPanel;
 import com.mpsdevelopment.biopotential.server.settings.ConfigSettings;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
@@ -191,7 +192,7 @@ public class ConfigPanelController extends AbstractController implements Subscri
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        configSettings = JettyServer.WEB_CONTEXT.getBean(ConfigSettings.class);
+        configSettings = BioApplication.APP_CONTEXT.getBean(ConfigSettings.class);
         label1.setText(configSettings.getSystemName1());
         label2.setText(configSettings.getSystemName2());
         label3.setText(configSettings.getSystemName3());
