@@ -17,7 +17,7 @@ public class EDXPattern implements Pattern {
 	@Expose
 	private List<ChunkSummary> summary;
 	@Expose
-	private List<Double> pcmData;
+	private List<Float> pcmData;
 	/*@Expose
 	private Long correctingFolderEn;*/
 	@Expose
@@ -77,7 +77,7 @@ public class EDXPattern implements Pattern {
 	public List<ChunkSummary> getSummary() {
 		return summary;
 	}
-	public List<Double> getPcmData() {
+	public List<Float> getPcmData() {
 		if (this.pcmData == null) {
 			initializePcmData();
 		}

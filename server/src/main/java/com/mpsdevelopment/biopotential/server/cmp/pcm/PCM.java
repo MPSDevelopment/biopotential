@@ -49,10 +49,10 @@ public class PCM {
         return result;
     }
 
-    public static List<Double> merge(Collection<List<Double>> input) {
-        return input.stream().reduce(new ArrayList<>(), new BinaryOperator<List<Double>>() {
+    public static List<Float> merge(Collection<List<Float>> input) {
+        return input.stream().reduce(new ArrayList<>(), new BinaryOperator<List<Float>>() {
             @Override
-            public List<Double> apply(List<Double> list1, List<Double> list2) {
+            public List<Float> apply(List<Float> list1, List<Float> list2) {
                 for (int i = 0; i < list2.size(); i++) {
                     if (i >= list1.size()) {
                         list1.add(list2.get(i));
@@ -62,9 +62,9 @@ public class PCM {
                 }
                 return list1;
             }
-        }).stream().map(new Function<Double, Double>() {
+        }).stream().map(new Function<Float, Float>() {
             @Override
-            public Double apply(Double x) {
+            public Float apply(Float x) {
                 return x /*/ input.size()*/;
             }
         }).collect(Collectors.toList());

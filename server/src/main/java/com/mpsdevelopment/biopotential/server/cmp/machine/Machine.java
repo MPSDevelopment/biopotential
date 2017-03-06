@@ -75,7 +75,7 @@ public class Machine {
 
 		HashMap<String, EDXSection> sects = new HashMap<>();
 		List<ChunkSummary> summary;
-		List<Double> pcmData;
+		List<Float> pcmData;
 
         if (edxFileFolder == null) {
             edxFileFolder = EDX_FILE_FOLDER;
@@ -118,10 +118,11 @@ public class Machine {
 		if (sects.containsKey(".orig   ")) {
 			pcmData = new ArrayList<>();
 			for (byte b : sects.get(".orig   ").contents) {
-				pcmData.add((double) (byte) (b ^ 0x80) / 128.0);
+				pcmData.add((float) ((float) (byte) (b ^ 0x80) / 128.0));
 			}
 //			long t1 = System.currentTimeMillis();
-			summary = Analyzer.summarize(pcmData);
+//			summary = Analyzer.summarize(pcmData);
+			summary = null;
 //			LOGGER.info("Time for get summurize %d ms", System.currentTimeMillis() - t1);
 
 		} else {

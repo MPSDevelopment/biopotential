@@ -39,7 +39,7 @@ public class WAWPattern implements Pattern {
 
     }
 
-    public List<Double> getPcmData() {
+    public List<Float> getPcmData() {
         return null;
     }
 

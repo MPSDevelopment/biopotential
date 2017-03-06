@@ -211,7 +211,7 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         Set<Pattern> sortedHealings = new HashSet<>();
         Set<DataTable> sortedSelectedItems = new HashSet<>();
 
-        List selList = new ArrayList();
+        List<List<Float>> selList = new ArrayList();
 
         selectedItems.forEach(new Consumer<DataTable>() {
             @Override
@@ -334,17 +334,17 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         this.healingsMap = healingsMap;
     }
 
-    private void merge(Collection<List<Double>> lists) throws IOException, UnsupportedAudioFileException {
+    private void merge(Collection<List<Float>> lists) throws IOException, UnsupportedAudioFileException {
 
         Collection out;
         Long t1 = System.currentTimeMillis();
         out = PCM.merge(lists);
 //        LOGGER.info("merge takes %s ms", System.currentTimeMillis() - t1);
 
-        double[] buffer = out.stream().mapToDouble(new ToDoubleFunction<Double>() {
+        double[] buffer = out.stream().mapToDouble(new ToDoubleFunction<Float>() {
             @Override
-            public double applyAsDouble(Double aDouble) {
-                return aDouble.doubleValue();
+            public double applyAsDouble(Float aDouble) {
+                return aDouble.floatValue();
             }
         }).toArray();
 
