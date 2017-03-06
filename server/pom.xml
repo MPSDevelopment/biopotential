@@ -587,8 +587,9 @@
 						<installerSplash>${project.basedir}/build/splash.png</installerSplash>
 						<noDefaultPostInstallActions>true</noDefaultPostInstallActions>
 					</excelsiorInstaller>
-                    <splash>${project.basedir}/build/splash.png</splash>
-                    <icon>${project.basedir}/build/bio.ico</icon>
+
+					<!--<splash>${project.basedir}/build/splash.png</splash>-->
+					<icon>${project.basedir}/build/bio.ico</icon>
 
                     <hideConsole>true</hideConsole>
                     <packageFilesDir>${jet.output.directory}/temp</packageFilesDir>
@@ -597,14 +598,20 @@
 					<jetHome>${jet64.home}</jetHome>
 
 					<jvmArgs>
-						<jvmArg>-Xmx2g</jvmArg>
+						<jvmArg>-Xms2g</jvmArg>
+						<jvmArg>-Xmx3g</jvmArg>
 					</jvmArgs>
+
+					<!--<trialVersion>
+						<expireDate>07Mar2017</expireDate>
+						<expireMessage>Срок действия trial истек</expireMessage>
+					</trialVersion>-->
 
 					<outputName>BioApplication</outputName>
 					<product>Biopotential</product>
 					<vendor>${jet.vendor}</vendor>
 					<version>${jet.version}</version>
-                    <!-- <globalOptimizer>true</globalOptimizer> -->
+                     <globalOptimizer>true</globalOptimizer>
 
                 </configuration>
 			</plugin>

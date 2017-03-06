@@ -1,6 +1,7 @@
 package com.mpsdevelopment.biopotential.server.gui;
 
 import com.mpsdevelopment.biopotential.server.JettyServer;
+import com.mpsdevelopment.biopotential.server.gui.analysis.MyPreloader;
 import com.mpsdevelopment.biopotential.server.gui.diagnostics.DiagPanel;
 import com.mpsdevelopment.biopotential.server.gui.startPanel.StartPanel;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
@@ -9,6 +10,7 @@ import com.mpsdevelopment.plasticine.commons.ClasspathResourceManager;
 import com.mpsdevelopment.plasticine.commons.LogbackConfigureLoader;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
+import com.sun.javafx.application.LauncherImpl;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -34,12 +36,13 @@ public class BioApplication extends Application {
         try {
             server.start();
             LOGGER.info("Server started");
+            LauncherImpl.launchApplication(BioApplication.class, MyPreloader.class, args);
 
             LogbackConfigureLoader.initializeLogging(resourceManager, "logback.xml", "jul.properties");
             System.setErr(LoggerUtil.getRedirectedToLoggerErrPrintStream(System.err));
             System.setOut(LoggerUtil.getRedirectedToLoggerOutPrintStream(System.out));
-            launch(args);
 
+            launch(args);
             server.join();
 
         } catch (Exception e) {
@@ -49,10 +52,7 @@ public class BioApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-
-
         addMainPanel();
-
     }
 
     @Override
@@ -73,11 +73,11 @@ public class BioApplication extends Application {
                 .setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
         startPanel.setPrimaryStage(mainPanelStage);*/
 
-
         DiagPanel diagPanel = new DiagPanel();
         LOGGER.info(" Start Diag panel");
         Stage mainPanelStage = StageUtils.createStage(null, diagPanel, new StageSettings().setClazz(DiagPanel.class).setHeight(740d).setWidth(1034d).setHeightPanel(727d).setWidthPanel(1034d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
         diagPanel.setPrimaryStage(mainPanelStage);
+        MyPreloader.close();
 
         mainPanelStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent e) {

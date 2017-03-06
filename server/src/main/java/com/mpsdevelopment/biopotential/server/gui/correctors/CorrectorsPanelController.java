@@ -23,6 +23,7 @@ import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.biopotential.server.utils.StageUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
+import com.sun.javafx.applet.Splash;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
@@ -41,6 +42,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import net.engio.mbassy.listener.Handler;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sound.sampled.*;
@@ -245,22 +247,23 @@ public class CorrectorsPanelController extends AbstractController implements Sub
 
         selList.removeIf(o -> o == null);
 
-
-//        for (DataTable item : sortedSelectedItems) {
-            /*sortedHealings.forEach(new Consumer<Pattern>() {
+        /*for (DataTable item : sortedSelectedItems) {
+            sortedHealings.forEach(new Consumer<Pattern>() {
                 @Override
                 public void accept(Pattern pattern) {
-//                    if (item.getFilename().equals(pattern.getFileName())) {
-                        if (selList.add(pattern.getPcmData())) {
-                            *//*LOGGER.info("%s", pattern.getName());
-                            LOGGER.info("%s", item.getFilename());*//*
+                    if (item.getFilename().equals(pattern.getFileName())) {
+                        selList.add(pattern.getPcmData());
+                        *//*if (selList.add(pattern.getPcmData())) {
+                            LOGGER.info("%s", pattern.getName());
+                            LOGGER.info("%s", item.getFilename());
 
-                        }
-//                    }
+                        }*//*
+                    }
                 }
-            });*/
-//        }
-        LOGGER.info("time before %s ms", System.currentTimeMillis() - t1);
+            });
+        }*/
+
+        LOGGER.info("time for prepare List %s ms", System.currentTimeMillis() - t1);
         LOGGER.info("Added correctors %s", selList.size());
 
         try {
@@ -348,7 +351,10 @@ public class CorrectorsPanelController extends AbstractController implements Sub
             }
         }).toArray();
 
-        byte[] bytes = new byte[buffer.length];
+
+//        float[] buffer = ArrayUtils.toPrimitive((Float[]) out.toArray(new Float[0]), 0.0F);
+
+        byte[] bytes = new byte[out.size()];
 
         for (int i=0; i < buffer.length; i++) {
             if (((buffer[i]) * 128) >= 127) {
@@ -362,7 +368,7 @@ public class CorrectorsPanelController extends AbstractController implements Sub
 
             }
         }
-        LOGGER.info("total file creation time %s ms", System.currentTimeMillis() - t1);
+        LOGGER.info("time for merge %s ms", System.currentTimeMillis() - t1);
         FileChooser fileChooser = new FileChooser();
         //Set extension filter
         FileChooser.ExtensionFilter extFilterMp3 = new FileChooser.ExtensionFilter("Mp3 files (*.mp3)","*.mp3");
