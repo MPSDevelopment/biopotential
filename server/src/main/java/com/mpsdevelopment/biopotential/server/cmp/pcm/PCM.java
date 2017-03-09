@@ -51,7 +51,7 @@ public class PCM {
         return result;
     }
 
-    public static List<Float> merge(Collection<List<Float>> input) {
+    /*public static List<Float> merge(Collection<List<Float>> input) {
         return input.stream().reduce(new ArrayList<>(), new BinaryOperator<List<Float>>() {
             @Override
             public List<Float> apply(List<Float> list1, List<Float> list2) {
@@ -67,21 +67,53 @@ public class PCM {
         }).stream().map(new Function<Float, Float>() {
             @Override
             public Float apply(Float x) {
-                return x /*/ input.size()*/;
+                return x *//*//* input.size()*//*;
             }
         }).collect(Collectors.toList());
-    }
+    }*/
 
-    /*public static List<float[]> merge(Collection<float[]> input) {
-        List<float[]> list = null;
-        float[] temp;
+    public static float[] merge(List<float[]> input) {
+        int maxsize = 0;
+
+        for (int i = 0; i < input.size(); i++) {
+            if (input.get(i).length > maxsize) {
+                maxsize = input.get(i).length;
+            }
+        }
+
+        float[] sizeArray = new float[maxsize];
+        float[] temp = input.get(0);
+
+//        sizeArray = Arrays.copyOf(temp, temp.length);
+        System.arraycopy(temp,0,sizeArray,0,temp.length);
+        for (float[] floats:input) {
+            for (int i = 0; i < floats.length; i++) {
+                if (i >= sizeArray.length) {
+                    LOGGER.info("size array %s ", floats.length);
+                }
+                else {
+                    sizeArray[i] = sizeArray[i] + floats[i];
+                }
+            }
+        }
+        return sizeArray;
+
+        /*float[] temp = input.get(0);
         input.forEach(new Consumer<float[]>() {
             @Override
             public void accept(float[] floats) {
-                temp = ArrayUtils.addAll(floats);
+                for (int i = 0; i < floats.length; i++) {
+                    if (i >= temp.length) {
+                        LOGGER.info("size array %s ", floats.length);
+                    }
+                    else {
+                        temp[i] = temp[i] + floats[i];
+                    }
+                }
+//                temp = ArrayUtils.addAll(floats);
             }
         });
-        list.add(temp);
-        return list;
-    }*/
+//        list.add(temp);
+        return temp;*/
+    }
 }

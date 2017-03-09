@@ -114,20 +114,18 @@ public class Machine {
 		} catch (IOException e) {
 			throw e;
 		}
-//        float[] pcmArray = new float[sects.get(".orig   ").length];
+        float[] pcmArray = new float[sects.get(".orig   ").length];
 
 		if (sects.containsKey(".orig   ")) {
 			pcmData = new ArrayList<>();
-/*
 			byte[] section =  sects.get(".orig   ").contents;
 
             for (int i = 0; i < sects.get(".orig   ").length; i++) {
                 pcmArray[i] = (float) ((float) (byte) (section[i] ^ 0x80) / 128.0);
             }
-*/
-            for (byte b : sects.get(".orig   ").contents) {
+           /* for (byte b : sects.get(".orig   ").contents) {
 				pcmData.add((float) ((float) (byte) (b ^ 0x80) / 128.0));
-			}
+			}*/
 //			long t1 = System.currentTimeMillis();
 //			summary = Analyzer.summarize(pcmData);
 			summary = null;
@@ -138,8 +136,8 @@ public class Machine {
 			summary = null;
 		}
 
-		return new PcmDataSummary(pcmData, summary);
-//		return new PcmDataSummary(pcmArray, summary);
+//		return new PcmDataSummary(pcmData, summary);
+		return new PcmDataSummary(pcmArray, summary);
 	}
 
 	private static int readi32le(RandomAccessFile in) {

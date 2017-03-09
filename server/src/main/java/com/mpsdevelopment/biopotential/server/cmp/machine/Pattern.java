@@ -9,7 +9,7 @@ public interface Pattern {
     String getKind();
     String getName();
     String getDescription();
-    List<Float> getPcmData();
+    float[] getPcmData();
     List<ChunkSummary> getSummary();
     String getFileName();
     void setName(String str);

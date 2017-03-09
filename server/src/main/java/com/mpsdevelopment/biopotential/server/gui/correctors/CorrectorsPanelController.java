@@ -55,10 +55,7 @@ import java.util.function.Consumer;
 import java.util.function.ToDoubleFunction;
 
 public class CorrectorsPanelController extends AbstractController implements Subscribable {
-
     private static final Logger LOGGER = LoggerUtil.getLogger(CorrectorsPanelController.class);
-    private ObservableList<DataTable> correctorsData;
-
     private static File outputFile = new File("data\\out\\out1.wav");
 
     @Autowired
@@ -91,11 +88,11 @@ public class CorrectorsPanelController extends AbstractController implements Sub
     @FXML
     private Label patLabel;
 
+    private ObservableList<DataTable> correctorsData;
     private Stage primaryStage;
     private static Map<Pattern,AnalysisSummary> healingsMap;
 
     public CorrectorsPanelController() {
-
         EventBus.subscribe(this);
     }
 
@@ -103,9 +100,7 @@ public class CorrectorsPanelController extends AbstractController implements Sub
     public void initialize(URL location, ResourceBundle resources) {
 
 //        serverSettings = BioApplication.APP_CONTEXT.getBean(ServerSettings.class);
-
         selectColumn.setMinWidth(80);
-
         selectColumn.setCellValueFactory(new PropertyValueFactory<DataTable,Boolean>("check"));
         selectColumn.setCellFactory(new Callback<TableColumn<DataTable, Boolean>, TableCell<DataTable, Boolean>>() {
             @Override
@@ -115,15 +110,16 @@ public class CorrectorsPanelController extends AbstractController implements Sub
 //                        super.updateItem(check, empty);
                         if (check == null || empty) {
                             setGraphic(null);
-                        } else {
+                        }
+                        else {
                             CheckBox box = new CheckBox();
                             BooleanProperty checked = (BooleanProperty) column.getCellObservableValue(getIndex());
                             box.setSelected(checked.get());
                             if (checked.get()) {
                                 сorrectorsTable.getSelectionModel().select(getTableRow().getIndex());
-                            } else {
+                            }
+                            else {
                                 сorrectorsTable.getSelectionModel().clearSelection(getTableRow().getIndex());
-
                             }
                             box.selectedProperty().bindBidirectional(checked);
                             setGraphic(box);
@@ -213,7 +209,7 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         Set<Pattern> sortedHealings = new HashSet<>();
         Set<DataTable> sortedSelectedItems = new HashSet<>();
 
-        List<List<Float>> selList = new ArrayList();
+        List</*List<Float>*/float[]> selList = new ArrayList();
 
         selectedItems.forEach(new Consumer<DataTable>() {
             @Override
@@ -337,24 +333,25 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         this.healingsMap = healingsMap;
     }
 
-    private void merge(Collection<List<Float>> lists) throws IOException, UnsupportedAudioFileException {
+    private void merge(/*Collection*/List</*Float*/float[]> lists) throws IOException, UnsupportedAudioFileException {
 
         Collection out;
         Long t1 = System.currentTimeMillis();
-        out = PCM.merge(lists);
+//        out = PCM.merge(lists);
+        float[] buffer = PCM.merge(lists);
 //        LOGGER.info("merge takes %s ms", System.currentTimeMillis() - t1);
 
-        double[] buffer = out.stream().mapToDouble(new ToDoubleFunction<Float>() {
+        /*double[] buffer = out.stream().mapToDouble(new ToDoubleFunction<Float>() {
             @Override
             public double applyAsDouble(Float aDouble) {
                 return aDouble.floatValue();
             }
-        }).toArray();
+        }).toArray();*/
 
 
 //        float[] buffer = ArrayUtils.toPrimitive((Float[]) out.toArray(new Float[0]), 0.0F);
 
-        byte[] bytes = new byte[out.size()];
+        byte[] bytes = new byte[buffer.length];
 
         for (int i=0; i < buffer.length; i++) {
             if (((buffer[i]) * 128) >= 127) {
