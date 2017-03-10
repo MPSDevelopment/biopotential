@@ -14,7 +14,6 @@ import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.HealingsMapEvent;
 import com.mpsdevelopment.biopotential.server.eventbus.event.SelectCorrectorEvent;
-import com.mpsdevelopment.biopotential.server.gui.BioApplication;
 import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
 import com.mpsdevelopment.biopotential.server.httpclient.HttpClientFactory;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
@@ -23,7 +22,6 @@ import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.biopotential.server.utils.StageUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
-import com.sun.javafx.applet.Splash;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
@@ -42,7 +40,6 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import net.engio.mbassy.listener.Handler;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.sound.sampled.*;
@@ -52,7 +49,6 @@ import java.net.URL;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.ToDoubleFunction;
 
 public class CorrectorsPanelController extends AbstractController implements Subscribable {
     private static final Logger LOGGER = LoggerUtil.getLogger(CorrectorsPanelController.class);
@@ -91,6 +87,8 @@ public class CorrectorsPanelController extends AbstractController implements Sub
     private ObservableList<DataTable> correctorsData;
     private Stage primaryStage;
     private static Map<Pattern,AnalysisSummary> healingsMap;
+    Set<Pattern> sortedSelectedHealings = new HashSet<>();
+    Set<DataTable> sortedSelectedItems = new HashSet<>();
 
     public CorrectorsPanelController() {
         EventBus.subscribe(this);
@@ -128,26 +126,6 @@ public class CorrectorsPanelController extends AbstractController implements Sub
                 };
             }
         });
-
-
-        сorrectorsTable.getSelectionModel().selectAll();
-
-        сorrectorsTable.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                LOGGER.info("Click");
-//                сorrectorsTable.getSelectionModel().clearSelection();
-            }
-        });
-
-
-        correctorsData = FXCollections.observableArrayList();
-        getPattersFromHealingsMap();
-        patLabel.setText("Pattern's: " + correctorsData.size());
-
-        сorrectorsTable.setItems(correctorsData);
-        сorrectorsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // make enable minimize button on window
-//        сorrectorsTable.getSelectionModel().setCellSelectionEnabled(true);
 
         numberColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<DataTable, String>, ObservableValue<String>>() {
             @Override public ObservableValue<String> call(TableColumn.CellDataFeatures<DataTable, String> p) {
@@ -195,75 +173,101 @@ public class CorrectorsPanelController extends AbstractController implements Sub
             }
         });
 
+        сorrectorsTable.getSelectionModel().selectAll();
+        сorrectorsTable.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                LOGGER.info("Click");
+//                сorrectorsTable.getSelectionModel().clearSelection();
+            }
+        });
+
+        correctorsData = FXCollections.observableArrayList();
+        getPattersFromHealingsMap();
+        patLabel.setText("Pattern's: " + correctorsData.size());
+
+        сorrectorsTable.setItems(correctorsData);
+        сorrectorsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // make enable minimize button on window
+//        сorrectorsTable.getSelectionModel().setCellSelectionEnabled(true);
+
     }
+
+    /*
+     * getPatterns from healingsMap and put to сorrectorsTable
+     */
+    private void getPattersFromHealingsMap()  {
+        ObservableList<DataTable> finalDataTableObservableList = FXCollections.observableArrayList();
+        healingsMap.forEach((pattern, analysisSummary) -> {
+            LOGGER.info("%s %s\n", pattern.getKind(), pattern.getName(), analysisSummary.getDispersion());
+//            correctorsData.add(DataTable.createDataTableObject(pattern,analysisSummary));
+            finalDataTableObservableList.add(DataTable.createDataTableObject(pattern,analysisSummary));
+            sortedSelectedHealings.add(pattern);
+        });
+
+        correctorsData = FXCollections.observableArrayList(new HashSet<>(finalDataTableObservableList));
+    }
+
     /**
      *  Sort correctorsData from duplicate items by filename
      */
     private void createFileCorrection() {
         Long t1 = System.currentTimeMillis();
+        Machine.setEdxFileFolder(serverSettings.getStoragePath());
+
         сorrectorsTable.getSelectionModel().selectAll();
-        ObservableList<DataTable> selectedItems = сorrectorsTable.getSelectionModel().getSelectedItems();
+        ObservableList<DataTable> selectedItemsFromTable = сorrectorsTable.getSelectionModel().getSelectedItems();
+        LOGGER.info("Selected item %s", selectedItemsFromTable.size());
 
-        LOGGER.info("Selected item %s", selectedItems.size());
-
-        Set<Pattern> sortedHealings = new HashSet<>();
-        Set<DataTable> sortedSelectedItems = new HashSet<>();
-
-        List</*List<Float>*/float[]> selList = new ArrayList();
-
-        selectedItems.forEach(new Consumer<DataTable>() {
+        List<float[]> floatArrayListWithPCMData = new ArrayList();
+        /*selectedItemsFromTable.forEach(new Consumer<DataTable>() {
             @Override
             public void accept(DataTable dataTable) {
                 sortedSelectedItems.add(dataTable);
             }
-        });
+        });*/
 
-        healingsMap.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
+        /*healingsMap.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
             @Override
             public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
-                sortedHealings.add(pattern);
+                sortedSelectedHealings.add(pattern);
+
             }
-        });
+        });*/
 
-        Machine.setEdxFileFolder(serverSettings.getStoragePath());
-
+        /*
+        This block only for test with big data patterns
+         */
+        /*Long t2 = System.currentTimeMillis();
         BioHttpClient bioHttpClient = HttpClientFactory.getInstance();
         String url = String.format("http://%s:%s%s", "localhost", 8098, ControllerAPI.PATTERNS_CONTROLLER + ControllerAPI.PATTERNS_CONTROLLER_GET_ALL);
         String json = bioHttpClient.executeGetRequest(url);
 
         Type typeOfHashMap = new TypeToken<List<EDXPattern>>() { }.getType();
         List<EDXPattern> patterns = JsonUtils.fromJson(typeOfHashMap, json);
+        LOGGER.info("time for execute request %s ms", System.currentTimeMillis() - t2);
 
         patterns.forEach(new Consumer<EDXPattern>() {
             @Override
             public void accept(EDXPattern edxPattern) {
-                selList.add(edxPattern.getPcmData());
+                floatArrayListWithPCMData.add(edxPattern.getPcmData());
             }
         });
 
-        selList.removeIf(o -> o == null);
+        floatArrayListWithPCMData.removeIf(o -> o == null);*/
+        /*End of block*/
 
-        /*for (DataTable item : sortedSelectedItems) {
-            sortedHealings.forEach(new Consumer<Pattern>() {
-                @Override
-                public void accept(Pattern pattern) {
-                    if (item.getFilename().equals(pattern.getFileName())) {
-                        selList.add(pattern.getPcmData());
-                        *//*if (selList.add(pattern.getPcmData())) {
-                            LOGGER.info("%s", pattern.getName());
-                            LOGGER.info("%s", item.getFilename());
-
-                        }*//*
-                    }
-                }
-            });
-        }*/
+        sortedSelectedHealings.forEach(new Consumer<Pattern>() {
+            @Override
+            public void accept(Pattern pattern) {
+                floatArrayListWithPCMData.add(pattern.getPcmData());
+            }
+        });
 
         LOGGER.info("time for prepare List %s ms", System.currentTimeMillis() - t1);
-        LOGGER.info("Added correctors %s", selList.size());
+        LOGGER.info("Added correctors %s", floatArrayListWithPCMData.size());
 
         try {
-            merge(selList);
+            merge(floatArrayListWithPCMData);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (UnsupportedAudioFileException e) {
@@ -273,37 +277,8 @@ public class CorrectorsPanelController extends AbstractController implements Sub
 
     }
 
-    /**
-     * getPatterns from healingsMap and put to сorrectorsTable
-     */
-    private void getPattersFromHealingsMap()  {
 
-        healingsMap.forEach((pattern, analysisSummary) -> {
-            LOGGER.info("%s %s\n", pattern.getKind(), pattern.getName(), analysisSummary.getDispersion());
-            correctorsData.add(DataTable.createDataTableObject(pattern,analysisSummary));
 
-        });
-
-    }
-
-    public void updatePanel(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-
-        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent t) {
-                close();
-            }
-        });
-    }
-
-    public void close() {
-        LOGGER.info("  CLOSE  REQUEST");
-
-        EventBus.unsubscribe(this);
-
-        primaryStage.close();
-    }
 
     @Handler
     public void handleMessage(HealingsMapEvent event) throws Exception {
@@ -328,19 +303,14 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         }
     }
 
-
-    public void setHealingsMap(Map<Pattern, AnalysisSummary> healingsMap) {
-        this.healingsMap = healingsMap;
-    }
-
     private void merge(/*Collection*/List</*Float*/float[]> lists) throws IOException, UnsupportedAudioFileException {
-
-        Collection out;
+        /*Collection out;
+        out = PCM.merge(lists);*/
         Long t1 = System.currentTimeMillis();
-//        out = PCM.merge(lists);
         float[] buffer = PCM.merge(lists);
 //        LOGGER.info("merge takes %s ms", System.currentTimeMillis() - t1);
 
+        // for work with Double type
         /*double[] buffer = out.stream().mapToDouble(new ToDoubleFunction<Float>() {
             @Override
             public double applyAsDouble(Float aDouble) {
@@ -348,17 +318,16 @@ public class CorrectorsPanelController extends AbstractController implements Sub
             }
         }).toArray();*/
 
-
 //        float[] buffer = ArrayUtils.toPrimitive((Float[]) out.toArray(new Float[0]), 0.0F);
 
         byte[] bytes = new byte[buffer.length];
 
         for (int i=0; i < buffer.length; i++) {
             if (((buffer[i]) * 128) >= 127) {
-                bytes[i] = (byte) 0xFF;
+                bytes[i] = (byte) 0xFF; // -1
             }
             else if (((buffer[i]) * 128)  <= -128) {
-                bytes[i] = (byte) 0x01;
+                bytes[i] = (byte) 0x01; // +1
             }
             else {
                 bytes[i] = (byte) ((byte) ((buffer[i]) * 128) ^ 0x80);
@@ -441,13 +410,28 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         }
     }
 
+    public void setHealingsMap(Map<Pattern, AnalysisSummary> healingsMap) {
+        this.healingsMap = healingsMap;
+    }
 
+    public void updatePanel(Stage primaryStage) {
+        this.primaryStage = primaryStage;
 
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                close();
+            }
+        });
+    }
 
+    public void close() {
+        LOGGER.info("  CLOSE  REQUEST");
 
+        EventBus.unsubscribe(this);
 
-
-
+        primaryStage.close();
+    }
 
 }
 

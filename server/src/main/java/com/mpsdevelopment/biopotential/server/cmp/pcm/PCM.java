@@ -1,16 +1,11 @@
 package com.mpsdevelopment.biopotential.server.cmp.pcm;
 
-import com.mpsdevelopment.biopotential.server.db.dao.DiseaseDao;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
-import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.*;
-import java.util.function.BinaryOperator;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class PCM {
 
