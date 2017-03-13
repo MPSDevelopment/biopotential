@@ -11,6 +11,7 @@
 	<appender name="APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender -->
 		<!-- <File>logs/Server.log</File> -->
+		<append>true</append>
 		<File>${user.home}/Bio/bio.log</File>
 		<encoder>
 			<pattern>%5p %d %18c - %m%n</pattern>
@@ -33,4 +34,5 @@
 		<appender-ref ref="APPENDER" />
 		<appender-ref ref="CONSOLE" />
 	</root>
+	<logger name="org.springframework" level="ERROR" />
 </configuration>

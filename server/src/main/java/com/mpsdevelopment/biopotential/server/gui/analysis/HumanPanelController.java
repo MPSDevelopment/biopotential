@@ -8,6 +8,7 @@ import com.mpsdevelopment.biopotential.server.db.pojo.HumanPoints;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
+import com.mpsdevelopment.biopotential.server.settings.ConsoleSettings;
 import com.mpsdevelopment.biopotential.server.utils.StageUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
@@ -15,15 +16,12 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
-import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Tooltip;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.Effect;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
@@ -31,8 +29,8 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.*;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.swing.text.html.ImageView;
 import java.net.URL;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -40,6 +38,9 @@ import java.util.function.BiConsumer;
 public class HumanPanelController extends AbstractController implements Subscribable {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(HumanPanelController.class);
+
+    @Autowired
+    private ConsoleSettings consoleSettings;
 
     private Stage primaryStage;
 
@@ -370,7 +371,6 @@ public class HumanPanelController extends AbstractController implements Subscrib
     @FXML
     private Path shape211;
 
-
     private Map<Pattern, AnalysisSummary> diseases;
     private List<HumanPoints> list016;
     private List<HumanPoints> list002;
@@ -507,12 +507,12 @@ public class HumanPanelController extends AbstractController implements Subscrib
                 circleMap.forEach(new BiConsumer<String, Circle>() {
                     @Override
                     public void accept(String s, Circle circle) {
-                        if (s.equals(pattern.getName().substring(3,7))) {
+                        if (pattern.getName().length() > 7) {
+                            if (s.equals(pattern.getName().substring(3, 7))) {
+                                circleIt(pattern.getName().substring(3, 7));
 
-                            circleIt(pattern.getName().substring(3,7));
-
-                            addSectionToList(pattern, analysisSummary, pattern.getName().substring(3,7));
-
+                                addSectionToList(pattern, analysisSummary, pattern.getName().substring(3, 7));
+                            }
                         }
                     }
                 });
@@ -520,12 +520,12 @@ public class HumanPanelController extends AbstractController implements Subscrib
                 shapeMap.forEach(new BiConsumer<String, Path>() {
                     @Override
                     public void accept(String s, Path path) {
-                        if (pattern.getName().substring(3,7).equals(s)) {
+                        if (pattern.getName().length() > 7) {
+                            if (pattern.getName().substring(3, 7).equals(s)) {
+                                shapeIt(pattern.getName().substring(3, 7));
 
-                            shapeIt(pattern.getName().substring(3,7));
-
-                            addSectionToList(pattern, analysisSummary, pattern.getName().substring(3,7));
-
+                                addSectionToList(pattern, analysisSummary, pattern.getName().substring(3, 7));
+                            }
                         }
 
                         if (pattern.getName().length() > 11) {

@@ -27,13 +27,12 @@ import java.util.List;
 @Configuration
 @ComponentScan(basePackages = {"com.mpsdevelopment.biopotential.server.db"})
 public class DatabaseCreator {
+    private static final Logger LOGGER = LoggerUtil.getLogger(DatabaseCreator.class);
 
-	public DatabaseCreator() {
+    public DatabaseCreator() {
         EventBus.subscribe(this);
         LOGGER.info("Create constructor DatabaseCreator");
 	}
-
-	private static final Logger LOGGER = LoggerUtil.getLogger(DatabaseCreator.class);
 
 	public static final String ADMIN_LOGIN = "admin";
 

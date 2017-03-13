@@ -262,10 +262,10 @@ public class CorrectorsPanelController extends AbstractController implements Sub
                 floatArrayListWithPCMData.add(pattern.getPcmData());
             }
         });
+        floatArrayListWithPCMData.removeIf(o -> o == null);
 
         LOGGER.info("time for prepare List %s ms", System.currentTimeMillis() - t1);
         LOGGER.info("Added correctors %s", floatArrayListWithPCMData.size());
-
         try {
             merge(floatArrayListWithPCMData);
         } catch (IOException e) {
