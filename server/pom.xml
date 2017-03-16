@@ -66,6 +66,7 @@
 		<lib.property>lib</lib.property>
 		<mbassador.version>1.2.4</mbassador.version>
         <exe.extension>.exe</exe.extension>
+		<lombok.version>1.16.14.0</lombok.version>
 	</properties>
 
 	<dependencies>
@@ -403,6 +404,15 @@
 			<artifactId>lame</artifactId>
 			<version>3.98.4</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok-maven -->
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>1.16.14</version>
+				<scope>provided</scope>
+			</dependency>
+
+
 
 	</dependencies>
 

@@ -74,12 +74,12 @@ public class DiseaseDao {
 		/*
 		get all patterns from database which have id correctors folders
 		 */
-//		List<EDXPattern> patternsNull = patternsDao.getFromDatabase(0);
+//		List<EDXPattern> patternsNull = patternsDao.getPatternsWhereCorrectorsNotNull(0);
 		// TODO Split summarizePatterns to 2 methods for decease and pattern
 
         switch (fetch) {
             case "corNotNull": {
-                List<EDXPattern> patterns = patternsDao.getFromDatabase();
+                List<EDXPattern> patterns = patternsDao.getPatternsWhereCorrectorsNotNull();
                 Map<Pattern, AnalysisSummary> diseases = Machine.summarizePatterns(sample, patterns, degree);
                 return diseases;
             }
@@ -200,7 +200,7 @@ public class DiseaseDao {
             @Override
             public void accept(Pattern dk, AnalysisSummary dv) {
 
-                LOGGER.info("heals for %s %s\n", dk.getKind(), dk.getName());
+//                LOGGER.info("heals for %s %s\n", dk.getKind(), dk.getName());
 
                 if (probableKinds.containsKey(dk.getKind())) {
 
@@ -214,11 +214,11 @@ public class DiseaseDao {
                             patternsEx = null;
                         }
                         else {*/
-                            patternsEn = patternsDao.getFromDatabase(((EDXPattern) dk).getCorrectingFolderEn());
-                            patternsEx = patternsDao.getFromDatabase(((EDXPattern) dk).getCorrectingFolderEx());
+                            patternsEn = patternsDao.getPatternsWhereCorrectorsNotNull(((EDXPattern) dk).getCorrectingFolderEn());
+                            patternsEx = patternsDao.getPatternsWhereCorrectorsNotNull(((EDXPattern) dk).getCorrectingFolderEx());
 //                        }
 
-						LOGGER.info("iterForFolder took %d ms", System.currentTimeMillis() - t1);
+//						LOGGER.info("iterForFolder took %d ms", System.currentTimeMillis() - t1);
 
 						/**
 						 * вытягиваются папка с коректорами для конкретной
@@ -226,11 +226,11 @@ public class DiseaseDao {
 						 */
 						final Map<Pattern, AnalysisSummary> healings = Machine.summarizePatterns(sample, patternsEn, level);
 						final Map<Pattern, AnalysisSummary> healingsEx = Machine.summarizePatterns(sample, patternsEx, -2147483648);
-						LOGGER.info("SummarizePatterns took %d ms", System.currentTimeMillis() - t1);
+//						LOGGER.info("SummarizePatterns took %d ms", System.currentTimeMillis() - t1);
 
 						allHealings.putAll(healings);
 						allHealings.putAll(healingsEx);
-						LOGGER.info("Healing size %d patternsEn",allHealings.size());
+//						LOGGER.info("Healing size %d patternsEn",allHealings.size());
 
 					} catch (SQLException | IOException e) {
 						e.printStackTrace();

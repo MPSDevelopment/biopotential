@@ -49,7 +49,7 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
         return query.list();
     }
     
-	public List<EDXPattern> getFromDatabasePat() throws SQLException, IOException {
+	public List<EDXPattern> getAllPatternsFromDataBase() throws SQLException, IOException {
 
 
         ProjectionList projections = Projections.projectionList()
@@ -69,7 +69,7 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
         return list;
     }
 
-        public List<EDXPattern> getFromDatabase() throws SQLException, IOException {
+        public List<EDXPattern> getPatternsWhereCorrectorsNotNull() throws SQLException, IOException {
 
             long t1 = System.currentTimeMillis();
 
@@ -84,8 +84,6 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
 
             // TODO remove and fix this shit  ------------------
             if (getSession().getSessionFactory().isClosed()) {
-
-
                 while (getSession().getSessionFactory().isClosed()) {
                     persistUtils.closeSessionFactory();
 //                persistUtils.setConfigurationDatabaseFilename(name);
@@ -101,7 +99,7 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
                     .setProjection(projections)
                     .setResultTransformer(Transformers.aliasToBean(EDXPattern.class)).list();
 
-            LOGGER.info("Work with iterator took %d ms Result set is %d ", System.currentTimeMillis() - t1, list.size());
+//            LOGGER.info("Work with iterator took %d ms Result set is %d ", System.currentTimeMillis() - t1, list.size());
 
             return list;
         
@@ -137,7 +135,7 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
         **/
     }
     
-	public List<EDXPattern> getFromDatabase(Long filter) throws SQLException, IOException {
+	public List<EDXPattern> getPatternsWhereCorrectorsNotNull(Long filter) throws SQLException, IOException {
 
         long t1 = System.currentTimeMillis();
 		
@@ -156,7 +154,7 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
        
         List list = query.list();
         
-        LOGGER.info("Work with iterator and filter %s took %d ms Result set is %d ", filter, System.currentTimeMillis() - t1, list.size());
+//        LOGGER.info("Work with iterator and filter %s took %d ms Result set is %d ", filter, System.currentTimeMillis() - t1, list.size());
         
 		return list;
 		
@@ -201,7 +199,7 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
         **/
     }
 
-    public List<EDXPattern> getFromDatabase(int i) throws SQLException, IOException {
+    public List<EDXPattern> getPatternsWhereCorrectorsNotNull(int i) throws SQLException, IOException {
 
         long t1 = System.currentTimeMillis();
 
@@ -218,7 +216,7 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
                 .setProjection(projections)
                 .setResultTransformer(Transformers.aliasToBean(EDXPattern.class)).list();
 
-        LOGGER.info("Work with iterator took %d ms Result set is %d ", System.currentTimeMillis() - t1, list.size());
+//        LOGGER.info("Work with iterator took %d ms Result set is %d ", System.currentTimeMillis() - t1, list.size());
 
         return list;
     }
@@ -242,7 +240,7 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
                 .setProjection(projections)
                 .setResultTransformer(Transformers.aliasToBean(EDXPattern.class)).list();
 
-        LOGGER.info("Work with iterator took %d ms Result set is %d ", System.currentTimeMillis() - t1, list.size());
+//        LOGGER.info("Work with iterator took %d ms Result set is %d ", System.currentTimeMillis() - t1, list.size());
 
         return list;
     }
@@ -266,7 +264,7 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
                 .setProjection(projections)
                 .setResultTransformer(Transformers.aliasToBean(EDXPattern.class)).list();
 
-        LOGGER.info("Work with iterator took %d ms Result set is %d ", System.currentTimeMillis() - t1, list.size());
+//        LOGGER.info("Work with iterator took %d ms Result set is %d ", System.currentTimeMillis() - t1, list.size());
 
         return list;
     }
@@ -292,7 +290,7 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
                 .setProjection(projections)
                 .setResultTransformer(Transformers.aliasToBean(EDXPattern.class)).list();
 
-        LOGGER.info("Work with iterator took %d ms Result set is %d ", System.currentTimeMillis() - t1, list.size());
+//        LOGGER.info("Work with iterator took %d ms Result set is %d ", System.currentTimeMillis() - t1, list.size());
 
         return list.size();
     }

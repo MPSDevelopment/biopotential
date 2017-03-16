@@ -25,16 +25,11 @@ class EDXSection {
 
 public class Machine {
 
+	private static final Logger LOGGER = LoggerUtil.getLogger(Machine.class);
+
 	private static String edxFileFolder;
 
-    public static void setEdxFileFolder(String edxFileFolder) {
-        Machine.edxFileFolder = edxFileFolder;
-    }
-
-    private static final Logger LOGGER = LoggerUtil.getLogger(Machine.class);
-
 	private static final String EDX_FILE_FOLDER = "data/edxfiles/";
-//	private static final String EDX_FILE_FOLDER = "D:/MPS/IDEA/Biopotential material's/база автомат/my_super_puper_db_Storage/";
 
 	public static Map<Pattern, AnalysisSummary> summarizePatterns(List<ChunkSummary> sampleSummary, List<EDXPattern> patterns, int degree) {
 		final Map<Pattern, AnalysisSummary> summaries = new HashMap<>();
@@ -80,7 +75,6 @@ public class Machine {
         if (edxFileFolder == null) {
             edxFileFolder = EDX_FILE_FOLDER;
         }
-
 		try (RandomAccessFile in = new RandomAccessFile(new File(edxFileFolder + fileName), "r")) {
 			final byte[] hdr = new byte[4];
 			if (in.read(hdr) != 4 || !new String(hdr).equals("EDXI")) {
@@ -114,6 +108,7 @@ public class Machine {
 		} catch (IOException e) {
 			throw e;
 		}
+
         float[] pcmArray = new float[sects.get(".orig   ").length];
 
 		if (sects.containsKey(".orig   ")) {
@@ -149,5 +144,13 @@ public class Machine {
 			e.printStackTrace();
 			return 0;
 		}
+	}
+
+	public static void setEdxFileFolder(String edxFileFolder) {
+		Machine.edxFileFolder = edxFileFolder;
+	}
+
+	public static String getEdxFileFolder() {
+		return edxFileFolder;
 	}
 }

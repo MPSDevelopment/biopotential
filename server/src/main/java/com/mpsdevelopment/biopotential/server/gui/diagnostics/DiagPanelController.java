@@ -425,8 +425,8 @@ public class DiagPanelController extends AbstractController implements Subscriba
             }
         });
 
-        /*// choose DB
-        chooseBaseButton.setOnAction(new EventHandler<ActionEvent>() {
+        // choose DB
+        /*chooseBaseButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 FileChooser fileChooser = new FileChooser();
@@ -440,9 +440,9 @@ public class DiagPanelController extends AbstractController implements Subscriba
                         selectedFile.getAbsolutePath().replaceAll(".mv.db",""));}
 
             }
-        });
+        });*/
 
-        chooseStorageButton.setOnAction(new EventHandler<ActionEvent>() {
+       /* chooseStorageButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
 

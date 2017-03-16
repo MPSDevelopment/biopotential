@@ -4,7 +4,6 @@ import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
 import com.mpsdevelopment.biopotential.server.db.dao.FoldersDao;
 import com.mpsdevelopment.biopotential.server.db.dao.PatternsDao;
 import com.mpsdevelopment.biopotential.server.db.pojo.Folder;
-import com.mpsdevelopment.biopotential.server.db.pojo.Pattern;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
@@ -62,7 +61,7 @@ public class PatternsController {
     public ResponseEntity<String> getAllUsers() throws ParseException, IOException, SQLException {
 
 //        List<Pattern> patterns = patternsDao.getPatterns(null, null);
-        List<EDXPattern> patterns  = patternsDao.getFromDatabasePat();
+        List<EDXPattern> patterns  = patternsDao.getAllPatternsFromDataBase();
 
         LOGGER.info("Has been loaded '%s' users", patterns.size());
         return new ResponseEntity<>(JsonUtils.getJson(patterns), null, HttpStatus.OK);

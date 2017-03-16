@@ -31,6 +31,7 @@
 	<bean id="addCorrectorController" class="com.mpsdevelopment.biopotential.server.gui.correctors.AddCorrectorController" />
 	<bean id="converterPanelController" class="com.mpsdevelopment.biopotential.server.gui.converter.ConverterPanelController" />
 	<bean id="barChartPanelController" class="com.mpsdevelopment.biopotential.server.gui.analysis.BarChartPanelController" />
+	<bean id="startPanelController" class="com.mpsdevelopment.biopotential.server.gui.startPanel.StartPanelController"/>
 	<bean id="humanPanelController" class="com.mpsdevelopment.biopotential.server.gui.analysis.HumanPanelController" />
 
 </beans>

@@ -172,6 +172,7 @@ public class AnalyzeService {
                 }
             }
         });
+        LOGGER.info("take sizemap");
 
 //        return sizeMap;
     }
@@ -252,7 +253,7 @@ public class AnalyzeService {
         systemMap.put("Ur",0d);
         systemMap.put("Vi",0d);
 
-        // decode diseas names to system's name's
+        // decode disease names to system's name's
         for (DataTable dataTable: sortedSelectedItems) {
             for (int i = 0 ; i < dataTable.getName().length(); i++) {
                 if ((dataTable.getName().charAt(i) == '♥') || (dataTable.getName().charAt(i) == 'ლ') || (dataTable.getName().charAt(i) == '♋') || (dataTable.getName().charAt(i) == '⌘')

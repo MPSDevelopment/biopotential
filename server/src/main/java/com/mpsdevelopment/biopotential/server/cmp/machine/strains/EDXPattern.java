@@ -7,6 +7,8 @@ import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.cmp.machine.PcmDataSummary;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
+import com.mpsdevelopment.plasticine.commons.logging.Logger;
+import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -14,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EDXPattern implements Pattern {
+
+	private static final Logger LOGGER = LoggerUtil.getLogger(EDXPattern.class);
+
 	@Expose
 	private List<ChunkSummary> summary;
 	@Expose
@@ -56,6 +61,8 @@ public class EDXPattern implements Pattern {
 	}
 	
 	private void initializePcmData() {
+//		Long t1 = System.currentTimeMillis();
+
 		try {
 			PcmDataSummary pcmData = Machine.getPcmData(fileName);
 			this.summary = pcmData.getSummary();
@@ -63,6 +70,8 @@ public class EDXPattern implements Pattern {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+//		LOGGER.info("time for initializePcmData %s ms", System.currentTimeMillis() - t1);
+
 	}
     // getSummary() for calculate chunk summary values
 	/*public List<ChunkSummary> getSummary() {

@@ -81,6 +81,13 @@ public class AutomaticsPanelController extends AbstractController implements Sub
             }
         });
 
+        automaticsCancelButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                close();
+            }
+        });
+
     }
 
     public void updatePanel(Stage primaryStage) {

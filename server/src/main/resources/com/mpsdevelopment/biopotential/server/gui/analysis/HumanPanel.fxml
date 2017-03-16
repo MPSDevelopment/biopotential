@@ -24,29 +24,29 @@
           <NumberAxis animated="false" autoRanging="false" side="LEFT" upperBound="100" />
         </yAxis>
       </ScatterChart>
-      <ImageView fitHeight="636.0" fitWidth="1447.0" layoutX="40.0" layoutY="61.0">
+      <ImageView fitHeight="632.0" fitWidth="1438.0" layoutX="44.0" layoutY="62.0">
          <image>
-            <!--<Image url="@../../../../../../../../../../../../Biopotential%20material's/Foto/bodys_indexes.jpg" />-->
+            <Image url="@../../../../../../../../../../../../Biopotential%20material's/Foto/human.jpg" />
          </image>
       </ImageView>
-      <Path fx:id="shape012" fill="#ff0a37" layoutX="262.0" layoutY="162.0" opacity="0.77" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5">
+      <Path fx:id="shape012" fill="#ff0a37" layoutX="263.0" layoutY="160.0" opacity="0.77" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5">
           <elements>
-              <MoveTo x="5.0" y="2.0" />
-            <QuadCurveTo controlX="24.0" controlY="25.0" x="28.0" y="60.0" />
-            <QuadCurveTo controlX="-29.0" controlY="51.0" x="-9.0" y="7.0" />
+              <MoveTo x="8.0" y="6.0" />
+            <QuadCurveTo controlX="24.0" controlY="25.0" x="27.0" y="60.0" />
+            <QuadCurveTo controlX="-37.0" controlY="51.0" x="-4.0" y="5.0" />
             <ClosePath />
           </elements>
       </Path>
-      <Circle fx:id="shape004" centerY="1.0" fill="#1fff92" layoutX="215.0" layoutY="164.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
-      <Path fx:id="shape007" fill="#ff0a37" layoutX="166.0" layoutY="167.0" opacity="0.66" stroke="BLACK" strokeType="INSIDE">
+      <Circle fx:id="shape004" centerY="1.0" fill="#1fff92" layoutX="214.0" layoutY="164.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+      <Path fx:id="shape007" fill="#ff0a37" layoutX="167.0" layoutY="165.0" opacity="0.66" stroke="BLACK" strokeType="INSIDE">
           <elements>
-              <MoveTo x="7.0" y="-3.0" />
-              <QuadCurveTo controlX="43.0" controlY="36.0" x="-26.0" y="58.0" />
-            <QuadCurveTo controlX="-15.0" controlY="3.0" x="-5.0" y="-1.0" />
+              <MoveTo x="8.0" y="-1.0" />
+              <QuadCurveTo controlX="43.0" controlY="41.0" x="-27.0" y="56.0" />
+            <QuadCurveTo controlX="-15.0" controlY="3.0" x="-2.0" />
             <ClosePath />
           </elements>
       </Path>
-      <Path fx:id="shape016" fill="DODGERBLUE" layoutX="162.0" layoutY="230.0" opacity="0.62" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape016" fill="DODGERBLUE" layoutX="163.0" layoutY="228.0" opacity="0.62" stroke="BLACK" strokeType="INSIDE">
           <elements>
               <MoveTo />
             <QuadCurveTo controlY="2.0" />
@@ -60,13 +60,13 @@
             <ClosePath />
           </elements>
       </Path>
-      <Circle fx:id="shape009" centerY="1.0" fill="#1fff92" layoutX="215.0" layoutY="198.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="shape010" centerY="1.0" fill="#1fff92" layoutX="215.0" layoutY="232.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="shape017" centerY="1.0" fill="#1fff92" layoutX="215.0" layoutY="264.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="shape018" centerY="1.0" fill="#1fff92" layoutX="214.0" layoutY="298.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="shape029" centerY="1.0" fill="#1fff92" layoutX="215.0" layoutY="331.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="shape037" centerY="1.0" fill="#1fff92" layoutX="216.0" layoutY="379.0" opacity="0.77" radius="19.0" stroke="BLACK" strokeType="INSIDE" />
-      <Path fx:id="shape019" fill="DODGERBLUE" layoutX="219.0" layoutY="248.0" opacity="0.39" stroke="BLACK" strokeType="INSIDE">
+      <Circle fx:id="shape009" centerY="1.0" fill="#1fff92" layoutX="216.0" layoutY="196.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="shape010" centerY="1.0" fill="#1fff92" layoutX="216.0" layoutY="230.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="shape017" centerY="1.0" fill="#1fff92" layoutX="216.0" layoutY="262.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="shape018" centerY="1.0" fill="#1fff92" layoutX="215.0" layoutY="296.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="shape029" centerY="1.0" fill="#1fff92" layoutX="216.0" layoutY="329.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="shape037" centerY="1.0" fill="#1fff92" layoutX="217.0" layoutY="377.0" opacity="0.77" radius="19.0" stroke="BLACK" strokeType="INSIDE" />
+      <Path fx:id="shape019" fill="DODGERBLUE" layoutX="220.0" layoutY="246.0" opacity="0.39" stroke="BLACK" strokeType="INSIDE">
           <elements>
               <MoveTo x="1.0" />
             <ArcTo radiusY="1.0" x="10.0" y="-10.0" />
@@ -79,7 +79,7 @@
             <QuadCurveTo controlX="26.0" controlY="18.0" x="-4.0" y="-1.0" />
           </elements>
       </Path>
-      <Path fx:id="shape028" fill="DODGERBLUE" layoutX="167.0" layoutY="315.0" opacity="0.82" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape028" fill="DODGERBLUE" layoutX="168.0" layoutY="313.0" opacity="0.82" stroke="BLACK" strokeType="INSIDE">
           <elements>
               <MoveTo />
               <LineTo x="33.0" y="10.0" />
@@ -90,7 +90,7 @@
             <ClosePath />
           </elements>
       </Path>
-      <Path fx:id="shape035" fill="#1ff2ff" layoutX="154.0" layoutY="367.0" opacity="0.63" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape035" fill="#1ff2ff" layoutX="155.0" layoutY="365.0" opacity="0.63" stroke="BLACK" strokeType="INSIDE">
           <elements>
               <MoveTo x="-1.0" />
             <QuadCurveTo controlX="2.0" controlY="-5.0" x="34.0" y="-2.0" />
@@ -99,7 +99,7 @@
             <QuadCurveTo controlX="-9.0" controlY="47.0" x="-1.0" y="-2.0" />
           </elements>
       </Path>
-      <Path fx:id="shape036" fill="#c9791e" layoutX="185.0" layoutY="364.0" opacity="0.66" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape036" fill="#c9791e" layoutX="186.0" layoutY="362.0" opacity="0.66" stroke="BLACK" strokeType="INSIDE">
           <elements>
               <MoveTo />
               <LineTo x="16.0" y="1.0" />
@@ -109,7 +109,7 @@
             <QuadCurveTo controlX="-15.0" controlY="43.0" x="-1.0" y="1.0" />
           </elements>
       </Path>
-      <Path fx:id="shape042" fill="#b91946" layoutX="155.0" layoutY="483.0" opacity="0.81" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape042" fill="#b91946" layoutX="156.0" layoutY="481.0" opacity="0.81" stroke="BLACK" strokeType="INSIDE">
           <elements>
               <MoveTo />
             <QuadCurveTo controlY="-4.0" x="19.0" y="-5.0" />
@@ -118,7 +118,7 @@
             <ClosePath />
           </elements>
       </Path>
-      <Path fx:id="shape043" fill="DODGERBLUE" layoutX="175.0" layoutY="478.0" opacity="0.71" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape043" fill="DODGERBLUE" layoutX="176.0" layoutY="476.0" opacity="0.71" stroke="BLACK" strokeType="INSIDE">
           <elements>
               <MoveTo x="-1.0" y="-2.0" />
               <QuadCurveTo controlX="29.0" controlY="4.0" x="17.0" y="34.0" />
@@ -126,7 +126,7 @@
             <ClosePath />
           </elements>
       </Path>
-      <Path fx:id="shape046" fill="#ff1f1f" layoutX="153.0" layoutY="517.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape046" fill="#ff1f1f" layoutX="154.0" layoutY="515.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
           <elements>
               <MoveTo />
             <QuadCurveTo controlX="19.0" controlY="14.0" x="15.0" y="10.0" />
@@ -135,7 +135,7 @@
             <QuadCurveTo controlX="-18.0" controlY="22.0" x="4.0" y="2.0" />
           </elements>
       </Path>
-      <Path fx:id="shape047" fill="DODGERBLUE" layoutX="170.0" layoutY="526.0" opacity="0.71" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape047" fill="DODGERBLUE" layoutX="171.0" layoutY="524.0" opacity="0.71" stroke="BLACK" strokeType="INSIDE">
           <elements>
               <MoveTo x="-1.0" y="-2.0" />
             <QuadCurveTo controlX="5.0" controlY="7.0" x="23.0" y="-14.0" />
@@ -144,7 +144,7 @@
               <ClosePath />
           </elements>
       </Path>
-      <Path fx:id="shape050" fill="DODGERBLUE" layoutX="147.0" layoutY="643.0" opacity="0.59" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape050" fill="DODGERBLUE" layoutX="148.0" layoutY="641.0" opacity="0.59" stroke="BLACK" strokeType="INSIDE">
           <elements>
               <MoveTo />
               <LineTo x="13.0" y="3.0" />
@@ -153,15 +153,15 @@
             <QuadCurveTo controlX="-23.0" controlY="36.0" x="2.0" y="-1.0" />
           </elements>
       </Path>
-      <Path fx:id="shape006" fill="DODGERBLUE" layoutX="126.0" layoutY="216.0" opacity="0.61" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape006" fill="DODGERBLUE" layoutX="127.0" layoutY="215.0" opacity="0.61" stroke="BLACK" strokeType="INSIDE">
           <elements>
               <MoveTo />
-            <QuadCurveTo controlX="-6.0" controlY="-41.0" x="32.0" y="-50.0" />
+            <QuadCurveTo controlX="-6.0" controlY="-41.0" x="33.0" y="-48.0" />
               <QuadCurveTo controlX="16.0" controlY="-11.0" x="13.0" y="6.0" />
             <LineTo y="1.0" />
           </elements>
       </Path>
-      <Path fx:id="shape014" fill="DODGERBLUE" layoutX="126.0" layoutY="220.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape014" fill="DODGERBLUE" layoutX="127.0" layoutY="218.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
           <elements>
               <MoveTo y="-2.0" />
             <LineTo x="13.0" y="3.0" />
@@ -170,7 +170,7 @@
             <QuadCurveTo controlX="-6.0" controlY="43.0" x="-1.0" y="-1.0" />
           </elements>
       </Path>
-      <Path fx:id="shape015" fill="DODGERBLUE" layoutX="139.0" layoutY="223.0" opacity="0.83" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape015" fill="DODGERBLUE" layoutX="140.0" layoutY="221.0" opacity="0.83" stroke="BLACK" strokeType="INSIDE">
           <elements>
               <MoveTo />
               <LineTo x="17.0" y="-3.0" />
@@ -180,7 +180,7 @@
             <ClosePath />
           </elements>
       </Path>
-      <Path fx:id="shape022" fill="DODGERBLUE" layoutX="114.0" layoutY="266.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape022" fill="DODGERBLUE" layoutX="115.0" layoutY="264.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo y="-2.0" />
             <QuadCurveTo controlX="3.0" controlY="-4.0" x="17.0" y="-2.0" />
@@ -188,7 +188,7 @@
             <QuadCurveTo controlX="-25.0" controlY="29.0" x="-1.0" y="-1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape023" fill="DODGERBLUE" layoutX="131.0" layoutY="265.0" opacity="0.83" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape023" fill="DODGERBLUE" layoutX="132.0" layoutY="263.0" opacity="0.83" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo />
             <LineTo x="13.0" y="11.0" />
@@ -197,7 +197,7 @@
             <LineTo x="1.0" y="-1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape026" fill="DODGERBLUE" layoutX="98.0" layoutY="294.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape026" fill="DODGERBLUE" layoutX="99.0" layoutY="292.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="1.0" y="-3.0" />
             <QuadCurveTo controlX="-1.0" controlY="1.0" x="13.0" y="13.0" />
@@ -206,7 +206,7 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape027" fill="DODGERBLUE" layoutX="112.0" layoutY="308.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape027" fill="DODGERBLUE" layoutX="113.0" layoutY="306.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="1.0" y="-3.0" />
             <QuadCurveTo controlX="-1.0" controlY="1.0" x="19.0" y="2.0" />
@@ -215,7 +215,7 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape033" fill="DODGERBLUE" layoutX="79.0" layoutY="350.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape033" fill="DODGERBLUE" layoutX="80.0" layoutY="348.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="1.0" y="-3.0" />
             <QuadCurveTo controlX="-1.0" controlY="1.0" x="9.0" y="3.0" />
@@ -225,7 +225,7 @@
             <CubicCurveTo controlX1="-13.0" />
          </elements>
       </Path>
-      <Path fx:id="shape034" fill="DODGERBLUE" layoutX="88.0" layoutY="356.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape034" fill="DODGERBLUE" layoutX="89.0" layoutY="354.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="1.0" y="-3.0" />
             <QuadCurveTo controlY="-4.0" x="9.0" y="6.0" />
@@ -237,7 +237,7 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape008" fill="DODGERBLUE" layoutX="181.0" layoutY="172.0" opacity="0.48" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape008" fill="DODGERBLUE" layoutX="182.0" layoutY="170.0" opacity="0.48" stroke="BLACK" strokeType="INSIDE">
           <elements>
               <MoveTo />
               <LineTo x="20.0" y="2.0" />
@@ -248,44 +248,44 @@
             <QuadCurveTo controlX="17.0" controlY="34.0" y="-1.0" />
           </elements>
       </Path>
-      <Path fx:id="shape003" fill="DODGERBLUE" layoutX="196.0" layoutY="133.0" opacity="0.83" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape003" fill="DODGERBLUE" layoutX="196.0" layoutY="132.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
-            <MoveTo />
-            <LineTo x="20.0" y="9.0" />
+            <MoveTo x="3.0" y="-1.0" />
+            <LineTo x="20.0" y="8.0" />
             <LineTo x="20.0" y="16.0" />
             <QuadCurveTo controlX="-4.0" controlY="18.0" x="4.0" y="41.0" />
-            <CubicCurveTo controlX1="5.0" controlX2="-20.0" controlY1="39.0" controlY2="40.0" x="-21.0" y="32.0" />
-            <CubicCurveTo controlX1="-4.0" controlX2="-8.0" controlY1="20.0" controlY2="36.0" />
+            <CubicCurveTo controlX1="5.0" controlX2="-17.0" controlY1="38.0" controlY2="41.0" x="-20.0" y="31.0" />
+            <CubicCurveTo controlX1="-19.0" controlX2="1.0" controlY1="25.0" controlY2="27.0" x="2.0" y="-2.0" />
          </elements>
       </Path>
-      <Path fx:id="shape001" fill="DODGERBLUE" layoutX="214.0" layoutY="61.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape001" fill="DODGERBLUE" layoutX="216.0" layoutY="59.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
           <elements>
-              <MoveTo />
+              <MoveTo y="2.0" />
               <LineTo y="80.0" />
             <QuadCurveTo controlX="-21.0" controlY="69.0" x="-24.0" y="61.0" />
-            <QuadCurveTo controlX="-40.0" controlY="3.0" x="-1.0" />
+            <QuadCurveTo controlX="-40.0" controlY="3.0" y="2.0" />
           </elements>
       </Path>
-      <Path fx:id="shape002" fill="DODGERBLUE" layoutX="216.0" layoutY="62.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape002" fill="DODGERBLUE" layoutX="217.0" layoutY="61.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
           <elements>
-              <MoveTo />
-              <QuadCurveTo controlX="40.0" controlY="-2.0" x="25.0" y="55.0" />
+              <MoveTo y="1.0" />
+              <QuadCurveTo controlX="33.0" controlY="-2.0" x="25.0" y="55.0" />
             <QuadCurveTo controlX="22.0" controlY="72.0" y="78.0" />
             <ClosePath />
           </elements>
       </Path>
-      <Path fx:id="shape005" fill="DODGERBLUE" layoutX="217.0" layoutY="142.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape005" fill="DODGERBLUE" layoutX="218.0" layoutY="140.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
-            <MoveTo />
-            <QuadCurveTo controlX="13.0" controlY="-2.0" x="21.0" y="-10.0" />
-            <LineTo x="21.0" y="8.0" />
-            <LineTo x="40.0" y="22.0" />
-            <QuadCurveTo controlX="30.0" controlY="33.0" x="14.0" y="32.0" />
-            <QuadCurveTo controlX="17.0" controlY="8.0" y="7.0" />
+            <MoveTo x="-1.0" />
+            <QuadCurveTo controlX="12.0" controlY="-4.0" x="19.0" y="-12.0" />
+            <LineTo x="20.0" y="6.0" />
+            <LineTo x="40.0" y="25.0" />
+            <QuadCurveTo controlX="30.0" controlY="33.0" x="9.0" y="31.0" />
+            <QuadCurveTo controlX="16.0" controlY="16.0" x="-1.0" y="8.0" />
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape011" fill="DODGERBLUE" layoutX="229.0" layoutY="176.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape011" fill="DODGERBLUE" layoutX="230.0" layoutY="174.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo />
             <QuadCurveTo controlX="13.0" controlY="-2.0" x="22.0" y="-5.0" />
@@ -296,7 +296,7 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape013" fill="DODGERBLUE" layoutX="273.0" layoutY="167.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape013" fill="DODGERBLUE" layoutX="274.0" layoutY="166.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo />
             <QuadCurveTo controlX="35.0" controlY="-2.0" x="34.0" y="50.0" />
@@ -304,7 +304,7 @@
             <QuadCurveTo controlX="10.0" controlY="8.0" x="-3.0" />
          </elements>
       </Path>
-      <Path fx:id="shape020" fill="DODGERBLUE" layoutX="277.0" layoutY="222.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape020" fill="DODGERBLUE" layoutX="277.0" layoutY="220.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo />
             <LineTo x="12.0" y="1.0" />
@@ -313,7 +313,7 @@
             <QuadCurveTo controlX="-9.0" controlY="30.0" x="-1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape021" fill="DODGERBLUE" layoutX="294.0" layoutY="224.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape021" fill="DODGERBLUE" layoutX="293.0" layoutY="222.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-3.0" />
             <QuadCurveTo controlX="12.0" controlY="-2.0" x="13.0" y="-6.0" />
@@ -322,25 +322,25 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape024" fill="DODGERBLUE" layoutX="290.0" layoutY="273.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape024" fill="DODGERBLUE" layoutX="289.0" layoutY="272.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-2.0" />
             <LineTo x="8.0" y="-10.0" />
-            <QuadCurveTo controlX="21.0" controlY="24.0" x="29.0" y="32.0" />
-            <QuadCurveTo controlX="31.0" controlY="34.0" x="11.0" y="34.0" />
+            <QuadCurveTo controlX="20.0" controlY="26.0" x="28.0" y="31.0" />
+            <QuadCurveTo controlX="27.0" controlY="33.0" x="8.0" y="33.0" />
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape025" fill="DODGERBLUE" layoutX="302.0" layoutY="264.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape025" fill="DODGERBLUE" layoutX="303.0" layoutY="262.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
-            <MoveTo x="-3.0" />
-            <LineTo x="17.0" y="-1.0" />
-            <LineTo x="29.0" y="22.0" />
-            <QuadCurveTo controlX="31.0" controlY="29.0" x="18.0" y="41.0" />
-            <ClosePath />
+            <MoveTo x="-5.0" y="-1.0" />
+            <LineTo x="12.0" y="-1.0" />
+            <LineTo x="25.0" y="22.0" />
+            <QuadCurveTo controlX="31.0" controlY="29.0" x="15.0" y="41.0" />
+            <QuadCurveTo controlX="4.0" controlY="29.0" x="-5.0" />
          </elements>
       </Path>
-      <Path fx:id="shape031" fill="DODGERBLUE" layoutX="305.0" layoutY="309.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape031" fill="DODGERBLUE" layoutX="302.0" layoutY="307.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-2.0" y="-1.0" />
             <LineTo x="14.0" y="-2.0" />
@@ -349,7 +349,7 @@
             <CubicCurveTo controlX1="1.0" controlX2="-5.0" controlY1="-1.0" controlY2="4.0" x="-3.0" y="-1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape032" fill="DODGERBLUE" layoutX="324.0" layoutY="307.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape032" fill="DODGERBLUE" layoutX="322.0" layoutY="305.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-4.0" y="-1.0" />
             <QuadCurveTo controlX="3.0" controlY="-4.0" x="9.0" y="-17.0" />
@@ -358,7 +358,7 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape041" fill="DODGERBLUE" layoutX="343.0" layoutY="352.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape041" fill="DODGERBLUE" layoutX="342.0" layoutY="350.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-3.0" />
             <LineTo x="8.0" y="-3.0" />
@@ -370,18 +370,18 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape040" fill="DODGERBLUE" layoutX="336.0" layoutY="362.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape040" fill="DODGERBLUE" layoutX="333.0" layoutY="360.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-2.0" y="-1.0" />
-            <LineTo x="4.0" y="-9.0" />
-            <LineTo x="26.0" y="41.0" />
-            <CubicCurveTo controlX1="13.0" controlX2="35.0" controlY1="10.0" controlY2="57.0" x="23.0" y="50.0" />
+            <LineTo x="5.0" y="-10.0" />
+            <LineTo x="28.0" y="41.0" />
+            <CubicCurveTo controlX1="15.0" controlX2="36.0" controlY1="10.0" controlY2="57.0" x="22.0" y="50.0" />
             <LineTo x="16.0" y="39.0" />
             <QuadCurveTo controlX="16.0" controlY="54.0" x="8.0" y="40.0" />
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape030" fill="DODGERBLUE" layoutX="235.0" layoutY="326.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape030" fill="DODGERBLUE" layoutX="236.0" layoutY="324.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-5.0" y="-1.0" />
             <LineTo x="33.0" y="-13.0" />
@@ -392,7 +392,7 @@
             <QuadCurveTo controlX="-1.0" controlY="19.0" x="-5.0" y="-1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape039" fill="DODGERBLUE" layoutX="252.0" layoutY="371.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape039" fill="DODGERBLUE" layoutX="253.0" layoutY="369.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-4.0" y="-1.0" />
             <QuadCurveTo controlX="3.0" controlY="-4.0" x="27.0" y="-1.0" />
@@ -401,7 +401,7 @@
             <CubicCurveTo controlX1="7.0" controlX2="-3.0" controlY1="38.0" x="-6.0" />
          </elements>
       </Path>
-      <Path fx:id="shape038" fill="DODGERBLUE" layoutX="238.0" layoutY="374.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape038" fill="DODGERBLUE" layoutX="239.0" layoutY="372.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-2.0" y="-1.0" />
             <LineTo x="7.0" y="-3.0" />
@@ -411,7 +411,7 @@
             <QuadCurveTo controlX="-2.0" controlY="14.0" x="-4.0" y="-1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape044" fill="DODGERBLUE" layoutX="241.0" layoutY="493.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape044" fill="DODGERBLUE" layoutX="242.0" layoutY="491.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-4.0" y="-1.0" />
             <QuadCurveTo controlX="-6.0" controlY="-3.0" x="14.0" y="-13.0" />
@@ -420,13 +420,13 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fill="DODGERBLUE" layoutX="260.0" layoutY="482.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fill="DODGERBLUE" layoutX="261.0" layoutY="480.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-2.0" y="-1.0" />
             <QuadCurveTo />
          </elements>
       </Path>
-      <Path fx:id="shape045" fill="DODGERBLUE" layoutX="260.0" layoutY="482.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape045" fill="DODGERBLUE" layoutX="261.0" layoutY="480.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-4.0" y="-1.0" />
             <QuadCurveTo controlX="17.0" controlY="2.0" x="17.0" y="9.0" />
@@ -435,7 +435,7 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape048" fill="DODGERBLUE" layoutX="248.0" layoutY="527.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape048" fill="DODGERBLUE" layoutX="249.0" layoutY="525.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-4.0" y="-1.0" />
             <QuadCurveTo controlX="4.0" controlY="5.0" x="13.0" y="1.0" />
@@ -444,7 +444,7 @@
             <CubicCurveTo controlX1="-11.0" controlY1="7.0" controlY2="1.0" x="-5.0" y="-1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape049" fill="DODGERBLUE" layoutX="268.0" layoutY="529.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape049" fill="DODGERBLUE" layoutX="269.0" layoutY="527.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-3.0" y="-2.0" />
             <QuadCurveTo controlX="-10.0" controlY="5.0" x="11.0" y="-9.0" />
@@ -453,7 +453,7 @@
             <QuadCurveTo controlX="1.0" controlY="5.0" x="-5.0" />
          </elements>
       </Path>
-      <Path fx:id="shape052" fill="DODGERBLUE" layoutX="270.0" layoutY="646.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape052" fill="DODGERBLUE" layoutX="271.0" layoutY="644.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-6.0" y="-1.0" />
             <LineTo x="3.0" y="1.0" />
@@ -463,7 +463,7 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape053" fill="DODGERBLUE" layoutX="279.0" layoutY="648.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape053" fill="DODGERBLUE" layoutX="280.0" layoutY="646.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-2.0" y="-1.0" />
             <LineTo x="6.0" y="-3.0" />
@@ -472,7 +472,7 @@
             <QuadCurveTo controlX="12.0" controlY="30.0" x="-4.0" y="-1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape051" fill="DODGERBLUE" layoutX="158.0" layoutY="645.0" opacity="0.44" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape051" fill="DODGERBLUE" layoutX="159.0" layoutY="643.0" opacity="0.44" stroke="BLACK" strokeType="INSIDE">
           <elements>
               <MoveTo x="2.0" />
               <LineTo x="9.0" y="-3.0" />
@@ -481,16 +481,7 @@
             <QuadCurveTo controlX="-7.0" controlY="27.0" x="1.0" y="1.0" />
           </elements>
       </Path>
-      <Path fx:id="shape114" fill="#ff0a37" layoutX="632.0" layoutY="165.0" opacity="0.66" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5">
-         <elements>
-            <MoveTo x="5.0" y="2.0" />
-            <QuadCurveTo controlX="24.0" controlY="25.0" x="28.0" y="60.0" />
-            <QuadCurveTo controlX="-29.0" controlY="51.0" x="-9.0" y="7.0" />
-            <ClosePath />
-         </elements>
-      </Path>
-      <Circle fx:id="shape104" centerY="1.0" fill="#1fff92" layoutX="585.0" layoutY="167.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
-      <Path fx:id="shape107" fill="#ff0a37" layoutX="536.0" layoutY="170.0" opacity="0.61" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape107" fill="#ff0a37" layoutX="537.0" layoutY="168.0" opacity="0.61" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="7.0" y="-3.0" />
             <QuadCurveTo controlX="43.0" controlY="36.0" x="-26.0" y="58.0" />
@@ -498,13 +489,13 @@
             <ClosePath />
          </elements>
       </Path>
-      <Circle fx:id="shape109" centerY="1.0" fill="#1fff92" layoutX="585.0" layoutY="201.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="shape110" centerY="1.0" fill="#1fff92" layoutX="585.0" layoutY="235.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="shape111" centerY="1.0" fill="#1fff92" layoutX="585.0" layoutY="267.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="shape112" centerY="1.0" fill="#1fff92" layoutX="584.0" layoutY="301.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="shape127" centerY="1.0" fill="#1fff92" layoutX="585.0" layoutY="334.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="shape135" centerY="1.0" fill="#1fff92" layoutX="586.0" layoutY="382.0" opacity="0.77" radius="19.0" stroke="BLACK" strokeType="INSIDE" />
-      <Path fx:id="shape126" fill="DODGERBLUE" layoutX="537.0" layoutY="318.0" opacity="0.82" stroke="BLACK" strokeType="INSIDE">
+      <Circle fx:id="shape109" centerY="1.0" fill="#1fff92" layoutX="586.0" layoutY="199.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="shape110" centerY="1.0" fill="#1fff92" layoutX="586.0" layoutY="233.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="shape111" centerY="1.0" fill="#1fff92" layoutX="586.0" layoutY="265.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="shape112" centerY="1.0" fill="#1fff92" layoutX="585.0" layoutY="299.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="shape127" centerY="1.0" fill="#1fff92" layoutX="586.0" layoutY="332.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="shape135" centerY="1.0" fill="#1fff92" layoutX="587.0" layoutY="380.0" opacity="0.77" radius="19.0" stroke="BLACK" strokeType="INSIDE" />
+      <Path fx:id="shape126" fill="DODGERBLUE" layoutX="538.0" layoutY="316.0" opacity="0.82" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo />
             <LineTo x="33.0" y="10.0" />
@@ -515,7 +506,7 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape133" fill="#1ff2ff" layoutX="524.0" layoutY="370.0" opacity="0.76" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape133" fill="#1ff2ff" layoutX="525.0" layoutY="368.0" opacity="0.76" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-1.0" />
             <QuadCurveTo controlX="2.0" controlY="-5.0" x="34.0" y="-2.0" />
@@ -524,7 +515,7 @@
             <QuadCurveTo controlX="-9.0" controlY="47.0" x="-1.0" y="-2.0" />
          </elements>
       </Path>
-      <Path fx:id="shape134" fill="#c9791e" layoutX="555.0" layoutY="367.0" opacity="0.76" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape134" fill="#c9791e" layoutX="556.0" layoutY="365.0" opacity="0.76" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo />
             <LineTo x="16.0" y="1.0" />
@@ -534,7 +525,7 @@
             <QuadCurveTo controlX="-15.0" controlY="43.0" x="-1.0" y="1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape140" fill="#b91946" layoutX="525.0" layoutY="486.0" opacity="0.81" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape140" fill="#b91946" layoutX="526.0" layoutY="484.0" opacity="0.81" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo />
             <QuadCurveTo controlY="-4.0" x="19.0" y="-5.0" />
@@ -543,7 +534,7 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape141" fill="DODGERBLUE" layoutX="545.0" layoutY="481.0" opacity="0.71" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape141" fill="DODGERBLUE" layoutX="546.0" layoutY="479.0" opacity="0.71" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-1.0" y="-2.0" />
             <QuadCurveTo controlX="29.0" controlY="4.0" x="17.0" y="34.0" />
@@ -551,7 +542,7 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape144" fill="#ff1f1f" layoutX="523.0" layoutY="520.0" opacity="0.66" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape144" fill="#ff1f1f" layoutX="524.0" layoutY="518.0" opacity="0.66" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo />
             <QuadCurveTo controlX="19.0" controlY="14.0" x="15.0" y="10.0" />
@@ -560,7 +551,7 @@
             <QuadCurveTo controlX="-18.0" controlY="22.0" x="4.0" y="2.0" />
          </elements>
       </Path>
-      <Path fx:id="shape145" fill="DODGERBLUE" layoutX="540.0" layoutY="529.0" opacity="0.57" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape145" fill="DODGERBLUE" layoutX="541.0" layoutY="527.0" opacity="0.57" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-1.0" y="-2.0" />
             <QuadCurveTo controlX="5.0" controlY="7.0" x="23.0" y="-14.0" />
@@ -569,7 +560,7 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape148" fill="DODGERBLUE" layoutX="517.0" layoutY="646.0" opacity="0.59" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape148" fill="DODGERBLUE" layoutX="518.0" layoutY="644.0" opacity="0.59" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo />
             <LineTo x="13.0" y="3.0" />
@@ -578,7 +569,7 @@
             <QuadCurveTo controlX="-23.0" controlY="36.0" x="2.0" y="-1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape106" fill="DODGERBLUE" layoutX="496.0" layoutY="219.0" opacity="0.61" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape106" fill="DODGERBLUE" layoutX="497.0" layoutY="217.0" opacity="0.61" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo />
             <QuadCurveTo controlX="-6.0" controlY="-41.0" x="32.0" y="-50.0" />
@@ -586,7 +577,7 @@
             <LineTo y="1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape116" fill="DODGERBLUE" layoutX="496.0" layoutY="223.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape116" fill="DODGERBLUE" layoutX="497.0" layoutY="221.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo y="-2.0" />
             <LineTo x="13.0" y="3.0" />
@@ -595,7 +586,7 @@
             <QuadCurveTo controlX="-6.0" controlY="43.0" x="-1.0" y="-1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape117" fill="DODGERBLUE" layoutX="509.0" layoutY="226.0" opacity="0.83" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape117" fill="DODGERBLUE" layoutX="510.0" layoutY="224.0" opacity="0.83" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo />
             <LineTo x="17.0" y="-3.0" />
@@ -605,7 +596,7 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape120" fill="DODGERBLUE" layoutX="484.0" layoutY="269.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape120" fill="DODGERBLUE" layoutX="485.0" layoutY="267.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo y="-2.0" />
             <QuadCurveTo controlX="3.0" controlY="-4.0" x="17.0" y="-2.0" />
@@ -613,7 +604,7 @@
             <QuadCurveTo controlX="-25.0" controlY="29.0" x="-1.0" y="-1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape121" fill="DODGERBLUE" layoutX="501.0" layoutY="268.0" opacity="0.83" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape121" fill="DODGERBLUE" layoutX="502.0" layoutY="266.0" opacity="0.83" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo />
             <LineTo x="13.0" y="11.0" />
@@ -622,7 +613,7 @@
             <LineTo x="1.0" y="-1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape124" fill="DODGERBLUE" layoutX="468.0" layoutY="297.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape124" fill="DODGERBLUE" layoutX="469.0" layoutY="295.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="1.0" y="-3.0" />
             <QuadCurveTo controlX="-1.0" controlY="1.0" x="13.0" y="13.0" />
@@ -631,7 +622,7 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape125" fill="DODGERBLUE" layoutX="482.0" layoutY="311.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape125" fill="DODGERBLUE" layoutX="483.0" layoutY="309.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="1.0" y="-3.0" />
             <QuadCurveTo controlX="-1.0" controlY="1.0" x="19.0" y="2.0" />
@@ -640,7 +631,7 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape131" fill="DODGERBLUE" layoutX="449.0" layoutY="353.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape131" fill="DODGERBLUE" layoutX="450.0" layoutY="351.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="1.0" y="-3.0" />
             <QuadCurveTo controlX="-1.0" controlY="1.0" x="9.0" y="3.0" />
@@ -650,7 +641,7 @@
             <CubicCurveTo controlX1="-13.0" />
          </elements>
       </Path>
-      <Path fx:id="shape132" fill="DODGERBLUE" layoutX="458.0" layoutY="359.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape132" fill="DODGERBLUE" layoutX="459.0" layoutY="357.0" opacity="0.65" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="1.0" y="-3.0" />
             <QuadCurveTo controlY="-4.0" x="9.0" y="6.0" />
@@ -662,28 +653,22 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape108" fill="DODGERBLUE" layoutX="551.0" layoutY="175.0" opacity="0.48" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape108" fill="DODGERBLUE" layoutX="552.0" layoutY="173.0" opacity="0.48" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo />
             <LineTo x="20.0" y="2.0" />
             <ArcTo radiusY="1.0" x="31.0" y="11.0" />
             <ArcTo radiusX="4.0" radiusY="4.0" x="34.0" y="44.0" />
-            <QuadCurveTo controlX="12.0" controlY="48.0" x="18.0" y="67.0" />
+            <QuadCurveTo controlX="5.0" controlY="56.0" x="29.0" y="77.0" />
+            <QuadCurveTo controlX="6.0" controlY="88.0" x="29.0" y="110.0" />
+            <QuadCurveTo controlX="2.0" controlY="128.0" x="28.0" y="143.0" />
+            <QuadCurveTo controlX="17.0" controlY="147.0" x="20.0" y="157.0" />
+            <LineTo x="-14.0" y="140.0" />
             <QuadCurveTo controlX="-23.0" controlY="73.0" x="-22.0" y="46.0" />
             <QuadCurveTo controlX="17.0" controlY="34.0" y="-1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape103" fill="DODGERBLUE" layoutX="566.0" layoutY="136.0" opacity="0.83" stroke="BLACK" strokeType="INSIDE">
-         <elements>
-            <MoveTo />
-            <LineTo x="20.0" y="9.0" />
-            <LineTo x="20.0" y="16.0" />
-            <QuadCurveTo controlX="-4.0" controlY="18.0" x="4.0" y="41.0" />
-            <CubicCurveTo controlX1="5.0" controlX2="-20.0" controlY1="39.0" controlY2="40.0" x="-21.0" y="32.0" />
-            <CubicCurveTo controlX1="-4.0" controlX2="-8.0" controlY1="20.0" controlY2="36.0" />
-         </elements>
-      </Path>
-      <Path fx:id="shape101" fill="DODGERBLUE" layoutX="586.0" layoutY="64.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape101" fill="DODGERBLUE" layoutX="585.0" layoutY="63.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo />
             <LineTo y="80.0" />
@@ -691,7 +676,7 @@
             <QuadCurveTo controlX="-40.0" controlY="3.0" x="-1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape102" fill="DODGERBLUE" layoutX="587.0" layoutY="65.0" opacity="0.66" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape102" fill="DODGERBLUE" layoutX="586.0" layoutY="64.0" opacity="0.66" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo />
             <QuadCurveTo controlX="40.0" controlY="-2.0" x="25.0" y="55.0" />
@@ -699,26 +684,20 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape105" fill="DODGERBLUE" layoutX="587.0" layoutY="145.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape113" fill="DODGERBLUE" layoutX="600.0" layoutY="177.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
-            <MoveTo />
-            <QuadCurveTo controlX="13.0" controlY="-2.0" x="21.0" y="-10.0" />
-            <LineTo x="21.0" y="8.0" />
-            <LineTo x="40.0" y="22.0" />
-            <QuadCurveTo controlX="30.0" controlY="33.0" x="14.0" y="32.0" />
-            <QuadCurveTo controlX="17.0" controlY="8.0" y="7.0" />
-            <ClosePath />
-         </elements>
-      </Path>
-      <Path fx:id="shape113" fill="DODGERBLUE" layoutX="599.0" layoutY="179.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
-         <elements>
-            <MoveTo />
+            <MoveTo x="3.0" y="-1.0" />
             <QuadCurveTo controlX="13.0" controlY="-2.0" x="22.0" y="-5.0" />
             <QuadCurveTo controlX="5.0" controlY="33.0" x="46.0" y="44.0" />
-            <QuadCurveTo controlX="31.0" controlY="75.0" x="2.0" y="61.0" />
-            <QuadCurveTo controlX="4.0" controlY="46.0" x="-10.0" y="40.0" />
-            <QuadCurveTo controlX="16.0" controlY="26.0" x="-8.0" y="6.0" />
-            <ClosePath />
+            <CubicCurveTo controlX1="43.0" controlX2="35.0" controlY1="72.0" controlY2="80.0" x="39.0" y="139.0" />
+            <LineTo x="2.0" y="150.0" />
+            <QuadCurveTo controlX="-4.0" controlY="139.0" x="-12.0" y="140.0" />
+            <ArcTo radiusX="8.0" radiusY="7.0" x="-12.0" y="139.0" />
+            <ArcTo radiusX="0.7" radiusY="0.8" x="-14.0" y="106.0" />
+            <ArcTo radiusX="0.7" radiusY="0.8" x="-14.0" y="73.0" />
+            <ArcTo radiusX="0.7" radiusY="0.8" x="-14.0" y="40.0" />
+            <ArcTo radiusX="0.7" radiusY="0.8" x="-13.0" y="6.0" />
+            <QuadCurveTo controlX="-1.0" controlY="2.0" x="1.0" y="-1.0" />
          </elements>
       </Path>
       <Path fx:id="shape115" fill="DODGERBLUE" layoutX="643.0" layoutY="170.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
@@ -729,7 +708,7 @@
             <QuadCurveTo controlX="10.0" controlY="8.0" x="-3.0" />
          </elements>
       </Path>
-      <Path fx:id="shape118" fill="DODGERBLUE" layoutX="647.0" layoutY="225.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape118" fill="DODGERBLUE" layoutX="646.0" layoutY="224.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo />
             <LineTo x="12.0" y="1.0" />
@@ -738,7 +717,7 @@
             <QuadCurveTo controlX="-9.0" controlY="30.0" x="-1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape119" fill="DODGERBLUE" layoutX="664.0" layoutY="227.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape119" fill="DODGERBLUE" layoutX="663.0" layoutY="226.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-3.0" />
             <QuadCurveTo controlX="12.0" controlY="-2.0" x="13.0" y="-6.0" />
@@ -747,25 +726,7 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape122" fill="DODGERBLUE" layoutX="660.0" layoutY="276.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
-         <elements>
-            <MoveTo x="-2.0" />
-            <LineTo x="8.0" y="-10.0" />
-            <QuadCurveTo controlX="21.0" controlY="24.0" x="29.0" y="32.0" />
-            <QuadCurveTo controlX="31.0" controlY="34.0" x="11.0" y="34.0" />
-            <ClosePath />
-         </elements>
-      </Path>
-      <Path fx:id="shape123" fill="DODGERBLUE" layoutX="672.0" layoutY="267.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
-         <elements>
-            <MoveTo x="-3.0" />
-            <LineTo x="17.0" y="-1.0" />
-            <LineTo x="29.0" y="22.0" />
-            <QuadCurveTo controlX="31.0" controlY="29.0" x="18.0" y="41.0" />
-            <ClosePath />
-         </elements>
-      </Path>
-      <Path fx:id="shape129" fill="DODGERBLUE" layoutX="675.0" layoutY="312.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape129" fill="DODGERBLUE" layoutX="672.0" layoutY="312.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-2.0" y="-1.0" />
             <LineTo x="14.0" y="-2.0" />
@@ -774,7 +735,7 @@
             <CubicCurveTo controlX1="1.0" controlX2="-5.0" controlY1="-1.0" controlY2="4.0" x="-3.0" y="-1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape130" fill="DODGERBLUE" layoutX="694.0" layoutY="310.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape130" fill="DODGERBLUE" layoutX="691.0" layoutY="309.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-4.0" y="-1.0" />
             <QuadCurveTo controlX="3.0" controlY="-4.0" x="9.0" y="-17.0" />
@@ -783,7 +744,7 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape139" fill="DODGERBLUE" layoutX="713.0" layoutY="355.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape139" fill="DODGERBLUE" layoutX="711.0" layoutY="354.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-3.0" />
             <LineTo x="8.0" y="-3.0" />
@@ -795,18 +756,7 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape138" fill="DODGERBLUE" layoutX="706.0" layoutY="365.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
-         <elements>
-            <MoveTo x="-2.0" y="-1.0" />
-            <LineTo x="4.0" y="-9.0" />
-            <LineTo x="26.0" y="41.0" />
-            <CubicCurveTo controlX1="13.0" controlX2="35.0" controlY1="10.0" controlY2="57.0" x="23.0" y="50.0" />
-            <LineTo x="16.0" y="39.0" />
-            <QuadCurveTo controlX="16.0" controlY="54.0" x="8.0" y="40.0" />
-            <ClosePath />
-         </elements>
-      </Path>
-      <Path fx:id="shape128" fill="DODGERBLUE" layoutX="605.0" layoutY="329.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape128" fill="DODGERBLUE" layoutX="606.0" layoutY="327.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-5.0" y="-1.0" />
             <LineTo x="33.0" y="-13.0" />
@@ -817,7 +767,7 @@
             <QuadCurveTo controlX="-1.0" controlY="19.0" x="-5.0" y="-1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape137" fill="DODGERBLUE" layoutX="622.0" layoutY="374.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape137" fill="DODGERBLUE" layoutX="622.0" layoutY="372.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-4.0" y="-1.0" />
             <QuadCurveTo controlX="3.0" controlY="-4.0" x="27.0" y="-1.0" />
@@ -826,7 +776,7 @@
             <CubicCurveTo controlX1="7.0" controlX2="-3.0" controlY1="38.0" x="-6.0" />
          </elements>
       </Path>
-      <Path fx:id="shape136" fill="DODGERBLUE" layoutX="608.0" layoutY="377.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape136" fill="DODGERBLUE" layoutX="607.0" layoutY="375.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-2.0" y="-1.0" />
             <LineTo x="7.0" y="-3.0" />
@@ -836,7 +786,7 @@
             <QuadCurveTo controlX="-2.0" controlY="14.0" x="-4.0" y="-1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape142" fill="DODGERBLUE" layoutX="611.0" layoutY="496.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape142" fill="DODGERBLUE" layoutX="610.0" layoutY="494.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-4.0" y="-1.0" />
             <QuadCurveTo controlX="-6.0" controlY="-3.0" x="14.0" y="-13.0" />
@@ -845,13 +795,13 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fill="DODGERBLUE" layoutX="630.0" layoutY="485.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fill="DODGERBLUE" layoutX="631.0" layoutY="483.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-2.0" y="-1.0" />
             <QuadCurveTo />
          </elements>
       </Path>
-      <Path fx:id="shape143" fill="DODGERBLUE" layoutX="630.0" layoutY="485.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape143" fill="DODGERBLUE" layoutX="630.0" layoutY="483.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-4.0" y="-1.0" />
             <QuadCurveTo controlX="17.0" controlY="2.0" x="17.0" y="9.0" />
@@ -860,7 +810,7 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape146" fill="DODGERBLUE" layoutX="618.0" layoutY="530.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape146" fill="DODGERBLUE" layoutX="617.0" layoutY="528.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-4.0" y="-1.0" />
             <QuadCurveTo controlX="4.0" controlY="5.0" x="13.0" y="1.0" />
@@ -869,7 +819,7 @@
             <CubicCurveTo controlX1="-11.0" controlY1="7.0" controlY2="1.0" x="-5.0" y="-1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape147" fill="DODGERBLUE" layoutX="638.0" layoutY="532.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape147" fill="DODGERBLUE" layoutX="637.0" layoutY="530.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-3.0" y="-2.0" />
             <QuadCurveTo controlX="-10.0" controlY="5.0" x="11.0" y="-9.0" />
@@ -878,7 +828,7 @@
             <QuadCurveTo controlX="1.0" controlY="5.0" x="-5.0" />
          </elements>
       </Path>
-      <Path fx:id="shape150" fill="DODGERBLUE" layoutX="640.0" layoutY="649.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape150" fill="DODGERBLUE" layoutX="640.0" layoutY="647.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-6.0" y="-1.0" />
             <LineTo x="3.0" y="1.0" />
@@ -888,7 +838,7 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape151" fill="DODGERBLUE" layoutX="649.0" layoutY="651.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape151" fill="DODGERBLUE" layoutX="649.0" layoutY="649.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="-2.0" y="-1.0" />
             <LineTo x="6.0" y="-3.0" />
@@ -897,7 +847,7 @@
             <QuadCurveTo controlX="12.0" controlY="30.0" x="-4.0" y="-1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape149" fill="DODGERBLUE" layoutX="528.0" layoutY="648.0" opacity="0.44" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape149" fill="DODGERBLUE" layoutX="529.0" layoutY="646.0" opacity="0.44" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="2.0" />
             <LineTo x="9.0" y="-3.0" />
@@ -906,7 +856,7 @@
             <QuadCurveTo controlX="-7.0" controlY="27.0" x="1.0" y="1.0" />
          </elements>
       </Path>
-      <Path fx:id="shape216" fill="DODGERBLUE" layoutX="903.0" layoutY="233.0" opacity="0.62" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape216" fill="DODGERBLUE" layoutX="904.0" layoutY="231.0" opacity="0.62" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo x="7.0" y="-4.0" />
             <QuadCurveTo controlX="16.0" controlY="7.0" x="35.0" y="7.0" />
@@ -919,7 +869,7 @@
             <ClosePath />
          </elements>
       </Path>
-      <Path fx:id="shape208" fill="DODGERBLUE" layoutX="921.0" layoutY="176.0" opacity="0.48" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape208" fill="DODGERBLUE" layoutX="922.0" layoutY="174.0" opacity="0.48" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo />
             <LineTo x="20.0" y="2.0" />
@@ -930,7 +880,7 @@
             <QuadCurveTo controlX="8.0" controlY="34.0" />
          </elements>
       </Path>
-      <Path fx:id="shape211" fill="DODGERBLUE" layoutX="971.0" layoutY="180.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+      <Path fx:id="shape211" fill="DODGERBLUE" layoutX="972.0" layoutY="178.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
          <elements>
             <MoveTo />
             <QuadCurveTo controlX="13.0" controlY="-2.0" x="17.0" y="-5.0" />
@@ -938,6 +888,65 @@
             <QuadCurveTo controlX="26.0" controlY="70.0" x="-3.0" y="61.0" />
             <QuadCurveTo controlX="4.0" controlY="44.0" x="-11.0" y="40.0" />
             <QuadCurveTo controlX="11.0" controlY="20.0" x="-11.0" y="6.0" />
+            <ClosePath />
+         </elements>
+      </Path>
+      <Path fx:id="shape114" fill="#ff0a37" layoutX="633.0" layoutY="164.0" opacity="0.77" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.5">
+         <elements>
+            <MoveTo x="8.0" y="6.0" />
+            <QuadCurveTo controlX="24.0" controlY="25.0" x="27.0" y="60.0" />
+            <QuadCurveTo controlX="-37.0" controlY="51.0" x="-4.0" y="5.0" />
+            <ClosePath />
+         </elements>
+      </Path>
+      <Path fx:id="shape103" fill="DODGERBLUE" layoutX="565.0" layoutY="135.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+         <elements>
+            <MoveTo x="3.0" y="-1.0" />
+            <LineTo x="20.0" y="8.0" />
+            <LineTo x="20.0" y="16.0" />
+            <QuadCurveTo controlX="-4.0" controlY="18.0" x="4.0" y="41.0" />
+            <CubicCurveTo controlX1="5.0" controlX2="-17.0" controlY1="38.0" controlY2="41.0" x="-20.0" y="31.0" />
+            <CubicCurveTo controlX1="-19.0" controlX2="1.0" controlY1="25.0" controlY2="27.0" x="2.0" y="-2.0" />
+         </elements>
+      </Path>
+      <Path fx:id="shape105" fill="DODGERBLUE" layoutX="587.0" layoutY="143.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+         <elements>
+            <MoveTo x="-1.0" />
+            <QuadCurveTo controlX="12.0" controlY="-4.0" x="19.0" y="-12.0" />
+            <LineTo x="20.0" y="6.0" />
+            <LineTo x="40.0" y="25.0" />
+            <QuadCurveTo controlX="30.0" controlY="33.0" x="9.0" y="31.0" />
+            <QuadCurveTo controlX="16.0" controlY="16.0" x="-1.0" y="8.0" />
+            <ClosePath />
+         </elements>
+      </Path>
+      <Circle fx:id="shape104" centerY="1.0" fill="#1fff92" layoutX="584.0" layoutY="167.0" opacity="0.77" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+      <Path fx:id="shape122" fill="DODGERBLUE" layoutX="659.0" layoutY="276.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+         <elements>
+            <MoveTo x="-2.0" />
+            <LineTo x="8.0" y="-10.0" />
+            <QuadCurveTo controlX="20.0" controlY="26.0" x="28.0" y="31.0" />
+            <QuadCurveTo controlX="27.0" controlY="33.0" x="8.0" y="33.0" />
+            <ClosePath />
+         </elements>
+      </Path>
+      <Path fx:id="shape123" fill="DODGERBLUE" layoutX="673.0" layoutY="266.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+         <elements>
+            <MoveTo x="-5.0" y="-1.0" />
+            <LineTo x="12.0" y="-1.0" />
+            <LineTo x="25.0" y="22.0" />
+            <QuadCurveTo controlX="31.0" controlY="29.0" x="15.0" y="41.0" />
+            <QuadCurveTo controlX="4.0" controlY="29.0" x="-5.0" />
+         </elements>
+      </Path>
+      <Path fx:id="shape138" fill="DODGERBLUE" layoutX="703.0" layoutY="366.0" opacity="0.56" stroke="BLACK" strokeType="INSIDE">
+         <elements>
+            <MoveTo x="-2.0" y="-1.0" />
+            <LineTo x="5.0" y="-10.0" />
+            <LineTo x="28.0" y="41.0" />
+            <CubicCurveTo controlX1="15.0" controlX2="36.0" controlY1="10.0" controlY2="57.0" x="22.0" y="50.0" />
+            <LineTo x="16.0" y="39.0" />
+            <QuadCurveTo controlX="16.0" controlY="54.0" x="8.0" y="40.0" />
             <ClosePath />
          </elements>
       </Path>

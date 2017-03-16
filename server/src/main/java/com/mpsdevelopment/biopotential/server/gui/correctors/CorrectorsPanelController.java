@@ -97,7 +97,6 @@ public class CorrectorsPanelController extends AbstractController implements Sub
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-//        serverSettings = BioApplication.APP_CONTEXT.getBean(ServerSettings.class);
         selectColumn.setMinWidth(80);
         selectColumn.setCellValueFactory(new PropertyValueFactory<DataTable,Boolean>("check"));
         selectColumn.setCellFactory(new Callback<TableColumn<DataTable, Boolean>, TableCell<DataTable, Boolean>>() {
@@ -219,6 +218,16 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         LOGGER.info("Selected item %s", selectedItemsFromTable.size());
 
         List<float[]> floatArrayListWithPCMData = new ArrayList();
+
+        sortedSelectedHealings.forEach(new Consumer<Pattern>() {
+            @Override
+            public void accept(Pattern pattern) {
+//                Long t1 = System.currentTimeMillis();
+                floatArrayListWithPCMData.add(pattern.getPcmData());
+//                LOGGER.info("time for getPcmData %s ms", System.currentTimeMillis() - t1);
+            }
+        });
+        floatArrayListWithPCMData.removeIf(o -> o == null);
         /*selectedItemsFromTable.forEach(new Consumer<DataTable>() {
             @Override
             public void accept(DataTable dataTable) {
@@ -249,20 +258,12 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         patterns.forEach(new Consumer<EDXPattern>() {
             @Override
             public void accept(EDXPattern edxPattern) {
-                floatArrayListWithPCMData.add(edxPattern.getPcmData());
+                    floatArrayListWithPCMData.add(edxPattern.getPcmData());
             }
         });
 
         floatArrayListWithPCMData.removeIf(o -> o == null);*/
         /*End of block*/
-
-        sortedSelectedHealings.forEach(new Consumer<Pattern>() {
-            @Override
-            public void accept(Pattern pattern) {
-                floatArrayListWithPCMData.add(pattern.getPcmData());
-            }
-        });
-        floatArrayListWithPCMData.removeIf(o -> o == null);
 
         LOGGER.info("time for prepare List %s ms", System.currentTimeMillis() - t1);
         LOGGER.info("Added correctors %s", floatArrayListWithPCMData.size());
@@ -273,12 +274,7 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         } catch (UnsupportedAudioFileException e) {
             e.printStackTrace();
         }
-
-
     }
-
-
-
 
     @Handler
     public void handleMessage(HealingsMapEvent event) throws Exception {
@@ -326,12 +322,11 @@ public class CorrectorsPanelController extends AbstractController implements Sub
             if (((buffer[i]) * 128) >= 127) {
                 bytes[i] = (byte) 0xFF; // -1
             }
-            else if (((buffer[i]) * 128)  <= -128) {
+            else if (((buffer[i]) * 128) < -128) {
                 bytes[i] = (byte) 0x01; // +1
             }
             else {
                 bytes[i] = (byte) ((byte) ((buffer[i]) * 128) ^ 0x80);
-
             }
         }
         LOGGER.info("time for merge %s ms", System.currentTimeMillis() - t1);
@@ -358,62 +353,6 @@ public class CorrectorsPanelController extends AbstractController implements Sub
 
     }
 
-    class BooleanCell extends TableCell<DataTable, Boolean> {
-        private CheckBox checkBox;
-        public BooleanCell() {
-            checkBox = new CheckBox();
-            checkBox.setDisable(false);
-
-            checkBox.selectedProperty().addListener(new ChangeListener<Boolean> () {
-                public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                    if(!isEditing())
-                    {
-//                        commitEdit(newValue == null ? false : newValue);
-                        if (newValue) {
-                            сorrectorsTable.getSelectionModel().select(getTableRow().getIndex());
-
-                        } else {
-                            сorrectorsTable.getSelectionModel().clearSelection(getTableRow().getIndex());
-                        }
-                    }
-                }
-            });
-            this.setGraphic(checkBox);
-            this.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-            this.setEditable(true);
-        }
-        @Override
-        public void startEdit() {
-            super.startEdit();
-            if (isEmpty()) {
-                return;
-            }
-            checkBox.setDisable(false);
-            checkBox.requestFocus();
-        }
-        @Override
-        public void cancelEdit() {
-
-            super.cancelEdit();
-            checkBox.setDisable(true);
-        }
-        public void commitEdit(Boolean value) {
-            super.commitEdit(value);
-            checkBox.setDisable(true);
-        }
-        @Override
-        public void updateItem(Boolean item, boolean empty) {
-//            super.updateItem(item, empty);
-            if (!isEmpty()) {
-//                checkBox.setSelected(item);
-            }
-        }
-    }
-
-    public void setHealingsMap(Map<Pattern, AnalysisSummary> healingsMap) {
-        this.healingsMap = healingsMap;
-    }
-
     public void updatePanel(Stage primaryStage) {
         this.primaryStage = primaryStage;
 
@@ -431,6 +370,10 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         EventBus.unsubscribe(this);
 
         primaryStage.close();
+    }
+
+    public void setHealingsMap(Map<Pattern, AnalysisSummary> healingsMap) {
+        this.healingsMap = healingsMap;
     }
 
 }

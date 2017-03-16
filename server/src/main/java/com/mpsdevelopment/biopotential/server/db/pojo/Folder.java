@@ -2,6 +2,11 @@ package com.mpsdevelopment.biopotential.server.db.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,6 +14,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "Folder")
+@Getter @Setter
+@Accessors(chain = true)
+@NoArgsConstructor
 public class Folder extends BaseObject {
     public static final String ID_FOLDER = "idFolder";
     public static final String ID_FOLDER_GS = "i";
@@ -37,10 +45,6 @@ public class Folder extends BaseObject {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "folder")
     private List<PatternsFolders> patternsFolders = new ArrayList<>();
 
-
-    public Folder() {
-
-    }
 
     @Expose
     @Column(name = ID_FOLDER)
@@ -90,7 +94,7 @@ public class Folder extends BaseObject {
         this.patterns = patternses;
     }*/
 
-    public List<PatternsFolders> getPatternsFolders() {
+    /*public List<PatternsFolders> getPatternsFolders() {
         return patternsFolders;
     }
 
@@ -107,10 +111,10 @@ public class Folder extends BaseObject {
         return this;
     }
     
-    /*public Folder setIdFolder(Integer idFolder) {
+    *//*public Folder setIdFolder(Integer idFolder) {
         this.idFolder = Integer.toUnsignedLong(idFolder);
         return this;
-    }*/
+    }*//*
 
     public String getParentFolderId() {
         return parentFolderId;
@@ -173,5 +177,5 @@ public class Folder extends BaseObject {
     public Folder setFolderType(String folderType) {
         this.folderType = folderType;
         return this;
-    }
+    }*/
 }

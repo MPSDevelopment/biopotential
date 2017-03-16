@@ -355,8 +355,13 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 */
     }
 
-
-
+    public void makeCurrentAnalyze(File file) {
+        try {
+            makeAnalyze(file);
+        } catch (UnsupportedAudioFileException | IOException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void makeAnalyze(File file) throws UnsupportedAudioFileException, IOException, SQLException {
 
@@ -510,16 +515,11 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         automaticsLevelStress.setSortType(TableColumn.SortType.ASCENDING);
         healthConditionStressTable.setItems(analysisStressData);
 
+        LOGGER.info("Time for make analysis %s ms", System.currentTimeMillis());
+
     }
 
 
-    public void makeCurrentAnalyze(File file) {
-        try {
-            makeAnalyze(file);
-        } catch (UnsupportedAudioFileException | IOException | SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void updatePanel(Stage primaryStage) {
         LOGGER.info("update Analysis panel");

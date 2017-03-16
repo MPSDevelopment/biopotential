@@ -83,7 +83,7 @@ public class PersistUtilsTest {
     @Test
     public void changeDBTest() throws HibernateException, IOException, SQLException {
         // this test pass only with converted h2 db
-        Assert.assertEquals(132,patternsDao.getFromDatabase().size());
+        Assert.assertEquals(132,patternsDao.getPatternsWhereCorrectorsNotNull().size());
 
         persistUtils.closeSessionFactory();
         persistUtils.setConfigurationDatabaseFilename("./testfiles/test.arkdb");
@@ -91,7 +91,7 @@ public class PersistUtilsTest {
         Session session = sessionFactory.openSession();
         sessionManager.setSession(session);
 
-        Assert.assertEquals(44,patternsDao.getFromDatabase().size());
+        Assert.assertEquals(44,patternsDao.getPatternsWhereCorrectorsNotNull().size());
 
         persistUtils.closeSessionFactory();
         persistUtils.setConfigurationDatabaseFilename("./testfiles/db_cutted.db");
@@ -99,7 +99,7 @@ public class PersistUtilsTest {
         session = sessionFactory.openSession();
         sessionManager.setSession(session);
 
-        Assert.assertEquals(120,patternsDao.getFromDatabase().size());
+        Assert.assertEquals(120,patternsDao.getPatternsWhereCorrectorsNotNull().size());
 
     }
 

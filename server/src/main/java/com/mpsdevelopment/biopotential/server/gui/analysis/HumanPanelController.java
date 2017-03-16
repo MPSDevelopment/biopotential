@@ -392,20 +392,20 @@ public class HumanPanelController extends AbstractController implements Subscrib
         scatterChart.getStylesheets().add("scater.css");
 
         circleMap = new HashMap<>();
-        circleMap.put("004 ", shape004);
-        circleMap.put("009 ", shape009);
-        circleMap.put("010 ", shape010);
-        circleMap.put("017 ", shape017);
-        circleMap.put("018 ", shape018);
-        circleMap.put("029 ", shape029);
-        circleMap.put("037 ", shape037);
-        circleMap.put("104 ", shape104);
-        circleMap.put("109 ", shape109);
-        circleMap.put("110 ", shape110);
-        circleMap.put("111 ", shape111);
-        circleMap.put("112 ", shape112);
-        circleMap.put("127 ", shape127);
-        circleMap.put("135 ", shape135);
+        circleMap.put("004", shape004);
+        circleMap.put("009", shape009);
+        circleMap.put("010", shape010);
+        circleMap.put("017", shape017);
+        circleMap.put("018", shape018);
+        circleMap.put("029", shape029);
+        circleMap.put("037", shape037);
+        circleMap.put("104", shape104);
+        circleMap.put("109", shape109);
+        circleMap.put("110", shape110);
+        circleMap.put("111", shape111);
+        circleMap.put("112", shape112);
+        circleMap.put("127", shape127);
+        circleMap.put("135", shape135);
 
         // XValue, YValue for points on human body
         poitsMap = new HashMap<>();
@@ -416,54 +416,54 @@ public class HumanPanelController extends AbstractController implements Subscrib
         poitsMap.put("020 ", new DataPoints(18.0, 70.0));
 
         shapeMap = new HashMap<>();
-        shapeMap.put("001 ", shape001); shapeMap.put("101", shape101);
-        shapeMap.put("002 ", shape002); shapeMap.put("102", shape102);
-        shapeMap.put("003 ", shape003); shapeMap.put("103", shape103);
-        shapeMap.put("005 ", shape005); shapeMap.put("106", shape106);
-        shapeMap.put("006 ", shape006); shapeMap.put("107", shape107);
-        shapeMap.put("007 ", shape007); shapeMap.put("108", shape108);
-        shapeMap.put("008 ", shape008); shapeMap.put("113", shape113);
-        shapeMap.put("011 ", shape011); shapeMap.put("114", shape114);
-        shapeMap.put("012 ", shape012); shapeMap.put("115", shape115);
-        shapeMap.put("013 ", shape013); shapeMap.put("116", shape116);
-        shapeMap.put("014 ", shape014); shapeMap.put("117", shape117);
-        shapeMap.put("015 ", shape015); shapeMap.put("118", shape118);
-        shapeMap.put("016 ", shape016); shapeMap.put("119", shape119);
-        shapeMap.put("019 ", shape019); shapeMap.put("120", shape120);
-        shapeMap.put("020 ", shape020); shapeMap.put("121", shape121);
-        shapeMap.put("021 ", shape021); shapeMap.put("122", shape122);
-        shapeMap.put("022 ", shape022); shapeMap.put("123", shape123);
-        shapeMap.put("023 ", shape023); shapeMap.put("124", shape124);
-        shapeMap.put("024 ", shape024); shapeMap.put("125", shape125);
-        shapeMap.put("025 ", shape025); shapeMap.put("126", shape126);
-        shapeMap.put("026 ", shape026); shapeMap.put("128", shape128);
-        shapeMap.put("027 ", shape027); shapeMap.put("129", shape129);
-        shapeMap.put("028 ", shape028); shapeMap.put("130", shape130);
-        shapeMap.put("030 ", shape030); shapeMap.put("131", shape131);
-        shapeMap.put("031 ", shape031); shapeMap.put("132", shape132);
-        shapeMap.put("032 ", shape032); shapeMap.put("133", shape133);
-        shapeMap.put("033 ", shape033); shapeMap.put("134", shape134);
-        shapeMap.put("034 ", shape034); shapeMap.put("136", shape136);
-        shapeMap.put("035 ", shape035); shapeMap.put("137", shape137);
-        shapeMap.put("036 ", shape036); shapeMap.put("138", shape138);
-        shapeMap.put("038 ", shape038); shapeMap.put("139", shape139);
-        shapeMap.put("039 ", shape039); shapeMap.put("140", shape140);
-        shapeMap.put("040 ", shape040); shapeMap.put("141", shape141);
-        shapeMap.put("041 ", shape041); shapeMap.put("142", shape142);
-        shapeMap.put("042 ", shape042); shapeMap.put("143", shape143);
-        shapeMap.put("043 ", shape043); shapeMap.put("144", shape144);
-        shapeMap.put("044 ", shape044); shapeMap.put("145", shape145);
-        shapeMap.put("045 ", shape045); shapeMap.put("146", shape146);
-        shapeMap.put("046 ", shape046); shapeMap.put("147", shape147);
-        shapeMap.put("047 ", shape047); shapeMap.put("148", shape148);
-        shapeMap.put("048 ", shape048); shapeMap.put("149", shape149);
-        shapeMap.put("049 ", shape049); shapeMap.put("150", shape150);
-        shapeMap.put("050 ", shape050); shapeMap.put("151", shape151);
-        shapeMap.put("051 ", shape051); shapeMap.put("105", shape105);
-        shapeMap.put("052 ", shape052); shapeMap.put("216 ", shape216);
-        shapeMap.put("053 ", shape053); shapeMap.put("208 ", shape208);
-        shapeMap.put("211 ", shape211);
-        setVisibleOff();
+        shapeMap.put("001", shape001); shapeMap.put("101", shape101);
+        shapeMap.put("002", shape002); shapeMap.put("102", shape102);
+        shapeMap.put("003", shape003); shapeMap.put("103", shape103); shapeMap.put("105", shape105);
+        shapeMap.put("005", shape005); shapeMap.put("106", shape106);
+        shapeMap.put("006", shape006); shapeMap.put("107", shape107);
+        shapeMap.put("007", shape007); shapeMap.put("108", shape108);
+        shapeMap.put("008", shape008); shapeMap.put("113", shape113);
+        shapeMap.put("011", shape011); shapeMap.put("114", shape114);
+        shapeMap.put("012", shape012); shapeMap.put("115", shape115);
+        shapeMap.put("013", shape013); shapeMap.put("116", shape116);
+        shapeMap.put("014", shape014); shapeMap.put("117", shape117);
+        shapeMap.put("015", shape015); shapeMap.put("118", shape118);
+        shapeMap.put("016", shape016); shapeMap.put("119", shape119);
+        shapeMap.put("019", shape019); shapeMap.put("120", shape120);
+        shapeMap.put("020", shape020); shapeMap.put("121", shape121);
+        shapeMap.put("021", shape021); shapeMap.put("122", shape122);
+        shapeMap.put("022", shape022); shapeMap.put("123", shape123);
+        shapeMap.put("023", shape023); shapeMap.put("124", shape124);
+        shapeMap.put("024", shape024); shapeMap.put("125", shape125);
+        shapeMap.put("025", shape025); shapeMap.put("126", shape126);
+        shapeMap.put("026", shape026); shapeMap.put("128", shape128);
+        shapeMap.put("027", shape027); shapeMap.put("129", shape129);
+        shapeMap.put("028", shape028); shapeMap.put("130", shape130);
+        shapeMap.put("030", shape030); shapeMap.put("131", shape131);
+        shapeMap.put("031", shape031); shapeMap.put("132", shape132);
+        shapeMap.put("032", shape032); shapeMap.put("133", shape133);
+        shapeMap.put("033", shape033); shapeMap.put("134", shape134);
+        shapeMap.put("034", shape034); shapeMap.put("136", shape136);
+        shapeMap.put("035", shape035); shapeMap.put("137", shape137);
+        shapeMap.put("036", shape036); shapeMap.put("138", shape138);
+        shapeMap.put("038", shape038); shapeMap.put("139", shape139);
+        shapeMap.put("039", shape039); shapeMap.put("140", shape140);
+        shapeMap.put("040", shape040); shapeMap.put("141", shape141);
+        shapeMap.put("041", shape041); shapeMap.put("142", shape142);
+        shapeMap.put("042", shape042); shapeMap.put("143", shape143);
+        shapeMap.put("043", shape043); shapeMap.put("144", shape144);
+        shapeMap.put("044", shape044); shapeMap.put("145", shape145);
+        shapeMap.put("045", shape045); shapeMap.put("146", shape146);
+        shapeMap.put("046", shape046); shapeMap.put("147", shape147);
+        shapeMap.put("047", shape047); shapeMap.put("148", shape148);
+        shapeMap.put("048", shape048); shapeMap.put("149", shape149);
+        shapeMap.put("049", shape049); shapeMap.put("150", shape150);
+        shapeMap.put("050", shape050); shapeMap.put("151", shape151);
+        shapeMap.put("051", shape051);
+        shapeMap.put("052", shape052); shapeMap.put("208", shape208);
+        shapeMap.put("053", shape053); shapeMap.put("216", shape216);
+        shapeMap.put("211", shape211);
+//        setVisibleOff();
 
     }
 
@@ -496,7 +496,7 @@ public class HumanPanelController extends AbstractController implements Subscrib
                         if (s.equals(pattern.getName().substring(3,7))) {
                             series.getData().add(new XYChart.Data<>(dataPoints.getxValue(), dataPoints.getyValue()));
 
-                            shapeIt(pattern.getName().substring(3,7));
+                            displayShapeOnBody(pattern.getName().substring(3,7));
 
                             addSectionToList(pattern, analysisSummary, pattern.getName().substring(3,7));
 
@@ -507,11 +507,24 @@ public class HumanPanelController extends AbstractController implements Subscrib
                 circleMap.forEach(new BiConsumer<String, Circle>() {
                     @Override
                     public void accept(String s, Circle circle) {
-                        if (pattern.getName().length() > 7) {
+                        /*if (pattern.getName().length() > 7) {
                             if (s.equals(pattern.getName().substring(3, 7))) {
-                                circleIt(pattern.getName().substring(3, 7));
+                                displayCircleOnBody(pattern.getName().substring(3, 7));
 
                                 addSectionToList(pattern, analysisSummary, pattern.getName().substring(3, 7));
+                            }
+                        }*/
+
+                        String[] patternName = pattern.getName().split(" ");
+                        for (String section : patternName) {
+                            if (section.equals(s)) {
+                                addSectionToList(pattern,analysisSummary,section);
+                                if (lists.get(s).size() == 1) {
+                                    displayCircleOnBody(section, Color.LIGHTGREEN);
+                                }
+                                if (lists.get(s).size() >= 2){
+                                    displayCircleOnBody(section, Color.RED);
+                                }
                             }
                         }
                     }
@@ -520,9 +533,23 @@ public class HumanPanelController extends AbstractController implements Subscrib
                 shapeMap.forEach(new BiConsumer<String, Path>() {
                     @Override
                     public void accept(String s, Path path) {
-                        if (pattern.getName().length() > 7) {
+
+                        String[] patternName = pattern.getName().split(" ");
+                        for (String section : patternName) {
+                            if (section.equals(s)) {
+                                addSectionToList(pattern,analysisSummary,section);
+                                if (lists.get(s).size() == 1) {
+                                    displayShapeOnBody(section, Color.LIGHTGREEN);
+                                }
+                                if (lists.get(s).size() >= 2){
+                                    displayShapeOnBody(section, Color.RED);
+                                }
+                            }
+                        }
+
+                        /*if (pattern.getName().length() > 7) {
                             if (pattern.getName().substring(3, 7).equals(s)) {
-                                shapeIt(pattern.getName().substring(3, 7));
+                                displayShapeOnBody(pattern.getName().substring(3, 7));
 
                                 addSectionToList(pattern, analysisSummary, pattern.getName().substring(3, 7));
                             }
@@ -531,7 +558,7 @@ public class HumanPanelController extends AbstractController implements Subscrib
                         if (pattern.getName().length() > 11) {
                             if (pattern.getName().substring(7,11).equals(s)) {
 
-                            shapeIt(pattern.getName().substring(7, 11));
+                            displayShapeOnBody(pattern.getName().substring(7, 11));
 
                             addSectionToList(pattern, analysisSummary, pattern.getName().substring(7, 11));
                             }
@@ -540,7 +567,7 @@ public class HumanPanelController extends AbstractController implements Subscrib
                         if (pattern.getName().length() > 15) {
                             if (pattern.getName().substring(11,15).equals(s)) {
 
-                                shapeIt(pattern.getName().substring(11,15));
+                                displayShapeOnBody(pattern.getName().substring(11,15));
 
                                 addSectionToList(pattern, analysisSummary, pattern.getName().substring(11,15));
 
@@ -550,12 +577,12 @@ public class HumanPanelController extends AbstractController implements Subscrib
                         if (pattern.getName().length() > 19) {
                             if (pattern.getName().substring(15, 19).equals(s)) {
 
-                                shapeIt(pattern.getName().substring(15, 19));
+                                displayShapeOnBody(pattern.getName().substring(15, 19));
 
                                 addSectionToList(pattern, analysisSummary, pattern.getName().substring(15, 19));
 
                             }
-                        }
+                        }*/
                     }
                 });
 
@@ -599,17 +626,17 @@ public class HumanPanelController extends AbstractController implements Subscrib
         });
     }
 
-    private void shapeIt(String str) {
+    private void displayShapeOnBody(String str, Color color) {
         Path p = shapeMap.get(str);
         p.setVisible(true);
         p.setCursor(Cursor.HAND);
-        p.setFill(Paint.valueOf(String.valueOf(Color.RED)));
+        p.setFill(Paint.valueOf(String.valueOf(color)));
 
 
         p.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                p.setEffect(getDropShadow());
+                p.setEffect(getDropShadow(color));
             }
         });
 
@@ -629,17 +656,17 @@ public class HumanPanelController extends AbstractController implements Subscrib
         });
     }
 
-    private void circleIt(String str) {
+    private void displayCircleOnBody(String str, Color color) {
         Circle circle = circleMap.get(str);
         circle.setVisible(true);
         circle.setCursor(Cursor.HAND);
-        circle.setFill(Paint.valueOf(String.valueOf(Color.RED)));
+        circle.setFill(Paint.valueOf(String.valueOf(color)));
 
 
         circle.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                circle.setEffect(getDropShadow());
+                circle.setEffect(getDropShadow(color));
             }
         });
 
@@ -659,10 +686,10 @@ public class HumanPanelController extends AbstractController implements Subscrib
         });
     }
 
-    private DropShadow getDropShadow() {
+    private DropShadow getDropShadow(Color color) {
         DropShadow dropShadow = new DropShadow();
         dropShadow.setBlurType(BlurType.GAUSSIAN);
-        dropShadow.setColor(Color.RED);
+        dropShadow.setColor(color);
         return dropShadow;
     }
 
