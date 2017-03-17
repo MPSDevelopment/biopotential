@@ -21,7 +21,6 @@
     <context:annotation-config/>
     <context:component-scan base-package="com.mpsdevelopment.biopotential.server.gui" />
 
-
     <bean id="analyzeService" class="com.mpsdevelopment.biopotential.server.gui.service.AnalyzeService"/>
 	<bean id="selectFromDbPanelController" class="com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.SelectFromDbPanelController" />
 	<bean id="diagPanelController" class="com.mpsdevelopment.biopotential.server.gui.diagnostics.DiagPanelController"/>
@@ -30,8 +29,8 @@
 	<bean id="correctorsPanelController" class="com.mpsdevelopment.biopotential.server.gui.correctors.CorrectorsPanelController" />
 	<bean id="addCorrectorController" class="com.mpsdevelopment.biopotential.server.gui.correctors.AddCorrectorController" />
 	<bean id="converterPanelController" class="com.mpsdevelopment.biopotential.server.gui.converter.ConverterPanelController" />
-	<bean id="barChartPanelController" class="com.mpsdevelopment.biopotential.server.gui.analysis.BarChartPanelController" />
+	<bean id="barChartPanelController" class="com.mpsdevelopment.biopotential.server.gui.analysis.barChart.BarChartPanelController" />
 	<bean id="startPanelController" class="com.mpsdevelopment.biopotential.server.gui.startPanel.StartPanelController"/>
-	<bean id="humanPanelController" class="com.mpsdevelopment.biopotential.server.gui.analysis.HumanPanelController" />
+	<bean id="malePanelController" class="com.mpsdevelopment.biopotential.server.gui.analysis.humanPanels.MalePanelController"/>
 
 </beans>

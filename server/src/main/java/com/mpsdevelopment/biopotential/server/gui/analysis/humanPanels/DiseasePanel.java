@@ -1,4 +1,4 @@
-package com.mpsdevelopment.biopotential.server.gui.analysis;
+package com.mpsdevelopment.biopotential.server.gui.analysis.humanPanels;
 
 
 import com.mpsdevelopment.biopotential.server.db.pojo.HumanPoints;
@@ -9,7 +9,6 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 

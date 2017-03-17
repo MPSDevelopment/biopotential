@@ -1,17 +1,17 @@
 package com.mpsdevelopment.biopotential.server.gui.analysis;
 
 import com.mpsdevelopment.biopotential.server.AbstractController;
-import com.mpsdevelopment.biopotential.server.JettyServer;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
 import com.mpsdevelopment.biopotential.server.db.pojo.DataTable;
-import com.mpsdevelopment.biopotential.server.db.pojo.HumanPoints;
 import com.mpsdevelopment.biopotential.server.db.pojo.SystemDataTable;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
 import com.mpsdevelopment.biopotential.server.eventbus.event.HealingsMapEvent;
+import com.mpsdevelopment.biopotential.server.gui.analysis.barChart.BarChartPanel;
+import com.mpsdevelopment.biopotential.server.gui.analysis.humanPanels.MalePanel;
 import com.mpsdevelopment.biopotential.server.gui.correctors.CorrectorsPanel;
 import com.mpsdevelopment.biopotential.server.gui.service.AnalyzeService;
 import com.mpsdevelopment.biopotential.server.settings.ConfigSettings;
@@ -28,7 +28,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.ScatterChart;
@@ -36,15 +35,12 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import net.engio.mbassy.listener.Handler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.stereotype.Component;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
@@ -54,7 +50,7 @@ import java.math.RoundingMode;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.function.BiConsumer;
+
 //@Component
 public class AnalysisPanelController extends AbstractController implements Subscribable {
 
@@ -376,9 +372,9 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         Map<Pattern, AnalysisSummary> diseasesStress = analyzeService.getDiseases(urlMax, urlPo, file);
         analyzeService.diseasToAnalysisData(diseasesStress, analysisStressData);
 
-        HumanPanel humanPanel = new HumanPanel(diseasesStress);
-        Stage humanStage = StageUtils.createStage(null, humanPanel, new StageSettings().setPanelTitle("Тело человека").setClazz(humanPanel.getClass()).setHeight(748d).setWidth(1470d)
-                .setHeightPanel(748d).setWidthPanel(1470d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
+        MalePanel humanPanel = new MalePanel(diseasesStress);
+        Stage humanStage = StageUtils.createStage(null, humanPanel, new StageSettings().setPanelTitle("Тело человека").setClazz(humanPanel.getClass()).setHeight(748d).setWidth(811d)
+                .setHeightPanel(748d).setWidthPanel(811d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
         humanPanel.setPrimaryStage(humanStage);
 
         // get diseases for systems

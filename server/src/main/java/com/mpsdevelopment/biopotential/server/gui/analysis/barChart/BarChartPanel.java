@@ -1,4 +1,4 @@
-package com.mpsdevelopment.biopotential.server.gui.analysis;
+package com.mpsdevelopment.biopotential.server.gui.analysis.barChart;
 
 
 import com.mpsdevelopment.plasticine.commons.logging.Logger;

@@ -24,7 +24,7 @@
 	<context:component-scan base-package="com.mpsdevelopment.biopotential.server.db.dao" />
 	<context:component-scan base-package="com.mpsdevelopment.biopotential.server.scheduler" />
 
-	<!--<bean id="persistUtils" class="com.mpsdevelopment.biopotential.server.db.PersistUtils" init-method="configureSessionFactory" autowire="byName" />-->
+	<!--<bean id="persistUtils" class="com.mpsdevelopment.biopotential.server.db.PersistUtils" displaySectionsOnBody-method="configureSessionFactory" autowire="byName" />-->
 	<bean id="persistUtils" class="com.mpsdevelopment.biopotential.server.db.PersistUtils" autowire="byName" />
 
 	<bean id="sessionManager" class="com.mpsdevelopment.biopotential.server.db.SessionManager" autowire="byName" />
@@ -48,13 +48,13 @@
 	<bean id="dіseaseDao" class="com.mpsdevelopment.biopotential.server.db.dao.DiseaseDao" />
 
 
-   <!-- <bean id="serverSettings" class="com.mpsdevelopment.biopotential.server.settings.ServerSettings" init-method="init">
+   <!-- <bean id="serverSettings" class="com.mpsdevelopment.biopotential.server.settings.ServerSettings" displaySectionsOnBody-method="displaySectionsOnBody">
         <property name="path" value="config/server.json" />
     </bean>-->
 
 	<bean id="databaseCreatorProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
 		<property name="target">
-			<!--<bean id="databaseCreator" class="com.mpsdevelopment.biopotential.server.db.DatabaseCreator" init-method="initialization" scope="singleton" />-->
+			<!--<bean id="databaseCreator" class="com.mpsdevelopment.biopotential.server.db.DatabaseCreator" displaySectionsOnBody-method="initialization" scope="singleton" />-->
 			<bean id="databaseCreator" class="com.mpsdevelopment.biopotential.server.db.DatabaseCreator" />
 		</property>
 		<property name="interceptorNames">

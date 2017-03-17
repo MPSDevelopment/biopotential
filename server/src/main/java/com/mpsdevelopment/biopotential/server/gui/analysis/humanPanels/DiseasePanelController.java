@@ -1,21 +1,12 @@
-package com.mpsdevelopment.biopotential.server.gui.analysis;
+package com.mpsdevelopment.biopotential.server.gui.analysis.humanPanels;
 
 import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
-import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
-import com.mpsdevelopment.biopotential.server.db.pojo.DataTable;
 import com.mpsdevelopment.biopotential.server.db.pojo.HumanPoints;
-import com.mpsdevelopment.biopotential.server.db.pojo.SystemDataTable;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.FileChooserEvent;
-import com.mpsdevelopment.biopotential.server.eventbus.event.HealingsMapEvent;
-import com.mpsdevelopment.biopotential.server.gui.correctors.CorrectorsPanel;
-import com.mpsdevelopment.biopotential.server.gui.service.AnalyzeService;
-import com.mpsdevelopment.biopotential.server.settings.StageSettings;
-import com.mpsdevelopment.biopotential.server.utils.PanelUtils;
-import com.mpsdevelopment.biopotential.server.utils.StageUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -26,26 +17,16 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.ScatterChart;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import net.engio.mbassy.listener.Handler;
 
-import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.*;
 
 public class DiseasePanelController extends AbstractController implements Subscribable {
@@ -123,6 +104,7 @@ public class DiseasePanelController extends AbstractController implements Subscr
             }
         });
 
+        level.setStyle("-fx-alignment: CENTER;");
         level.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<HumanPoints, String>, ObservableValue<String>>() {
             @Override
             public ObservableValue<String> call(TableColumn.CellDataFeatures<HumanPoints, String> p) {
