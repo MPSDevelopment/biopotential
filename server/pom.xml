@@ -405,7 +405,7 @@
 			<version>3.98.4</version>
 		</dependency>
         <dependency>
-            <groupId>com.mpsdevelopment.helicopter</groupId>
+            <groupId>com.mpsdevelopment.biopotential</groupId>
             <artifactId>license</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
