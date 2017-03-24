@@ -404,19 +404,24 @@
 			<artifactId>lame</artifactId>
 			<version>3.98.4</version>
 		</dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>com.mpsdevelopment.biopotential</groupId>
             <artifactId>license</artifactId>
             <version>0.1-SNAPSHOT</version>
-        </dependency>
+        </dependency>-->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>1.16.14</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.mpsdevelopment.biopotential</groupId>
+			<artifactId>license</artifactId>
+			<version>0.1</version>
+		</dependency>
 
-    </dependencies>
+	</dependencies>
 
 	<build>
 		<finalName>server</finalName>
