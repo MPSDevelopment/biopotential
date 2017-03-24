@@ -1,0 +1,169 @@
+DEBUG 2017-03-21 16:55:25,251 com.mpsdevelopment.helicopter.license.LicenseCreator - License filename is C:\Users\Aurusd/very/happy.me
+DEBUG 2017-03-21 16:55:25,603 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+ INFO 2017-03-21 16:55:25,603 com.mpsdevelopment.helicopter.license.LicenseTest - Mac is 00-50-56-C0-00-08
+DEBUG 2017-03-21 16:55:25,605 com.mpsdevelopment.helicopter.license.LicenseCreator - Release date has expired
+DEBUG 2017-03-21 16:55:25,664 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+DEBUG 2017-03-21 16:55:25,664 com.mpsdevelopment.helicopter.license.LicenseCreator - Hostname is DESKTOP-8UH43KF
+DEBUG 2017-03-21 16:55:25,864 com.mpsdevelopment.helicopter.license.EncryptionUtils - Decrypting file keys/production.iv
+DEBUG 2017-03-21 16:55:26,178 com.mpsdevelopment.helicopter.license.StreamCoder - IV is e>mã/Ñ0×BH÷. Length is 16. Base64 hWU+mgNtHQXjL9Ew10JI9w==
+DEBUG 2017-03-21 16:55:26,178 com.mpsdevelopment.helicopter.license.EncryptionUtils - Decrypting file keys/production.key
+DEBUG 2017-03-21 16:55:26,200 com.mpsdevelopment.helicopter.license.StreamCoder - Key is RX¶5zNø»+n)ý.Length is 16. Base64 DFJYtjV6TviTuytuKQP9Fg==
+DEBUG 2017-03-21 16:55:26,581 com.mpsdevelopment.helicopter.license.LicenseCreator - Creating license file for id 00-50-56-C0-00-08-DESKTOP-8UH43KF, expiration date is Tue Mar 21 16:55:26 EET 2017
+ INFO 2017-03-21 16:55:26,581 com.mpsdevelopment.helicopter.license.LicenseCreator - Profile data file already exists
+DEBUG 2017-03-21 16:55:26,640 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+DEBUG 2017-03-21 16:55:26,640 com.mpsdevelopment.helicopter.license.LicenseCreator - Hostname is DESKTOP-8UH43KF
+DEBUG 2017-03-21 16:55:26,640 com.mpsdevelopment.helicopter.license.LicenseCreator - License file path: C:\Users\Aurusd/very/happy.me
+DEBUG 2017-03-21 16:55:26,645 com.mpsdevelopment.helicopter.license.LicenseCreator - Data successfully decrypted
+DEBUG 2017-03-21 16:55:26,646 com.mpsdevelopment.helicopter.license.LicenseCreator - Current license date is 21.03.2017
+DEBUG 2017-03-21 16:55:26,646 com.mpsdevelopment.helicopter.license.LicenseCreator - Last start date is 21.03.2017
+DEBUG 2017-03-21 16:55:27,652 com.mpsdevelopment.helicopter.license.LicenseCreator - Release date has expired
+ INFO 2017-03-21 16:55:27,654 com.mpsdevelopment.helicopter.license.LicenseCreator - Profile data file already exists
+DEBUG 2017-03-21 16:55:27,778 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+DEBUG 2017-03-21 16:55:27,778 com.mpsdevelopment.helicopter.license.LicenseCreator - Hostname is DESKTOP-8UH43KF
+DEBUG 2017-03-21 16:55:27,779 com.mpsdevelopment.helicopter.license.LicenseCreator - License file path: C:\Users\Aurusd/very/happy.me
+DEBUG 2017-03-21 16:55:27,779 com.mpsdevelopment.helicopter.license.LicenseCreator - Data successfully decrypted
+DEBUG 2017-03-21 16:55:27,780 com.mpsdevelopment.helicopter.license.LicenseCreator - Current license date is 23.03.2017
+DEBUG 2017-03-21 16:55:27,780 com.mpsdevelopment.helicopter.license.LicenseCreator - Last start date is 21.03.2017
+ INFO 2017-03-21 16:55:27,789 com.mpsdevelopment.helicopter.license.LicenseCreator - Profile data file already exists
+DEBUG 2017-03-21 16:55:27,842 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+DEBUG 2017-03-21 16:55:27,843 com.mpsdevelopment.helicopter.license.LicenseCreator - Hostname is DESKTOP-8UH43KF
+DEBUG 2017-03-21 16:55:27,843 com.mpsdevelopment.helicopter.license.LicenseCreator - License file path: C:\Users\Aurusd/very/happy.me
+DEBUG 2017-03-21 16:55:27,844 com.mpsdevelopment.helicopter.license.LicenseCreator - Data successfully decrypted
+DEBUG 2017-03-21 16:55:27,844 com.mpsdevelopment.helicopter.license.LicenseCreator - Current license date is 23.03.2017
+DEBUG 2017-03-21 16:55:27,845 com.mpsdevelopment.helicopter.license.LicenseCreator - Last start date is 21.03.2017
+ INFO 2017-03-21 16:55:27,850 com.mpsdevelopment.helicopter.license.LicenseCreator - Profile data file already exists
+DEBUG 2017-03-21 16:55:27,904 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+DEBUG 2017-03-21 16:55:27,905 com.mpsdevelopment.helicopter.license.LicenseCreator - Hostname is DESKTOP-8UH43KF
+DEBUG 2017-03-21 16:55:27,905 com.mpsdevelopment.helicopter.license.LicenseCreator - License file path: C:\Users\Aurusd/very/happy.me
+DEBUG 2017-03-21 16:55:27,906 com.mpsdevelopment.helicopter.license.LicenseCreator - Data successfully decrypted
+DEBUG 2017-03-21 16:55:27,906 com.mpsdevelopment.helicopter.license.LicenseCreator - Current license date is 23.03.2017
+DEBUG 2017-03-21 16:55:27,906 com.mpsdevelopment.helicopter.license.LicenseCreator - Last start date is 21.03.2017
+DEBUG 2017-03-21 16:55:27,907 com.mpsdevelopment.helicopter.license.LicenseCreator - System time was changed
+ INFO 2017-03-21 16:55:27,917 com.mpsdevelopment.helicopter.license.LicenseCreator - Expiration date will be 10.04.2017
+DEBUG 2017-03-21 16:56:39,514 com.mpsdevelopment.helicopter.license.LicenseCreator - License filename is C:\Users\Aurusd/very/happy.me
+DEBUG 2017-03-21 16:56:39,776 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+ INFO 2017-03-21 16:56:39,776 com.mpsdevelopment.helicopter.license.LicenseTest - Mac is 00-50-56-C0-00-08
+DEBUG 2017-03-21 16:56:39,778 com.mpsdevelopment.helicopter.license.LicenseCreator - Release date has expired
+DEBUG 2017-03-21 16:57:37,928 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+DEBUG 2017-03-21 16:57:37,930 com.mpsdevelopment.helicopter.license.LicenseCreator - Hostname is DESKTOP-8UH43KF
+DEBUG 2017-03-21 16:57:44,790 com.mpsdevelopment.helicopter.license.EncryptionUtils - Decrypting file keys/production.iv
+DEBUG 2017-03-21 16:57:45,098 com.mpsdevelopment.helicopter.license.StreamCoder - IV is e>mã/Ñ0×BH÷. Length is 16. Base64 hWU+mgNtHQXjL9Ew10JI9w==
+DEBUG 2017-03-21 16:57:46,124 com.mpsdevelopment.helicopter.license.EncryptionUtils - Decrypting file keys/production.key
+DEBUG 2017-03-21 16:57:46,182 com.mpsdevelopment.helicopter.license.StreamCoder - Key is RX¶5zNø»+n)ý.Length is 16. Base64 DFJYtjV6TviTuytuKQP9Fg==
+DEBUG 2017-03-21 16:57:47,170 com.mpsdevelopment.helicopter.license.LicenseCreator - Creating license file for id 00-50-56-C0-00-08-DESKTOP-8UH43KF, expiration date is Tue Mar 21 16:57:35 EET 2017
+DEBUG 2017-03-21 16:57:47,957 com.mpsdevelopment.helicopter.license.LicenseCreator - Release date has expired
+DEBUG 2017-03-21 16:58:19,915 com.mpsdevelopment.helicopter.license.LicenseCreator - License filename is C:\Users\Aurusd/very/happy.me
+DEBUG 2017-03-21 16:58:20,099 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+ INFO 2017-03-21 16:58:20,099 com.mpsdevelopment.helicopter.license.LicenseTest - Mac is 00-50-56-C0-00-08
+DEBUG 2017-03-21 16:58:20,101 com.mpsdevelopment.helicopter.license.LicenseCreator - Release date has expired
+DEBUG 2017-03-21 16:58:20,161 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+DEBUG 2017-03-21 16:58:20,161 com.mpsdevelopment.helicopter.license.LicenseCreator - Hostname is DESKTOP-8UH43KF
+DEBUG 2017-03-21 16:58:20,211 com.mpsdevelopment.helicopter.license.EncryptionUtils - Decrypting file keys/production.iv
+DEBUG 2017-03-21 16:58:20,743 com.mpsdevelopment.helicopter.license.StreamCoder - IV is e>mã/Ñ0×BH÷. Length is 16. Base64 hWU+mgNtHQXjL9Ew10JI9w==
+DEBUG 2017-03-21 16:58:20,744 com.mpsdevelopment.helicopter.license.EncryptionUtils - Decrypting file keys/production.key
+DEBUG 2017-03-21 16:58:20,771 com.mpsdevelopment.helicopter.license.StreamCoder - Key is RX¶5zNø»+n)ý.Length is 16. Base64 DFJYtjV6TviTuytuKQP9Fg==
+DEBUG 2017-03-21 16:58:20,847 com.mpsdevelopment.helicopter.license.LicenseCreator - Creating license file for id 00-50-56-C0-00-08-DESKTOP-8UH43KF, expiration date is Tue Mar 21 16:58:21 EET 2017
+ INFO 2017-03-21 16:58:20,847 com.mpsdevelopment.helicopter.license.LicenseCreator - Profile data file already exists
+DEBUG 2017-03-21 16:58:20,898 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+DEBUG 2017-03-21 16:58:20,898 com.mpsdevelopment.helicopter.license.LicenseCreator - Hostname is DESKTOP-8UH43KF
+DEBUG 2017-03-21 16:58:20,899 com.mpsdevelopment.helicopter.license.LicenseCreator - License file path: C:\Users\Aurusd/very/happy.me
+DEBUG 2017-03-21 16:58:20,902 com.mpsdevelopment.helicopter.license.LicenseCreator - Data successfully decrypted
+DEBUG 2017-03-21 16:58:20,903 com.mpsdevelopment.helicopter.license.LicenseCreator - Current license date is 21.03.2017
+DEBUG 2017-03-21 16:58:20,904 com.mpsdevelopment.helicopter.license.LicenseCreator - Last start date is 21.03.2017
+DEBUG 2017-03-21 16:58:21,906 com.mpsdevelopment.helicopter.license.LicenseCreator - Release date has expired
+ INFO 2017-03-21 16:58:21,908 com.mpsdevelopment.helicopter.license.LicenseCreator - Profile data file already exists
+DEBUG 2017-03-21 16:58:22,023 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+DEBUG 2017-03-21 16:58:22,024 com.mpsdevelopment.helicopter.license.LicenseCreator - Hostname is DESKTOP-8UH43KF
+DEBUG 2017-03-21 16:58:22,024 com.mpsdevelopment.helicopter.license.LicenseCreator - License file path: C:\Users\Aurusd/very/happy.me
+DEBUG 2017-03-21 16:58:22,025 com.mpsdevelopment.helicopter.license.LicenseCreator - Data successfully decrypted
+DEBUG 2017-03-21 16:58:22,025 com.mpsdevelopment.helicopter.license.LicenseCreator - Current license date is 23.03.2017
+DEBUG 2017-03-21 16:58:22,026 com.mpsdevelopment.helicopter.license.LicenseCreator - Last start date is 21.03.2017
+ INFO 2017-03-21 16:58:22,034 com.mpsdevelopment.helicopter.license.LicenseCreator - Profile data file already exists
+DEBUG 2017-03-21 16:58:22,089 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+DEBUG 2017-03-21 16:58:22,089 com.mpsdevelopment.helicopter.license.LicenseCreator - Hostname is DESKTOP-8UH43KF
+DEBUG 2017-03-21 16:58:22,089 com.mpsdevelopment.helicopter.license.LicenseCreator - License file path: C:\Users\Aurusd/very/happy.me
+DEBUG 2017-03-21 16:58:22,090 com.mpsdevelopment.helicopter.license.LicenseCreator - Data successfully decrypted
+DEBUG 2017-03-21 16:58:22,090 com.mpsdevelopment.helicopter.license.LicenseCreator - Current license date is 23.03.2017
+DEBUG 2017-03-21 16:58:22,091 com.mpsdevelopment.helicopter.license.LicenseCreator - Last start date is 21.03.2017
+ INFO 2017-03-21 16:58:22,096 com.mpsdevelopment.helicopter.license.LicenseCreator - Profile data file already exists
+DEBUG 2017-03-21 16:58:22,152 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+DEBUG 2017-03-21 16:58:22,152 com.mpsdevelopment.helicopter.license.LicenseCreator - Hostname is DESKTOP-8UH43KF
+DEBUG 2017-03-21 16:58:22,152 com.mpsdevelopment.helicopter.license.LicenseCreator - License file path: C:\Users\Aurusd/very/happy.me
+DEBUG 2017-03-21 16:58:22,153 com.mpsdevelopment.helicopter.license.LicenseCreator - Data successfully decrypted
+DEBUG 2017-03-21 16:58:22,153 com.mpsdevelopment.helicopter.license.LicenseCreator - Current license date is 23.03.2017
+DEBUG 2017-03-21 16:58:22,154 com.mpsdevelopment.helicopter.license.LicenseCreator - Last start date is 21.03.2017
+DEBUG 2017-03-21 16:58:22,154 com.mpsdevelopment.helicopter.license.LicenseCreator - System time was changed
+ INFO 2017-03-21 16:58:22,155 com.mpsdevelopment.helicopter.license.LicenseCreator - Expiration date will be 10.04.2017
+DEBUG 2017-03-21 16:59:24,407 com.mpsdevelopment.helicopter.license.LicenseCreator - License filename is C:\Users\Aurusd/very/happy.me
+DEBUG 2017-03-21 16:59:24,673 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+ INFO 2017-03-21 16:59:24,673 com.mpsdevelopment.helicopter.license.LicenseTest - Mac is 00-50-56-C0-00-08
+DEBUG 2017-03-21 16:59:24,677 com.mpsdevelopment.helicopter.license.LicenseCreator - Release date has expired
+DEBUG 2017-03-21 16:59:24,851 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+DEBUG 2017-03-21 16:59:24,852 com.mpsdevelopment.helicopter.license.LicenseCreator - Hostname is DESKTOP-8UH43KF
+DEBUG 2017-03-21 16:59:28,070 com.mpsdevelopment.helicopter.license.EncryptionUtils - Decrypting file keys/production.iv
+DEBUG 2017-03-21 16:59:28,374 com.mpsdevelopment.helicopter.license.StreamCoder - IV is e>mã/Ñ0×BH÷. Length is 16. Base64 hWU+mgNtHQXjL9Ew10JI9w==
+DEBUG 2017-03-21 16:59:31,768 com.mpsdevelopment.helicopter.license.EncryptionUtils - Decrypting file keys/production.key
+DEBUG 2017-03-21 16:59:31,820 com.mpsdevelopment.helicopter.license.StreamCoder - Key is RX¶5zNø»+n)ý.Length is 16. Base64 DFJYtjV6TviTuytuKQP9Fg==
+DEBUG 2017-03-21 16:59:32,818 com.mpsdevelopment.helicopter.license.LicenseCreator - Creating license file for id 00-50-56-C0-00-08-DESKTOP-8UH43KF, expiration date is Tue Mar 21 16:59:25 EET 2017
+DEBUG 2017-03-21 16:59:32,819 com.mpsdevelopment.helicopter.license.LicenseCreator - Release date has expired
+DEBUG 2017-03-21 16:59:54,883 com.mpsdevelopment.helicopter.license.LicenseCreator - License filename is C:\Users\Aurusd/very/happy.me
+DEBUG 2017-03-21 16:59:55,106 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+ INFO 2017-03-21 16:59:55,106 com.mpsdevelopment.helicopter.license.LicenseTest - Mac is 00-50-56-C0-00-08
+DEBUG 2017-03-21 16:59:55,109 com.mpsdevelopment.helicopter.license.LicenseCreator - Release date has expired
+DEBUG 2017-03-21 16:59:55,272 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+DEBUG 2017-03-21 16:59:55,274 com.mpsdevelopment.helicopter.license.LicenseCreator - Hostname is DESKTOP-8UH43KF
+DEBUG 2017-03-21 16:59:57,410 com.mpsdevelopment.helicopter.license.EncryptionUtils - Decrypting file keys/production.iv
+DEBUG 2017-03-21 16:59:57,738 com.mpsdevelopment.helicopter.license.StreamCoder - IV is e>mã/Ñ0×BH÷. Length is 16. Base64 hWU+mgNtHQXjL9Ew10JI9w==
+DEBUG 2017-03-21 16:59:59,093 com.mpsdevelopment.helicopter.license.EncryptionUtils - Decrypting file keys/production.key
+DEBUG 2017-03-21 16:59:59,152 com.mpsdevelopment.helicopter.license.StreamCoder - Key is RX¶5zNø»+n)ý.Length is 16. Base64 DFJYtjV6TviTuytuKQP9Fg==
+DEBUG 2017-03-21 17:00:00,678 com.mpsdevelopment.helicopter.license.LicenseCreator - Creating license file for id 00-50-56-C0-00-08-DESKTOP-8UH43KF, expiration date is Tue Mar 21 16:59:56 EET 2017
+DEBUG 2017-03-21 17:00:00,678 com.mpsdevelopment.helicopter.license.LicenseCreator - Release date has expired
+DEBUG 2017-03-21 17:00:09,294 com.mpsdevelopment.helicopter.license.LicenseCreator - License filename is C:\Users\Aurusd/very/happy.me
+DEBUG 2017-03-21 17:00:09,478 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+ INFO 2017-03-21 17:00:09,478 com.mpsdevelopment.helicopter.license.LicenseTest - Mac is 00-50-56-C0-00-08
+DEBUG 2017-03-21 17:00:09,480 com.mpsdevelopment.helicopter.license.LicenseCreator - Release date has expired
+DEBUG 2017-03-21 17:00:09,542 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+DEBUG 2017-03-21 17:00:09,543 com.mpsdevelopment.helicopter.license.LicenseCreator - Hostname is DESKTOP-8UH43KF
+DEBUG 2017-03-21 17:00:09,618 com.mpsdevelopment.helicopter.license.EncryptionUtils - Decrypting file keys/production.iv
+DEBUG 2017-03-21 17:00:10,196 com.mpsdevelopment.helicopter.license.StreamCoder - IV is e>mã/Ñ0×BH÷. Length is 16. Base64 hWU+mgNtHQXjL9Ew10JI9w==
+DEBUG 2017-03-21 17:00:10,196 com.mpsdevelopment.helicopter.license.EncryptionUtils - Decrypting file keys/production.key
+DEBUG 2017-03-21 17:00:10,227 com.mpsdevelopment.helicopter.license.StreamCoder - Key is RX¶5zNø»+n)ý.Length is 16. Base64 DFJYtjV6TviTuytuKQP9Fg==
+DEBUG 2017-03-21 17:00:10,311 com.mpsdevelopment.helicopter.license.LicenseCreator - Creating license file for id 00-50-56-C0-00-08-DESKTOP-8UH43KF, expiration date is Tue Mar 21 17:00:10 EET 2017
+ INFO 2017-03-21 17:00:10,312 com.mpsdevelopment.helicopter.license.LicenseCreator - Profile data file already exists
+DEBUG 2017-03-21 17:00:10,370 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+DEBUG 2017-03-21 17:00:10,371 com.mpsdevelopment.helicopter.license.LicenseCreator - Hostname is DESKTOP-8UH43KF
+DEBUG 2017-03-21 17:00:10,371 com.mpsdevelopment.helicopter.license.LicenseCreator - License file path: C:\Users\Aurusd/very/happy.me
+DEBUG 2017-03-21 17:00:10,375 com.mpsdevelopment.helicopter.license.LicenseCreator - Data successfully decrypted
+DEBUG 2017-03-21 17:00:10,376 com.mpsdevelopment.helicopter.license.LicenseCreator - Current license date is 21.03.2017
+DEBUG 2017-03-21 17:00:10,376 com.mpsdevelopment.helicopter.license.LicenseCreator - Last start date is 21.03.2017
+DEBUG 2017-03-21 17:00:11,395 com.mpsdevelopment.helicopter.license.LicenseCreator - Release date has expired
+ INFO 2017-03-21 17:00:11,396 com.mpsdevelopment.helicopter.license.LicenseCreator - Profile data file already exists
+DEBUG 2017-03-21 17:00:11,538 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+DEBUG 2017-03-21 17:00:11,539 com.mpsdevelopment.helicopter.license.LicenseCreator - Hostname is DESKTOP-8UH43KF
+DEBUG 2017-03-21 17:00:11,539 com.mpsdevelopment.helicopter.license.LicenseCreator - License file path: C:\Users\Aurusd/very/happy.me
+DEBUG 2017-03-21 17:00:11,541 com.mpsdevelopment.helicopter.license.LicenseCreator - Data successfully decrypted
+DEBUG 2017-03-21 17:00:11,541 com.mpsdevelopment.helicopter.license.LicenseCreator - Current license date is 23.03.2017
+DEBUG 2017-03-21 17:00:11,541 com.mpsdevelopment.helicopter.license.LicenseCreator - Last start date is 21.03.2017
+ INFO 2017-03-21 17:00:11,551 com.mpsdevelopment.helicopter.license.LicenseCreator - Profile data file already exists
+DEBUG 2017-03-21 17:00:11,617 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+DEBUG 2017-03-21 17:00:11,618 com.mpsdevelopment.helicopter.license.LicenseCreator - Hostname is DESKTOP-8UH43KF
+DEBUG 2017-03-21 17:00:11,618 com.mpsdevelopment.helicopter.license.LicenseCreator - License file path: C:\Users\Aurusd/very/happy.me
+DEBUG 2017-03-21 17:00:11,619 com.mpsdevelopment.helicopter.license.LicenseCreator - Data successfully decrypted
+DEBUG 2017-03-21 17:00:11,620 com.mpsdevelopment.helicopter.license.LicenseCreator - Current license date is 23.03.2017
+DEBUG 2017-03-21 17:00:11,620 com.mpsdevelopment.helicopter.license.LicenseCreator - Last start date is 21.03.2017
+ INFO 2017-03-21 17:00:11,625 com.mpsdevelopment.helicopter.license.LicenseCreator - Profile data file already exists
+DEBUG 2017-03-21 17:00:11,680 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+DEBUG 2017-03-21 17:00:11,680 com.mpsdevelopment.helicopter.license.LicenseCreator - Hostname is DESKTOP-8UH43KF
+DEBUG 2017-03-21 17:00:11,680 com.mpsdevelopment.helicopter.license.LicenseCreator - License file path: C:\Users\Aurusd/very/happy.me
+DEBUG 2017-03-21 17:00:11,682 com.mpsdevelopment.helicopter.license.LicenseCreator - Data successfully decrypted
+DEBUG 2017-03-21 17:00:11,682 com.mpsdevelopment.helicopter.license.LicenseCreator - Current license date is 23.03.2017
+DEBUG 2017-03-21 17:00:11,682 com.mpsdevelopment.helicopter.license.LicenseCreator - Last start date is 21.03.2017
+DEBUG 2017-03-21 17:00:11,682 com.mpsdevelopment.helicopter.license.LicenseCreator - System time was changed
+ INFO 2017-03-21 17:00:11,684 com.mpsdevelopment.helicopter.license.LicenseCreator - Expiration date will be 10.04.2017
+DEBUG 2017-03-21 17:11:42,292 com.mpsdevelopment.helicopter.license.LicenseCreator - License filename is C:\Users\Aurusd/very/happy.me
+DEBUG 2017-03-21 17:11:42,522 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+ INFO 2017-03-21 17:11:42,522 com.mpsdevelopment.helicopter.license.LicenseTest - Mac is 00-50-56-C0-00-08
+DEBUG 2017-03-21 17:11:43,138 com.mpsdevelopment.helicopter.license.LicenseCreator - Release date has expired
+DEBUG 2017-03-21 17:11:43,210 com.mpsdevelopment.helicopter.license.LicenseCreator - Max address is 00-50-56-C0-00-08
+DEBUG 2017-03-21 17:11:43,210 com.mpsdevelopment.helicopter.license.LicenseCreator - Hostname is DESKTOP-8UH43KF
+DEBUG 2017-03-21 17:11:43,239 com.mpsdevelopment.helicopter.license.EncryptionUtils - Decrypting file keys/production.iv
