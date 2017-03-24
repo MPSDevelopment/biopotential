@@ -14,7 +14,6 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,8 +94,6 @@ public class JettyServer {
 		HandlerList handlers = new HandlerList();
 		handlers.setHandlers(new Handler[] { webResourceHandler, filesResourceHandler, getServletHandler() });
 		server.setHandler(handlers);
-
-		WebSocketServerContainerInitializer.configureContext(getServletHandler());
 
 		try {
 			server.start();
