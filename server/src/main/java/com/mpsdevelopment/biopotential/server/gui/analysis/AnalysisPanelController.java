@@ -189,8 +189,6 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             }
         });
 
-
-
         printButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -296,7 +294,6 @@ public class AnalysisPanelController extends AbstractController implements Subsc
             }
         });
 
-
         maxLevelColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<SystemDataTable, String>, ObservableValue<String>>() {
 
             @Override
@@ -329,7 +326,6 @@ public class AnalysisPanelController extends AbstractController implements Subsc
                 LOGGER.info("Close AnalysisPanelController");
             }
         });
-
 
         /*scatterChart.setTitle("Body Overview");
 
@@ -372,10 +368,10 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         Map<Pattern, AnalysisSummary> diseasesStress = analyzeService.getDiseases(urlMax, urlPo, file);
         analyzeService.diseasToAnalysisData(diseasesStress, analysisStressData);
 
-        MalePanel humanPanel = new MalePanel(diseasesStress);
+        /*MalePanel humanPanel = new MalePanel(diseasesStress);
         Stage humanStage = StageUtils.createStage(null, humanPanel, new StageSettings().setPanelTitle("Тело человека").setClazz(humanPanel.getClass()).setHeight(748d).setWidth(811d)
                 .setHeightPanel(748d).setWidthPanel(811d).setX(StageUtils.getCenterX()).setY(StageUtils.getCenterY()));
-        humanPanel.setPrimaryStage(humanStage);
+        humanPanel.setPrimaryStage(humanStage);*/
 
         // get diseases for systems
         // degree max
@@ -514,8 +510,6 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         LOGGER.info("Time for make analysis %s ms", System.currentTimeMillis());
 
     }
-
-
 
     public void updatePanel(Stage primaryStage) {
         LOGGER.info("update Analysis panel");

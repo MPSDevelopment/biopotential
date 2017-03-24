@@ -404,17 +404,19 @@
 			<artifactId>lame</artifactId>
 			<version>3.98.4</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok-maven -->
-			<dependency>
-				<groupId>org.projectlombok</groupId>
-				<artifactId>lombok</artifactId>
-				<version>1.16.14</version>
-				<scope>provided</scope>
-			</dependency>
+        <dependency>
+            <groupId>com.mpsdevelopment.helicopter</groupId>
+            <artifactId>license</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.14</version>
+			<scope>provided</scope>
+		</dependency>
 
-
-
-	</dependencies>
+    </dependencies>
 
 	<build>
 		<finalName>server</finalName>

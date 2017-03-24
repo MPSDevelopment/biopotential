@@ -85,7 +85,6 @@ public class DiseaseDao {
             }
 
             case "stress": {
-
                 Folder stressAnalys = foldersDao.getByName("Stress Analyze");
                 Folder destruction = foldersDao.getByName("Di Деструкция");
                 Folder metabolism = foldersDao.getByName("Me Метаболизм");
@@ -114,7 +113,6 @@ public class DiseaseDao {
             }
 
             case "hidden": {
-
                 Folder acariasis = foldersDao.getByName("FL Ac Acariasis");
                 Folder bacteria = foldersDao.getByName("FL Ba Bacteria");
                 Folder elementary = foldersDao.getByName("FL El Elementary");
@@ -160,9 +158,7 @@ public class DiseaseDao {
                 return diseases;
             }
             default: return null;
-
         }
-
     }
 
 	/**

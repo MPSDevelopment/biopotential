@@ -149,8 +149,7 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
         
         Criteria query = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS,"PATTERNS_FOLDERS").createCriteria(PatternsFolders.PATTERNS,"PATTERN")
         .add(Restrictions.eq("FOLDER."+Folder.ID_FIELD, filter))
-        .setProjection(projections).
-        setResultTransformer(Transformers.aliasToBean(EDXPattern.class));
+        .setProjection(projections).setResultTransformer(Transformers.aliasToBean(EDXPattern.class));
        
         List list = query.list();
         

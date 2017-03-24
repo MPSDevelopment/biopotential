@@ -6,6 +6,9 @@ import com.mpsdevelopment.biopotential.server.gui.diagnostics.DiagPanel;
 import com.mpsdevelopment.biopotential.server.gui.startPanel.StartPanel;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
 import com.mpsdevelopment.biopotential.server.utils.StageUtils;
+import com.mpsdevelopment.helicopter.license.LicenseConstants;
+import com.mpsdevelopment.helicopter.license.LicenseCreator;
+import com.mpsdevelopment.helicopter.license.LicenseDialogUtils;
 import com.mpsdevelopment.plasticine.commons.ClasspathResourceManager;
 import com.mpsdevelopment.plasticine.commons.LogbackConfigureLoader;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
@@ -30,13 +33,21 @@ public class BioApplication extends Application {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(BioApplication.class);
 
+    private static final LicenseCreator LICENSE_CREATOR = new LicenseCreator();
+
     public static void main(String[] args) {
 
         JettyServer server = JettyServer.getInstance();
         try {
             server.start();
             LOGGER.info("Server started");
+            if (!LICENSE_CREATOR.checkLicense(LicenseConstants.RELEASE_DATE)) {
+                LicenseDialogUtils.showLicenseException();
+                System.exit(0);
+            }
+
             LauncherImpl.launchApplication(BioApplication.class, MyPreloader.class, args);
+
 
             LogbackConfigureLoader.initializeLogging(resourceManager, "logback.xml", "jul.properties");
             System.setErr(LoggerUtil.getRedirectedToLoggerErrPrintStream(System.err));
