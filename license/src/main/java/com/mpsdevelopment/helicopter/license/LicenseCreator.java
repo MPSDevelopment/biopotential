@@ -95,8 +95,8 @@ public class LicenseCreator {
 	 * @return
 	 */
 	public boolean checkLicense(String licenseFile, Date releaseDate, boolean createIfNotExists) {
-		Date date = getCurrentDate();
 		LOGGER.info("releaseDate is %s", releaseDate);
+		Date date = getCurrentDate();
 		LOGGER.info("current date is %s", date);
 
 		if (date.after(releaseDate)) {
