@@ -10,10 +10,7 @@ import com.mpsdevelopment.plasticine.commons.IdGenerator;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.*;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -23,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class PatternsDao  extends GenericDao<Pattern,Long>{
 	

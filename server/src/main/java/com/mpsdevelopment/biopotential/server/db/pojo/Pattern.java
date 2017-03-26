@@ -129,7 +129,7 @@ public class Pattern extends BaseObject {
 	private int isCanBeReproduced;
 
 	@Expose
-	@Column(name = SMULS)
+	@Column(name = SMULS, length = 500)
 	@SerializedName(SMULS_GS)
 	private String smuls;
 

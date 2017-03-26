@@ -186,8 +186,8 @@ public class DatabaseCreator {
         try {
 			while (foldersDb.next()) {
 
-				folder = foldersDao.getById(foldersDb.getInt("id_folder"));
-				if (folder == null) {
+//				folder = foldersDao.getById(foldersDb.getInt("id_folder"));
+//				if (folder == null) {
 					folder = new Folder().setIdFolder(foldersDb.getInt("id_folder")).setFolderName(foldersDb.getString("parent_folder_id"))
 							.setFolderName(foldersDb.getString("folder_name")).setFolderDescription(foldersDb.getString("folder_description"))
 							.setDbdtsAdded(foldersDb.getString("dbdts_added")).setSortPriority(foldersDb.getString("sort_priority")).setIsInUse(foldersDb.getInt("is_in_use"))
@@ -197,15 +197,15 @@ public class DatabaseCreator {
 					foldersDao.insertNewFolder(folder, true);
 //					foldersDao.save(folder);
 
-				}
+//				}
                 clock = delta * foldersDb.getRow();
                 EventBus.publishEvent(new ProgressBarEvent(clock));
 
             }
 			while (patternsDb.next()) {
 
-				pattern = patternsDao.getById(patternsDb.getInt("id_pattern"));
-				if (pattern == null) {
+//				pattern = patternsDao.getById(patternsDb.getInt("id_pattern"));
+//				if (pattern == null) {
 					pattern = new Pattern().setIdPattern(patternsDb.getInt("id_pattern")).setPatternName(patternsDb.getString("pattern_name"))
 							.setPatternDescription(patternsDb.getString("pattern_description")).setPatternUid(patternsDb.getString("pattern_uid"))
 							.setSrcHash(patternsDb.getString("src_hash")).setEdxHash(patternsDb.getString("edx_hash")).setDbdtsAdded(patternsDb.getString("dbdts_added"))
@@ -223,14 +223,15 @@ public class DatabaseCreator {
 
 //                    clock = clock + delta * patternsDb.getRow();
                     EventBus.publishEvent(new ProgressBarEvent(clock + delta * patternsDb.getRow()));
-				}
+//				}
 			}
             clock = clock + delta * patternsRows;
             // patterns to Folders table
 			while (patternsFoldersDb.next()) {
-
+                long t2 = System.currentTimeMillis();
 				folder = foldersDao.getById(patternsFoldersDb.getInt("id_folder"));
 				pattern = patternsDao.getById(patternsFoldersDb.getInt("id_pattern"));
+				LOGGER.info("patternsFoldersDb took %s ms", System.currentTimeMillis() - t2);
 
 				patternsFolders = new PatternsFolders();
 				patternsFolders.setFolder(folder);
@@ -240,6 +241,8 @@ public class DatabaseCreator {
 //				patternsFoldersDao.save(patternsFolders);
 				patternsFoldersDao.insertNewPatternsFolders(patternsFolders, true);
                 EventBus.publishEvent(new ProgressBarEvent(clock + delta * patternsFoldersDb.getRow()));
+//                LOGGER.info("patternsFolders %s", patternsFolders.getId());
+
 
             }
             // patterns to Folders table
@@ -256,6 +259,7 @@ public class DatabaseCreator {
 
             // work with correctors
             for (Folder folder : folderList) {
+                long t2 = System.currentTimeMillis();
 				if (folder.getFolderName().contains("BAC")){bacId = folder.getId();}
 				if (folder.getFolderName().contains("Muc")){mucId = folder.getId();}
 				if (folder.getFolderName().contains("VIR")){virId = folder.getId();}
@@ -345,7 +349,7 @@ public class DatabaseCreator {
 
                 if (folder.getFolderName().contains("Vi en") && folder.getIsInUse() == 1){ViEn = folder.getId();}
                 if (folder.getFolderName().contains("Vi ex") && folder.getIsInUse() == 1){ViEx = folder.getId();}
-
+                LOGGER.info("patterns to Folders table %s ms", System.currentTimeMillis() - t2);
 
             }
             long t2 = System.currentTimeMillis();
@@ -367,21 +371,22 @@ public class DatabaseCreator {
             Folder helminths = foldersDao.getByName("FL He Helminths");
             Folder mycosis = foldersDao.getByName("FL My Mycosis");
             Folder virus = foldersDao.getByName("FL Vi Virus");
-            Folder femely = foldersDao.getByName("Fe Femely");
-            Folder man = foldersDao.getByName("Ma Man");
+//            Folder femely = foldersDao.getByName("Fe Femely");
+//            Folder man = foldersDao.getByName("Ma Man");
             Folder allergy = foldersDao.getByName("Al ALLERGY");
-            Folder cardio = foldersDao.getByName("Ca CARDIO");
-            Folder derma = foldersDao.getByName("De DERMA");
-            Folder endocrin = foldersDao.getByName("En ENDOKRIN");
-            Folder gastro = foldersDao.getByName("Ga GASTRO");
-            Folder immun = foldersDao.getByName("Im IMMUN");
-            Folder neural = foldersDao.getByName("Ne NEURAL");
-            Folder ortho = foldersDao.getByName("Or ORTHO");
-            Folder spiritus = foldersDao.getByName("Sp SPIRITUS");
-            Folder stomat = foldersDao.getByName("St STOMAT");
-            Folder urolog = foldersDao.getByName("Ur UROLOG");
-            Folder vision = foldersDao.getByName("Vi VISION");
+//            Folder cardio = foldersDao.getByName("Ca CARDIO");
+//            Folder derma = foldersDao.getByName("De DERMA");
+//            Folder endocrin = foldersDao.getByName("En ENDOKRIN");
+//            Folder gastro = foldersDao.getByName("Ga GASTRO");
+//            Folder immun = foldersDao.getByName("Im IMMUN");
+//            Folder neural = foldersDao.getByName("Ne NEURAL");
+//            Folder ortho = foldersDao.getByName("Or ORTHO");
+//            Folder spiritus = foldersDao.getByName("Sp SPIRITUS");
+//            Folder stomat = foldersDao.getByName("St STOMAT");
+//            Folder urolog = foldersDao.getByName("Ur UROLOG");
+//            Folder vision = foldersDao.getByName("Vi VISION");
 
+            LOGGER.info("handlePatternsFolders");
             handlePatternsFolders(stressAnalys, null,null);
             handlePatternsFolders(destruction, null, null);
             handlePatternsFolders(metabolism, null, null);
@@ -393,21 +398,21 @@ public class DatabaseCreator {
             handlePatternsFolders(helminths, HelmEn, HelmEx);
             handlePatternsFolders(mycosis, MyEn, MyEx);
             handlePatternsFolders(virus, FlViEn, FlViEx);
-            handlePatternsFolders(femely, FeEn, FeEx);
-            handlePatternsFolders(man, MaEn, MaEx);
+//            handlePatternsFolders(femely, FeEn, FeEx);
+//            handlePatternsFolders(man, MaEn, MaEx);
 
             handlePatternsFolders(allergy, AlEn, AlEx);
-            handlePatternsFolders(cardio, CaEn, CaEx);
-            handlePatternsFolders(derma, DeEn, DeEx);
-            handlePatternsFolders(endocrin, EnEn, EnEx);
-            handlePatternsFolders(gastro, GaEn, GaEx);
-            handlePatternsFolders(immun, ImEn, ImEx);
-            handlePatternsFolders(neural, NeEn, NeEx);
-            handlePatternsFolders(ortho, OrEn, OrEx);
-            handlePatternsFolders(spiritus, SpEn, SpEx);
-            handlePatternsFolders(stomat, SpEn, SpEx);
-            handlePatternsFolders(urolog, UrEn, UrEx);
-            handlePatternsFolders(vision, ViEn, ViEx);
+//            handlePatternsFolders(cardio, CaEn, CaEx);
+//            handlePatternsFolders(derma, DeEn, DeEx);
+//            handlePatternsFolders(endocrin, EnEn, EnEx);
+//            handlePatternsFolders(gastro, GaEn, GaEx);
+//            handlePatternsFolders(immun, ImEn, ImEx);
+//            handlePatternsFolders(neural, NeEn, NeEx);
+//            handlePatternsFolders(ortho, OrEn, OrEx);
+//            handlePatternsFolders(spiritus, SpEn, SpEx);
+//            handlePatternsFolders(stomat, SpEn, SpEx);
+//            handlePatternsFolders(urolog, UrEn, UrEx);
+//            handlePatternsFolders(vision, ViEn, ViEx);
 
             delta = 0.1/(patternList.size());
 
@@ -494,7 +499,7 @@ public class DatabaseCreator {
             LOGGER.info("patternsFolders took %s ms", System.currentTimeMillis() - t2);
             LOGGER.info("Convert table's took %s ms", System.currentTimeMillis() - t1);
 			long t3 = System.currentTimeMillis();
-			setChunkSummary();
+//			setChunkSummary();
 			LOGGER.info("Chunk summary took %s ms", System.currentTimeMillis() - t3);
             LOGGER.info("Overall convert process took %s ms", System.currentTimeMillis() - t1);
             EventBus.publishEvent(new ProgressBarEvent(1));
@@ -509,8 +514,11 @@ public class DatabaseCreator {
 
     private void handlePatternsFolders(Folder folder, Long correctorsEn, Long correctorsEx) {
         if (folder != null) {
-                List<PatternsFolders> patternsFolderses = patternsFoldersDao.getPatternsByFolder(folder);
-                for (PatternsFolders patternFolder : patternsFolderses) {
+            long t2 = System.currentTimeMillis();
+            List<PatternsFolders> patternsFolderses = patternsFoldersDao.getPatternsByFolder(folder);
+            LOGGER.info("patternsFoldersDao took %s ms", System.currentTimeMillis() - t2);
+
+            for (PatternsFolders patternFolder : patternsFolderses) {
                 /*patternsFolders = new PatternsFolders();
                 patternsFolders.setFolder(patternFolder.getFolder());
                 patternsFolders.setPattern(patternFolder.getPattern());*/
@@ -557,22 +565,27 @@ public class DatabaseCreator {
         double clock = 0.3;
         double delta = 0.7/(patternAll.size());
 
-        for (Pattern patternsum : patternAll) {
-			try {
-                long t1 = System.currentTimeMillis();
-				PcmDataSummary sum = Machine.getPcmData(patternsum.getPatternUid());
-				patternsum.setChunkSummary(JsonUtils.getJson(sum.getSummary()));
+//        for (Pattern patternsum : patternAll) {
+            for (int i = 0; i < patternAll.size(); i++) {
+                try {
+                    long t1 = System.currentTimeMillis();
+                    PcmDataSummary sum = Machine.getPcmData(patternAll.get(i).getPatternUid());
+                    patternAll.get(i).setChunkSummary(JsonUtils.getJson(sum.getSummary()));
 //				patternsDao.saveOrUpdate(patternsum);
-				patternsDao.insertNewPattern(patternsum, false);
-                LOGGER.info("Time for get summarize %d ms", System.currentTimeMillis() - t1);
+//				patternsDao.insertNewPattern(patternsum, false);
+                    LOGGER.info("Time for get summarize %d ms", System.currentTimeMillis() - t1);
+                    LOGGER.info("%s" , patternAll.get(i).getIdPattern());
 
-                EventBus.publishEvent(new ProgressBarEvent(clock + delta * patternAll.indexOf(patternsum)));
+                    EventBus.publishEvent(new ProgressBarEvent(clock + delta * patternAll.indexOf(patternAll.get(i))));
 
 
-            } catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+                } catch (IOException e) {
+                    LOGGER.printStackTrace(e);
+                }
+            }
+
+//		}
+		LOGGER.info("Finish setChunkSummary");
 	}
 
 	public void createUsers() {

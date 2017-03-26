@@ -6,11 +6,13 @@ import com.mpsdevelopment.biopotential.server.db.pojo.PatternsFolders;
 import com.mpsdevelopment.plasticine.commons.IdGenerator;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Criteria;
+import org.hibernate.NonUniqueResultException;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 
 
 public class FoldersDao extends GenericDao<Folder, Long> {
@@ -27,10 +29,27 @@ public class FoldersDao extends GenericDao<Folder, Long> {
         return (Folder) query.uniqueResult();
     }
 
+    public List<Folder> getFolders() {
+        Criteria query = getSession().createCriteria(Pattern.class).setCacheable(false);
+
+        return query.list();
+    }
+
     public Folder getByName(String value) {
+        Folder uniqueResult = new Folder();
         Criteria query = getSession().createCriteria(Folder.class).setCacheable(false);
         query.add(Restrictions.eq(Folder.FOLDER_NAME, value));
-        return (Folder) query.uniqueResult();
+        try {
+            uniqueResult = (Folder) query.uniqueResult();
+        } catch (NonUniqueResultException e) {
+            List<Folder> list = query.list();
+            for (int i = 0; i < query.list().size(); i++) {
+                if(list.get(i).getParentFolderId() != null) {
+                    uniqueResult = list.get(i);
+                }
+            }
+        }
+        return uniqueResult;
     }
 
     public List<Folder> getPatternsFolders(Collection<Integer> filter) {

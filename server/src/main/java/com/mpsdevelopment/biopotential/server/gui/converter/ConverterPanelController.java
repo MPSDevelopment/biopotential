@@ -2,25 +2,17 @@ package com.mpsdevelopment.biopotential.server.gui.converter;
 
 import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
-import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.arkdb.ArkDBException;
-import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
 import com.mpsdevelopment.biopotential.server.db.PersistUtils;
 import com.mpsdevelopment.biopotential.server.db.SessionManager;
-import com.mpsdevelopment.biopotential.server.db.dao.UserDao;
-import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.EnableButtonEvent;
-import com.mpsdevelopment.biopotential.server.eventbus.event.ProgressBarEvent;
 import com.mpsdevelopment.biopotential.server.gui.ConverterApplication;
-import com.mpsdevelopment.biopotential.server.gui.ModalWindow;
 import com.mpsdevelopment.biopotential.server.gui.service.JavaFxService;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -34,11 +26,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.SQLException;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class ConverterPanelController extends AbstractController implements Subscribable {
@@ -64,16 +52,19 @@ public class ConverterPanelController extends AbstractController implements Subs
     private ProgressBar progressBar;
 
     @FXML
-    private Label storLabel;
+    private TextField storLabel;
 
     @FXML
     private Label timeLabel;
+
+    @FXML
+    private TextField field;
 
     private PersistUtils persistUtils;
     private SessionManager sessionManager;
 
     private Stage primaryStage;
-    private CopyTask copyTask;
+    private ProgressBarTask progressBarTask;
     private File file;
 
     public ConverterPanelController() {
@@ -104,11 +95,11 @@ public class ConverterPanelController extends AbstractController implements Subs
                 file = fileChooser.showOpenDialog(null);
                 restartSessionManager(file.getPath().replaceAll(file.getName(),""));
 
-                copyTask = new CopyTask(file);
-                progressBar.progressProperty().bind(copyTask.progressProperty());
-                indicator.progressProperty().bind(copyTask.progressProperty());
+                progressBarTask = new ProgressBarTask();
+                progressBar.progressProperty().bind(progressBarTask.progressProperty());
+                indicator.progressProperty().bind(progressBarTask.progressProperty());
 
-                /*Thread thread = new Thread(copyTask, "task-thread");
+                /*Thread thread = new Thread(progressBarTask, "task-thread");
                 thread.setDaemon(true);
                 thread.start();*/
                 JavaFxService service = new JavaFxService();
@@ -188,7 +179,8 @@ public class ConverterPanelController extends AbstractController implements Subs
     @Handler
     public void handleMessage(EnableButtonEvent event) throws Exception {
         timeLabel.setVisible(true);
-        timeLabel.setText(event.getTimeOfConvert() + " ms");
+        field.setVisible(true);
+        field.setText(event.getTimeOfConvert() + " ms");
         LOGGER.info("Enable ok buttons ");
         if (OkButton.isDisabled()) {
             OkButton.setDisable(false);

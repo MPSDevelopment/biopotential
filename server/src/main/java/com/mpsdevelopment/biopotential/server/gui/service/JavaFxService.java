@@ -4,12 +4,14 @@ import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.arkdb.ArkDBExcepti
 import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
 import com.mpsdevelopment.biopotential.server.db.dao.UserDao;
 import com.mpsdevelopment.biopotential.server.db.pojo.User;
+import com.mpsdevelopment.biopotential.server.eventbus.event.ProgressBarEvent;
 import com.mpsdevelopment.biopotential.server.gui.ConverterApplication;
 import com.mpsdevelopment.biopotential.server.gui.converter.ConverterPanelController;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import net.engio.mbassy.listener.Handler;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,11 +48,19 @@ public class JavaFxService extends Service<Void> {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+
                 return null;
             }
         };
+
     }
 
+    /*@Handler
+    public void handleMessage(ProgressBarEvent event) throws Exception {
+        LOGGER.info(" Get delta from convert ");
+        updateProgress(event.getProgress(), 1);
+        LOGGER.info(" updateProgress %f ", event.getProgress());
+    }*/
 
 
     public File getFile() {
