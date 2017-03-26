@@ -6,10 +6,12 @@ import com.mpsdevelopment.biopotential.server.db.SessionManager;
 import com.mpsdevelopment.biopotential.server.db.pojo.Folder;
 import com.mpsdevelopment.biopotential.server.db.pojo.Pattern;
 import com.mpsdevelopment.biopotential.server.db.pojo.PatternsFolders;
+import com.mpsdevelopment.plasticine.commons.IdGenerator;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.ProjectionList;
@@ -47,6 +49,49 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
             query.setMaxResults(pageSize);
         }
         return query.list();
+    }
+
+    public void insertNewPattern(Pattern pattern, boolean isNewObject) {
+
+        Query query;
+        if (isNewObject) {
+            query = getSession().createSQLQuery("INSERT INTO MAIN.PATTERN (id,isJustCreated, idPattern, patternName, patternDescription, patternUid" +
+                    ", srcHash, edxHash, dbdtsAdded, isInUse, patternShortDesc, patternSourceFileName, patternMaxPlayingTime, patternType, isCanBeReproduced " +
+                    ", smuls, edxFileCreationDts, edxFileCreationDtsMsecs, edxFileLastModifiedDts, edxFileLastModifiedDtsMsecs, linkedFolderId, chunkSummary) " +
+                    "VALUES(:id, true, :idPattern, :patternName, :patternDescription, :patternUid, :srcHash, :edxHash, :dbdtsAdded, :isInUse, :patternShortDesc" +
+                    ", :patternSourceFileName, :patternMaxPlayingTime, :patternType, :isCanBeReproduced, :smuls, :edxFileCreationDts, :edxFileCreationDtsMsecs" +
+                    ", :edxFileLastModifiedDts, :edxFileLastModifiedDtsMsecs, :linkedFolderId, :chunkSummary)");
+            long idx = IdGenerator.nextId();
+            query.setParameter("id", idx);
+        } else {
+            query = getSession().createSQLQuery("UPDATE MAIN.PATTERN SET idPattern = :idPattern, patternName = :patternName, patternDescription = :patternDescription, patternUid = :patternUid" +
+                    ", srcHash = :srcHash, edxHash = :edxHash, dbdtsAdded = :dbdtsAdded, isInUse = :isInUse, patternShortDesc = :patternShortDesc, patternSourceFileName = :patternSourceFileName" +
+                    ", patternMaxPlayingTime = :patternMaxPlayingTime, patternType = :patternType, isCanBeReproduced = :isCanBeReproduced, smuls = :smuls" +
+                    ", edxFileCreationDts = :edxFileCreationDts, edxFileCreationDtsMsecs = :edxFileCreationDtsMsecs, edxFileLastModifiedDts = :edxFileLastModifiedDts" +
+                    ", edxFileLastModifiedDtsMsecs = :edxFileLastModifiedDtsMsecs, linkedFolderId = :linkedFolderId, chunkSummary = :chunkSummary WHERE id = :id");
+            query.setParameter("id", pattern.getId());
+        }
+        query.setParameter("idPattern", pattern.getIdPattern());
+        query.setParameter("patternName", pattern.getPatternName());
+        query.setParameter("patternDescription", pattern.getPatternDescription());
+        query.setParameter("patternUid", pattern.getPatternUid());
+        query.setParameter("srcHash", pattern.getSrcHash());
+        query.setParameter("edxHash", pattern.getEdxHash());
+        query.setParameter("dbdtsAdded", pattern.getDbdtsAdded());
+        query.setParameter("isInUse", pattern.getIsInUse());
+        query.setParameter("patternShortDesc", pattern.getPatternShortDesc());
+        query.setParameter("patternSourceFileName", pattern.getPatternSourceFileName());
+        query.setParameter("patternMaxPlayingTime", pattern.getPatternMaxPlayingTime());
+        query.setParameter("patternType", pattern.getPatternType());
+        query.setParameter("isCanBeReproduced", pattern.getIsCanBeReproduced());
+        query.setParameter("smuls", pattern.getSmuls());
+        query.setParameter("edxFileCreationDts", pattern.getEdxFileCreationDts());
+        query.setParameter("edxFileCreationDtsMsecs", pattern.getEdxFileCreationDtsMsecs());
+        query.setParameter("edxFileLastModifiedDts", pattern.getEdxFileLastModifiedDts());
+        query.setParameter("edxFileLastModifiedDtsMsecs", pattern.getEdxFileCreationDtsMsecs());
+        query.setParameter("linkedFolderId", pattern.getLinkedFolderId());
+        query.setParameter("chunkSummary", pattern.getChunkSummary());
+        query.executeUpdate();
     }
     
 	public List<EDXPattern> getAllPatternsFromDataBase() throws SQLException, IOException {

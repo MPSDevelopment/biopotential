@@ -47,7 +47,7 @@
 	<bean id="visitDao" class="com.mpsdevelopment.biopotential.server.db.dao.VisitDao" autowire="byName" depends-on="sessionManager" />
 	<bean id="dіseaseDao" class="com.mpsdevelopment.biopotential.server.db.dao.DiseaseDao" autowire="byName" depends-on="sessionManager" />
 
-	<bean id="converterPanelController" class="com.mpsdevelopment.biopotential.server.gui.converter.ConverterPanelController" />
+	<!--<bean id="converterPanelController" class="com.mpsdevelopment.biopotential.server.gui.converter.ConverterPanelController" />-->
 
 	<bean id="databaseCreatorProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
 		<property name="target">

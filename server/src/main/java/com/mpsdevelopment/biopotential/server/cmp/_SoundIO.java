@@ -7,6 +7,7 @@ import com.mpsdevelopment.biopotential.server.db.dao.DiseaseDao;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.stage.FileChooser;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.sound.sampled.*;
 import java.io.*;
@@ -44,7 +45,7 @@ public class _SoundIO {
 //        return readAllFrames();
 //    }
 
-    public static List<Double> readAllFrames(final AudioInputStream audioStream)
+    public static /*List<Float>*/float[] readAllFrames(final AudioInputStream audioStream)
             throws IOException {
         final AudioFormat format = audioStream.getFormat();
 
@@ -69,14 +70,14 @@ public class _SoundIO {
 //        final boolean isBigEndian = format.isBigEndian();
 
         //final double[][] peaks = new double[(int) frameLength];
-        List<Double> peaks = new ArrayList<>();
+        /*List<Float>*/float[] peaks = new float[(int) frameLength];
         for (int i = 0; i < (int) frameLength; i += 1) {
             // Performance note: highly biased branches are ok
 //          final long frameData = isBigEndian
 //              ? readFrameBE(rawData, rawPtr, frameSize)
 //              : readFrameLE(rawData, rawPtr, frameSize);
             //peaks[0][i] = (double) (byte) (rawData[i] ^ 0x80) / 128.0;
-            peaks.add((double) (byte) (rawData[i] ^ 0x80) / 128.0); // усреднение.. привести все к амплитуде 1 + делает инверсию
+            peaks[i] = ((float) ((float) (byte) (rawData[i] ^ 0x80) / 128.0)); // усреднение.. привести все к амплитуде 1 + делает инверсию
                                                                     // (byte) (rawData[i] ^ 0x80) приводит знаковый byte к беззнаковому
         }
 
@@ -87,7 +88,7 @@ public class _SoundIO {
 
         HashMap<String, EDXSection> sects = new HashMap<>();
         List<ChunkSummary> summary;
-        List<Double> pcmData;
+        /*List<Float>*/float[] pcmData;
 
         try (RandomAccessFile in = new RandomAccessFile(new File(fileName), "r")) {
 
@@ -110,9 +111,12 @@ public class _SoundIO {
             byte[] input = sects.get(".data").contents;
 //            short[] short_input = shortMe(input);
 
-            pcmData = new ArrayList<>();
+            pcmData = new float[sects.get(".data").contents.length];
             for (byte b : sects.get(".data").contents) {
-                pcmData.add((double) (byte) (b ^ 0x80) / 128.0);
+                for (int i = 0; i < sects.get(".data").contents.length; i++) {
+                    pcmData[i] = ((float) ((float) (byte) (b ^ 0x80) / 128.0));
+
+                }
 
 //                pcmData.add((double)b/128);
             }
@@ -131,12 +135,15 @@ public class _SoundIO {
 
 
 
-        double[] buffer = pcmData.stream().mapToDouble(new ToDoubleFunction<Double>() {
+        /*double[] buffer = pcmData.stream().mapToDouble(new ToDoubleFunction<Double>() {
             @Override
             public double applyAsDouble(Double aDouble) {
                 return aDouble.doubleValue();
             }
-        }).toArray();
+        }).toArray();*/
+
+//        float[] buffer = ArrayUtils.toPrimitive((Float[]) pcmData.toArray(new Float[0]), 0.0F);
+        float[] buffer = ArrayUtils.clone(pcmData);
 
 
         double minP =0;
@@ -178,7 +185,7 @@ public class _SoundIO {
         ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 //        ByteArrayInputStream bais = new ByteArrayInputStream(input);
         AudioFormat format = new AudioFormat(22050, 8, 1, true, false);
-        AudioInputStream stream = new AudioInputStream(bais, format, pcmData.size());
+        AudioInputStream stream = new AudioInputStream(bais, format, pcmData.length);
         AudioSystem.write(stream, AudioFileFormat.Type.WAVE, outputFile);
 
 

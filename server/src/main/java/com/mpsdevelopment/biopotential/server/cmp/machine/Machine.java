@@ -123,7 +123,8 @@ public class Machine {
 			}*/
 //			long t1 = System.currentTimeMillis();
 //			summary = Analyzer.summarize(pcmData);
-			summary = null;
+			summary = Analyzer.summarize(pcmArray);
+//			summary = null;
 //			LOGGER.info("Time for get summurize %d ms", System.currentTimeMillis() - t1);
 
 		} else {

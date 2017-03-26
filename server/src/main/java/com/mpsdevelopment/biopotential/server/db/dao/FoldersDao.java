@@ -3,8 +3,10 @@ package com.mpsdevelopment.biopotential.server.db.dao;
 import com.mpsdevelopment.biopotential.server.db.pojo.Folder;
 import com.mpsdevelopment.biopotential.server.db.pojo.Pattern;
 import com.mpsdevelopment.biopotential.server.db.pojo.PatternsFolders;
+import com.mpsdevelopment.plasticine.commons.IdGenerator;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 
 import java.util.Collection;
@@ -47,6 +49,30 @@ public class FoldersDao extends GenericDao<Folder, Long> {
         return query.list();
 //        return (Folder) query.uniqueResult();
     }
+
+    public void insertNewFolder(Folder folder, boolean isNewObject) {
+
+        Query query;
+        if (isNewObject) {
+            query = getSession().createSQLQuery("INSERT INTO MAIN.FOLDER (id,isJustCreated, dbdtsAdded, folderDescription, folderName, folderType, idFolder, isInUse, parentFolderId, sortPriority) VALUES(:id, true, :dbdtsAdded, :folderDescription, :folderName, :folderType, :idFolder, :isInUse, :parentFolderId, :sortPriority)");
+            long idx = IdGenerator.nextId();
+            query.setParameter("id", idx);
+//            query.setParameter("time", folder.getTime());
+        } else {
+            query = getSession().createSQLQuery("UPDATE MAIN.FOLDER SET dbdtsAdded = :dbdtsAdded, folderDescription = :folderDescription, folderName = :folderName, folderType = :folderType, idFolder = :idFolder, isInUse = :isInUse, parentFolderId = :parentFolderId, sortPriority = :sortPriority WHERE id = :id");
+            query.setParameter("id", folder.getId());
+        }
+        query.setParameter("dbdtsAdded", folder.getDbdtsAdded());
+        query.setParameter("folderDescription", folder.getFolderDescription());
+        query.setParameter("folderName", folder.getFolderName());
+        query.setParameter("folderType", folder.getFolderType());
+        query.setParameter("idFolder", folder.getIdFolder());
+        query.setParameter("isInUse", folder.getIsInUse());
+        query.setParameter("parentFolderId", folder.getParentFolderId());
+        query.setParameter("sortPriority", folder.getSortPriority());
+        query.executeUpdate();
+    }
+
 
     /*public Faf loadByCoordinates(Double latitude, Double longitude, Long airfieldId) {
         Criteria query = getSession().createCriteria(Faf.class).setCacheable(false);

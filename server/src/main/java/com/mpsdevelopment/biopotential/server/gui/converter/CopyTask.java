@@ -47,9 +47,9 @@ public class CopyTask extends Task<Void> {
                 }
                 databaseCreator.convertToH2(file.getAbsolutePath());
             } catch (ArkDBException e) {
-                e.printStackTrace();
+                LOGGER.printStackTrace(e);
             } catch (IOException e) {
-                e.printStackTrace();
+                LOGGER.printStackTrace(e);
             }
 
 //            updateProgress(delta, 1);

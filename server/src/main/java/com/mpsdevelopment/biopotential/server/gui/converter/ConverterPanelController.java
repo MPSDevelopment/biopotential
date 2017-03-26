@@ -2,17 +2,25 @@ package com.mpsdevelopment.biopotential.server.gui.converter;
 
 import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
+import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.arkdb.ArkDBException;
 import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
 import com.mpsdevelopment.biopotential.server.db.PersistUtils;
 import com.mpsdevelopment.biopotential.server.db.SessionManager;
+import com.mpsdevelopment.biopotential.server.db.dao.UserDao;
+import com.mpsdevelopment.biopotential.server.db.pojo.User;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.EnableButtonEvent;
+import com.mpsdevelopment.biopotential.server.eventbus.event.ProgressBarEvent;
 import com.mpsdevelopment.biopotential.server.gui.ConverterApplication;
+import com.mpsdevelopment.biopotential.server.gui.ModalWindow;
+import com.mpsdevelopment.biopotential.server.gui.service.JavaFxService;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -26,14 +34,16 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class ConverterPanelController extends AbstractController implements Subscribable {
 
     private static final Logger LOGGER = LoggerUtil.getLogger(ConverterPanelController.class);
-//    ObservableList<String> items = FXCollections.observableArrayList("Max", "Po");
-
 
     @FXML
     private Button chooseBaseButton;
@@ -48,9 +58,6 @@ public class ConverterPanelController extends AbstractController implements Subs
     private Button OkButton;
 
     @FXML
-    private TextField nameTextField;
-
-    @FXML
     private ProgressIndicator indicator;
 
     @FXML
@@ -59,14 +66,16 @@ public class ConverterPanelController extends AbstractController implements Subs
     @FXML
     private Label storLabel;
 
+    @FXML
+    private Label timeLabel;
+
     private PersistUtils persistUtils;
     private SessionManager sessionManager;
-    private DatabaseCreator databaseCreator;
-
-    private File file;
 
     private Stage primaryStage;
     private CopyTask copyTask;
+    private File file;
+
     public ConverterPanelController() {
         EventBus.subscribe(this);
         LOGGER.info("Create ConverterPanelController");
@@ -74,6 +83,9 @@ public class ConverterPanelController extends AbstractController implements Subs
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        persistUtils = ConverterApplication.APP_CONTEXT.getBean(PersistUtils.class);
+        sessionManager = ConverterApplication.APP_CONTEXT.getBean(SessionManager.class);
 
         storLabel.setText("");
         chooseBaseButton.setDisable(true);
@@ -84,47 +96,25 @@ public class ConverterPanelController extends AbstractController implements Subs
             }
         });
 
-
-
-        persistUtils = ConverterApplication.APP_CONTEXT.getBean(PersistUtils.class);
-        sessionManager = ConverterApplication.APP_CONTEXT.getBean(SessionManager.class);
-
-        /*progressBar.progressProperty().unbind();
-        copyTask = new CopyTask();
-
-        // Bind progress property
-        progressBar.progressProperty().bind(copyTask.progressProperty());*/
-
-
-
-
-
         chooseBaseButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setInitialDirectory(new File("data"));
                 file = fileChooser.showOpenDialog(null);
-//                selectedFile.getPath().replaceAll(selectedFile.getName(),"");
                 restartSessionManager(file.getPath().replaceAll(file.getName(),""));
 
                 copyTask = new CopyTask(file);
                 progressBar.progressProperty().bind(copyTask.progressProperty());
                 indicator.progressProperty().bind(copyTask.progressProperty());
 
-                Thread thread = new Thread(copyTask, "task-thread");
+                /*Thread thread = new Thread(copyTask, "task-thread");
                 thread.setDaemon(true);
-                thread.start();
+                thread.start();*/
+                JavaFxService service = new JavaFxService();
+                service.setFile(file);
+                service.start();
                 disableAllButtons();
-
-                /*databaseCreator = JettyServer.WEB_CONTEXT.getBean(DatabaseCreator.class);
-                try {
-                    databaseCreator.convertToH2(file.getAbsolutePath());
-                } catch (ArkDBException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }*/
             }
         });
 
@@ -155,10 +145,6 @@ public class ConverterPanelController extends AbstractController implements Subs
             @Override
             public void handle(ActionEvent event) {
                 close();
-               /* ServerSettings fileSettings = BioApplication.APP_CONTEXT.getBean(ServerSettings.class);
-                fileSettings.setDbPath(file.getPath());
-                String json = JsonUtils.getJson(fileSettings);
-                JsonUtils.writeJsonToFile(json.replace("\\\\","/"),"config/server.json");*/
             }
         });
 
@@ -177,21 +163,6 @@ public class ConverterPanelController extends AbstractController implements Subs
         Stage stage = (Stage) CancelButton.getScene().getWindow();
         stage.close();
     }
-
-    /*@Handler
-    public void handleMessage(ProgressBarEvent event) throws Exception {
-        LOGGER.info(" Get delta from convert ");
-
-
-        *//*Platform.runLater(new Runnable() {
-            @Override public void run() {
-                progressBar.setProgress(event.getProgress());
-            }
-        });*//*
-
-        *//*copyTask.setI(event.getProgress());
-        copyTask.call();*//*
-    }*/
 
     private void restartSessionManager(String url) {
         String name = "database";
@@ -212,14 +183,16 @@ public class ConverterPanelController extends AbstractController implements Subs
         Session session = sessionFactory.openSession();
         sessionManager.setSession(session);
 
-
     }
 
     @Handler
     public void handleMessage(EnableButtonEvent event) throws Exception {
-        // TODO this handler appear twice.. fix it!!!
+        timeLabel.setVisible(true);
+        timeLabel.setText(event.getTimeOfConvert() + " ms");
         LOGGER.info("Enable ok buttons ");
-        OkButton.setDisable(false);
+        if (OkButton.isDisabled()) {
+            OkButton.setDisable(false);
+        }
     }
 
     public void updatePanel(Stage primaryStage) {
@@ -235,12 +208,7 @@ public class ConverterPanelController extends AbstractController implements Subs
 
     public void close() {
         LOGGER.info("  CLOSE  REQUEST");
-
         EventBus.unsubscribe(this);
-
         primaryStage.close();
     }
-
-
-
 }

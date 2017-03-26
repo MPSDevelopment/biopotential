@@ -6,7 +6,7 @@
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="192.0" prefWidth="341.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mpsdevelopment.biopotential.server.gui.converter.ConverterPanelController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="192.0" prefWidth="341.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mpsdevelopment.biopotential.server.gui.converter.ConverterPanelController">
    <children>
       <Button fx:id="whatToShowButton" layoutX="-238.0" layoutY="36.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="112.0" text="Что показывать" />
       <Button fx:id="criterionButton" layoutX="-172.0" layoutY="86.0" mnemonicParsing="false" text="Критерии отбора" />
@@ -17,5 +17,6 @@
       <ProgressIndicator fx:id="indicator" layoutX="304.0" layoutY="41.0" progress="0.0" />
       <Button fx:id="OkButton" disable="true" layoutX="17.0" layoutY="132.0" mnemonicParsing="false" onAction="#handleCloseButtonAction" prefHeight="25.0" prefWidth="135.0" text="Ok" />
       <Label fx:id="storLabel" layoutX="171.0" layoutY="90.0" text="Label" />
+      <Label fx:id="timeLabel" layoutX="165.0" layoutY="14.0" visible="false" />
    </children>
 </AnchorPane>

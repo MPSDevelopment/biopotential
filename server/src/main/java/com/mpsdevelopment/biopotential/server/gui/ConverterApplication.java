@@ -1,6 +1,5 @@
 package com.mpsdevelopment.biopotential.server.gui;
 
-import com.mpsdevelopment.biopotential.server.JettyServer;
 import com.mpsdevelopment.biopotential.server.gui.converter.ConverterPanel;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
 import com.mpsdevelopment.biopotential.server.utils.StageUtils;
@@ -12,10 +11,8 @@ import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.web.context.support.XmlWebApplicationContext;
 
 public class ConverterApplication extends Application{
 

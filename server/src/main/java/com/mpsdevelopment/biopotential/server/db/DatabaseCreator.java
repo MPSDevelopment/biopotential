@@ -12,6 +12,7 @@ import com.mpsdevelopment.biopotential.server.gui.ConverterApplication;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
+import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -165,6 +166,7 @@ public class DatabaseCreator {
         }
     }
 
+
     public void convertToH2(String url) throws ArkDBException, IOException, SQLException {
 		long t1 = System.currentTimeMillis();
 		connect(url);
@@ -192,7 +194,9 @@ public class DatabaseCreator {
 							.setFolderType(foldersDb.getString("folder_type"));
 
 					LOGGER.info("foldersDao %s", folder);
-					foldersDao.save(folder);
+					foldersDao.insertNewFolder(folder, true);
+//					foldersDao.save(folder);
+
 				}
                 clock = delta * foldersDb.getRow();
                 EventBus.publishEvent(new ProgressBarEvent(clock));
@@ -214,7 +218,8 @@ public class DatabaseCreator {
 							.setEdxFileLastModifiedDtsMsecs(patternsDb.getInt("edx_file_last_modified_dts_msecs"));/*.setLinkedFolderId(patternsDb.getInt("linked_folder_id"));*/
 
 					LOGGER.info("%s", pattern.getPatternName());
-					patternsDao.save(pattern);
+					patternsDao.insertNewPattern(pattern, true);
+//					patternsDao.save(pattern);
 
 //                    clock = clock + delta * patternsDb.getRow();
                     EventBus.publishEvent(new ProgressBarEvent(clock + delta * patternsDb.getRow()));
@@ -232,7 +237,8 @@ public class DatabaseCreator {
 				patternsFolders.setPattern(pattern);
 				patternsFolders.setCorrectorsEn(null);
 
-				patternsFoldersDao.save(patternsFolders);
+//				patternsFoldersDao.save(patternsFolders);
+				patternsFoldersDao.insertNewPatternsFolders(patternsFolders, true);
                 EventBus.publishEvent(new ProgressBarEvent(clock + delta * patternsFoldersDb.getRow()));
 
             }
@@ -492,7 +498,7 @@ public class DatabaseCreator {
 			LOGGER.info("Chunk summary took %s ms", System.currentTimeMillis() - t3);
             LOGGER.info("Overall convert process took %s ms", System.currentTimeMillis() - t1);
             EventBus.publishEvent(new ProgressBarEvent(1));
-            EventBus.publishEvent(new EnableButtonEvent(true));
+            EventBus.publishEvent(new EnableButtonEvent(true, String.valueOf(System.currentTimeMillis() - t1)));
             LOGGER.info("End");
 
 		} catch (SQLException e) {
@@ -518,7 +524,8 @@ public class DatabaseCreator {
                     } else {
                         patternFolder.setCorrectorsEx(correctorsEx);
                     }
-                    patternsFoldersDao.saveOrUpdate(patternFolder);
+                    patternsFoldersDao.insertNewPatternsFolders(patternFolder, false);
+//                    patternsFoldersDao.saveOrUpdate(patternFolder);
 
                 }
             }
@@ -555,7 +562,8 @@ public class DatabaseCreator {
                 long t1 = System.currentTimeMillis();
 				PcmDataSummary sum = Machine.getPcmData(patternsum.getPatternUid());
 				patternsum.setChunkSummary(JsonUtils.getJson(sum.getSummary()));
-				patternsDao.saveOrUpdate(patternsum);
+//				patternsDao.saveOrUpdate(patternsum);
+				patternsDao.insertNewPattern(patternsum, false);
                 LOGGER.info("Time for get summarize %d ms", System.currentTimeMillis() - t1);
 
                 EventBus.publishEvent(new ProgressBarEvent(clock + delta * patternAll.indexOf(patternsum)));
