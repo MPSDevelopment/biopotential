@@ -6,6 +6,7 @@ import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -69,12 +70,13 @@ public class Machine {
 	public static PcmDataSummary getPcmData(String fileName) throws IOException {
 
 		HashMap<String, EDXSection> sects = new HashMap<>();
-		List<ChunkSummary> summary;
+		List<ChunkSummary> summary = null;
 		List<Float> pcmData;
+		double[] pcmArray = new double[0];
 
-        if (edxFileFolder == null) {
-            edxFileFolder = EDX_FILE_FOLDER;
-        }
+		if (edxFileFolder == null) {
+			edxFileFolder = EDX_FILE_FOLDER;
+		}
 		try (RandomAccessFile in = new RandomAccessFile(new File(edxFileFolder + fileName), "r")) {
 			final byte[] hdr = new byte[4];
 			if (in.read(hdr) != 4 || !new String(hdr).equals("EDXI")) {
@@ -106,33 +108,35 @@ public class Machine {
 				sects.put(sect.name, sect);
 			}
 		} catch (IOException e) {
-			throw e;
+			LOGGER.info("File not found %s", fileName);
 		}
 
-        float[] pcmArray = new float[sects.get(".orig   ").length];
+		if (!(sects.get(".orig   ") == null)) {
+			pcmArray = new double[sects.get(".orig   ").length];
 
-		if (sects.containsKey(".orig   ")) {
-			pcmData = new ArrayList<>();
-			byte[] section =  sects.get(".orig   ").contents;
+			if (sects.containsKey(".orig   ")) {
+				pcmData = new ArrayList<>();
+				byte[] section =  sects.get(".orig   ").contents;
 
-            for (int i = 0; i < sects.get(".orig   ").length; i++) {
-                pcmArray[i] = (float) ((float) (byte) (section[i] ^ 0x80) / 128.0);
-            }
+				for (int i = 0; i < sects.get(".orig   ").length; i++) {
+					pcmArray[i] = (float) ((float) (byte) (section[i] ^ 0x80) / 128.0);
+				}
            /* for (byte b : sects.get(".orig   ").contents) {
 				pcmData.add((float) ((float) (byte) (b ^ 0x80) / 128.0));
 			}*/
 //			long t1 = System.currentTimeMillis();
 //			summary = Analyzer.summarize(pcmData);
-			summary = Analyzer.summarize(pcmArray);
+				summary = Analyzer.summarize(pcmArray);
 //			summary = null;
 //			LOGGER.info("Time for get summurize %d ms", System.currentTimeMillis() - t1);
 
-		} else {
-			pcmData = null;
-			summary = null;
-		}
+			} else {
+				pcmData = null;
+				summary = null;
+			}
 
 //		return new PcmDataSummary(pcmData, summary);
+		}
 		return new PcmDataSummary(pcmArray, summary);
 	}
 

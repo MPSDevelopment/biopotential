@@ -1,3 +1,4 @@
+/*
 package com.mpsdevelopment.biopotential.server.cmp.machine.strains;
 
 
@@ -51,3 +52,4 @@ public class WAWPattern implements Pattern {
     private final String name;
     private final List<ChunkSummary> summary;
 }
+*/

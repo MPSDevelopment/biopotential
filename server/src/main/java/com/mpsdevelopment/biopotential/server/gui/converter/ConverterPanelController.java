@@ -162,7 +162,7 @@ public class ConverterPanelController extends AbstractController implements Subs
             name = nameTextField.getText();
         }*/
 
-        name = file.getName().replaceAll(".arkdb","");
+        name = file.getName().replaceAll(".arkdb","")/*.replaceAll(".db","")*/;
 
         ServerSettings fileSettings = ConverterApplication.APP_CONTEXT.getBean(ServerSettings.class);
         fileSettings.setDbPath(url+name);
@@ -180,7 +180,7 @@ public class ConverterPanelController extends AbstractController implements Subs
     public void handleMessage(EnableButtonEvent event) throws Exception {
         timeLabel.setVisible(true);
         field.setVisible(true);
-        field.setText(event.getTimeOfConvert() + " ms");
+        field.setText(Math.round(Float.parseFloat(event.getTimeOfConvert()) * 100.0)/100.0 + "m");
         LOGGER.info("Enable ok buttons ");
         if (OkButton.isDisabled()) {
             OkButton.setDisable(false);

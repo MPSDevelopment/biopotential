@@ -13,7 +13,7 @@ import java.util.function.ToDoubleFunction;
 
 public class Analyzer {
     // TODO: Make use of new sound API
-    public static List<ChunkSummary> summarize(/*List<Float>*/float[] frames) {
+    public static List<ChunkSummary> summarize(/*List<Float>*/double[] frames) {
         final List<ChunkSummary> summaries = new ArrayList<>();
 
         // Somewhat resembling wavelet transform
@@ -26,29 +26,29 @@ public class Analyzer {
         }).toArray();*/
 
 //        float[] buffer = ArrayUtils.toPrimitive((Float[]) frames.toArray(new Float[0]), 0.0F);
-        float[] buffer = ArrayUtils.clone(frames);
+        double[] buffer = ArrayUtils.clone(frames);
 
         int count = (frames.length - 5) / 2;
         while (count > 0) {
             ;
-            final float[] sum = new float[count];
-            final float[] diff = new float[count];
+            final double[] sum = new double[count];
+            final double[] diff = new double[count];
             for (int j = 0; j < count; j++) {
-                sum[j] = (float) (buffer[j * 2] * 0.0352262918821
-                                        + buffer[j * 2 + 1] * 0.08544127388224
-                                        + buffer[j * 2 + 2] * -0.13501102001039
-                                        + buffer[j * 2 + 3] * -0.45987750211933
-                                        + buffer[j * 2 + 4] * 0.80689150931334
-                                        + buffer[j * 2 + 5] * -0.33267055295096);
+                sum[j] = (double) (buffer[j * 2] * 0.0352262918821
+                        + buffer[j * 2 + 1] * 0.08544127388224
+                        + buffer[j * 2 + 2] * -0.13501102001039
+                        + buffer[j * 2 + 3] * -0.45987750211933
+                        + buffer[j * 2 + 4] * 0.80689150931334
+                        + buffer[j * 2 + 5] * -0.33267055295096);
 
-                diff[j] = (float) (buffer[j * 2] * 0.33267055295096
-                                        + buffer[j * 2 + 1] * 0.80689150931334
-                                        + buffer[j * 2 + 2] * 0.45987750211933
-                                        + buffer[j * 2 + 3] * -0.13501102001039
-                                        + buffer[j * 2 + 4] * -0.08544127388224
-                                        + buffer[j * 2 + 5] * 0.0352262918821);
+                diff[j] = (double) (buffer[j * 2] * 0.33267055295096
+                        + buffer[j * 2 + 1] * 0.80689150931334
+                        + buffer[j * 2 + 2] * 0.45987750211933
+                        + buffer[j * 2 + 3] * -0.13501102001039
+                        + buffer[j * 2 + 4] * -0.08544127388224
+                        + buffer[j * 2 + 5] * 0.0352262918821);
             }
-            final float meanDeviation = computeMeanDeviation(sum); // среднее отклонение, считается для каждого чанка
+            final double meanDeviation = computeMeanDeviation(sum); // среднее отклонение, считается для каждого чанка
             final double dispersion = computeDispersion(sum, meanDeviation); // дисперсия
             summaries.add(new ChunkSummary(meanDeviation, dispersion)); // add Deviation and Dispersion to List<ChunkSummary>
 
@@ -63,13 +63,13 @@ public class Analyzer {
         final List<ChunkSummary> summaries = new ArrayList<>();
         for (int i = 0; i < total; i += 1) {
             final int count = readStreamLE(file, 4);
-            final float[] sum = new float[count];
+            final double[] sum = new double[count];
             for (int j = 0; j < count; j += 1) {
                 sum[j] = (float) Float.intBitsToFloat(readStreamLE(file, 4));
             }
 
-            final float meanDeviation = computeMeanDeviation(sum);
-            final float dispersion = computeDispersion(sum, meanDeviation);
+            final double meanDeviation = computeMeanDeviation(sum);
+            final double dispersion = computeDispersion(sum, meanDeviation);
             summaries.add(new ChunkSummary(meanDeviation, dispersion));
         }
         return summaries;
@@ -96,22 +96,21 @@ public class Analyzer {
         return new AnalysisSummary(meanDeviation, dispersion, Float.floatToIntBits((float) dispersion) << 29); // старшые два бита это уровень
     }
 
-    private static float computeMeanDeviation(float[] sum) {
-        float result = 0.0f;
-        for (float num : sum) {
+    private static double computeMeanDeviation(double[] sum) {
+        double result = 0.0f;
+        for (double num : sum) {
             result += num;
         }
-        return result / (float) sum.length;
+        return result / (double) sum.length;
     }
 
-    private static float computeDispersion(float[] sum,
-                                            float meanDeviation) {
-        float result = 0.0f;
-        for (float num : sum) {
-            float delta = num - meanDeviation;
+    private static double computeDispersion(double[] sum, double meanDeviation) {
+        double result = 0.0f;
+        for (double num : sum) {
+            double delta = num - meanDeviation;
             result += delta * delta;
         }
-        return (float) Math.sqrt(result / (float) sum.length);
+        return (double) Math.sqrt(result / (double) sum.length);
     }
 
     private static int readStreamLE(InputStream stream, int length) {

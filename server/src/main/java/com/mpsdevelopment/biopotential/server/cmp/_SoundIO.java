@@ -45,7 +45,7 @@ public class _SoundIO {
 //        return readAllFrames();
 //    }
 
-    public static /*List<Float>*/float[] readAllFrames(final AudioInputStream audioStream)
+    public static /*List<Float>*/double[] readAllFrames(final AudioInputStream audioStream)
             throws IOException {
         final AudioFormat format = audioStream.getFormat();
 
@@ -70,128 +70,128 @@ public class _SoundIO {
 //        final boolean isBigEndian = format.isBigEndian();
 
         //final double[][] peaks = new double[(int) frameLength];
-        /*List<Float>*/float[] peaks = new float[(int) frameLength];
+        /*List<Float>*/double[] peaks = new double[(int) frameLength];
         for (int i = 0; i < (int) frameLength; i += 1) {
             // Performance note: highly biased branches are ok
 //          final long frameData = isBigEndian
 //              ? readFrameBE(rawData, rawPtr, frameSize)
 //              : readFrameLE(rawData, rawPtr, frameSize);
             //peaks[0][i] = (double) (byte) (rawData[i] ^ 0x80) / 128.0;
-            peaks[i] = ((float) ((float) (byte) (rawData[i] ^ 0x80) / 128.0)); // усреднение.. привести все к амплитуде 1 + делает инверсию
-                                                                    // (byte) (rawData[i] ^ 0x80) приводит знаковый byte к беззнаковому
+            peaks[i] = ((double) ((double) (byte) (rawData[i] ^ 0x80) / 128.0)); // усреднение.. привести все к амплитуде 1 + делает инверсию
+            // (byte) (rawData[i] ^ 0x80) приводит знаковый byte к беззнаковому
         }
 
         return peaks;
     }
 
-    public static List<ChunkSummary> getPcmData(String fileName) throws IOException {
-
-        HashMap<String, EDXSection> sects = new HashMap<>();
-        List<ChunkSummary> summary;
-        /*List<Float>*/float[] pcmData;
-
-        try (RandomAccessFile in = new RandomAccessFile(new File(fileName), "r")) {
-
-                final EDXSection sect = new EDXSection();
-
-                final byte[] sect_name = new byte[8];
-                in.read(sect_name);
-
-                sect.name = new String(".data");
-                sect.contents = new byte[(int) (in.length() - 44)];
-
-                in.seek(0x2C);
-                in.read(sect.contents, 0, sect.contents.length);
-
-                sects.put(sect.name, sect);
-
-        } catch (IOException e) {
-            throw e;
-        }
-            byte[] input = sects.get(".data").contents;
-//            short[] short_input = shortMe(input);
-
-            pcmData = new float[sects.get(".data").contents.length];
-            for (byte b : sects.get(".data").contents) {
-                for (int i = 0; i < sects.get(".data").contents.length; i++) {
-                    pcmData[i] = ((float) ((float) (byte) (b ^ 0x80) / 128.0));
-
-                }
-
-//                pcmData.add((double)b/128);
-            }
-
-        /*for (int i =0; i < 100; i++) {
-            LOGGER.info("%f", pcmData.get(i));
-        }*/
-
-      /*  for (int i = 0; i < sects.get(".data").contents.length-2; i=i+2) {
-
-            pcmData.add((double)(short)((sects.get(".data").contents[i] & 0x00FF)
-                    | (short)(sects.get(".data").contents[i+1] << 8) & 0xFFFF)/32768.0);
-        }*/
-//        pcmData = PCM.fold(pcmData, 66150);
-        summary = Analyzer.summarize(pcmData);
-
-
-
-        /*double[] buffer = pcmData.stream().mapToDouble(new ToDoubleFunction<Double>() {
-            @Override
-            public double applyAsDouble(Double aDouble) {
-                return aDouble.doubleValue();
-            }
-        }).toArray();*/
-
-//        float[] buffer = ArrayUtils.toPrimitive((Float[]) pcmData.toArray(new Float[0]), 0.0F);
-        float[] buffer = ArrayUtils.clone(pcmData);
-
-
-        double minP =0;
-        boolean flagp = true;
-        for (int i = 0; i < buffer.length; i++) {
-            if (buffer[i] > 0) {
-                if (flagp){minP = buffer[i]; flagp = false;}
-                else if (buffer[i] < minP) {
-                    minP = buffer[i];
-                }
-            }
-        }
-        byte[] bytes = new byte[buffer.length];
-
-        for (int i=0; i < buffer.length; i++) {
-//            bytes[i] = (byte) (((buffer[i]) * 1/minP)/*+128*/);
-            if (i == 650) {
-                LOGGER.info("");
-            }
-            if ((buffer[i]) * 127 >= 127) {
-                bytes[i] = (byte) 127;
-
-            }
-            else if ((buffer[i]) * 127 <= -128) {
-                bytes[i] = (byte) -128;
-            }
-            else {
-                bytes[i] = (byte) ((buffer[i]) * 127);
-
-            }
-
-
-        }
-        OutputStream out = new FileOutputStream(new File("data\\out\\lame.mp3"));
-        byte[] data = new byte[(bytes.length)];
-        data = DiseaseDao.encodePcmToMp3(bytes);
-        out.write(data, 0, data.length);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-//        ByteArrayInputStream bais = new ByteArrayInputStream(input);
-        AudioFormat format = new AudioFormat(22050, 8, 1, true, false);
-        AudioInputStream stream = new AudioInputStream(bais, format, pcmData.length);
-        AudioSystem.write(stream, AudioFileFormat.Type.WAVE, outputFile);
-
-
-
-        return summary;
-    }
+//    public static List<ChunkSummary> getPcmData(String fileName) throws IOException {
+//
+//        HashMap<String, EDXSection> sects = new HashMap<>();
+//        List<ChunkSummary> summary;
+//        /*List<Float>*/float[] pcmData;
+//
+//        try (RandomAccessFile in = new RandomAccessFile(new File(fileName), "r")) {
+//
+//                final EDXSection sect = new EDXSection();
+//
+//                final byte[] sect_name = new byte[8];
+//                in.read(sect_name);
+//
+//                sect.name = new String(".data");
+//                sect.contents = new byte[(int) (in.length() - 44)];
+//
+//                in.seek(0x2C);
+//                in.read(sect.contents, 0, sect.contents.length);
+//
+//                sects.put(sect.name, sect);
+//
+//        } catch (IOException e) {
+//            throw e;
+//        }
+//            byte[] input = sects.get(".data").contents;
+////            short[] short_input = shortMe(input);
+//
+//            pcmData = new float[sects.get(".data").contents.length];
+//            for (byte b : sects.get(".data").contents) {
+//                for (int i = 0; i < sects.get(".data").contents.length; i++) {
+//                    pcmData[i] = ((float) ((float) (byte) (b ^ 0x80) / 128.0));
+//
+//                }
+//
+////                pcmData.add((double)b/128);
+//            }
+//
+//        /*for (int i =0; i < 100; i++) {
+//            LOGGER.info("%f", pcmData.get(i));
+//        }*/
+//
+//      /*  for (int i = 0; i < sects.get(".data").contents.length-2; i=i+2) {
+//
+//            pcmData.add((double)(short)((sects.get(".data").contents[i] & 0x00FF)
+//                    | (short)(sects.get(".data").contents[i+1] << 8) & 0xFFFF)/32768.0);
+//        }*/
+////        pcmData = PCM.fold(pcmData, 66150);
+//        summary = Analyzer.summarize(pcmData);
+//
+//
+//
+//        /*double[] buffer = pcmData.stream().mapToDouble(new ToDoubleFunction<Double>() {
+//            @Override
+//            public double applyAsDouble(Double aDouble) {
+//                return aDouble.doubleValue();
+//            }
+//        }).toArray();*/
+//
+////        float[] buffer = ArrayUtils.toPrimitive((Float[]) pcmData.toArray(new Float[0]), 0.0F);
+//        float[] buffer = ArrayUtils.clone(pcmData);
+//
+//
+//        double minP =0;
+//        boolean flagp = true;
+//        for (int i = 0; i < buffer.length; i++) {
+//            if (buffer[i] > 0) {
+//                if (flagp){minP = buffer[i]; flagp = false;}
+//                else if (buffer[i] < minP) {
+//                    minP = buffer[i];
+//                }
+//            }
+//        }
+//        byte[] bytes = new byte[buffer.length];
+//
+//        for (int i=0; i < buffer.length; i++) {
+////            bytes[i] = (byte) (((buffer[i]) * 1/minP)/*+128*/);
+//            if (i == 650) {
+//                LOGGER.info("");
+//            }
+//            if ((buffer[i]) * 127 >= 127) {
+//                bytes[i] = (byte) 127;
+//
+//            }
+//            else if ((buffer[i]) * 127 <= -128) {
+//                bytes[i] = (byte) -128;
+//            }
+//            else {
+//                bytes[i] = (byte) ((buffer[i]) * 127);
+//
+//            }
+//
+//
+//        }
+//        OutputStream out = new FileOutputStream(new File("data\\out\\lame.mp3"));
+//        byte[] data = new byte[(bytes.length)];
+//        data = DiseaseDao.encodePcmToMp3(bytes);
+//        out.write(data, 0, data.length);
+//
+//        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+////        ByteArrayInputStream bais = new ByteArrayInputStream(input);
+//        AudioFormat format = new AudioFormat(22050, 8, 1, true, false);
+//        AudioInputStream stream = new AudioInputStream(bais, format, pcmData.length);
+//        AudioSystem.write(stream, AudioFileFormat.Type.WAVE, outputFile);
+//
+//
+//
+//        return summary;
+//    }
 
     public static double[] extractACT(String fileName) throws IOException {
         HashMap<String, EDXSection> sects = new HashMap<>();

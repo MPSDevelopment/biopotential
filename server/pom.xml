@@ -40,7 +40,7 @@
 		<plasticine.version>0.7</plasticine.version>
 		<hibernate.version>5.1.0.Final</hibernate.version>
 		<ehcache.version>2.10.0</ehcache.version>
-		<h2database.version>1.4.190</h2database.version>
+		<h2database.version>1.4.194</h2database.version>
 		<spring.version>4.2.6.RELEASE</spring.version>
 		<springsecurity.version>4.1.1.RELEASE</springsecurity.version>
 		<spring.boot.version>1.2.6.RELEASE</spring.boot.version>
@@ -526,7 +526,7 @@
 				<artifactId>excelsior-jet-maven-plugin</artifactId>
 				<version>${excelsiorjet.plugin.version}</version>
 				<configuration>
-					<mainClass>com.mpsdevelopment.biopotential.server.gui.BioApplication</mainClass>
+					<mainClass>com.mpsdevelopment.biopotential.server.gui.ConverterApplication</mainClass>
 					<jetOutputDir>${jet.output.directory}</jetOutputDir>
 					<packaging>excelsior-installer</packaging>
 					<profileStartup>false</profileStartup>
@@ -543,8 +543,8 @@
 						<shortcuts>
 							<shortcut>
 								<location>desktop</location>
-								<target>BioApplication${exe.extension}</target>
-								<name>Biopotential</name>
+								<target>ConverterApplication${exe.extension}</target>
+								<name>ConverterApplication</name>
 								<icon>
 									<path>${project.basedir}/build/bio.ico</path>
 								</icon>
@@ -570,8 +570,8 @@
 
 					<!--<trialVersion> <expireDate>07Mar2017</expireDate> <expireMessage>Срок действия trial истек</expireMessage> </trialVersion> -->
 
-					<outputName>BioApplication</outputName>
-					<product>Biopotential</product>
+					<outputName>ConverterApplication</outputName>
+					<product>ConverterApplication</product>
 					<vendor>${jet.vendor}</vendor>
 					<version>${jet.version}</version>
 					<globalOptimizer>true</globalOptimizer>

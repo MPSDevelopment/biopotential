@@ -67,7 +67,33 @@ public class PCM {
         }).collect(Collectors.toList());
     }*/
 
-    public static float[] merge(List<float[]> input) {
+    public static double[] merge(List<double[]>/*float[][]*/ input) {
+        /*int maxsize = 0;
+
+        for (int i = 0; i < input.length; i++) {
+            *//*if (input.get(i).length > maxsize) {
+                maxsize = input.get(i).length;
+            }*//*
+        }
+
+//        float[] sizeArray = new float[66200];
+        float[] sizeArray = input[0];
+//        float[] temp = input[66200];
+
+//        sizeArray = Arrays.copyOf(temp, temp.length);
+//        System.arraycopy(temp,0,sizeArray,0,temp.length);
+        for (float[] floats:input) {
+            for (int i = 0; i < floats.length; i++) {
+                if (i >= sizeArray.length) {
+                    LOGGER.info("size array %s ", floats.length);
+                }
+                else {
+                    sizeArray[i] = sizeArray[i] + floats[i];
+                }
+            }
+        }
+        return sizeArray;*/
+
         int maxsize = 0;
 
         for (int i = 0; i < input.size(); i++) {
@@ -76,12 +102,12 @@ public class PCM {
             }
         }
 
-        float[] sizeArray = new float[maxsize];
-        float[] temp = input.get(0);
+        double[] sizeArray = new double[maxsize];
+        double[] temp = input.get(0);
 
 //        sizeArray = Arrays.copyOf(temp, temp.length);
         System.arraycopy(temp,0,sizeArray,0,temp.length);
-        for (float[] floats:input) {
+        for (double[] floats:input) {
             for (int i = 0; i < floats.length; i++) {
                 if (i >= sizeArray.length) {
                     LOGGER.info("size array %s ", floats.length);

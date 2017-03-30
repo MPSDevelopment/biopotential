@@ -90,20 +90,27 @@ public class StartPanelController extends AbstractController implements Subscrib
         chooseDbButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setInitialDirectory(new File("data"));
-                file = fileChooser.showOpenDialog(null);
+                try{
+                    FileChooser fileChooser = new FileChooser();
+                    fileChooser.setInitialDirectory(new File("data"));
+                    FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("mv.db files (*.mv.db)", "*.mv.db");
+                    fileChooser.getExtensionFilters().add(extFilter);
+                    file = fileChooser.showOpenDialog(null);
 
-                dbLabel.setText(file.getName());
-                chooseDbButton.setDisable(false);
+                    dbLabel.setText(file.getName());
+                    chooseDbButton.setDisable(false);
 
-                restartSessionManager(file.getPath().replaceAll(file.getName(),"").replaceAll(".mv.db",""));
+                    restartSessionManager(file.getPath().replaceAll(file.getName(),"").replaceAll(".mv.db",""));
 
                 /*ServerSettings fileSettings = ConverterApplication.APP_CONTEXT.getBean(ServerSettings.class);
                 fileSettings.setDbPath(file.getPath().replaceAll(file.getName(),""));
                 String json = JsonUtils.getJson(fileSettings);
                 JsonUtils.writeJsonToFile(json.replace("\\\\","/"),"config/server.json");*/
-                okButton.setDisable(false);
+                    okButton.setDisable(false);
+                } catch (NullPointerException e) {
+                    LOGGER.info("File don't choose or empty");
+                }
+
 
             }
         });

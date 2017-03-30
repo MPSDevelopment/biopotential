@@ -7,9 +7,9 @@ import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
 public class PcmDataSummary {
 
 	/*private final List<ChunkSummary> summary;
-	private final List<Float> pcmData;
+	private final List<Double> pcmData;
 
-	public PcmDataSummary(List<Float> pcmData, List<ChunkSummary> summary) {
+	public PcmDataSummary(List<Double> pcmData, List<ChunkSummary> summary) {
 		this.pcmData = pcmData;
 		this.summary = summary;
 	}
@@ -18,14 +18,14 @@ public class PcmDataSummary {
 		return summary;
 	}
 
-	public List<Float> getPcmData() {
+	public List<Double> getPcmData() {
 		return pcmData;
 	}*/
 
 	private final List<ChunkSummary> summary;
-	private final /*List<Float>*/float[] pcmData;
+	private final /*List<Float>*/double[] pcmData;
 
-	public PcmDataSummary(/*List<Float>*/float[] pcmData, List<ChunkSummary> summary) {
+	public PcmDataSummary(/*List<Float>*/double[] pcmData, List<ChunkSummary> summary) {
 		this.pcmData = pcmData;
 		this.summary = summary;
 	}
@@ -34,7 +34,7 @@ public class PcmDataSummary {
 		return summary;
 	}
 
-	public /*List<Float>*/float[] getPcmData() {
+	public /*List<Float>*/double[] getPcmData() {
 		return pcmData;
 	}
 

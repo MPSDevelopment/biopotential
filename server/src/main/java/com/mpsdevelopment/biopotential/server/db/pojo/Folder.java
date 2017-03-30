@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "Folder", indexes = { @Index(columnList = "idFolder", name = "idFolder_index") })
+@Table(name = "Folder"/*, indexes = { @Index(columnList = "idFolder", name = "idFolder_index") }*/)
 @Getter
 @Setter
 @Accessors(chain = true)

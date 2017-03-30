@@ -217,31 +217,42 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         ObservableList<DataTable> selectedItemsFromTable = сorrectorsTable.getSelectionModel().getSelectedItems();
         LOGGER.info("Selected item %s", selectedItemsFromTable.size());
 
-        List<float[]> floatArrayListWithPCMData = new ArrayList();
+        Long t2 = System.currentTimeMillis();
 
+        List<double[]> floatArrayListWithPCMData = new ArrayList();
         sortedSelectedHealings.forEach(new Consumer<Pattern>() {
             @Override
             public void accept(Pattern pattern) {
-//                Long t1 = System.currentTimeMillis();
                 floatArrayListWithPCMData.add(pattern.getPcmData());
-//                LOGGER.info("time for getPcmData %s ms", System.currentTimeMillis() - t1);
             }
         });
-        floatArrayListWithPCMData.removeIf(o -> o == null);
-        /*selectedItemsFromTable.forEach(new Consumer<DataTable>() {
-            @Override
-            public void accept(DataTable dataTable) {
-                sortedSelectedItems.add(dataTable);
-            }
-        });*/
+                floatArrayListWithPCMData.removeIf(o -> o == null);
+        LOGGER.info("time for getPcmData %s ms", System.currentTimeMillis() - t2);
 
-        /*healingsMap.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
-            @Override
-            public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
-                sortedSelectedHealings.add(pattern);
 
+       /* Long t2 = System.currentTimeMillis();
+        float[] [] floatArrayListWithPCMData = new float[sortedSelectedHealings.size()][66200];
+        sortedSelectedHealings.forEach(new Consumer<Pattern>() {
+            @Override
+            public void accept(Pattern pattern) {
+//
+//                floatArrayListWithPCMData.add(pattern.getPcmData());
+                float[] temp = pattern.getPcmData();
+                for (int i = 0; i < sortedSelectedHealings.size(); i++) {
+                    for (int j = 0; j < temp.length; j++) {
+                        floatArrayListWithPCMData[i][j] = temp[j];
+
+                    }
+                }
+//
             }
-        });*/
+        });
+        //        floatArrayListWithPCMData.removeIf(o -> o == null);
+        LOGGER.info("time for getPcmData %s ms", System.currentTimeMillis() - t2);*/
+        LOGGER.info("Done");
+
+
+
 
         /*
         This block only for test with big data patterns
@@ -299,11 +310,11 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         }
     }
 
-    private void merge(/*Collection*/List</*Float*/float[]> lists) throws IOException, UnsupportedAudioFileException {
+    private void merge(/*Collection*/List</*Float*/double[]> lists) throws IOException, UnsupportedAudioFileException {
         /*Collection out;
         out = PCM.merge(lists);*/
         Long t1 = System.currentTimeMillis();
-        float[] buffer = PCM.merge(lists);
+        double[] buffer = PCM.merge(lists);
 //        LOGGER.info("merge takes %s ms", System.currentTimeMillis() - t1);
 
         // for work with Double type

@@ -83,10 +83,10 @@ public class AnalyzeService {
     public /*static*/ Map<Pattern, AnalysisSummary> getHealings(String urlMax, String urlPo, Map<Pattern, AnalysisSummary> diseaseMax, Map<Pattern, AnalysisSummary> diseasePo) {
 
         Map<Pattern, AnalysisSummary> healingsMax = getPostRequest(urlMax, diseaseMax);
-//        Map<Pattern, AnalysisSummary> healingsPo = getPostRequest(urlPo, diseasePo);
+        Map<Pattern, AnalysisSummary> healingsPo = getPostRequest(urlPo, diseasePo);
         Map<Pattern, AnalysisSummary> healings = new HashMap<>();
         healings.putAll(healingsMax);
-//        healings.putAll(healingsPo);
+        healings.putAll(healingsPo);
         return healings;
     }
 
@@ -274,7 +274,7 @@ public class AnalyzeService {
                     systemMap.put("De",systemMap.get("De")+deWeight);
                     break;
                 case "En":
-                    systemMap.put("En",systemMap.get("En")+deWeight);
+                    systemMap.put("En",systemMap.get("En")+enWeight);
                     break;
                 case "Ga":
                     systemMap.put("Ga",systemMap.get("Ga")+gaWeight);

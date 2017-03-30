@@ -8,11 +8,16 @@ import com.mpsdevelopment.plasticine.commons.LogbackConfigureLoader;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.util.Optional;
 
 public class ConverterApplication extends Application{
 
@@ -46,7 +51,20 @@ public class ConverterApplication extends Application{
         converterPanel.setPrimaryStage(mainPanelStage);
 
         mainPanelStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            public void handle(WindowEvent e) {
+            public void handle(WindowEvent event) {
+                // consume event
+                event.consume();
+
+                // show close dialog
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Close Confirmation");
+                alert.setHeaderText("Вы действительно хотите закрыть приложение?");
+                alert.initOwner(mainPanelStage);
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK){
+                    Platform.exit();
+                }
             }
         });
 

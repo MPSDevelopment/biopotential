@@ -260,7 +260,7 @@ public class BarChartPanelController extends AbstractController implements Subsc
     /** places a text label with a bar's value above a bar node for a given XYChart.Data */
     private void displayLabelForData(XYChart.Data<Number, Number> data) {
         final Node node = data.getNode();
-         double val = new BigDecimal((Double) data.getYValue()).setScale(2, RoundingMode.UP).doubleValue();
+        double val = new BigDecimal((Double) data.getYValue()).setScale(2, RoundingMode.UP).doubleValue();
         final Text dataText = new Text(val + "");
         node.parentProperty().addListener(new ChangeListener<Parent>() {
             @Override

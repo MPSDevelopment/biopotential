@@ -42,13 +42,12 @@ public class BioApplication extends Application {
         try {
             server.start();
             LOGGER.info("Server started");
-            if (!LICENSE_CREATOR.checkLicense(LicenseConstants.RELEASE_DATE)) {
+            /*if (!LICENSE_CREATOR.checkLicense(LicenseConstants.RELEASE_DATE)) {
                 LicenseDialogUtils.showLicenseException();
                 System.exit(0);
-            }
+            }*/
 
             LauncherImpl.launchApplication(BioApplication.class, MyPreloader.class, args);
-
 
             LogbackConfigureLoader.initializeLogging(resourceManager, "logback.xml", "jul.properties");
             System.setErr(LoggerUtil.getRedirectedToLoggerErrPrintStream(System.err));
