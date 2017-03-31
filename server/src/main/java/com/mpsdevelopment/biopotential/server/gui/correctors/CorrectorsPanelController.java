@@ -219,11 +219,11 @@ public class CorrectorsPanelController extends AbstractController implements Sub
 
         Long t2 = System.currentTimeMillis();
 
-        List<double[]> floatArrayListWithPCMData = new ArrayList();
+        List<double[]> floatArrayListWithPCMData = new ArrayList<>();
         sortedSelectedHealings.forEach(new Consumer<Pattern>() {
             @Override
             public void accept(Pattern pattern) {
-                floatArrayListWithPCMData.add(pattern.getPcmData());
+                floatArrayListWithPCMData.add(pattern.getPcmData(false));
             }
         });
                 floatArrayListWithPCMData.removeIf(o -> o == null);

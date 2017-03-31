@@ -25,8 +25,8 @@ public class EDXPattern implements Pattern {
 	private double[] pcmData;
 	@Expose
 	private Long correctingFolderEn;
-    @Expose
-    private Long correctingFolderEx;
+	@Expose
+	private Long correctingFolderEx;
 	@Expose
 	private String kind;
 	@Expose
@@ -38,55 +38,56 @@ public class EDXPattern implements Pattern {
 	@Expose
 	private int isCanBeReproduced;
 
-    public EDXPattern() {
-    }
-
-	public EDXPattern(String kind, String name, String desc, String fileName,int isCanBeReproduced) throws IOException {
-		this(kind, name, desc, fileName,isCanBeReproduced, null, null);
+	public EDXPattern() {
 	}
 
-	public EDXPattern(String kind, String name, String description, String fileName,int isCanBeReproduced, Long correctingFolderEn, Long correctingFolderEx) throws IOException {
+	public EDXPattern(String kind, String name, String desc, String fileName, int isCanBeReproduced) throws IOException {
+		this(kind, name, desc, fileName, isCanBeReproduced, null, null);
+	}
+
+	public EDXPattern(String kind, String name, String description, String fileName, int isCanBeReproduced, Long correctingFolderEn, Long correctingFolderEx) throws IOException {
 		this.kind = kind;
 		this.name = name;
 		this.description = description;
 		this.correctingFolderEn = correctingFolderEn;
 		this.correctingFolderEx = correctingFolderEx;
 		this.fileName = fileName;
-        this.isCanBeReproduced = isCanBeReproduced;
+		this.isCanBeReproduced = isCanBeReproduced;
 
 		// this.pcmData = Machine.getPcmData(fileName).getPcmData();
 		// this.summary = Machine.getPcmData(fileName).getSummary();
 	}
-	
-	private void initializePcmData() {
-//		Long t1 = System.currentTimeMillis();
+
+	private void initializePcmData(boolean doSummarize) {
+		// Long t1 = System.currentTimeMillis();
 
 		try {
-			PcmDataSummary pcmData = Machine.getPcmData(fileName);
+			PcmDataSummary pcmData = Machine.getPcmData(fileName, doSummarize);
 			this.summary = pcmData.getSummary();
 			this.pcmData = pcmData.getPcmData();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//		LOGGER.info("time for initializePcmData %s ms", System.currentTimeMillis() - t1);
+		// LOGGER.info("time for initializePcmData %s ms",
+		// System.currentTimeMillis() - t1);
 
 	}
-    // getSummary() for calculate chunk summary values
-	/*public List<ChunkSummary> getSummary() {
-		if (this.summary == null) {
-			initializePcmData();
-		}
-		return this.summary;
-	}*/
+	// getSummary() for calculate chunk summary values
+	/*
+	 * public List<ChunkSummary> getSummary() { if (this.summary == null) {
+	 * initializePcmData(); } return this.summary; }
+	 */
 
-	// Override getSummary() for use summaries() method with pre-calculated values
+	// Override getSummary() for use summaries() method with pre-calculated
+	// values
 	@Override
 	public List<ChunkSummary> getSummary() {
 		return summary;
 	}
-	public /*List<Float>*/double[] getPcmData() {
+
+	public /* List<Float> */double[] getPcmData(boolean doSummarize) {
 		if (this.pcmData == null) {
-			initializePcmData();
+			initializePcmData(doSummarize);
 		}
 		return this.pcmData;
 	}
@@ -99,15 +100,15 @@ public class EDXPattern implements Pattern {
 		this.correctingFolderEn = correctingFolderEn;
 	}
 
-    public Long getCorrectingFolderEx() {
-        return correctingFolderEx;
-    }
+	public Long getCorrectingFolderEx() {
+		return correctingFolderEx;
+	}
 
-    public void setCorrectingFolderEx(Long correctingFolderEx) {
-        this.correctingFolderEx = correctingFolderEx;
-    }
+	public void setCorrectingFolderEx(Long correctingFolderEx) {
+		this.correctingFolderEx = correctingFolderEx;
+	}
 
-    public String getKind() {
+	public String getKind() {
 		return kind;
 	}
 
@@ -140,22 +141,26 @@ public class EDXPattern implements Pattern {
 	}
 
 	public void setSummary(String json) {
-        Type listType = new TypeToken<ArrayList<ChunkSummary>>(){}.getType();
-		this.summary = JsonUtils.fromJson(listType,json);;
+		Type listType = new TypeToken<ArrayList<ChunkSummary>>() {
+		}.getType();
+		this.summary = JsonUtils.fromJson(listType, json);
+		;
 	}
 
-    public int getIsCanBeReproduced() {
-        return isCanBeReproduced;
-    }
+	public int getIsCanBeReproduced() {
+		return isCanBeReproduced;
+	}
 
-    public void setIsCanBeReproduced(int isCanBeReproduced) {
-        this.isCanBeReproduced = isCanBeReproduced;
-    }
+	public void setIsCanBeReproduced(int isCanBeReproduced) {
+		this.isCanBeReproduced = isCanBeReproduced;
+	}
 
-    @Override
+	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
 
 		EDXPattern that = (EDXPattern) o;
 
@@ -168,11 +173,12 @@ public class EDXPattern implements Pattern {
 		return fileName.hashCode();
 	}
 
-	/*public void setSummary(List<ChunkSummary> summary) {
-        this.summary = summary;
-    }*/
+	/*
+	 * public void setSummary(List<ChunkSummary> summary) { this.summary =
+	 * summary; }
+	 */
 
-    //
+	//
 	// public boolean hasCorrectingFolder() {
 	// return this.correctingFolderEn != null;
 	// }

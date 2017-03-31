@@ -36,11 +36,12 @@ public class Machine {
 		final Map<Pattern, AnalysisSummary> summaries = new HashMap<>();
 		AnalysisSummary summary;
 		for (Pattern pattern : patterns) {
-//			long t1 = System.currentTimeMillis();
+			// long t1 = System.currentTimeMillis();
 			summary = Analyzer.compare(sampleSummary, pattern.getSummary());
-//			LOGGER.info("Operation compare took %d ms", System.currentTimeMillis() - t1);
-//            LOGGER.info("summary getDegree %s",summary.getDegree());
-            if (summary != null && summary.getDegree() == degree) {
+			// LOGGER.info("Operation compare took %d ms",
+			// System.currentTimeMillis() - t1);
+			// LOGGER.info("summary getDegree %s",summary.getDegree());
+			if (summary != null && summary.getDegree() == degree) {
 				summaries.put(pattern, summary);
 			}
 		}
@@ -67,7 +68,7 @@ public class Machine {
 		return result;
 	}
 
-	public static PcmDataSummary getPcmData(String fileName) throws IOException {
+	public static PcmDataSummary getPcmData(String fileName, boolean doSummarize) throws IOException {
 
 		HashMap<String, EDXSection> sects = new HashMap<>();
 		List<ChunkSummary> summary = null;
@@ -116,26 +117,30 @@ public class Machine {
 
 			if (sects.containsKey(".orig   ")) {
 				pcmData = new ArrayList<>();
-				byte[] section =  sects.get(".orig   ").contents;
+				byte[] section = sects.get(".orig   ").contents;
 
 				for (int i = 0; i < sects.get(".orig   ").length; i++) {
 					pcmArray[i] = (float) ((float) (byte) (section[i] ^ 0x80) / 128.0);
 				}
-           /* for (byte b : sects.get(".orig   ").contents) {
-				pcmData.add((float) ((float) (byte) (b ^ 0x80) / 128.0));
-			}*/
-//			long t1 = System.currentTimeMillis();
-//			summary = Analyzer.summarize(pcmData);
-				summary = Analyzer.summarize(pcmArray);
-//			summary = null;
-//			LOGGER.info("Time for get summurize %d ms", System.currentTimeMillis() - t1);
+				/*
+				 * for (byte b : sects.get(".orig   ").contents) {
+				 * pcmData.add((float) ((float) (byte) (b ^ 0x80) / 128.0)); }
+				 */
+				// long t1 = System.currentTimeMillis();
+				// summary = Analyzer.summarize(pcmData);
+				if (doSummarize) {
+					summary = Analyzer.summarize(pcmArray);
+				}
+				// summary = null;
+				// LOGGER.info("Time for get summurize %d ms",
+				// System.currentTimeMillis() - t1);
 
 			} else {
 				pcmData = null;
 				summary = null;
 			}
 
-//		return new PcmDataSummary(pcmData, summary);
+			// return new PcmDataSummary(pcmData, summary);
 		}
 		return new PcmDataSummary(pcmArray, summary);
 	}

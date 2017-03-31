@@ -568,7 +568,7 @@ public class DatabaseCreator {
         for (Pattern patternsum : patternAll) {
             try {
                 long t1 = System.currentTimeMillis();
-                PcmDataSummary sum = Machine.getPcmData(patternsum.getPatternUid());
+                PcmDataSummary sum = Machine.getPcmData(patternsum.getPatternUid(), true);
                 patternsum.setChunkSummary(JsonUtils.getJson(sum.getSummary()));
 //				patternsDao.saveOrUpdate(patternsum);
                 patternsDao.insertNewPattern(patternsum, false);
