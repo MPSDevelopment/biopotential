@@ -73,36 +73,7 @@ public class PatternsDaoTest {
             e.printStackTrace();
         }
 
-        /*list.forEach(new Consumer<EDXPattern>() {
-            @Override
-            public void accept(EDXPattern edxPattern) {
-//                LOGGER.info("%s", edxPattern.getName());
-                LOGGER.info("%s", edxPattern.getIsCanBeReproduced());
-            }
-        });
-*/
-        for (int i = 0; i < list.size(); i++) {
-            int count = 0;
-            for (int j = 0; j < list.size(); j++) {
-                if(list.get(i).getFileName().equals(list.get(j).getFileName())) {
-                    count++;
-                    if(count > 1) {
-                        LOGGER.info("name %s", list.get(i).getName());
-                        LOGGER.info("filename %s", list.get(i).getFileName());
-
-                    }
-                }
-                count = 0;
-            }
-
-        }
-
-        Set<EDXPattern> hs = new HashSet<>();
-        hs.addAll(list);
-        list.clear();
-        list.addAll(hs);
-
-        Assert.assertEquals(605, list.size());
+        Assert.assertEquals(603, list.size());
         LOGGER.info("getAllPatternsFromDataBaseTest");
     }
 
