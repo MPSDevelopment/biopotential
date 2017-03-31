@@ -359,10 +359,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
         long t2 = System.currentTimeMillis();
         //----------------------------------- GET DISEASE'S-------------------------------------------------
-
-        // get diseases for stress analyze
-        // degree max
-        // degree Po
+        // get diseases for stress analyze, degree max and Po
         String urlMax = ControllerAPI.DISEAS_CONTROLLER + gender + STRESS + degree1 + GET_DISEAS;
         String urlPo = ControllerAPI.DISEAS_CONTROLLER + gender + STRESS + degree2 + GET_DISEAS;
         Map<Pattern, AnalysisSummary> diseasesStress = analyzeService.getDiseases(urlMax, urlPo, file);
@@ -507,7 +504,7 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         automaticsLevelStress.setSortType(TableColumn.SortType.ASCENDING);
         healthConditionStressTable.setItems(analysisStressData);
 
-        LOGGER.info("Time for make analysis %s ms", System.currentTimeMillis());
+        LOGGER.info("Time for make analysis %s ms", System.currentTimeMillis() - t2);
 
     }
 

@@ -23,8 +23,6 @@ public class EDXPattern implements Pattern {
 	private List<ChunkSummary> summary;
 	@Expose
 	private double[] pcmData;
-	/*@Expose
-	private Long correctingFolderEn;*/
 	@Expose
 	private Long correctingFolderEn;
     @Expose

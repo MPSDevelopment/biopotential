@@ -61,7 +61,7 @@ public class PatternsController {
     public ResponseEntity<String> getAllUsers() throws ParseException, IOException, SQLException {
 
 //        List<Pattern> patterns = patternsDao.getPatterns(null, null);
-        List<EDXPattern> patterns  = patternsDao.getAllPatternsFromDataBase();
+        List<EDXPattern> patterns  = patternsDao.getPatternsIsCanBeReproduced(1);
 
         LOGGER.info("Has been loaded '%s' users", patterns.size());
         return new ResponseEntity<>(JsonUtils.getJson(patterns), null, HttpStatus.OK);

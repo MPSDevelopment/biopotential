@@ -178,7 +178,7 @@ public class StartPanelController extends AbstractController implements Subscrib
             name = url;
         }
         else {
-            name = file.getName();
+            name = file.getName().replaceAll(".mv.db","");
 //            ServerSettings fileSettings = ConverterApplication.APP_CONTEXT.getBean(ServerSettings.class);
             serverSettings.setDbPath(url+name);
             String json = JsonUtils.getJson(serverSettings);

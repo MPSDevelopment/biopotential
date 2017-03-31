@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class PatternsDao  extends GenericDao<Pattern,Long>{
 	
@@ -46,6 +45,12 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
         if (pageSize != null) {
             query.setMaxResults(pageSize);
         }
+        return query.list();
+    }
+
+    public List<Pattern> getPatterns(int value) {
+        Criteria query = getSession().createCriteria(Pattern.class).setCacheable(false);
+        query.add(Restrictions.eq(Pattern.IS_CAN_BE_REPRODUCED, value));
         return query.list();
     }
 
@@ -92,8 +97,7 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
         query.executeUpdate();
     }
     
-	public List<EDXPattern> getAllPatternsFromDataBase() throws SQLException, IOException {
-
+	public List<EDXPattern> getPatternsIsCanBeReproduced(int value) throws SQLException, IOException {
 
         ProjectionList projections = Projections.projectionList()
                 .add(Projections.property("FOLDER." + Folder.FOLDER_NAME), "kind")
@@ -105,12 +109,14 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
 
 
         List list = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS, "PATTERNS_FOLDERS").createCriteria(PatternsFolders.PATTERNS, "PATTERN")
-                .setProjection(projections).add(Restrictions.eq("PATTERN." + Pattern.IS_CAN_BE_REPRODUCED, 1))
+                .setProjection(projections).add(Restrictions.eq("PATTERN." + Pattern.IS_CAN_BE_REPRODUCED, value))
                 .setResultTransformer(Transformers.aliasToBean(EDXPattern.class)).list();
 
 
         return list;
     }
+
+
 
         public List<EDXPattern> getPatternsWhereCorrectorsNotNull() throws SQLException, IOException {
 
@@ -335,6 +341,24 @@ public class PatternsDao  extends GenericDao<Pattern,Long>{
 //        LOGGER.info("Work with iterator took %d ms Result set is %d ", System.currentTimeMillis() - t1, list.size());
 
         return list.size();
+    }
+    // TODO method in this case is unusefull, make change or delete
+    public List<EDXPattern> getPatternsWhereReproduced(int value) {
+
+        ProjectionList projections = Projections.projectionList()
+                .add(Projections.property("FOLDER." + Folder.FOLDER_NAME),"kind")
+                .add(Projections.property("PATTERN." + Pattern.PATTERN_NAME), "name")
+                .add(Projections.property("PATTERN." + Pattern.PATTERN_DESCRIPTION), "description")
+                .add(Projections.property("PATTERN."+Pattern.PATTERN_UID), "fileName")
+                .add(Projections.property("PATTERN."+Pattern.CHUNK_SUMMARY), "summary");
+
+        List list = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS,"PATTERNS_FOLDERS").createCriteria(PatternsFolders.PATTERNS,"PATTERN")
+                .add(Restrictions.eq(Pattern.IS_CAN_BE_REPRODUCED,value))
+                .setProjection(projections)
+                .setResultTransformer(Transformers.aliasToBean(EDXPattern.class)).list();
+
+
+        return list;
     }
 
 

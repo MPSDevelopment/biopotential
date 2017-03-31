@@ -81,9 +81,13 @@ public class AnalyzeService {
      * @return  healings map Map<Pattern, AnalysisSummary> with healings by Max and Po degree's
      */
     public /*static*/ Map<Pattern, AnalysisSummary> getHealings(String urlMax, String urlPo, Map<Pattern, AnalysisSummary> diseaseMax, Map<Pattern, AnalysisSummary> diseasePo) {
-
+        long t1 = System.currentTimeMillis();
         Map<Pattern, AnalysisSummary> healingsMax = getPostRequest(urlMax, diseaseMax);
+        LOGGER.info("time for healingsMax %d ms", System.currentTimeMillis() - t1);
+        t1 = System.currentTimeMillis();
         Map<Pattern, AnalysisSummary> healingsPo = getPostRequest(urlPo, diseasePo);
+        LOGGER.info("time for healingsPo %d ms", System.currentTimeMillis() - t1);
+
         Map<Pattern, AnalysisSummary> healings = new HashMap<>();
         healings.putAll(healingsMax);
         healings.putAll(healingsPo);
