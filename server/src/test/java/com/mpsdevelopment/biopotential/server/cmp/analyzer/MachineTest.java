@@ -7,6 +7,7 @@ import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
 import com.mpsdevelopment.biopotential.server.db.dao.PatternsDao;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,9 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.function.BiConsumer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/webapp/app-context-test.xml", "classpath:/webapp/web-context.xml" })
@@ -38,34 +39,47 @@ public class MachineTest {
     @Test
     public void summarizePatternsTest() {
         List<ChunkSummary> sample = null;
+        List<EDXPattern> list = null;
         try {
             sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(new File("./testfiles/test3.wav"))));
         } catch (IOException | UnsupportedAudioFileException e) {
             LOGGER.printStackTrace(e);
         }
 
-//        List<EDXPattern> list = patternsDao.getPatterns(1);
-
-//        Map<Pattern, AnalysisSummary> map = Machine.summarizePatterns(sample, list, 0);
-
+        try {
+            list = patternsDao.getPatternsIsCanBeReproduced(1);
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
         }
 
+//        List<Pattern> patterns = new ArrayList<>();
 
-
-
-        public static Map<Pattern, AnalysisSummary> summarizePatterns(List<ChunkSummary> sampleSummary, List<EDXPattern> patterns, int degree) {
-            final Map<Pattern, AnalysisSummary> summaries = new HashMap<>();
-            AnalysisSummary summary;
-            for (Pattern pattern : patterns) {
-//			long t1 = System.currentTimeMillis();
-                summary = Analyzer.compare(sampleSummary, pattern.getSummary());
-//			LOGGER.info("Operation compare took %d ms", System.currentTimeMillis() - t1);
-//            LOGGER.info("summary getDegree %s",summary.getDegree());
-                if (summary != null && summary.getDegree() == degree) {
-                    summaries.put(pattern, summary);
-                }
+        Map<Pattern, AnalysisSummary> map = Machine.summarizePatterns(sample, list, 0);
+        /*map.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
+            @Override
+            public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
+                LOGGER.info("%s", pattern.getFileName());
+                patterns.add(pattern);
             }
-            return summaries;
+        });*/
+        Assert.assertEquals(4, map.size());
+        LOGGER.info("get map size %s", map.size());
+
+        /*Set<Pattern> hs = new HashSet<>();
+        hs.addAll(patterns);
+        patterns.clear();
+        patterns.addAll(hs);
+
+        Assert.assertEquals(70, patterns.size());*/
+
+        try {
+            list = patternsDao.getPatternsIsCanBeReproduced(0);
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
         }
+        Map<Pattern, AnalysisSummary> diseaseMap = Machine.summarizePatterns(sample, list, 0);
+        Assert.assertEquals(3, diseaseMap.size());
+
+    }
 
 }
