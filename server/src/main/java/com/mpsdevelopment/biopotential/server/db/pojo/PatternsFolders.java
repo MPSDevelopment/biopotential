@@ -3,7 +3,7 @@ package com.mpsdevelopment.biopotential.server.db.pojo;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Patterns_Folders", indexes = { @Index(columnList = "Folder_ID", name = "Folder_ID_index") })
+@Table(name = "Patterns_Folders")
 public class PatternsFolders extends BaseObject{
 
     public static final String PATTERNS = "pattern";

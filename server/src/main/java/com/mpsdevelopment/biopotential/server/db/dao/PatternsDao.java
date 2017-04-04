@@ -184,8 +184,7 @@ public class PatternsDao extends GenericDao<Pattern, Long> {
 
 		List list = query.list();
 
-		// LOGGER.info("Work with iterator and filter %s took %d ms Result set
-		// is %d ", filter, System.currentTimeMillis() - t1, list.size());
+		LOGGER.info("Work with iterator and filter %s took %d ms Result set is %d ", filter, System.currentTimeMillis() - t1, list.size());
 
 		return list;
 
