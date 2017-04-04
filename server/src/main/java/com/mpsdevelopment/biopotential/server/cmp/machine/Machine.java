@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 class EDXSection {
 	String name;
@@ -36,6 +37,9 @@ public class Machine {
 		final Map<Pattern, AnalysisSummary> summaries = new HashMap<>();
 		AnalysisSummary summary;
 		for (Pattern pattern : patterns) {
+            if (pattern.getName().contains("00009 (не совпадает)")) {
+                LOGGER.info("%s", pattern.getFileName());
+            }
 			// long t1 = System.currentTimeMillis();
 			summary = Analyzer.compare(sampleSummary, pattern.getSummary());
 			// LOGGER.info("Operation compare took %d ms",
@@ -44,6 +48,22 @@ public class Machine {
 			if (summary != null && summary.getDegree() == degree) {
 				summaries.put(pattern, summary);
 			}
+			if (pattern.getName().contains("00009 (не совпадает)")) {
+				LOGGER.info("%s", summary.getDispersion());
+				LOGGER.info("%s", pattern.getFileName());
+				LOGGER.info("%s", pattern.getSummary());
+				List<ChunkSummary> chunkSummaries = pattern.getSummary();
+				chunkSummaries.forEach(new Consumer<ChunkSummary>() {
+                    @Override
+                    public void accept(ChunkSummary chunkSummary) {
+                        LOGGER.info("%s", chunkSummary.getDispersion());
+                        LOGGER.info("%s", chunkSummary.getMeanDeviation());
+                    }
+                });
+
+			}
+
+
 		}
 		return summaries;
 	}

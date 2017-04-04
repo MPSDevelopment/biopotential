@@ -168,13 +168,18 @@ public class PatternsDao extends GenericDao<Pattern, Long> {
 
 		long t1 = System.currentTimeMillis();
 
-		ProjectionList projections = Projections.projectionList().add(Projections.property("FOLDER." + Folder.FOLDER_NAME), "kind")
-				.add(Projections.property("PATTERN." + Pattern.PATTERN_NAME), "name").add(Projections.property("PATTERN." + Pattern.PATTERN_DESCRIPTION), "description")
-				.add(Projections.property("PATTERN." + Pattern.PATTERN_UID), "fileName").add(Projections.property("PATTERN." + Pattern.CHUNK_SUMMARY), "summary")
+		ProjectionList projections = Projections.projectionList()
+                .add(Projections.property("FOLDER." + Folder.FOLDER_NAME), "kind")
+				.add(Projections.property("PATTERN." + Pattern.PATTERN_NAME), "name")
+                .add(Projections.property("PATTERN." + Pattern.PATTERN_DESCRIPTION), "description")
+				.add(Projections.property("PATTERN." + Pattern.PATTERN_UID), "fileName")
+                .add(Projections.property("PATTERN." + Pattern.CHUNK_SUMMARY), "summary")
 				.add(Projections.property("PATTERNS_FOLDERS." + PatternsFolders.CORRECTORS_EN), "correctingFolderEn");
 
 		Criteria query = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS, "PATTERNS_FOLDERS")
-				.createCriteria(PatternsFolders.PATTERNS, "PATTERN").add(Restrictions.eq("FOLDER." + Folder.ID_FIELD, filter)).setProjection(projections)
+				.createCriteria(PatternsFolders.PATTERNS, "PATTERN")
+                .add(Restrictions.eq("FOLDER." + Folder.ID_FIELD, filter))
+                .setProjection(projections)
 				.setResultTransformer(Transformers.aliasToBean(EDXPattern.class));
 
 		List list = query.list();
@@ -185,13 +190,22 @@ public class PatternsDao extends GenericDao<Pattern, Long> {
 		return list;
 
 		/**
-		 * PreparedStatement ps = db.prepareStatement( "SELECT IDFOLDER," + "
-		 * IDPATTERN," + " PATTERNNAME," + " PATTERNDESCRIPTION," + "
-		 * PATTERNUID," + " FOLDERNAME," + " FOLDER_ID," + " CORRECTORS_EN," + "
-		 * PATTERN_ID\n" + "FROM MAIN.FOLDER\n" + "JOIN MAIN.PATTERNS_FOLDERS" +
-		 * " ON FOLDER.ID = PATTERNS_FOLDERS.FOLDER_ID\n" + "JOIN MAIN.PATTERN"
-		 * + " ON PATTERN.ID = PATTERNS_FOLDERS.PATTERN_ID\n" + "WHERE FOLDER_ID
-		 * = ?"); ps.setString(1, filter);
+		 * PreparedStatement ps = db.prepareStatement( "SELECT IDFOLDER,"
+          + "IDPATTERN,"
+         + " PATTERNNAME,"
+         + " PATTERNDESCRIPTION,"
+         + " PATTERNUID,"
+         + " FOLDERNAME,"
+         + " FOLDER_ID,"
+         + " CORRECTORS_EN,"
+         + "PATTERN_ID\n"
+         + "FROM MAIN.FOLDER\n"
+         + "JOIN MAIN.PATTERNS_FOLDERS"
+         + " ON FOLDER.ID = PATTERNS_FOLDERS.FOLDER_ID\n"
+         + "JOIN MAIN.PATTERN"
+		 + " ON PATTERN.ID = PATTERNS_FOLDERS.PATTERN_ID\n"
+         + "WHERE FOLDER_ID = ?");
+         ps.setString(1, filter);
 		 * 
 		 * List<EDXPattern> patterns = new ArrayList<>(); ResultSet rs =
 		 * ps.executeQuery(); rs.setFetchSize(1000);
@@ -305,8 +319,10 @@ public class PatternsDao extends GenericDao<Pattern, Long> {
 	public List<EDXPattern> getPatternsWhereReproduced(int value) {
 
 		ProjectionList projections = Projections.projectionList().add(Projections.property("FOLDER." + Folder.FOLDER_NAME), "kind")
-				.add(Projections.property("PATTERN." + Pattern.PATTERN_NAME), "name").add(Projections.property("PATTERN." + Pattern.PATTERN_DESCRIPTION), "description")
-				.add(Projections.property("PATTERN." + Pattern.PATTERN_UID), "fileName").add(Projections.property("PATTERN." + Pattern.CHUNK_SUMMARY), "summary");
+				.add(Projections.property("PATTERN." + Pattern.PATTERN_NAME), "name")
+				.add(Projections.property("PATTERN." + Pattern.PATTERN_DESCRIPTION), "description")
+				.add(Projections.property("PATTERN." + Pattern.PATTERN_UID), "fileName")
+				.add(Projections.property("PATTERN." + Pattern.CHUNK_SUMMARY), "summary");
 
 		List list = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS, "PATTERNS_FOLDERS")
 				.createCriteria(PatternsFolders.PATTERNS, "PATTERN").add(Restrictions.eq(Pattern.IS_CAN_BE_REPRODUCED, value)).setProjection(projections)

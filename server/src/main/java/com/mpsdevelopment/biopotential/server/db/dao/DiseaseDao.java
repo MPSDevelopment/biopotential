@@ -20,10 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.sound.sampled.*;
 import java.io.*;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class DiseaseDao {
 
@@ -192,7 +191,61 @@ public class DiseaseDao {
 
 	private void getHealings(Map<Pattern, AnalysisSummary> diseases, final List<ChunkSummary> sample, final Map<String, Integer> probableKinds,
                              HashMap<Pattern, AnalysisSummary> allHealings, int level) {
+        Set<EDXPattern> edxPatternsEn = new HashSet<>();
+        Set<EDXPattern> edxPatternsEx = new HashSet<>();
+        long t1 = System.currentTimeMillis();
+        LOGGER.info("Start getHealings");
         diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
+            @Override
+            public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
+                if (probableKinds.containsKey(pattern.getKind())) {
+
+//                    long t1 = System.currentTimeMillis();
+
+                    List<EDXPattern> patternsEn;
+                    List<EDXPattern> patternsEx;
+
+                    try {
+                        /*if (level == -2147483648) {
+                            patternsEn = null;
+                            patternsEx = null;
+                        }
+                        else {*/
+                        patternsEn = patternsDao.getPatternsWhereCorrectorsNotNull(((EDXPattern) pattern).getCorrectingFolderEn());
+                        patternsEx = patternsDao.getPatternsWhereCorrectorsNotNull(((EDXPattern) pattern).getCorrectingFolderEx());
+//                        LOGGER.info("getPatternsWhereCorrectorsNotNull %d ms",	System.currentTimeMillis() - t1);
+                        /*patternsEn.forEach(new Consumer<EDXPattern>() {
+                            @Override
+                            public void accept(EDXPattern edxPattern) {
+                                edxPatternsEn.add(edxPattern);
+                            }
+                        });*/
+
+//                        edxPatternsEn.addAll(patternsEn);
+
+                        /*patternsEx.forEach(new Consumer<EDXPattern>() {
+                            @Override
+                            public void accept(EDXPattern edxPattern) {
+                                edxPatternsEx.add(edxPattern);
+                            }
+                        });*/
+
+//                        edxPatternsEx.addAll(patternsEx);
+
+
+                    } catch (SQLException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+        });
+        LOGGER.info("edxPatternsEn size %s", edxPatternsEn.size());
+        LOGGER.info("edxPatternsEx size %s", edxPatternsEx.size());
+        LOGGER.info("diseases %d ms",	System.currentTimeMillis() - t1);
+
+       /* diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
             @Override
             public void accept(Pattern dk, AnalysisSummary dv) {
 
@@ -205,37 +258,44 @@ public class DiseaseDao {
 					List<EDXPattern> patternsEn;
 					List<EDXPattern> patternsEx;
 					try {
-                        /*if (level == -2147483648) {
+                        *//*if (level == -2147483648) {
                             patternsEn = null;
                             patternsEx = null;
                         }
-                        else {*/
+                        else {*//*
                             patternsEn = patternsDao.getPatternsWhereCorrectorsNotNull(((EDXPattern) dk).getCorrectingFolderEn());
                             patternsEx = patternsDao.getPatternsWhereCorrectorsNotNull(((EDXPattern) dk).getCorrectingFolderEx());
 //                        }
 
 //						LOGGER.info("iterForFolder took %d ms", System.currentTimeMillis() - t1);
 
-						/**
+						*//**
 						 * вытягиваются папка с коректорами для конкретной
 						 * болезни BAC -> FL BAC
 						 */
-						final Map<Pattern, AnalysisSummary> healings = Machine.summarizePatterns(sample, patternsEn, level);
-						final Map<Pattern, AnalysisSummary> healingsEx = Machine.summarizePatterns(sample, patternsEx, -2147483648);
+
+        List<EDXPattern> listEn = new ArrayList<>();
+        listEn.addAll(edxPatternsEn);
+
+        List<EDXPattern> listEx = new ArrayList<>();
+        listEn.addAll(edxPatternsEx);
+
+        final Map<Pattern, AnalysisSummary> healings = Machine.summarizePatterns(sample, listEn, level);
+        final Map<Pattern, AnalysisSummary> healingsEx = Machine.summarizePatterns(sample, listEx, -2147483648);
 //						LOGGER.info("SummarizePatterns took %d ms", System.currentTimeMillis() - t1);
 
-						allHealings.putAll(healings);
-						allHealings.putAll(healingsEx);
+        allHealings.putAll(healings);
+        allHealings.putAll(healingsEx);
 //						LOGGER.info("Healing size %d patternsEn",allHealings.size());
 
-					} catch (SQLException | IOException e) {
+        /*} catch (SQLException | IOException e) {
 						e.printStackTrace();
 					}
 				}
 			}
 
-		});
-	}
+		});*/
+    }
 
 	private Map<String, Integer> getProbableKinds(Map<Pattern, AnalysisSummary> diseases) {
 		return Machine.filterKinds(new KindCondition() {
