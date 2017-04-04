@@ -191,6 +191,31 @@ public class DiseaseDao {
 
 	private void getHealings(Map<Pattern, AnalysisSummary> diseases, final List<ChunkSummary> sample, final Map<String, Integer> probableKinds,
                              HashMap<Pattern, AnalysisSummary> allHealings, int level) {
+
+	    List<Folder> folderListEn = foldersDao.getFolders();
+	    List<Folder> folderListEx = foldersDao.getFolders();
+	    List<Long> longs = new ArrayList<>();
+
+	    folderListEn.forEach(new Consumer<Folder>() {
+            @Override
+            public void accept(Folder folder) {
+                if (folder.getFolderName().contains("en")) {
+                    longs.add(folder.getId());
+                    LOGGER.info("Folder name is %s", folder.getFolderName());
+                }
+            }
+        });
+
+        folderListEx.forEach(new Consumer<Folder>() {
+            @Override
+            public void accept(Folder folder) {
+                if (folder.getFolderName().contains("ex")) {
+                    longs.add(folder.getId());
+                    LOGGER.info("Folder name is %s", folder.getFolderName());
+                }
+            }
+        });
+
         Set<EDXPattern> edxPatternsEn = new HashSet<>();
         Set<EDXPattern> edxPatternsEx = new HashSet<>();
         long t1 = System.currentTimeMillis();

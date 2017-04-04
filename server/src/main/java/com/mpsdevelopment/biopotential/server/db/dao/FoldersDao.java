@@ -30,7 +30,7 @@ public class FoldersDao extends GenericDao<Folder, Long> {
     }
 
     public List<Folder> getFolders() {
-        Criteria query = getSession().createCriteria(Pattern.class).setCacheable(false);
+        Criteria query = getSession().createCriteria(Folder.class).setCacheable(false);
         return query.list();
     }
 

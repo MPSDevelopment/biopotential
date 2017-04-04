@@ -1,7 +1,7 @@
 package com.mpsdevelopment.biopotential.server.db.dao;
 
-import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
 import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
+import com.mpsdevelopment.biopotential.server.db.pojo.Folder;
 import com.mpsdevelopment.biopotential.server.db.pojo.Pattern;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
@@ -15,9 +15,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -29,6 +28,9 @@ public class PatternsDaoTest {
 
 	@Autowired
 	private PatternsDao patternsDao;
+
+	@Autowired
+	private FoldersDao foldersDao;
 
 	@Test
 	public void getPatternsTest() {
@@ -69,6 +71,49 @@ public class PatternsDaoTest {
 			e.printStackTrace();
 		}
 
+	}
+
+	@Test
+	public void getPatternsFromListFolders() {
+		List<Long> list = createFolderList();
+        List<EDXPattern> patternsEn;
+
+        try {
+            patternsEn = patternsDao.getPatternsFromListFolders(list);
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+
+        LOGGER.info("patternsEn size is %s", list.size());
+
+
+    }
+
+	private List<Long> createFolderList() {
+		List<Folder> folderListEn = foldersDao.getFolders();
+		List<Folder> folderListEx = foldersDao.getFolders();
+		List<Long> longs = new ArrayList<>();
+
+		folderListEn.forEach(new Consumer<Folder>() {
+			@Override
+			public void accept(Folder folder) {
+				if (folder.getFolderName().contains("en")) {
+					longs.add(folder.getId());
+					LOGGER.info("Folder name is %s", folder.getFolderName());
+				}
+			}
+		});
+
+		folderListEx.forEach(new Consumer<Folder>() {
+			@Override
+			public void accept(Folder folder) {
+				if (folder.getFolderName().contains("ex")) {
+					longs.add(folder.getId());
+					LOGGER.info("Folder name is %s", folder.getFolderName());
+				}
+			}
+		});
+		return longs;
 	}
 
 }

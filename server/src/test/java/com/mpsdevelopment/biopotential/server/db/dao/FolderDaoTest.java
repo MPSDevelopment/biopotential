@@ -31,9 +31,12 @@ public class FolderDaoTest {
         folders = foldersDao.getPatternsFolders(Arrays.asList(490, 959, 2483));
         LOGGER.info("folders size %s", folders.size());
 
+    }
 
-
-
+    @Test
+    public void getFolders() {
+        List<Folder> folderList = foldersDao.getFolders();
+        LOGGER.info("folderList size %s", folderList.size());
 
     }
 
