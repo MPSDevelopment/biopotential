@@ -200,7 +200,7 @@ public class DiseaseDao {
             public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
                 if (probableKinds.containsKey(pattern.getKind())) {
 
-//                    long t1 = System.currentTimeMillis();
+                    long t1 = System.currentTimeMillis();
 
                     List<EDXPattern> patternsEn;
                     List<EDXPattern> patternsEx;
@@ -213,7 +213,7 @@ public class DiseaseDao {
                         else {*/
                         patternsEn = patternsDao.getPatternsWhereCorrectorsNotNull(((EDXPattern) pattern).getCorrectingFolderEn());
                         patternsEx = patternsDao.getPatternsWhereCorrectorsNotNull(((EDXPattern) pattern).getCorrectingFolderEx());
-//                        LOGGER.info("getPatternsWhereCorrectorsNotNull %d ms",	System.currentTimeMillis() - t1);
+                        LOGGER.info("getPatternsWhereCorrectorsNotNull %d ms",	System.currentTimeMillis() - t1);
                         /*patternsEn.forEach(new Consumer<EDXPattern>() {
                             @Override
                             public void accept(EDXPattern edxPattern) {
