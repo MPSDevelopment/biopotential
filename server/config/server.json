@@ -6,5 +6,5 @@
   "tempDirectory": "data/tmp/webapp",
   "filesPath": "data/files",
   "dbPath": "./data/database",
-  "storagePath": "data/edxfiles/"
+  "storagePath": "/data/edxfiles"
 }

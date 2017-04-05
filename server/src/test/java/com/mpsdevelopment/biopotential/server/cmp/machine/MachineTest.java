@@ -1,10 +1,14 @@
-package com.mpsdevelopment.biopotential.server.cmp.analyzer;
+package com.mpsdevelopment.biopotential.server.cmp.machine;
 
 import com.mpsdevelopment.biopotential.server.cmp._SoundIO;
-import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
-import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.Analyzer;
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
+import com.mpsdevelopment.biopotential.server.db.dao.FoldersDao;
 import com.mpsdevelopment.biopotential.server.db.dao.PatternsDao;
+import com.mpsdevelopment.biopotential.server.db.pojo.Folder;
+import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import org.junit.Assert;
@@ -19,10 +23,13 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/webapp/app-context-test.xml", "classpath:/webapp/web-context.xml" })
@@ -33,6 +40,12 @@ public class MachineTest {
 
     @Autowired
     private PatternsDao patternsDao;
+
+    @Autowired
+    private FoldersDao foldersDao;
+
+    @Autowired
+    private ServerSettings serverSettings;
 
     @Test
     public void summarizePatternsTest() {
@@ -74,5 +87,48 @@ public class MachineTest {
         Assert.assertEquals(125, diseaseMap.size());
 
     }
+
+    @Test
+    public void getPcmData() {
+        List<EDXPattern> list = null;
+        final List<EDXPattern> patternsList = new ArrayList<>();
+
+        try {
+            list = patternsDao.getAllPatternsFromDatabase();
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+
+        list.forEach(new Consumer<EDXPattern>() {
+            @Override
+            public void accept(EDXPattern edxPattern) {
+                try {
+                    try (RandomAccessFile in = new RandomAccessFile(new File("./data/edxfiles/" + edxPattern.getFileName()), "r")) {
+                        patternsList.add(edxPattern);
+                    }
+                } catch (IOException e) {
+
+                }
+            }
+        });
+
+        Long t1 = System.currentTimeMillis();
+        patternsList.forEach(new Consumer<EDXPattern>() {
+            @Override
+            public void accept(EDXPattern edxPattern) {
+                try {
+                    Long t1 = System.currentTimeMillis();
+                    Machine.getPcmData(edxPattern.getFileName(), false);
+                    LOGGER.info("time getPcmData is %s ms", System.currentTimeMillis() - t1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        LOGGER.info("Patterns size is %s", patternsList.size());
+        LOGGER.info("overall time is %s ms", System.currentTimeMillis() - t1);
+
+    }
+
 
 }

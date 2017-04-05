@@ -68,7 +68,8 @@ public class DiseaseDao {
             AudioInputStream resampledStream = AudioSystem.getAudioInputStream(targetFormat, sourceStream);
             AudioSystem.write(resampledStream, AudioFileFormat.Type.WAVE, outputFile);
 
-            sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(new File("data\\out\\conv.wav"))));
+//            sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(new File("data\\out\\conv.wav"))));
+            sample = Analyzer.summarize(_SoundIO.readAllFrames(AudioSystem.getAudioInputStream(outputFile)));
         }
 		/*
 		get all patterns from database which have id correctors folders
@@ -194,13 +195,14 @@ public class DiseaseDao {
 
 	    List<Folder> folderListEn = foldersDao.getFolders();
 	    List<Folder> folderListEx = foldersDao.getFolders();
-	    List<Long> longs = new ArrayList<>();
+	    List<Long> longsEn = new ArrayList<>();
+	    List<Long> longsEx = new ArrayList<>();
 
 	    folderListEn.forEach(new Consumer<Folder>() {
             @Override
             public void accept(Folder folder) {
                 if (folder.getFolderName().contains("en")) {
-                    longs.add(folder.getId());
+                    longsEn.add(folder.getId());
                     LOGGER.info("Folder name is %s", folder.getFolderName());
                 }
             }
@@ -210,7 +212,7 @@ public class DiseaseDao {
             @Override
             public void accept(Folder folder) {
                 if (folder.getFolderName().contains("ex")) {
-                    longs.add(folder.getId());
+                    longsEx.add(folder.getId());
                     LOGGER.info("Folder name is %s", folder.getFolderName());
                 }
             }
@@ -220,54 +222,35 @@ public class DiseaseDao {
         Set<EDXPattern> edxPatternsEx = new HashSet<>();
         long t1 = System.currentTimeMillis();
         LOGGER.info("Start getHealings");
-        diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
+
+        List<EDXPattern> patternsEn = new ArrayList<>();
+        List<EDXPattern> patternsEx = new ArrayList<>();
+
+        try {
+            patternsEn = patternsDao.getPatternsFromListFolders(longsEn);
+            patternsEx = patternsDao.getPatternsFromListFolders(longsEx);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        LOGGER.info("getPatternsWhereCorrectorsNotNull %d ms",	System.currentTimeMillis() - t1);
+        /*patternsEn.forEach(new Consumer<EDXPattern>() {
             @Override
-            public void accept(Pattern pattern, AnalysisSummary analysisSummary) {
-                if (probableKinds.containsKey(pattern.getKind())) {
-
-                    long t1 = System.currentTimeMillis();
-
-                    List<EDXPattern> patternsEn;
-                    List<EDXPattern> patternsEx;
-
-                    try {
-                        /*if (level == -2147483648) {
-                            patternsEn = null;
-                            patternsEx = null;
-                        }
-                        else {*/
-                        patternsEn = patternsDao.getPatternsWhereCorrectorsNotNull(((EDXPattern) pattern).getCorrectingFolderEn());
-                        patternsEx = patternsDao.getPatternsWhereCorrectorsNotNull(((EDXPattern) pattern).getCorrectingFolderEx());
-                        LOGGER.info("getPatternsWhereCorrectorsNotNull %d ms",	System.currentTimeMillis() - t1);
-                        /*patternsEn.forEach(new Consumer<EDXPattern>() {
-                            @Override
-                            public void accept(EDXPattern edxPattern) {
-                                edxPatternsEn.add(edxPattern);
-                            }
-                        });*/
-
-//                        edxPatternsEn.addAll(patternsEn);
-
-                        /*patternsEx.forEach(new Consumer<EDXPattern>() {
-                            @Override
-                            public void accept(EDXPattern edxPattern) {
-                                edxPatternsEx.add(edxPattern);
-                            }
-                        });*/
-
-//                        edxPatternsEx.addAll(patternsEx);
-
-
-                    } catch (SQLException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
+            public void accept(EDXPattern edxPattern) {
+                edxPatternsEn.add(edxPattern);
+            }
         });
-        LOGGER.info("edxPatternsEn size %s", edxPatternsEn.size());
-        LOGGER.info("edxPatternsEx size %s", edxPatternsEx.size());
+
+        patternsEx.forEach(new Consumer<EDXPattern>() {
+            @Override
+            public void accept(EDXPattern edxPattern) {
+                edxPatternsEx.add(edxPattern);
+            }
+        });*/
+
         LOGGER.info("diseases %d ms",	System.currentTimeMillis() - t1);
 
        /* diseases.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
@@ -299,14 +282,14 @@ public class DiseaseDao {
 						 * болезни BAC -> FL BAC
 						 */
 
-        List<EDXPattern> listEn = new ArrayList<>();
+        /*List<EDXPattern> listEn = new ArrayList<>();
         listEn.addAll(edxPatternsEn);
 
         List<EDXPattern> listEx = new ArrayList<>();
-        listEn.addAll(edxPatternsEx);
+        listEx.addAll(edxPatternsEx);*/
 
-        final Map<Pattern, AnalysisSummary> healings = Machine.summarizePatterns(sample, listEn, level);
-        final Map<Pattern, AnalysisSummary> healingsEx = Machine.summarizePatterns(sample, listEx, -2147483648);
+        final Map<Pattern, AnalysisSummary> healings = Machine.summarizePatterns(sample, patternsEn, level);
+        final Map<Pattern, AnalysisSummary> healingsEx = Machine.summarizePatterns(sample, patternsEx, -2147483648);
 //						LOGGER.info("SummarizePatterns took %d ms", System.currentTimeMillis() - t1);
 
         allHealings.putAll(healings);

@@ -9,9 +9,9 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd ">
 
-	<bean id="serverSettings" class="com.mpsdevelopment.biopotential.server.settings.ServerSettings" init-method="init">
+	<!--<bean id="serverSettings" class="com.mpsdevelopment.biopotential.server.settings.ServerSettings" init-method="init">
 		<property name="path" value="config/server.json" />
-	</bean>
+	</bean>-->
 
 	<bean id="consoleSettings" class="com.mpsdevelopment.biopotential.server.settings.ConsoleSettings"/>
 
@@ -26,7 +26,7 @@
 	<bean id="diagPanelController" class="com.mpsdevelopment.biopotential.server.gui.diagnostics.DiagPanelController"/>
 	<bean id="automaticsPanelController" class="com.mpsdevelopment.biopotential.server.gui.diagnostics.subpanels.AutomaticsPanelController" />
 	<bean id="analysisPanelController" class="com.mpsdevelopment.biopotential.server.gui.analysis.AnalysisPanelController"/>
-	<bean id="correctorsPanelController" class="com.mpsdevelopment.biopotential.server.gui.correctors.CorrectorsPanelController" />
+	<!--<bean id="correctorsPanelController" class="com.mpsdevelopment.biopotential.server.gui.correctors.CorrectorsPanelController" />-->
 	<bean id="addCorrectorController" class="com.mpsdevelopment.biopotential.server.gui.correctors.AddCorrectorController" />
 	<!--<bean id="converterPanelController" class="com.mpsdevelopment.biopotential.server.gui.converter.ConverterPanelController" />-->
 	<bean id="barChartPanelController" class="com.mpsdevelopment.biopotential.server.gui.analysis.barChart.BarChartPanelController" />

@@ -76,7 +76,7 @@ public class PatternsDaoTest {
 	@Test
 	public void getPatternsFromListFolders() {
 		List<Long> list = createFolderList();
-        List<EDXPattern> patternsEn;
+        List<EDXPattern> patternsEn = new ArrayList<>();
 
         try {
             patternsEn = patternsDao.getPatternsFromListFolders(list);
@@ -84,7 +84,7 @@ public class PatternsDaoTest {
             e.printStackTrace();
         }
 
-        LOGGER.info("patternsEn size is %s", list.size());
+        LOGGER.info("patternsEn size is %s", patternsEn.size());
 
 
     }

@@ -355,4 +355,21 @@ public class PatternsDao extends GenericDao<Pattern, Long> {
 		return list;
 
 	}
+
+	public List<EDXPattern> getAllPatternsFromDatabase() throws SQLException, IOException {
+
+		ProjectionList projections = Projections.projectionList();
+		projections.add(Projections.distinct(Projections.property("PATTERN." + Pattern.PATTERN_UID)), "fileName");
+//		projections.add(Projections.property("FOLDER." + Folder.FOLDER_NAME), "kind");
+		projections.add(Projections.property("PATTERN." + Pattern.PATTERN_NAME), "name");
+		projections.add(Projections.property("PATTERN." + Pattern.PATTERN_DESCRIPTION), "description");
+		projections.add(Projections.property("PATTERN." + Pattern.CHUNK_SUMMARY), "summary");
+		projections.add(Projections.property("PATTERN." + Pattern.IS_CAN_BE_REPRODUCED), "isCanBeReproduced");
+
+		List list = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS, "PATTERNS_FOLDERS")
+				.createCriteria(PatternsFolders.PATTERNS, "PATTERN").setProjection(projections)
+				.setResultTransformer(Transformers.aliasToBean(EDXPattern.class)).list();
+
+		return list;
+	}
 }

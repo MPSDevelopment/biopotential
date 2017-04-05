@@ -48,7 +48,7 @@
 	<bean id="dіseaseDao" class="com.mpsdevelopment.biopotential.server.db.dao.DiseaseDao" />
 
 
-   <!-- <bean id="serverSettings" class="com.mpsdevelopment.biopotential.server.settings.ServerSettings" init-method = "displaySectionsOnBody">
+    <!--<bean id="serverSettings" class="com.mpsdevelopment.biopotential.server.settings.ServerSettings" init-method="init">
         <property name="path" value="config/server.json" />
     </bean>-->
 

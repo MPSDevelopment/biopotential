@@ -14,6 +14,7 @@ import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.Subscribable;
 import com.mpsdevelopment.biopotential.server.eventbus.event.HealingsMapEvent;
 import com.mpsdevelopment.biopotential.server.eventbus.event.SelectCorrectorEvent;
+import com.mpsdevelopment.biopotential.server.gui.BioApplication;
 import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
 import com.mpsdevelopment.biopotential.server.httpclient.HttpClientFactory;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
@@ -54,8 +55,8 @@ public class CorrectorsPanelController extends AbstractController implements Sub
     private static final Logger LOGGER = LoggerUtil.getLogger(CorrectorsPanelController.class);
     private static File outputFile = new File("data\\out\\out1.wav");
 
-    @Autowired
-    private ServerSettings serverSettings;
+    /*@Autowired
+    private ServerSettings serverSettings;*/
 
     @FXML
     private TableView<DataTable> сorrectorsTable;
@@ -82,6 +83,9 @@ public class CorrectorsPanelController extends AbstractController implements Sub
     private Button selectAllButton;
 
     @FXML
+    private Button closeButton;
+
+    @FXML
     private Label patLabel;
 
     private ObservableList<DataTable> correctorsData;
@@ -93,6 +97,8 @@ public class CorrectorsPanelController extends AbstractController implements Sub
     public CorrectorsPanelController() {
         EventBus.subscribe(this);
     }
+
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -182,19 +188,26 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         });
 
         correctorsData = FXCollections.observableArrayList();
-        getPattersFromHealingsMap();
+//        getPattersFromHealingsMap();
         patLabel.setText("Pattern's: " + correctorsData.size());
 
         сorrectorsTable.setItems(correctorsData);
         сorrectorsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // make enable minimize button on window
 //        сorrectorsTable.getSelectionModel().setCellSelectionEnabled(true);
 
+        closeButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                close();
+            }
+        });
+
     }
 
     /*
      * getPatterns from healingsMap and put to сorrectorsTable
      */
-    private void getPattersFromHealingsMap()  {
+    public void getPattersFromHealingsMap()  {
         ObservableList<DataTable> finalDataTableObservableList = FXCollections.observableArrayList();
         healingsMap.forEach((pattern, analysisSummary) -> {
             LOGGER.info("%s %s\n", pattern.getKind(), pattern.getName(), analysisSummary.getDispersion());
@@ -204,6 +217,12 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         });
 
         correctorsData = FXCollections.observableArrayList(new HashSet<>(finalDataTableObservableList));
+
+        сorrectorsTable.getSelectionModel().selectAll();
+        patLabel.setText("Pattern's: " + correctorsData.size());
+
+        сorrectorsTable.setItems(correctorsData);
+        сorrectorsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // make enable minimize button on window
     }
 
     /**
@@ -211,6 +230,9 @@ public class CorrectorsPanelController extends AbstractController implements Sub
      */
     private void createFileCorrection() {
         Long t1 = System.currentTimeMillis();
+
+        ServerSettings serverSettings = (ServerSettings) BioApplication.APP_CONTEXT.getBean("serverSettings");
+
         Machine.setEdxFileFolder(serverSettings.getStoragePath());
 
         сorrectorsTable.getSelectionModel().selectAll();
@@ -228,6 +250,7 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         });
                 floatArrayListWithPCMData.removeIf(o -> o == null);
         LOGGER.info("time for getPcmData %s ms", System.currentTimeMillis() - t2);
+        LOGGER.info("floatArrayListWithPCMData size is %s", floatArrayListWithPCMData.size());
 
 
        /* Long t2 = System.currentTimeMillis();

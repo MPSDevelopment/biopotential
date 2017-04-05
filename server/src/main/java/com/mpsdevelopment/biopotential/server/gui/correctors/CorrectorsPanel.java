@@ -28,12 +28,12 @@ public class CorrectorsPanel extends Pane {
         try {
             Pane pane = loader.load(this.getClass().getResourceAsStream("CorrectorsPanel.fxml"));
 //            correctorsPanelController = BioApplication.APP_CONTEXT.getBean(CorrectorsPanelController.class);
-//            correctorsPanelController = loader.getController();
-            correctorsPanelController = (CorrectorsPanelController) SpringLoaderFXML.load(CorrectorsPanelController.class,"CorrectorsPanel.fxml");
+            correctorsPanelController = loader.getController();
+//            correctorsPanelController = (CorrectorsPanelController) SpringLoaderFXML.load(CorrectorsPanelController.class,"CorrectorsPanel.fxml");
 
-//            correctorsPanelController.setView(pane);
-//            correctorsPanelController.setHealingsMap(allHealings);
-//            correctorsPanelController.getPattersFromHealingsMap();
+            correctorsPanelController.setView(pane);
+            correctorsPanelController.setHealingsMap(allHealings);
+            correctorsPanelController.getPattersFromHealingsMap();
 
         } catch (IOException e) {
             e.printStackTrace();

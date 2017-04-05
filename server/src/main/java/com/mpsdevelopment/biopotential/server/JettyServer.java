@@ -33,7 +33,7 @@ public class JettyServer {
 
 	private static final Logger LOGGER = LoggerUtil.getLogger(JettyServer.class);
 
-	public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/app-context.xml");
+	public static final AbstractApplicationContext APP_CONTEXT = new ClassPathXmlApplicationContext("webapp/settings-context.xml");
 
 	public static XmlWebApplicationContext WEB_CONTEXT;
 

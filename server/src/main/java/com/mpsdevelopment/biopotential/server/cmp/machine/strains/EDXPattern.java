@@ -87,6 +87,7 @@ public class EDXPattern implements Pattern {
 
 	public /* List<Float> */double[] getPcmData(boolean doSummarize) {
 		if (this.pcmData == null) {
+			LOGGER.info("pcmData is null");
 			initializePcmData(doSummarize);
 		}
 		return this.pcmData;
