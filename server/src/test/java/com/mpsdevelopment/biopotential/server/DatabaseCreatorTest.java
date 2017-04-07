@@ -56,4 +56,21 @@ public class DatabaseCreatorTest {
 		}*/
 	}
 
+	@Test
+	public void createStorage() {
+		try {
+			databaseCreator.connect("test.arkdb");
+		} catch (ArkDBException e) {
+			LOGGER.printStackTrace(e);
+		}
+
+		try {
+			databaseCreator.createStorage();
+		} catch (SQLException | IOException e) {
+			LOGGER.printStackTrace(e);
+		}
+	}
+
+
+
 }

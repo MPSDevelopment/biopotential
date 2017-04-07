@@ -35,10 +35,10 @@ public class FoldersDao extends GenericDao<Folder, Long> {
     }
 
     public Folder getByName(String value) {
-//        Folder uniqueResult = new Folder();
+        Folder uniqueResult = new Folder();
         Criteria query = getSession().createCriteria(Folder.class).setCacheable(false);
         query.add(Restrictions.eq(Folder.FOLDER_NAME, value));
-        /*try {
+        try {
             uniqueResult = (Folder) query.uniqueResult();
         } catch (NonUniqueResultException e) {
             List<Folder> list = query.list();
@@ -47,10 +47,10 @@ public class FoldersDao extends GenericDao<Folder, Long> {
             int index = 0;
 
             for (int i = 0; i < query.list().size(); i++) {
-                *//*if(list.get(i).getParentFolderId() == null) {
+                if(list.get(i).getParentFolderId() == null) {
                     return list.get(i);
                 }
-                else {*//*
+                else {
                     int sort = Integer.parseInt(list.get(i).getSortPriority());
                     if(sort > max) {
                         max = sort;
@@ -58,11 +58,12 @@ public class FoldersDao extends GenericDao<Folder, Long> {
                     }
                 }
 
-//            }
+            }
 
             uniqueResult = list.get(index);
-        }*/
-        return (Folder) query.uniqueResult();
+        }
+//        return (Folder) query.uniqueResult();
+        return uniqueResult;
     }
 
     public List<Folder> getPatternsFolders(Collection<Integer> filter) {

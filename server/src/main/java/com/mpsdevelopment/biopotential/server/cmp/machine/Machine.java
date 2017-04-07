@@ -4,6 +4,8 @@ import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.Analyzer;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.ChunkSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
+import com.mpsdevelopment.biopotential.server.gui.BioApplication;
+import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import org.apache.commons.lang3.ArrayUtils;
@@ -94,6 +96,11 @@ public class Machine {
 		List<ChunkSummary> summary = null;
 		List<Float> pcmData;
 		double[] pcmArray = new double[0];
+
+		// TODO change this code
+        ServerSettings serverSettings = (ServerSettings) BioApplication.APP_CONTEXT.getBean("serverSettings");
+        edxFileFolder = serverSettings.getStoragePath();
+        //
 
 		if (edxFileFolder == null) {
 			edxFileFolder = EDX_FILE_FOLDER;

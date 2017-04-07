@@ -5,8 +5,10 @@ import com.mpsdevelopment.biopotential.server.JettyServer;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Pattern;
 import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
+import com.mpsdevelopment.biopotential.server.cmp.pcm.PCM;
 import com.mpsdevelopment.biopotential.server.controller.ControllerAPI;
 import com.mpsdevelopment.biopotential.server.controller.DiseaseController;
+import com.mpsdevelopment.biopotential.server.db.dao.DiseaseDao;
 import com.mpsdevelopment.biopotential.server.db.pojo.DataTable;
 import com.mpsdevelopment.biopotential.server.httpclient.BioHttpClient;
 import com.mpsdevelopment.biopotential.server.httpclient.HttpClientFactory;
@@ -15,9 +17,11 @@ import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.collections.ObservableList;
+import javafx.stage.FileChooser;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.File;
+import javax.sound.sampled.*;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -207,7 +211,7 @@ public class AnalyzeService {
         map.forEach(new BiConsumer<Pattern, AnalysisSummary>() {
             @Override
             public void accept(Pattern k, AnalysisSummary v) {
-                LOGGER.info("d: %s\t%f\n", k.getName(), v.getDispersion());
+//                LOGGER.info("d: %s\t%f\n", k.getName(), v.getDispersion());
                 analysisData.add(DataTable.createDataTableObject(k, v));
             }
         });
@@ -333,5 +337,37 @@ public class AnalyzeService {
             }
         }
         return sortedSelectedItems;
+    }
+
+    public void merge(List<double[]> lists) throws IOException, UnsupportedAudioFileException {
+        Long t1 = System.currentTimeMillis();
+        double[] buffer = PCM.merge(lists);
+
+        byte[] bytes = new byte[buffer.length];
+
+        for (int i=0; i < buffer.length; i++) {
+            if (((buffer[i]) * 128) >= 127) {
+                bytes[i] = (byte) 0xFF; // -1
+            }
+            else if (((buffer[i]) * 128) < -128) {
+                bytes[i] = (byte) 0x01; // +1
+            }
+            else {
+                bytes[i] = (byte) ((byte) ((buffer[i]) * 128) ^ 0x80);
+            }
+        }
+        LOGGER.info("time for merge %s ms", System.currentTimeMillis() - t1);
+        FileChooser fileChooser = new FileChooser();
+        //Set extension filter
+        FileChooser.ExtensionFilter extFilterMp3 = new FileChooser.ExtensionFilter("Mp3 files (*.mp3)","*.mp3");
+        FileChooser.ExtensionFilter extFilterWav = new FileChooser.ExtensionFilter("Wav files (*.wav)","*.wav");
+        fileChooser.getExtensionFilters().addAll(extFilterMp3, extFilterWav);
+
+        //Show save file dialog
+        File file = new File("./data/out/out.mp3");
+            OutputStream outstream = new FileOutputStream(file);
+            byte[] data = DiseaseDao.encodePcmToMp3(bytes);
+            outstream.write(data, 0, data.length);
+
     }
 }

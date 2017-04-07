@@ -14,6 +14,8 @@ import com.mpsdevelopment.biopotential.server.gui.analysis.barChart.BarChartPane
 import com.mpsdevelopment.biopotential.server.gui.analysis.humanPanels.MalePanel;
 import com.mpsdevelopment.biopotential.server.gui.correctors.CorrectorsPanel;
 import com.mpsdevelopment.biopotential.server.gui.service.AnalyzeService;
+import com.mpsdevelopment.biopotential.server.gui.service.FileCreationService;
+import com.mpsdevelopment.biopotential.server.gui.service.JavaFxService;
 import com.mpsdevelopment.biopotential.server.settings.ConfigSettings;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
 import com.mpsdevelopment.biopotential.server.utils.PanelUtils;
@@ -505,6 +507,12 @@ public class AnalysisPanelController extends AbstractController implements Subsc
         healthConditionStressTable.setItems(analysisStressData);
 
         LOGGER.info("Time for make analysis %s ms", System.currentTimeMillis() - t2);
+
+        LOGGER.info("Start create file in other thread");
+        FileCreationService service = new FileCreationService(allHealings);
+        service.setFile(file);
+        service.start();
+
 
     }
 

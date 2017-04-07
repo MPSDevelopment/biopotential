@@ -1,5 +1,6 @@
 package com.mpsdevelopment.biopotential.server.db;
 
+import com.mpsdevelopment.biopotential.server.cmp.analyzer.Analyzer;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
 import com.mpsdevelopment.biopotential.server.cmp.machine.PcmDataSummary;
 import com.mpsdevelopment.biopotential.server.cmp.machine.dbs.arkdb.ArkDBException;
@@ -8,23 +9,39 @@ import com.mpsdevelopment.biopotential.server.db.pojo.*;
 import com.mpsdevelopment.biopotential.server.eventbus.EventBus;
 import com.mpsdevelopment.biopotential.server.eventbus.event.EnableButtonEvent;
 import com.mpsdevelopment.biopotential.server.eventbus.event.ProgressBarEvent;
+import com.mpsdevelopment.biopotential.server.gui.BioApplication;
 import com.mpsdevelopment.biopotential.server.gui.ConverterApplication;
+import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
+import org.apache.commons.io.FileUtils;
 import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.function.Consumer;
+
+class Section {
+    String name;
+    int offset;
+    int length;
+    byte[] contents;
+}
+
 @Configuration
 @ComponentScan(basePackages = {"com.mpsdevelopment.biopotential.server.db"})
 public class DatabaseCreator {
@@ -33,122 +50,122 @@ public class DatabaseCreator {
     public DatabaseCreator() {
         EventBus.subscribe(this);
         LOGGER.info("Create constructor DatabaseCreator");
-	}
+    }
 
-	public static final String ADMIN_LOGIN = "admin";
+    public static final String ADMIN_LOGIN = "admin";
 
-	public static final String ADMIN_PASSWORD = "234sgfweyewsgsf";
+    public static final String ADMIN_PASSWORD = "234sgfweyewsgsf";
 
-	public static final String OPERATOR_LOGIN = "operator";
+    public static final String OPERATOR_LOGIN = "operator";
 
-	public static final String OPERATOR_PASSWORD = "234sgfwesgsf";
+    public static final String OPERATOR_PASSWORD = "234sgfwesgsf";
 
-	public static final String ADMIN = "ADMIN";
+    public static final String ADMIN = "ADMIN";
 
-	public static final String OPERATOR = "OPERATOR";
+    public static final String OPERATOR = "OPERATOR";
 
-	public static final String USER = "USER";
+    public static final String USER = "USER";
 
-	@Autowired
-	private UserDao userDao;
+    @Autowired
+    private UserDao userDao;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-	@Autowired
-	private FoldersDao foldersDao;
+    @Autowired
+    private FoldersDao foldersDao;
 
-	@Autowired
-	private PatternsDao patternsDao;
+    @Autowired
+    private PatternsDao patternsDao;
 
-	@Autowired
-	private PatternsFoldersDao patternsFoldersDao;
+    @Autowired
+    private PatternsFoldersDao patternsFoldersDao;
 
-	private Folder folder;
-	private Pattern pattern;
-	private PatternsFolders patternsFolders;
-	private Connection db;
-	private ResultSet foldersDb;
-	private ResultSet patternsDb;
-	private ResultSet patternsFoldersDb;
+    private Folder folder;
+    private Pattern pattern;
+    private PatternsFolders patternsFolders;
+    private Connection db;
+    private ResultSet foldersDb;
+    private ResultSet patternsDb;
+    private ResultSet patternsFoldersDb;
 
-	public void initialization() throws IOException, URISyntaxException, DaoException, SQLException {
-		userDao = ConverterApplication.APP_CONTEXT.getBean(UserDao.class);
+    public void initialization() throws IOException, URISyntaxException, DaoException, SQLException {
+        userDao = ConverterApplication.APP_CONTEXT.getBean(UserDao.class);
         System.setErr(LoggerUtil.getRedirectedToLoggerErrPrintStream(System.err));
         System.setOut(LoggerUtil.getRedirectedToLoggerOutPrintStream(System.out));
-		LOGGER.info("databaseCreator initialization ");
-		List<User> users = userDao.findAll();
-		if (users.size() < 10) {
-			createAllUsers();
-			LOGGER.info("databaseCreator created");
+        LOGGER.info("databaseCreator initialization ");
+        List<User> users = userDao.findAll();
+        if (users.size() < 10) {
+            createAllUsers();
+            LOGGER.info("databaseCreator created");
 
-			try {
-				convertToH2("./data/test.arkdb");
+            try {
+                convertToH2("./data/test.arkdb");
 //				convertToH2("./data/db_cutted.db");
-			} catch (ArkDBException e) {
-				e.printStackTrace();
-			}
-		}
+            } catch (ArkDBException e) {
+                e.printStackTrace();
+            }
+        }
 
-	}
+    }
 
-	private void createAllUsers() {
-		createUserIfNotExists(new User().setLogin(ADMIN_LOGIN).setPassword(passwordEncoder.encode(ADMIN_PASSWORD)).setSurname("Медков").setName("Игорь")
-				.setPatronymic("Владимирович").setTel("0982359090").setEmail("igor@ukr.net").setGender("Man").setRole(Token.Role.ADMIN.name()));
-		createUserIfNotExists(new User().setLogin(OPERATOR_LOGIN).setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Медков").setName("Денис")
-				.setPatronymic("Игоревич").setTel("0678940934").setEmail("denis@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
-		createUserIfNotExists(new User().setLogin("YavorD").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Яворский").setName("Дмитрий")
-				.setPatronymic("Константинович").setTel("0675676511").setEmail("yd@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
-		createUserIfNotExists(new User().setLogin("YavorL").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Яворский").setName("Алексей")
-				.setPatronymic("Константинович").setTel("0665940934").setEmail("yl@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
-		createUserIfNotExists(new User().setLogin("aurusd").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Назаренко").setName("Дмитрий")
-				.setPatronymic("Владимирович").setTel("0936578944").setEmail("rebrov@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
-		createUserIfNotExists(new User().setLogin("Zep").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Цепляев").setName("Игорь").setPatronymic("Игоревич")
-				.setTel("0634445566").setEmail("zep@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
-		createUserIfNotExists(new User().setLogin("Vova").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Вовненко").setName("Сергей").setPatronymic("Сергеевич")
-				.setTel("0958899001").setEmail("sv@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
-		createUserIfNotExists(new User().setLogin("Serg").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Войтюк").setName("Сергей").setPatronymic("Денисович")
-				.setTel("0687217645").setEmail("voytyk@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
-		createUserIfNotExists(new User().setLogin("pete").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Жирков").setName("Петр").setPatronymic("Петрович")
-				.setTel("0992164589").setEmail("zhirkov@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
-		createUserIfNotExists(new User().setLogin("Vita").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Барановский").setName("Виталий")
-				.setPatronymic("Витальевич").setTel("066758491").setEmail("server@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
-		createUserIfNotExists(new User().setLogin("Ivan").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Медяков").setName("Иван").setPatronymic("Григорьевич")
-				.setTel("0951237890").setEmail("med@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
-		createUserIfNotExists(new User().setLogin("sheva").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Шевченко").setName("Андрей")
-				.setPatronymic("Николаевич").setTel("0509872674").setEmail("shev@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
-		createUserIfNotExists(new User().setLogin("Fed").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Федченко").setName("Андрей").setPatronymic("Петрович")
-				.setTel("0959872674").setEmail("fed@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
-		createUserIfNotExists(new User().setLogin("ray").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Рей").setName("Антон").setPatronymic("Федорович")
-				.setTel("0506677453").setEmail("ray@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
-		createUserIfNotExists(new User().setLogin("gudz").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Гудзь").setName("Даниил").setPatronymic("Олегович")
-				.setTel("09365489234").setEmail("gudz@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
-		createUserIfNotExists(new User().setLogin("bal").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Баленко").setName("Алексей").setPatronymic("Алексеевич")
-				.setTel("0632587496").setEmail("bal@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
-		createUserIfNotExists(new User().setLogin("slava").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Черныш").setName("Слава")
-				.setPatronymic("Владимирович").setTel("0662589641").setEmail("slava@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
-		createUserIfNotExists(new User().setLogin("sus").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Ютужанин").setName("Алексей")
-				.setPatronymic("Алексеевич").setTel("0507895214").setEmail("yut@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
-		createUserIfNotExists(new User().setLogin("shul").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Шульга").setName("Ростислав").setPatronymic("Павлович")
-				.setTel("09867546124").setEmail("shul@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
-	}
+    private void createAllUsers() {
+        createUserIfNotExists(new User().setLogin(ADMIN_LOGIN).setPassword(passwordEncoder.encode(ADMIN_PASSWORD)).setSurname("Медков").setName("Игорь")
+                .setPatronymic("Владимирович").setTel("0982359090").setEmail("igor@ukr.net").setGender("Man").setRole(Token.Role.ADMIN.name()));
+        createUserIfNotExists(new User().setLogin(OPERATOR_LOGIN).setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Медков").setName("Денис")
+                .setPatronymic("Игоревич").setTel("0678940934").setEmail("denis@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+        createUserIfNotExists(new User().setLogin("YavorD").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Яворский").setName("Дмитрий")
+                .setPatronymic("Константинович").setTel("0675676511").setEmail("yd@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+        createUserIfNotExists(new User().setLogin("YavorL").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Яворский").setName("Алексей")
+                .setPatronymic("Константинович").setTel("0665940934").setEmail("yl@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+        createUserIfNotExists(new User().setLogin("aurusd").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Назаренко").setName("Дмитрий")
+                .setPatronymic("Владимирович").setTel("0936578944").setEmail("rebrov@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+        createUserIfNotExists(new User().setLogin("Zep").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Цепляев").setName("Игорь").setPatronymic("Игоревич")
+                .setTel("0634445566").setEmail("zep@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+        createUserIfNotExists(new User().setLogin("Vova").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Вовненко").setName("Сергей").setPatronymic("Сергеевич")
+                .setTel("0958899001").setEmail("sv@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+        createUserIfNotExists(new User().setLogin("Serg").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Войтюк").setName("Сергей").setPatronymic("Денисович")
+                .setTel("0687217645").setEmail("voytyk@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+        createUserIfNotExists(new User().setLogin("pete").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Жирков").setName("Петр").setPatronymic("Петрович")
+                .setTel("0992164589").setEmail("zhirkov@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+        createUserIfNotExists(new User().setLogin("Vita").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Барановский").setName("Виталий")
+                .setPatronymic("Витальевич").setTel("066758491").setEmail("server@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+        createUserIfNotExists(new User().setLogin("Ivan").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Медяков").setName("Иван").setPatronymic("Григорьевич")
+                .setTel("0951237890").setEmail("med@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+        createUserIfNotExists(new User().setLogin("sheva").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Шевченко").setName("Андрей")
+                .setPatronymic("Николаевич").setTel("0509872674").setEmail("shev@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+        createUserIfNotExists(new User().setLogin("Fed").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Федченко").setName("Андрей").setPatronymic("Петрович")
+                .setTel("0959872674").setEmail("fed@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+        createUserIfNotExists(new User().setLogin("ray").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Рей").setName("Антон").setPatronymic("Федорович")
+                .setTel("0506677453").setEmail("ray@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+        createUserIfNotExists(new User().setLogin("gudz").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Гудзь").setName("Даниил").setPatronymic("Олегович")
+                .setTel("09365489234").setEmail("gudz@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+        createUserIfNotExists(new User().setLogin("bal").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Баленко").setName("Алексей").setPatronymic("Алексеевич")
+                .setTel("0632587496").setEmail("bal@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+        createUserIfNotExists(new User().setLogin("slava").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Черныш").setName("Слава")
+                .setPatronymic("Владимирович").setTel("0662589641").setEmail("slava@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+        createUserIfNotExists(new User().setLogin("sus").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Ютужанин").setName("Алексей")
+                .setPatronymic("Алексеевич").setTel("0507895214").setEmail("yut@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+        createUserIfNotExists(new User().setLogin("shul").setPassword(passwordEncoder.encode(OPERATOR_PASSWORD)).setSurname("Шульга").setName("Ростислав").setPatronymic("Павлович")
+                .setTel("09867546124").setEmail("shul@ukr.net").setGender("Man").setRole(Token.Role.OPERATOR.name()));
+    }
 
-	public User createUserIfNotExists(User user) {
-		User loadedUser = userDao.getByLogin(user.getLogin());
-		if (loadedUser == null) {
-			LOGGER.info("User %s has been created", user.getLogin());
-			loadedUser = userDao.save(user);
-		}
-		return loadedUser;
-	}
+    public User createUserIfNotExists(User user) {
+        User loadedUser = userDao.getByLogin(user.getLogin());
+        if (loadedUser == null) {
+            LOGGER.info("User %s has been created", user.getLogin());
+            loadedUser = userDao.save(user);
+        }
+        return loadedUser;
+    }
 
-	public void connect(String url) throws ArkDBException {
-		LOGGER.info("Connect to %s", url);
-		try {
-			Class.forName("org.sqlite.JDBC");
-		} catch (ClassNotFoundException e) {
-			throw new ArkDBException("ClassNotFoundException: " + e.getMessage());
-		}
+    public void connect(String url) throws ArkDBException {
+        LOGGER.info("Connect to %s", url);
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            throw new ArkDBException("ClassNotFoundException: " + e.getMessage());
+        }
 
         executeStatement(url);
 
@@ -168,7 +185,8 @@ public class DatabaseCreator {
 
 
     public void convertToH2(String url) throws ArkDBException, IOException, SQLException {
-		long t1 = System.currentTimeMillis();
+        connect(url);
+		/*long t1 = System.currentTimeMillis();
 		connect(url);
         double clock = 0;
         double delta = 0;
@@ -215,7 +233,7 @@ public class DatabaseCreator {
 							.setSmuls(patternsDb.getString("smuls")).setEdxFileCreationDts(patternsDb.getString("edx_file_creation_dts"))
 							.setEdxFileCreationDtsMsecs(patternsDb.getInt("edx_file_creation_dts_msecs"))
 							.setEdxFileLastModifiedDts(patternsDb.getString("edx_file_last_modified_dts"))
-							.setEdxFileLastModifiedDtsMsecs(patternsDb.getInt("edx_file_last_modified_dts_msecs"));/*.setLinkedFolderId(patternsDb.getInt("linked_folder_id"));*/
+							.setEdxFileLastModifiedDtsMsecs(patternsDb.getInt("edx_file_last_modified_dts_msecs"));*//*.setLinkedFolderId(patternsDb.getInt("linked_folder_id"));*//*
 
 					LOGGER.info("%s", pattern.getPatternName());
 					patternsDao.insertNewPattern(pattern, true);
@@ -299,8 +317,12 @@ public class DatabaseCreator {
                 if (folder.getFolderName().contains("Ba en")){BaEn = folder.getId();}
                 if (folder.getFolderName().contains("Ba ex")){BaEx = folder.getId();}
 
-                if (folder.getFolderName().contains("Ca en")){CaEn = folder.getId();}
-                if (folder.getFolderName().contains("Ca ex")){CaEx = folder.getId();}
+                if (folder.getFolderName().contains("Ca en")){
+                    CaEn = folder.getId();
+                }
+                if (folder.getFolderName().contains("Ca ex")){
+                    CaEx = folder.getId();
+                }
 
                 if (folder.getFolderName().contains("De en")){DeEn = folder.getId();}
                 if (folder.getFolderName().contains("De ex")){DeEx = folder.getId();}
@@ -329,8 +351,12 @@ public class DatabaseCreator {
                 if (folder.getFolderName().contains("My en")){MyEn = folder.getId();}
                 if (folder.getFolderName().contains("My ex")){MyEx = folder.getId();}
 
-                if (folder.getFolderName().contains("Or en")){OrEn = folder.getId();}
-                if (folder.getFolderName().contains("Or ex")){OrEx = folder.getId();}
+                if (folder.getFolderName().contains("Or en")){
+                    OrEn = folder.getId();
+                }
+                if (folder.getFolderName().contains("Or ex")){
+                    OrEx = folder.getId();
+                }
 
                 if (folder.getFolderName().contains("Sp en")){SpEn = folder.getId();}
                 if (folder.getFolderName().contains("Sp ex")){SpEx = folder.getId();}
@@ -410,18 +436,18 @@ public class DatabaseCreator {
             handlePatternsFolders(neural, NeEn, NeEx);
             handlePatternsFolders(ortho, OrEn, OrEx);
             handlePatternsFolders(spiritus, SpEn, SpEx);
-            handlePatternsFolders(stomat, SpEn, SpEx);
+            handlePatternsFolders(stomat, StEn, StEx);
             handlePatternsFolders(urolog, UrEn, UrEx);
             handlePatternsFolders(vision, ViEn, ViEx);
 
             delta = 0.1/(patternList.size());
 
 
-            /*for (Pattern pattern : patternList) {
+            *//*for (Pattern pattern : patternList) {
 
 				patternsFolders = new PatternsFolders();
 //				patternsFolders = patternsFoldersDao.getByPattern(pattern);
-				*//*if (floraDissection != null) {
+				*//**//*if (floraDissection != null) {
 					patternsFolders.setFolder(floraDissection);
 				}
 				if (stressAnalys != null) {
@@ -441,10 +467,10 @@ public class DatabaseCreator {
 				}
 				if (detokc != null) {
 					patternsFolders.setFolder(detokc);
-				}*//*
+				}*//**//*
 //                patternsFolders.setFolder(stressAnalys);
-                *//*patternsFolders.setFolder(patternsFolders.getFolder());
-				patternsFolders.setPattern(pattern);*//*
+                *//**//*patternsFolders.setFolder(patternsFolders.getFolder());
+				patternsFolders.setPattern(pattern);*//**//*
 
 				if (pattern.getPatternName().contains("BAC "))
 					patternsFolders.setCorrectorsEn(bacId);
@@ -493,7 +519,7 @@ public class DatabaseCreator {
 //                clock = clock + delta * patternsFoldersDb.getRow();
                 EventBus.publishEvent(new ProgressBarEvent(clock + delta * patternList.indexOf(pattern)));
 
-            }*/
+            }*//*
             clock = clock + delta * patternList.size();
 
             LOGGER.info("patternsFolders took %s ms", System.currentTimeMillis() - t2);
@@ -504,13 +530,85 @@ public class DatabaseCreator {
             LOGGER.info("Overall convert process took %.4s ms", (System.currentTimeMillis() - t1)/60000.0);
             EventBus.publishEvent(new ProgressBarEvent(1));
             EventBus.publishEvent(new EnableButtonEvent(true, String.valueOf((System.currentTimeMillis() - t1)/60000.0)));
-            LOGGER.info("End");
+            LOGGER.info("End");*/
 
-		} catch (SQLException e) {
-			LOGGER.printStackTrace(e);
-		}
 
-	}
+        createStorage();
+
+    }
+
+    public void createStorage() throws SQLException, IOException {
+        ServerSettings serverSettings = (ServerSettings) BioApplication.APP_CONTEXT.getBean("serverSettings");
+
+        String path = new File(serverSettings.getStoragePath()).getParent();
+        path = path + "\\My_H2_Database";
+        new File(path).mkdir();
+//        List<Pattern> filesUid = patternsDao.getPatterns(null, null);
+        HashMap<String, Section> sects = new HashMap<>();
+
+        while (patternsDb.next()) {
+
+            pattern = new Pattern().setPatternUid(patternsDb.getString("pattern_uid"));
+
+            try (RandomAccessFile in = new RandomAccessFile(new File(serverSettings.getStoragePath() + pattern.getPatternUid()), "r")) {
+                final byte[] hdr = new byte[4];
+                if (in.read(hdr) != 4 || !new String(hdr).equals("EDXI")) {
+                    throw new IOException("not EDX");
+                }
+                // version number + .offs string
+                if (in.skipBytes(4 + 8) != (4 + 8)) {
+                    throw new IOException("not EDX");
+                }
+
+                final int len = readi32le(in);
+                final int count = len / 16; // 16 = name[8] + offs + len
+                for (int i = 0; i < count; i += 1) {
+                    final Section sect = new Section();
+
+                    final byte[] sect_name = new byte[8];
+                    in.read(sect_name);
+
+                    sect.name = new String(sect_name);
+                    sect.offset = readi32le(in);
+                    sect.length = readi32le(in);
+                    sect.contents = new byte[sect.length];
+
+                    final long cur = in.getFilePointer();
+                    in.seek(sect.offset + 12); // 12 bytes of useless junk
+                    in.read(sect.contents, 0, sect.contents.length);
+                    in.seek(cur);
+
+                    sects.put(sect.name, sect);
+                }
+            } catch (IOException e) {
+                LOGGER.info("File not found %s", pattern.getPatternUid());
+            }
+
+            if (!(sects.get(".orig   ") == null)) {
+                byte[] section = sects.get(".orig   ").contents;
+
+                String[] tokens = pattern.getPatternUid().split("/");
+                path = path + "\\" + tokens[0];
+                new File(path).mkdir();
+
+                File file = new File(path + "/" + tokens[1]);
+                FileUtils.writeByteArrayToFile(file, section);
+                path = new File(path).getParent();
+            }
+
+        }
+    }
+
+    private static int readi32le(RandomAccessFile in) {
+        try {
+            byte[] raw = new byte[4];
+            in.read(raw);
+            return (raw[0] & 0xff) | ((raw[1] & 0xff) << 8) | ((raw[2] & 0xff) << 16) | ((raw[3] & 0xff) << 24);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 
     private void handlePatternsFolders(Folder folder, Long correctorsEn, Long correctorsEx) {
         if (folder != null) {
@@ -522,21 +620,21 @@ public class DatabaseCreator {
                 /*patternsFolders = new PatternsFolders();
                 patternsFolders.setFolder(patternFolder.getFolder());
                 patternsFolders.setPattern(patternFolder.getPattern());*/
-                    if (correctorsEn == null) {
-                        patternFolder.setCorrectorsEn(null);
-                    } else {
-                        patternFolder.setCorrectorsEn(correctorsEn);
-                    }
-                    if (correctorsEx == null) {
-                        patternFolder.setCorrectorsEx(null);
-                    } else {
-                        patternFolder.setCorrectorsEx(correctorsEx);
-                    }
-                    patternsFoldersDao.insertNewPatternsFolders(patternFolder, false);
+                if (correctorsEn == null) {
+                    patternFolder.setCorrectorsEn(null);
+                } else {
+                    patternFolder.setCorrectorsEn(correctorsEn);
+                }
+                if (correctorsEx == null) {
+                    patternFolder.setCorrectorsEx(null);
+                } else {
+                    patternFolder.setCorrectorsEx(correctorsEx);
+                }
+                patternsFoldersDao.insertNewPatternsFolders(patternFolder, false);
 //                    patternsFoldersDao.saveOrUpdate(patternFolder);
 
-                }
             }
+        }
     }
 
     private int calcRows(ResultSet set) throws SQLException {
@@ -553,15 +651,15 @@ public class DatabaseCreator {
 
 
     /**
-	 *
-	 * @throws IOException
-	 * @throws SQLException
-	 * setChunkSummary add to Pattern table column ChunkSummary pre-calculated lis of meandeviation and dispersion
-	 */
+     *
+     * @throws IOException
+     * @throws SQLException
+     * setChunkSummary add to Pattern table column ChunkSummary pre-calculated lis of meandeviation and dispersion
+     */
 
-	private void setChunkSummary() throws IOException, SQLException {
-		List<Pattern> patternAll = patternsDao.getPatterns(null, null);
-		LOGGER.info("List size %s", patternAll.size());
+    private void setChunkSummary() throws IOException, SQLException {
+        List<Pattern> patternAll = patternsDao.getPatterns(null, null);
+        LOGGER.info("List size %s", patternAll.size());
         double clock = 0.3;
         double delta = 0.7/(patternAll.size());
 

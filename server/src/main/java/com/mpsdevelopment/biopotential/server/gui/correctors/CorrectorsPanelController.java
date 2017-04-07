@@ -1,5 +1,6 @@
 package com.mpsdevelopment.biopotential.server.gui.correctors;
 
+import com.google.common.io.Files;
 import com.google.gson.reflect.TypeToken;
 import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.cmp.analyzer.AnalysisSummary;
@@ -21,6 +22,7 @@ import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.biopotential.server.settings.StageSettings;
 import com.mpsdevelopment.biopotential.server.utils.JsonUtils;
 import com.mpsdevelopment.biopotential.server.utils.StageUtils;
+import com.mpsdevelopment.plasticine.commons.FileUtils;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
 import javafx.beans.property.BooleanProperty;
@@ -93,6 +95,7 @@ public class CorrectorsPanelController extends AbstractController implements Sub
     private static Map<Pattern,AnalysisSummary> healingsMap;
     Set<Pattern> sortedSelectedHealings = new HashSet<>();
     Set<DataTable> sortedSelectedItems = new HashSet<>();
+    private File file;
 
     public CorrectorsPanelController() {
         EventBus.subscribe(this);
@@ -229,19 +232,50 @@ public class CorrectorsPanelController extends AbstractController implements Sub
      *  Sort correctorsData from duplicate items by filename
      */
     private void createFileCorrection() {
-        Long t1 = System.currentTimeMillis();
 
-        ServerSettings serverSettings = (ServerSettings) BioApplication.APP_CONTEXT.getBean("serverSettings");
+        FileChooser fileChooser = new FileChooser();
+        //Set extension filter
+        FileChooser.ExtensionFilter extFilterMp3 = new FileChooser.ExtensionFilter("Mp3 files (*.mp3)","*.mp3");
+        FileChooser.ExtensionFilter extFilterWav = new FileChooser.ExtensionFilter("Wav files (*.wav)","*.wav");
+        fileChooser.getExtensionFilters().addAll(extFilterMp3, extFilterWav);
+        //Show save file dialog
+        file = fileChooser.showSaveDialog(primaryStage);
+        if (Files.getFileExtension(file.getAbsolutePath()).equals("mp3")) {
+            try {
+                Files.copy(new File("./data/out/out.mp3"), file);
+            } catch (IOException e) {
+                LOGGER.printStackTrace(e);
+            }
+        }
+        else {
+            Long t1 = System.currentTimeMillis();
 
-        Machine.setEdxFileFolder(serverSettings.getStoragePath());
+            ServerSettings serverSettings = (ServerSettings) BioApplication.APP_CONTEXT.getBean("serverSettings");
 
-        сorrectorsTable.getSelectionModel().selectAll();
-        ObservableList<DataTable> selectedItemsFromTable = сorrectorsTable.getSelectionModel().getSelectedItems();
-        LOGGER.info("Selected item %s", selectedItemsFromTable.size());
+            Machine.setEdxFileFolder(serverSettings.getStoragePath());
 
-        Long t2 = System.currentTimeMillis();
+            сorrectorsTable.getSelectionModel().selectAll();
+            ObservableList<DataTable> selectedItemsFromTable = сorrectorsTable.getSelectionModel().getSelectedItems();
+            LOGGER.info("Selected item %s", selectedItemsFromTable.size());
 
-        List<double[]> floatArrayListWithPCMData = new ArrayList<>();
+            Long t2 = System.currentTimeMillis();
+
+
+        /*Set<Pattern> temp = new HashSet<>();
+        sortedSelectedHealings.forEach(new Consumer<Pattern>() {
+            @Override
+            public void accept(Pattern pattern) {
+                try {
+                    try (RandomAccessFile in = new RandomAccessFile(new File("D:/MPS/IDEA/Biopotential material's/база автомат/my_super_puper_db_Storage/" + pattern.getFileName()), "r")) {
+                        temp.add(pattern);
+                    }
+                } catch (IOException e) {
+                    LOGGER.info("File not found %s", pattern.getFileName());
+                }
+            }
+        });*/
+
+            List<double[]> floatArrayListWithPCMData = new ArrayList<>();
         sortedSelectedHealings.forEach(new Consumer<Pattern>() {
             @Override
             public void accept(Pattern pattern) {
@@ -272,7 +306,7 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         });
         //        floatArrayListWithPCMData.removeIf(o -> o == null);
         LOGGER.info("time for getPcmData %s ms", System.currentTimeMillis() - t2);*/
-        LOGGER.info("Done");
+            LOGGER.info("Done");
 
 
 
@@ -299,14 +333,15 @@ public class CorrectorsPanelController extends AbstractController implements Sub
         floatArrayListWithPCMData.removeIf(o -> o == null);*/
         /*End of block*/
 
-        LOGGER.info("time for prepare List %s ms", System.currentTimeMillis() - t1);
-        LOGGER.info("Added correctors %s", floatArrayListWithPCMData.size());
-        try {
-            merge(floatArrayListWithPCMData);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (UnsupportedAudioFileException e) {
-            e.printStackTrace();
+            LOGGER.info("time for prepare List %s ms", System.currentTimeMillis() - t1);
+            LOGGER.info("Added correctors %s", floatArrayListWithPCMData.size());
+            try {
+                merge(floatArrayListWithPCMData);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (UnsupportedAudioFileException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -364,14 +399,14 @@ public class CorrectorsPanelController extends AbstractController implements Sub
             }
         }
         LOGGER.info("time for merge %s ms", System.currentTimeMillis() - t1);
-        FileChooser fileChooser = new FileChooser();
+        /*FileChooser fileChooser = new FileChooser();
         //Set extension filter
         FileChooser.ExtensionFilter extFilterMp3 = new FileChooser.ExtensionFilter("Mp3 files (*.mp3)","*.mp3");
         FileChooser.ExtensionFilter extFilterWav = new FileChooser.ExtensionFilter("Wav files (*.wav)","*.wav");
         fileChooser.getExtensionFilters().addAll(extFilterMp3, extFilterWav);
 
         //Show save file dialog
-        File file = fileChooser.showSaveDialog(primaryStage);
+        File file = fileChooser.showSaveDialog(primaryStage);*/
         if (file.getName().contains(".wav")) {
             ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
             AudioFormat format = new AudioFormat(22050, 8, 1, false, false);

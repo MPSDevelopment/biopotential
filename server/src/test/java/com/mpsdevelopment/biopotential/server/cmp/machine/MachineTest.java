@@ -130,5 +130,19 @@ public class MachineTest {
 
     }
 
+    @Test
+    public void getPcmDataSingle() {
+
+        try {
+            Long t1 = System.currentTimeMillis();
+            Machine.getPcmData("D:/MPS/IDEA/Biopotential material's/база автомат/my_super_puper_db_Storage/!5VbmZUWlK/1dae7585-b2cf9364-d3aa8437-2e578581-4639291.edx"
+                    , false);
+            LOGGER.info("time getPcmData is %s ms", System.currentTimeMillis() - t1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
 }

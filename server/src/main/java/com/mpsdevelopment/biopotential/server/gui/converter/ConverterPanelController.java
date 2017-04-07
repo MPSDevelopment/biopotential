@@ -1,5 +1,6 @@
 package com.mpsdevelopment.biopotential.server.gui.converter;
 
+import com.google.common.io.Files;
 import com.mpsdevelopment.biopotential.server.AbstractController;
 import com.mpsdevelopment.biopotential.server.cmp.machine.Machine;
 import com.mpsdevelopment.biopotential.server.db.PersistUtils;
@@ -162,7 +163,8 @@ public class ConverterPanelController extends AbstractController implements Subs
             name = nameTextField.getText();
         }*/
 
-        name = file.getName().replaceAll(".arkdb","")/*.replaceAll(".db","")*/;
+//        name = file.getName().replaceAll(".arkdb","")/*.replaceAll(".db","")*/;
+        name = Files.getNameWithoutExtension((file.getName()));
 
         ServerSettings fileSettings = ConverterApplication.APP_CONTEXT.getBean(ServerSettings.class);
         fileSettings.setDbPath(url+name);
