@@ -534,6 +534,7 @@ public class DatabaseCreator {
 
 
         createStorage();
+        LOGGER.info("finish");
 
     }
 
@@ -551,6 +552,7 @@ public class DatabaseCreator {
             pattern = new Pattern().setPatternUid(patternsDb.getString("pattern_uid"));
 
             try (RandomAccessFile in = new RandomAccessFile(new File(serverSettings.getStoragePath() + pattern.getPatternUid()), "r")) {
+
                 final byte[] hdr = new byte[4];
                 if (in.read(hdr) != 4 || !new String(hdr).equals("EDXI")) {
                     throw new IOException("not EDX");
@@ -580,11 +582,15 @@ public class DatabaseCreator {
 
                     sects.put(sect.name, sect);
                 }
+                LOGGER.info("read %s", pattern.getPatternUid());
             } catch (IOException e) {
+                if (pattern.getPatternUid() == null) {
+                    LOGGER.info("");
+                }
                 LOGGER.info("File not found %s", pattern.getPatternUid());
             }
 
-            if (!(sects.get(".orig   ") == null)) {
+            if (!(sects.get(".orig   ") == null) && !(pattern.getPatternUid() == null)) {
                 byte[] section = sects.get(".orig   ").contents;
 
                 String[] tokens = pattern.getPatternUid().split("/");

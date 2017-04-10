@@ -508,11 +508,10 @@ public class AnalysisPanelController extends AbstractController implements Subsc
 
         LOGGER.info("Time for make analysis %s ms", System.currentTimeMillis() - t2);
 
-        LOGGER.info("Start create file in other thread");
+        /*LOGGER.info("Start create file in other thread");
         FileCreationService service = new FileCreationService(allHealings);
         service.setFile(file);
-        service.start();
-
+        service.start();*/
 
     }
 

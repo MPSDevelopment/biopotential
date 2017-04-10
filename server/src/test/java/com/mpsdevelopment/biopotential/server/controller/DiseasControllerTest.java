@@ -37,7 +37,7 @@ import java.security.SignatureException;
 import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = SpringockitoContextLoader.class, locations = { "classpath:/webapp/app-context.xml", "classpath:/webapp/web-context.xml" })
+@ContextConfiguration(loader = SpringockitoContextLoader.class, locations = { "classpath:/webapp/app-context.xml", "classpath:/webapp/web-context.xml", "classpath:/webapp/settings-context.xml" })
 @Configurable
 public class DiseasControllerTest {
 

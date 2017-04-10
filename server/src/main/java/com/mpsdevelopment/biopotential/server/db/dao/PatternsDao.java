@@ -368,7 +368,7 @@ public class PatternsDao extends GenericDao<Pattern, Long> {
 
 		List list = getSession().createCriteria(Folder.class, "FOLDER").setCacheable(false).createCriteria(Folder.PATTERNS_FOLDERS, "PATTERNS_FOLDERS")
 				.createCriteria(PatternsFolders.PATTERNS, "PATTERN").setProjection(projections)
-				.setResultTransformer(Transformers.aliasToBean(EDXPattern.class)).list();
+				.setResultTransformer(Transformers.aliasToBean(EDXPattern.class)).setMaxResults(3000).list();
 
 		return list;
 	}

@@ -8,6 +8,7 @@ import com.mpsdevelopment.biopotential.server.cmp.machine.strains.EDXPattern;
 import com.mpsdevelopment.biopotential.server.db.dao.FoldersDao;
 import com.mpsdevelopment.biopotential.server.db.dao.PatternsDao;
 import com.mpsdevelopment.biopotential.server.db.pojo.Folder;
+import com.mpsdevelopment.biopotential.server.gui.BioApplication;
 import com.mpsdevelopment.biopotential.server.settings.ServerSettings;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
@@ -32,7 +33,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:/webapp/app-context-test.xml", "classpath:/webapp/web-context.xml" })
+@ContextConfiguration(locations = {"classpath:/webapp/app-context-test.xml", "classpath:/webapp/web-context.xml"})
 @Configurable
 public class MachineTest {
 
@@ -46,6 +47,9 @@ public class MachineTest {
 
     @Autowired
     private ServerSettings serverSettings;
+
+    private static String edxFileFolder;
+
 
     @Test
     public void summarizePatternsTest() {
@@ -90,27 +94,7 @@ public class MachineTest {
 
     @Test
     public void getPcmData() {
-        List<EDXPattern> list = null;
-        final List<EDXPattern> patternsList = new ArrayList<>();
-
-        try {
-            list = patternsDao.getAllPatternsFromDatabase();
-        } catch (SQLException | IOException e) {
-            e.printStackTrace();
-        }
-
-        list.forEach(new Consumer<EDXPattern>() {
-            @Override
-            public void accept(EDXPattern edxPattern) {
-                try {
-                    try (RandomAccessFile in = new RandomAccessFile(new File("./data/edxfiles/" + edxPattern.getFileName()), "r")) {
-                        patternsList.add(edxPattern);
-                    }
-                } catch (IOException e) {
-
-                }
-            }
-        });
+        List<EDXPattern> patternsList = getInputListForTest();
 
         Long t1 = System.currentTimeMillis();
         patternsList.forEach(new Consumer<EDXPattern>() {
@@ -142,6 +126,70 @@ public class MachineTest {
             e.printStackTrace();
         }
 
+        /*ServerSettings serverSettings = (ServerSettings) BioApplication.APP_CONTEXT.getBean("serverSettings");
+        serverSettings.setStoragePath("D:\\MPS\\IDEA\\Biopotential material's\\база автомат\\My_H2_Database\\");*/
+        Machine.setEdxFileFolder(serverSettings.getStoragePath());
+
+        Long t1 = System.currentTimeMillis();
+        try {
+            Machine.getPcmData("ZViCTL2oCG\\1a03af4e-e34e48dd-d1a136b2-a300435f-8936eab9.edx");
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        LOGGER.info("time getPcmData is %s ms", System.currentTimeMillis() - t1);
+    }
+
+    @Test
+    public void getPcmDataFromFile() {
+
+        ServerSettings serverSettings = (ServerSettings) BioApplication.APP_CONTEXT.getBean("serverSettings");
+        serverSettings.setStoragePath("D:\\MPS\\IDEA\\Biopotential material's\\база автомат\\My_H2_Database\\");
+        Machine.setEdxFileFolder(serverSettings.getStoragePath());
+
+        List<EDXPattern> patternsList = getInputListForTest();
+
+        Long t1 = System.currentTimeMillis();
+        patternsList.forEach(new Consumer<EDXPattern>() {
+            @Override
+            public void accept(EDXPattern edxPattern) {
+                try {
+                    Long t1 = System.currentTimeMillis();
+                    Machine.getPcmData(edxPattern.getFileName());
+                    LOGGER.info("time getPcmData is %s ms", System.currentTimeMillis() - t1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        LOGGER.info("Patterns size is %s", patternsList.size());
+        LOGGER.info("overall time is %s ms", System.currentTimeMillis() - t1);
+    }
+
+    private List<EDXPattern> getInputListForTest() {
+        List<EDXPattern> list = null;
+        final List<EDXPattern> patternsList = new ArrayList<>();
+
+        try {
+            list = patternsDao.getAllPatternsFromDatabase();
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+        LOGGER.info("list size %s", list.size());
+
+        list.forEach(new Consumer<EDXPattern>() {
+            @Override
+            public void accept(EDXPattern edxPattern) {
+                try {
+//                    try (RandomAccessFile in = new RandomAccessFile(new File("./data/edxfiles/" + edxPattern.getFileName()), "r")) {
+                    try (RandomAccessFile in = new RandomAccessFile(new File("D:\\MPS\\IDEA\\Biopotential material's\\база автомат\\My_H2_Database\\" + edxPattern.getFileName()), "r")) {
+                        patternsList.add(edxPattern);
+                    }
+                } catch (IOException e) {
+
+                }
+            }
+        });
+        return patternsList;
     }
 
 

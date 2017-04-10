@@ -6,6 +6,7 @@ import com.mpsdevelopment.biopotential.server.db.DatabaseCreator;
 import com.mpsdevelopment.biopotential.server.db.dao.UserDao;
 import com.mpsdevelopment.biopotential.server.gui.BioApplication;
 import com.mpsdevelopment.biopotential.server.gui.ConverterApplication;
+import com.mpsdevelopment.biopotential.server.gui.ModalWindow;
 import com.mpsdevelopment.biopotential.server.gui.converter.ConverterPanelController;
 import com.mpsdevelopment.plasticine.commons.logging.Logger;
 import com.mpsdevelopment.plasticine.commons.logging.LoggerUtil;
@@ -45,7 +46,6 @@ public class FileCreationService extends Service<Void> {
                 }
 
                 AnalyzeService analyzeService = BioApplication.APP_CONTEXT.getBean(AnalyzeService.class);
-
 
                 allHealings.forEach((pattern, analysisSummary) -> {
                     LOGGER.info("%s %s\n", pattern.getKind(), pattern.getName(), analysisSummary.getDispersion());
