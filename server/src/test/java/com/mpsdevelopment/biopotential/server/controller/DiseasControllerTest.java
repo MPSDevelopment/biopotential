@@ -60,8 +60,8 @@ public class DiseasControllerTest {
 	@Before
 	public void setUp() throws InvalidKeyException, NoSuchAlgorithmException, IllegalStateException, SignatureException, IOException, JWTVerifyException {
 		Mockito.when(tokenUtils.getRoleFromToken(Matchers.anyString())).thenReturn(Role.ADMIN);
-        gender = "Man";
-        degree = "Max";
+        /*gender = "Man";
+        degree = "Max";*/
 	}
 
     public DiseasControllerTest() {
@@ -70,8 +70,8 @@ public class DiseasControllerTest {
 
     @Test
     public void getDiseasesTest() throws ServletException, IOException {
-        /*String gender = "Man";
-        String degree = "Max";*/
+        String gender = "Man";
+        String degree = "Max";
         File file = new File("./testfiles/REC005.ACT");
         FileInputStream fileInputStream = new FileInputStream(file);
         MockMultipartFile fstmp = new MockMultipartFile("upload", file.getName(), "multipart/form-data",fileInputStream);

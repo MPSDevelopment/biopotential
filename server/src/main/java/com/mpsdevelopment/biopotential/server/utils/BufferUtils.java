@@ -1,10 +1,6 @@
 package com.mpsdevelopment.biopotential.server.utils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
@@ -124,5 +120,39 @@ public class BufferUtils {
 	public static FloatBuffer toFloatBuffer(ByteBuffer buffer) {
 		buffer = ByteBuffer.wrap(buffer.array());
 		return buffer.asFloatBuffer();
+	}
+
+	public static void WriteDoubleToFile(String strFilePath, double[] dbuf) {
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream(strFilePath);
+		} catch (FileNotFoundException e) {
+			LOGGER.printStackTrace(e);
+		}
+
+		DataOutputStream dos = new DataOutputStream(fos);
+
+		for (double d:dbuf) {
+			try {
+				// write double to the data output stream
+				dos.writeDouble(d);
+				dos.flush();
+			} catch (IOException e) {
+				LOGGER.printStackTrace(e);
+			}
+			finally {
+
+				// releases all system resources from the streams
+				if(fos!=null)
+					try {
+						fos.close();
+					} catch (IOException e) {
+						LOGGER.printStackTrace(e);
+					}
+			}
+		}
+
+
+
 	}
 }
